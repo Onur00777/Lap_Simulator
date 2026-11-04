@@ -78,6 +78,8 @@ export interface EnergyBreakdown {
   aeroKJ: number;
   rollingKJ: number;
   frictionBrakeKJ: number;
+  /** Work done against the longitudinal grade. Zero when the lap returns to its start height. */
+  gradeKJ: number;
   regenWheelKJ: number; // braking energy captured at the wheels by the motors
   driveWheelKJ: number; // positive tractive work at the contact patches
   gearboxLossKJ: number;
@@ -123,14 +125,20 @@ interface AccelEval {
   limit: DriveLimit | 'traction';
 }
 
+/** Longitudinal force from the gradient, positive when the car is climbing. grade is rise/run. */
+function gradeForce(mass: number, grade: number): number {
+  return mass * GRAVITY * Math.sin(Math.atan(grade));
+}
+
 /** Max forward acceleration at speed v on curvature kappa (rear-axle traction + powertrain). */
-function driveAccel(ctx: SimulationContext, v: number, kappa: number, usage: number): AccelEval {
+function driveAccel(ctx: SimulationContext, v: number, kappa: number, usage: number, grade = 0): AccelEval {
   const { veh, curve } = ctx;
   const ay = v * v * Math.abs(kappa);
   const ayMax = ctxAyMax(ctx, v);
   const u = Math.min(1, ay / ayMax);
   const ell = Math.sqrt(1 - u * u);
   const Fres = dragForce(veh, v) + rollingResistanceForce(veh, v);
+  const Fg = gradeForce(veh.mass, grade);
   const Fpt = curveDriveForce(curve, v);
   let ax = 0;
   let F = 0;
@@ -144,23 +152,24 @@ function driveAccel(ctx: SimulationContext, v: number, kappa: number, usage: num
       F = Ftr;
       limit = 'traction';
     }
-    ax = (F - Fres) / veh.mass;
+    ax = (F - Fres - Fg) / veh.mass;
   }
   return { a: ax, limit };
 }
 
 /** Max deceleration (positive number) at speed v on curvature kappa. */
-function brakeDecel(ctx: SimulationContext, v: number, kappa: number, usage: number): number {
+function brakeDecel(ctx: SimulationContext, v: number, kappa: number, usage: number, grade = 0): number {
   const { veh } = ctx;
   const ay = v * v * Math.abs(kappa);
   const ayMax = ctxAyMax(ctx, v);
   const u = Math.min(1, ay / ayMax);
   const ell = Math.sqrt(1 - u * u);
   const Fres = dragForce(veh, v) + rollingResistanceForce(veh, v);
+  const Fg = gradeForce(veh.mass, grade);
   let d = 0;
   for (let k = 0; k < 4; k++) {
     const Fb = totalBrakeCapacity(veh, v, -d, ay) * ell * usage;
-    d = (Fb + Fres) / veh.mass;
+    d = (Fb + Fres + Fg) / veh.mass;
   }
   return d;
 }
@@ -188,16 +197,19 @@ export function corneringSpeedLimit(ctx: SimulationContext, kappa: number): numb
   return lo;
 }
 
-/** One integration step of d(v^2)/ds = 2 a(v, kappa(s)) over distance h with kappa linear in s. */
+/** One integration step of d(v^2)/ds = 2 a(v, kappa(s), grade(s)) over distance h. */
 function stepV2(
   integrator: Integrator,
-  accel: (v: number, kappa: number) => number,
+  accel: (v: number, kappa: number, grade: number) => number,
   v0: number,
   k0: number,
   k1: number,
   h: number,
+  g0 = 0,
+  g1 = 0,
 ): number {
-  const f = (frac: number, u: number) => 2 * accel(Math.sqrt(Math.max(u, 0)), k0 + (k1 - k0) * frac);
+  const f = (frac: number, u: number) =>
+    2 * accel(Math.sqrt(Math.max(u, 0)), k0 + (k1 - k0) * frac, g0 + (g1 - g0) * frac);
   const u0 = v0 * v0;
   if (integrator === 'euler') {
     return Math.sqrt(Math.max(0, u0 + h * f(0, u0)));
@@ -224,8 +236,9 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
   // ---------------- Pass 1: cornering limit ----------------
   const vLimit = kap.map((k) => corneringSpeedLimit(ctx, k));
 
-  const fwdAccel = (v: number, k: number) => driveAccel(ctx, v, k, usage).a;
-  const bwdDecel = (v: number, k: number) => brakeDecel(ctx, v, k, usage);
+  const gradeAt = (i: number) => track.grade?.[i] ?? 0;
+  const fwdAccel = (v: number, k: number, g: number) => driveAccel(ctx, v, k, usage, g).a;
+  const bwdDecel = (v: number, k: number, g: number) => brakeDecel(ctx, v, k, usage, g);
 
   // ---------------- Pass 2: braking (backward) ----------------
   const vBrake = new Array<number>(N);
@@ -236,14 +249,14 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     let i = i0;
     for (let c = 0; c < N - 1; c++) {
       const j = prev(i);
-      const vb = stepV2(integrator, bwdDecel, vBrake[i], kap[i], kap[j], ds);
+      const vb = stepV2(integrator, bwdDecel, vBrake[i], kap[i], kap[j], ds, gradeAt(i), gradeAt(j));
       vBrake[j] = Math.min(vLimit[j], vb);
       i = j;
     }
   } else {
     vBrake[N - 1] = vLimit[N - 1];
     for (let i = N - 1; i > 0; i--) {
-      const vb = stepV2(integrator, bwdDecel, vBrake[i], kap[i], kap[i - 1], ds);
+      const vb = stepV2(integrator, bwdDecel, vBrake[i], kap[i], kap[i - 1], ds, gradeAt(i), gradeAt(i - 1));
       vBrake[i - 1] = Math.min(vLimit[i - 1], vb);
     }
   }
@@ -259,7 +272,7 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     let i = i0;
     for (let c = 0; c < N - 1; c++) {
       const j = next(i);
-      const va = stepV2(integrator, fwdAccel, v[i], kap[i], kap[j], ds);
+      const va = stepV2(integrator, fwdAccel, v[i], kap[i], kap[j], ds, gradeAt(i), gradeAt(j));
       vAccel[j] = Math.min(vLimit[j], va);
       v[j] = Math.min(vBrake[j], va);
       i = j;
@@ -269,7 +282,7 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     v[0] = v0;
     vAccel[0] = v0;
     for (let i = 0; i < N - 1; i++) {
-      const va = stepV2(integrator, fwdAccel, v[i], kap[i], kap[i + 1], ds);
+      const va = stepV2(integrator, fwdAccel, v[i], kap[i], kap[i + 1], ds, gradeAt(i), gradeAt(i + 1));
       vAccel[i + 1] = Math.min(vLimit[i + 1], va);
       v[i + 1] = Math.min(vBrake[i + 1], va);
     }
@@ -308,6 +321,7 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     aero: 0,
     rolling: 0,
     friction: 0,
+    grade: 0,
     regenWheel: 0,
     driveWheel: 0,
     gearbox: 0,
@@ -332,7 +346,9 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     const ay = vm * vm * kSeg;
     const Fdrag = dragForce(veh, vm);
     const Froll = rollingResistanceForce(veh, vm);
-    const Ftire = veh.mass * ax + Fdrag + Froll;
+    const gSeg = 0.5 * (gradeAt(i) + gradeAt(j));
+    const Fg = gradeForce(veh.mass, gSeg);
+    const Ftire = veh.mass * ax + Fdrag + Froll + Fg;
     const ayMax = ctxAyMax(ctx, vm);
     let mode: SegmentMode = 'coast';
     let throttle = 0;
@@ -341,8 +357,8 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     let driveLimit: LapChannels['driveLimit'][number] = '';
     if (Ftire > 1) {
       flow = powerFlow(veh, pt, map, vm, Ftire);
-      const da = driveAccel(ctx, vm, kSeg, usage);
-      const Favail = da.a * veh.mass + Fdrag + Froll;
+      const da = driveAccel(ctx, vm, kSeg, usage, gSeg);
+      const Favail = da.a * veh.mass + Fdrag + Froll + Fg;
       throttle = Math.min(1, Ftire / Math.max(1, curveDriveForce(curve, vm)));
       const latUse = Math.abs(ay) / ayMax;
       if (Ftire >= 0.98 * Favail) {
@@ -374,6 +390,7 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     else E.regen += -pElec * dt;
     E.aero += Fdrag * ds;
     E.rolling += Froll * ds;
+    E.grade += Fg * ds;
     E.gearbox += flow.lossGearbox * dt;
     E.motorInv += flow.lossMotorInverter * dt;
     E.battery += flow.lossBattery * dt;
@@ -475,6 +492,7 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     aeroKJ: E.aero / 1000,
     rollingKJ: E.rolling / 1000,
     frictionBrakeKJ: E.friction / 1000,
+    gradeKJ: E.grade / 1000,
     regenWheelKJ: E.regenWheel / 1000,
     driveWheelKJ: E.driveWheel / 1000,
     gearboxLossKJ: E.gearbox / 1000,
