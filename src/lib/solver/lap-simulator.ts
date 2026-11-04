@@ -328,7 +328,8 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     const dt = vm > 1e-9 ? ds / vm : 0;
     segTime[i] = dt;
     const ax = (v1 * v1 - v0 * v0) / (2 * ds);
-    const ay = vm * vm * kap[i];
+    const kSeg = 0.5 * (kap[i] + kap[j]);
+    const ay = vm * vm * kSeg;
     const Fdrag = dragForce(veh, vm);
     const Froll = rollingResistanceForce(veh, vm);
     const Ftire = veh.mass * ax + Fdrag + Froll;
@@ -340,7 +341,7 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     let driveLimit: LapChannels['driveLimit'][number] = '';
     if (Ftire > 1) {
       flow = powerFlow(veh, pt, map, vm, Ftire);
-      const da = driveAccel(ctx, vm, kap[i], usage);
+      const da = driveAccel(ctx, vm, kSeg, usage);
       const Favail = da.a * veh.mass + Fdrag + Froll;
       throttle = Math.min(1, Ftire / Math.max(1, curveDriveForce(curve, vm)));
       const latUse = Math.abs(ay) / ayMax;
