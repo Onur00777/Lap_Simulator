@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: #05070b;
+  color: #c9d4e2;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 20% -10%, rgba(34, 211, 238, 0.08), transparent 40%),
+    radial-gradient(circle at 110% 10%, rgba(167, 139, 250, 0.06), transparent 35%),
+    linear-gradient(rgba(27, 38, 51, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(27, 38, 51, 0.35) 1px, transparent 1px);
+  background-size: auto, auto, 32px 32px, 32px 32px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #1b2633;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-md border border-hud-line bg-hud-panel/90 backdrop-blur-sm;
+  }
+  .panel-title {
+    @apply flex items-center gap-2 border-b border-hud-line px-3 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-hud-dim;
+  }
+  .kpi-value {
+    @apply font-mono text-xl font-semibold tabular-nums text-hud-text;
+  }
+  .btn {
+    @apply rounded border border-hud-line bg-hud-panel2 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-hud-text transition hover:border-hud-cyan/60 hover:text-hud-cyan disabled:opacity-40;
+  }
+  .btn-active {
+    @apply border-hud-cyan/70 text-hud-cyan shadow-glow;
+  }
+  .field {
+    @apply w-full rounded border border-hud-line bg-hud-bg px-2 py-1 font-mono text-xs tabular-nums text-hud-text outline-none focus:border-hud-cyan/70;
+  }
+}
