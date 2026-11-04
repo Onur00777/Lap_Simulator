@@ -165,6 +165,12 @@ function brakeDecel(ctx: SimulationContext, v: number, kappa: number, usage: num
   return d;
 }
 
+/** Longitudinal acceleration envelope at speed v while sustaining lateral acceleration ay (G-G-V). */
+export function longitudinalEnvelope(ctx: SimulationContext, v: number, ay: number): { accel: number; decel: number } {
+  const kappa = v > 0.1 ? ay / (v * v) : 0;
+  return { accel: driveAccel(ctx, v, kappa, 1).a, decel: brakeDecel(ctx, v, kappa, 1) };
+}
+
 /** Pass 1: cornering speed limit for |kappa| by bisection on ay_ss(v) - v^2 |kappa|. */
 export function corneringSpeedLimit(ctx: SimulationContext, kappa: number): number {
   const k = Math.abs(kappa);
