@@ -36,7 +36,7 @@ export const DEFAULT_VEHICLE: VehicleParams = {
   airDensity: 1.225,
   aeroBalanceFront: 0.45,
   rollingResistance: 0.015,
-  wheelRadius: 0.205,
+  wheelRadius: 0.2,
   yawInertia: 110,
   wheelInertia: 0.3,
   rollStiffnessFront: 0.55,

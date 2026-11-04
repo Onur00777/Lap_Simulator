@@ -228,8 +228,8 @@ export function solveTridiagonal(a: number[], b: number[], c: number[], d: numbe
 }
 
 /**
- * Cyclic tridiagonal solver (Sherman-Morrison). `alpha` couples row 0 to x[n-1],
- * `beta` couples row n-1 to x[0].
+ * Cyclic tridiagonal solver (Sherman-Morrison). `alpha` is the bottom-left corner entry
+ * (row n-1, column 0) and `beta` the top-right corner entry (row 0, column n-1).
  */
 export function solveCyclicTridiagonal(
   a: number[],

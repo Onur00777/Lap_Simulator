@@ -1,6 +1,6 @@
 import { interpUniform } from './numerics';
 import { peakLateralForce, peakLongitudinalForce } from './tire';
-import { downforce, GRAVITY, wheelLoads, type VehicleParams } from './vehicle';
+import { downforce, GRAVITY, resistanceForce, wheelLoads, type VehicleParams } from './vehicle';
 
 /**
  * Vehicle-level grip capacities derived from the Pacejka tire peaks evaluated at the
@@ -63,6 +63,23 @@ export function pointMassLateralLimit(veh: VehicleParams, v: number): number {
 /** Effective friction coefficient implied by a lateral limit: mu = m ay / (m g + 0.5 rho ClA v^2). */
 export function effectiveMu(veh: VehicleParams, v: number, ayMax: number): number {
   return (veh.mass * ayMax) / (veh.mass * GRAVITY + downforce(veh, v));
+}
+
+/**
+ * Steady-state cornering limit at speed v. The driven rear axle must supply drag + rolling
+ * resistance, which consumes part of the friction ellipse:
+ *   ay_ss = ay_max * sqrt(1 - (F_res / Fx_max,rear)^2)
+ */
+export function steadyStateLateralLimit(veh: VehicleParams, ayMax: number, v: number): number {
+  const Fres = resistanceForce(veh, v);
+  let ay = ayMax;
+  for (let k = 0; k < 40; k++) {
+    const r = Math.min(1, Fres / Math.max(1e-6, rearTractionCapacity(veh, v, 0, ay)));
+    const next = ayMax * Math.sqrt(1 - r * r);
+    if (Math.abs(next - ay) < 1e-9) return next;
+    ay = next;
+  }
+  return ay;
 }
 
 export type LateralModel = 'point-mass' | 'two-track-open' | 'two-track-tv';
