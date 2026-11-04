@@ -473,21 +473,37 @@ export interface VcuBundle {
   tvParams: TVControllerParams;
 }
 
+/** Appended when the calibration is exported for a TOSFED Körfez layout. */
+function korfezPresetBlock(trackId: string, pt: PowertrainParams, tv: TVControllerParams): string {
+  return [
+    '',
+    '/* TOSFED Körfez — layout this torque / regen / yaw calibration was solved for. */',
+    `#define KORFEZ_TRACK_PRESET            "${trackId}"`,
+    `#define KORFEZ_REGEN_LIMIT_W           (${Math.round(pt.regenPowerLimit)}U)`,
+    `#define KORFEZ_TV_KP_NM_PER_RADPS      (${cf(tv.kp)})`,
+    `#define KORFEZ_TV_KI_NM_PER_RAD        (${cf(tv.ki)})`,
+    '#define KORFEZ_TIMING_RESOLUTION_S     (0.001f)',
+    '',
+  ].join('\n');
+}
+
 export function generateVcuBundle(
   veh: VehicleParams,
   pt: PowertrainParams,
-  opts: { map?: EfficiencyMap; torqueMap?: TorqueMapOptions; tv?: Partial<TVControllerParams> } = {},
+  opts: { map?: EfficiencyMap; torqueMap?: TorqueMapOptions; tv?: Partial<TVControllerParams>; korfezTrackId?: string } = {},
 ): VcuBundle {
   const map = opts.map ?? buildEfficiencyMap(pt);
   const torqueMap = buildTorqueMap(veh, pt, map, opts.torqueMap);
   const tvParams = buildFirmwareTvParams(veh, pt, opts.tv);
-  return {
-    torqueMap,
-    tvParams,
-    files: [
-      { name: 'vcu_torque_map.h', language: 'c', content: generateTorqueMapHeader(torqueMap, veh, pt) },
-      { name: 'vcu_torque_vectoring.h', language: 'c', content: generateTorqueVectoringHeader(tvParams, veh, pt) },
-      { name: 'vcu_torque_vectoring.c', language: 'c', content: generateTorqueVectoringSource(tvParams, veh, pt) },
-    ],
-  };
+  const files: GeneratedFile[] = [
+    { name: 'vcu_torque_map.h', language: 'c', content: generateTorqueMapHeader(torqueMap, veh, pt) },
+    { name: 'vcu_torque_vectoring.h', language: 'c', content: generateTorqueVectoringHeader(tvParams, veh, pt) },
+    { name: 'vcu_torque_vectoring.c', language: 'c', content: generateTorqueVectoringSource(tvParams, veh, pt) },
+  ];
+  if (opts.korfezTrackId) {
+    const block = korfezPresetBlock(opts.korfezTrackId, pt, tvParams);
+    files[0].content = files[0].content.replace('#endif /* VCU_TORQUE_MAP_H */', `${block}#endif /* VCU_TORQUE_MAP_H */`);
+    files[2].content = files[2].content.replace('#include "vcu_torque_vectoring.h"', `#include "vcu_torque_vectoring.h"\n#include "vcu_torque_map.h" /* KORFEZ_TRACK_PRESET */`);
+  }
+  return { torqueMap, tvParams, files };
 }

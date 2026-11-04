@@ -18,6 +18,14 @@ export interface PitLane {
   garages: number;
 }
 
+/** Facility drawing registered to the centre line (pixel origin, y up, uniform scale). */
+export interface MapImage {
+  src: string;
+  widthPx: number;
+  heightPx: number;
+  metersPerPixel: number;
+}
+
 /**
  * A discretised track centre line / racing line sampled at uniform arc-length spacing `ds`.
  * Closed tracks wrap from the last sample back to the first (that final segment also has length ds),
@@ -49,6 +57,7 @@ export interface Track {
   /** Official named corners, in lap order. */
   landmarks?: TrackLandmark[];
   pitLane?: PitLane;
+  mapImage?: MapImage;
   /** Racing-surface width (m). */
   width?: number;
   direction?: 'clockwise' | 'counter-clockwise';

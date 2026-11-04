@@ -72,6 +72,7 @@ interface DrawingOptions {
   /** Smallest heading change (degrees) that counts as its own corner. */
   minCornerDeg: number;
   notes?: string[];
+  map?: { src: string; widthPx: number; heightPx: number };
 }
 
 function buildFromDrawing(raw: number[][], opt: DrawingOptions): Track {
@@ -113,6 +114,7 @@ function buildFromDrawing(raw: number[][], opt: DrawingOptions): Track {
     sEnd: c.sEnd,
   }));
   track.grade = gradeWave(track.s.length, KORFEZ_FACILITY.maxGrade);
+  if (opt.map) track.mapImage = { ...opt.map, metersPerPixel: k };
   track.pitLane = pitLane(track, opt.width);
   track.width = opt.width;
   track.direction = 'clockwise';
@@ -267,6 +269,7 @@ export function buildKorfezGp(): Track {
     ds: 2,
     smoothing: 14,
     minCornerDeg: 30,
+    map: { src: '/tracks/korfez/gp.png', widthPx: 832, heightPx: 588 },
   });
 }
 
@@ -280,6 +283,7 @@ export function buildKorfezKarting(): Track {
     ds: 1.5,
     smoothing: 8,
     minCornerDeg: 25,
+    map: { src: '/tracks/korfez/karting.png', widthPx: 856, heightPx: 806 },
   });
 }
 
@@ -293,6 +297,7 @@ export function buildKorfezFst(): Track {
     ds: 2,
     smoothing: 6,
     minCornerDeg: 18,
+    map: { src: '/tracks/korfez/fst.png', widthPx: 832, heightPx: 588 },
   });
 }
 

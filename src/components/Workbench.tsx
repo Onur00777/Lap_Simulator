@@ -13,17 +13,24 @@ import { analyzeTorqueVectoring, buildTwoTrackEnvelope } from '@/lib/dynamics';
 import { createContext, ctxAyMax, simulateLap, type Integrator } from '@/lib/solver';
 import {
   getPresetTrack,
+  IST27_PRESET,
+  isKorfezTrack,
+  KORFEZ_PRESETS,
+  KORFEZ_TRACKS,
   PRESET_TRACKS,
   simulateLaunch,
   skidpadSteadyState,
+  TPSC_PRESET,
   trackFromCsv,
   trackToCsv,
+  type KorfezTrackId,
   type PresetTrackId,
   type Track,
 } from '@/lib/tracks';
+import { analyzeKorfezLayout, compareKorfezLayouts } from '@/lib/solver/korfez-analysis';
 import { generateVcuBundle } from '@/lib/codegen';
 import { downloadText, fmt, fmtTime, kph } from '@/lib/ui/format';
-import TrackCanvas, { type ColorMode } from './TrackCanvas';
+import TrackCanvas, { type ColorMode, type MapAlign } from './TrackCanvas';
 import TelemetryCharts from './TelemetryCharts';
 import GGDiagram from './GGDiagram';
 import { PowertrainForm, VehicleForm, type PowertrainKey, type VehicleKey } from './ParamPanel';
@@ -33,9 +40,11 @@ import TorqueVectoringPanel from './panels/TorqueVectoringPanel';
 import LaunchPanel from './panels/LaunchPanel';
 import PowertrainPanel from './panels/PowertrainPanel';
 import CodegenPanel from './panels/CodegenPanel';
+import KorfezPanel, { KorfezFacilityBar } from './panels/KorfezPanel';
 
 type TrackSel = PresetTrackId | 'custom';
-type Tab = 'corners' | 'tv' | 'launch' | 'powertrain' | 'codegen';
+type Tab = 'corners' | 'tv' | 'launch' | 'powertrain' | 'codegen' | 'korfez';
+type Venue = 'fs' | 'korfez';
 
 const MODEL_OPTIONS: { value: LateralModel; label: string }[] = [
   { value: 'point-mass', label: 'Point-mass' },
@@ -66,13 +75,22 @@ export default function Workbench() {
   const [cursor, setCursor] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const [playRate, setPlayRate] = useState(1);
+  const [venue, setVenue] = useState<Venue>('fs');
+  const [presetId, setPresetId] = useState<'ist27' | 'tpsc'>('ist27');
+  const [mapAlign, setMapAlign] = useState<MapAlign>({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true });
+  const [mapUpload, setMapUpload] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const mapFileRef = useRef<HTMLInputElement>(null);
 
   // deep links: ?track=autocross&tab=tv&model=two-track-tv&color=speed
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     const t = q.get('track');
-    if (t && PRESET_TRACKS.some((p) => p.id === t)) setTrackSel(t as PresetTrackId);
+    if (t && KORFEZ_TRACKS.some((p) => p.id === t)) {
+      setVenue('korfez');
+      setTrackSel(t as KorfezTrackId);
+      setTab('korfez');
+    } else if (t && PRESET_TRACKS.some((p) => p.id === t)) setTrackSel(t as PresetTrackId);
     const tb = q.get('tab');
     if (tb && TABS.some((x) => x.value === tb)) setTab(tb as Tab);
     const m = q.get('model');
@@ -83,11 +101,15 @@ export default function Workbench() {
     if (cur) setCursor(Number(cur));
   }, []);
 
-  const veh: VehicleParams = useMemo(
-    () => ({ ...DEFAULT_VEHICLE, ...vehPatch, tire: { ...DEFAULT_VEHICLE.tire, lambdaMu } }),
-    [vehPatch, lambdaMu],
-  );
-  const pt: PowertrainParams = useMemo(() => ({ ...DEFAULT_POWERTRAIN, ...ptPatch, regenEnabled: regen }), [ptPatch, regen]);
+  const basePreset = venue === 'korfez' && presetId === 'tpsc' ? TPSC_PRESET : IST27_PRESET;
+  const veh: VehicleParams = useMemo(() => {
+    const base = venue === 'korfez' ? basePreset.vehicle : DEFAULT_VEHICLE;
+    return { ...base, ...vehPatch, tire: { ...base.tire, lambdaMu } };
+  }, [venue, basePreset, vehPatch, lambdaMu]);
+  const pt: PowertrainParams = useMemo(() => {
+    const base = venue === 'korfez' ? basePreset.powertrain : DEFAULT_POWERTRAIN;
+    return { ...base, ...ptPatch, regenEnabled: regen };
+  }, [venue, basePreset, ptPatch, regen]);
   const dVeh = useDeferredValue(veh);
   const dPt = useDeferredValue(pt);
   const track: Track = trackSel === 'custom' && customTrack ? customTrack : getPresetTrack(trackSel === 'custom' ? 'endurance' : trackSel);
@@ -110,7 +132,20 @@ export default function Workbench() {
   const tvOpen = tab === 'tv';
   const tv = useMemo(() => (tvOpen ? analyzeTorqueVectoring(dVeh, dPt, dTrack, { integrator }) : null), [tvOpen, dVeh, dPt, dTrack, integrator]);
   const cgOpen = tab === 'codegen';
-  const bundle = useMemo(() => (cgOpen ? generateVcuBundle(dVeh, dPt, { map: ctx.map }) : null), [cgOpen, dVeh, dPt, ctx]);
+  const korfezOn = venue === 'korfez' && isKorfezTrack(dTrack);
+  const bundle = useMemo(
+    () => (cgOpen ? generateVcuBundle(dVeh, dPt, { map: ctx.map, korfezTrackId: korfezOn ? dTrack.id : undefined }) : null),
+    [cgOpen, dVeh, dPt, ctx, korfezOn, dTrack.id],
+  );
+  const korfezReport = useMemo(
+    () => (korfezOn ? analyzeKorfezLayout(dTrack.id as KorfezTrackId, dVeh, dPt, integrator) : null),
+    [korfezOn, dTrack, dVeh, dPt, integrator],
+  );
+  const korfezCompare = useMemo(
+    () => (korfezOn && tab === 'korfez' ? compareKorfezLayouts(dVeh, dPt, integrator) : null),
+    [korfezOn, tab, dVeh, dPt, integrator],
+  );
+  const tabs = venue === 'korfez' ? [{ value: 'korfez' as Tab, label: 'Körfez Analiz' }, ...TABS] : TABS;
 
   const ch = lap.channels;
   const n = ch.s.length;
@@ -192,7 +227,26 @@ export default function Workbench() {
         </div>
         <span className="flex-1" />
         <Segmented
-          options={[...PRESET_TRACKS.map((t) => ({ value: t.id as TrackSel, label: t.label })), ...(customTrack ? [{ value: 'custom' as TrackSel, label: customTrack.name }] : [])]}
+          options={[
+            { value: 'fs' as Venue, label: 'Formula Student' },
+            { value: 'korfez' as Venue, label: 'Kocaeli — Körfez' },
+          ]}
+          value={venue}
+          onChange={(v) => {
+            setVenue(v);
+            setTrackSel(v === 'korfez' ? 'korfez-gp-1950' : 'endurance');
+            setTab(v === 'korfez' ? 'korfez' : 'corners');
+            setCursor(null);
+            setPlaying(false);
+            setMapUpload(null);
+          }}
+        />
+        <Segmented
+          options={
+            venue === 'korfez'
+              ? KORFEZ_TRACKS.map((t) => ({ value: t.id as TrackSel, label: t.label }))
+              : [...PRESET_TRACKS.map((t) => ({ value: t.id as TrackSel, label: t.label })), ...(customTrack ? [{ value: 'custom' as TrackSel, label: customTrack.name }] : [])]
+          }
           value={trackSel}
           onChange={(v) => {
             setTrackSel(v);
@@ -212,7 +266,21 @@ export default function Workbench() {
         <span className="rounded border border-hud-line px-2 py-1 font-mono text-[10px] text-hud-dim" title="setup (envelope + powertrain tables) / 3-pass solve">
           {fmt(sim.setupMs, 0)} + {fmt(sim.solveMs, 0)} ms · {n} pts
         </span>
+        {venue === 'korfez' && (
+          <Segmented
+            options={KORFEZ_PRESETS.map((p) => ({ value: p.id, label: p.id === 'ist27' ? 'IST27 FS EV' : 'TPSC 220+ km/h' }))}
+            value={presetId}
+            onChange={(id) => {
+              setPresetId(id);
+              setVehPatch({});
+              setPtPatch({});
+              setLambdaMu((id === 'tpsc' ? TPSC_PRESET : IST27_PRESET).vehicle.tire.lambdaMu);
+              setRegen(true);
+            }}
+          />
+        )}
       </header>
+      {venue === 'korfez' && <KorfezFacilityBar />}
 
       <div className="grid flex-1 gap-3 p-3 lg:grid-cols-[290px_minmax(0,1fr)]">
         <aside className="flex flex-col gap-3">
@@ -328,9 +396,69 @@ export default function Workbench() {
                   </select>
                 </div>
               }
-              bodyClassName="h-[460px]"
+              bodyClassName="flex h-[500px] flex-col"
             >
-              <TrackCanvas track={dTrack} lap={lap} colorMode={colorMode} cursor={safeCursor} onHover={onHoverCanvas} />
+              {korfezOn && (
+                <div className="flex flex-wrap items-center gap-2 border-b border-hud-line px-2 py-1 font-mono text-[10px] text-hud-dim">
+                  <span className="uppercase tracking-wider text-hud-cyan">Pist görseli</span>
+                  <button type="button" className={`btn ${mapAlign.visible ? 'btn-active' : ''}`} onClick={() => setMapAlign((m) => ({ ...m, visible: !m.visible }))}>
+                    {mapAlign.visible ? 'Görsel açık' : 'Görsel kapalı'}
+                  </button>
+                  <button type="button" className="btn" onClick={() => mapFileRef.current?.click()}>
+                    Yükle
+                  </button>
+                  <input
+                    ref={mapFileRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) setMapUpload(URL.createObjectURL(f));
+                      e.target.value = '';
+                    }}
+                  />
+                  {mapUpload && (
+                    <button type="button" className="btn" onClick={() => setMapUpload(null)}>
+                      Kroki
+                    </button>
+                  )}
+                  <label className="flex items-center gap-1">
+                    opak
+                    <input type="range" min={0} max={100} value={Math.round(mapAlign.opacity * 100)} onChange={(e) => setMapAlign((m) => ({ ...m, opacity: Number(e.target.value) / 100 }))} />
+                  </label>
+                  <label className="flex items-center gap-1">
+                    ölçek
+                    <input type="range" min={50} max={180} value={Math.round(mapAlign.scale * 100)} onChange={(e) => setMapAlign((m) => ({ ...m, scale: Number(e.target.value) / 100 }))} />
+                  </label>
+                  <label className="flex items-center gap-1">
+                    X
+                    <input type="range" min={-400} max={400} value={mapAlign.x} onChange={(e) => setMapAlign((m) => ({ ...m, x: Number(e.target.value) }))} />
+                  </label>
+                  <label className="flex items-center gap-1">
+                    Y
+                    <input type="range" min={-400} max={400} value={mapAlign.y} onChange={(e) => setMapAlign((m) => ({ ...m, y: Number(e.target.value) }))} />
+                  </label>
+                  <label className="flex items-center gap-1">
+                    açı
+                    <input type="range" min={-180} max={180} value={mapAlign.rotation} onChange={(e) => setMapAlign((m) => ({ ...m, rotation: Number(e.target.value) }))} />
+                  </label>
+                  <button type="button" className="btn" onClick={() => setMapAlign({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true })}>
+                    Sıfırla
+                  </button>
+                </div>
+              )}
+              <div className="min-h-0 flex-1">
+                <TrackCanvas
+                  track={dTrack}
+                  lap={lap}
+                  colorMode={colorMode}
+                  cursor={safeCursor}
+                  onHover={onHoverCanvas}
+                  mapAlign={korfezOn ? mapAlign : undefined}
+                  mapSrcOverride={mapUpload}
+                />
+              </div>
             </Panel>
             <Panel title="G-G diagram · friction ellipse" bodyClassName="h-[460px]">
               <GGDiagram lap={lap} ctx={ctx} cursor={safeCursor} />
@@ -352,7 +480,17 @@ export default function Workbench() {
             <TelemetryCharts lap={lap} cursorS={safeCursor != null ? ch.s[safeCursor] : null} onHoverS={onHoverS} />
           </Panel>
 
-          <Panel title={<Segmented options={TABS} value={tab} onChange={setTab} />}>
+          <Panel title={<Segmented options={tabs} value={tab} onChange={setTab} />}>
+            {tab === 'korfez' && (
+              <KorfezPanel
+                report={korfezReport}
+                comparison={korfezCompare}
+                onSelect={(i) => {
+                  const lm = dTrack.landmarks?.[i];
+                  if (lm) setCursor(Math.round(lm.sApex / dTrack.ds));
+                }}
+              />
+            )}
             {tab === 'corners' && <CornersPanel lap={lap} skid={skid} onSelect={(i) => setCursor(i)} />}
             {tab === 'tv' && (tv ? <TorqueVectoringPanel tv={tv} cursorS={safeCursor != null ? ch.s[safeCursor] : null} /> : <Busy />)}
             {tab === 'launch' && <LaunchPanel launch={launch} qssTime={track.kind === 'acceleration' ? lap.lapTime : undefined} />}

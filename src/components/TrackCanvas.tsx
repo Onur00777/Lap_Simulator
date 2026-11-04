@@ -8,12 +8,24 @@ import { fmt, kph } from '@/lib/ui/format';
 
 export type ColorMode = 'mode' | 'speed' | 'latg' | 'grip';
 
+export interface MapAlign {
+  opacity: number;
+  scale: number;
+  x: number;
+  y: number;
+  rotation: number;
+  visible: boolean;
+}
+
 interface Props {
   track: Track;
   lap: LapResult;
   colorMode: ColorMode;
   cursor: number | null;
   onHover: (i: number | null) => void;
+  mapAlign?: MapAlign;
+  /** Replaces the built-in facility drawing when the user uploads their own map. */
+  mapSrcOverride?: string | null;
 }
 
 interface Transform {
@@ -48,12 +60,24 @@ function setupCanvas(c: HTMLCanvasElement, w: number, h: number) {
   return ctx;
 }
 
-export default function TrackCanvas({ track, lap, colorMode, cursor, onHover }: Props) {
+export default function TrackCanvas({ track, lap, colorMode, cursor, onHover, mapAlign, mapSrcOverride }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const baseRef = useRef<HTMLCanvasElement>(null);
   const overRef = useRef<HTMLCanvasElement>(null);
   const { w, h } = useSize(wrapRef);
   const ch = lap.channels;
+  const [mapImg, setMapImg] = useState<HTMLImageElement | null>(null);
+  useEffect(() => {
+    const src = mapSrcOverride || track.mapImage?.src;
+    if (!src) {
+      setMapImg(null);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => setMapImg(img);
+    img.onerror = () => setMapImg(null);
+    img.src = src;
+  }, [track.mapImage?.src, mapSrcOverride]);
 
   const tf: Transform = useMemo(() => {
     const pad = 36;
@@ -96,6 +120,21 @@ export default function TrackCanvas({ track, lap, colorMode, cursor, onHover }: 
     if (!c) return;
     const ctx = setupCanvas(c, w, h);
     ctx.clearRect(0, 0, w, h);
+    if (mapImg && mapAlign?.visible && (track.mapImage || mapSrcOverride)) {
+      const mpp = track.mapImage?.metersPerPixel ?? 1;
+      const widthPx = mapSrcOverride ? mapImg.naturalWidth : (track.mapImage?.widthPx ?? mapImg.naturalWidth);
+      const heightPx = mapSrcOverride ? mapImg.naturalHeight : (track.mapImage?.heightPx ?? mapImg.naturalHeight);
+      const worldW = widthPx * mpp * mapAlign.scale;
+      const worldH = heightPx * mpp * mapAlign.scale;
+      const cx = worldW / 2 + mapAlign.x;
+      const cy = worldH / 2 + mapAlign.y;
+      ctx.save();
+      ctx.globalAlpha = mapAlign.opacity;
+      ctx.translate(tf.sx(cx), tf.sy(cy));
+      ctx.rotate((-mapAlign.rotation * Math.PI) / 180);
+      ctx.drawImage(mapImg, (-worldW * tf.scale) / 2, (-worldH * tf.scale) / 2, worldW * tf.scale, worldH * tf.scale);
+      ctx.restore();
+    }
     // grid (10 m)
     const step = 10 * tf.scale;
     if (step > 6) {
@@ -154,8 +193,65 @@ export default function TrackCanvas({ track, lap, colorMode, cursor, onHover }: 
       ctx.fill();
       ctx.fillText(`S${k + 2}`, tf.sx(track.x[i]) + 6, tf.sy(track.y[i]) - 6);
     });
-    // corner labels
-    if (track.kind !== 'skidpad') {
+    // direction arrows
+    if (track.direction) {
+      const stride = Math.max(8, Math.round(80 / track.ds));
+      for (let i = stride; i < n; i += stride) {
+        const x = tf.sx(track.x[i]);
+        const y = tf.sy(track.y[i]);
+        const dx = Math.cos(track.heading[i]) * 9;
+        const dy = -Math.sin(track.heading[i]) * 9;
+        ctx.strokeStyle = 'rgba(248,250,252,0.85)';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(x - dx, y - dy);
+        ctx.lineTo(x + dx * 0.2, y + dy * 0.2);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(248,250,252,0.85)';
+        ctx.beginPath();
+        ctx.moveTo(x + dx, y + dy);
+        ctx.lineTo(x + dy * 0.45, y - dx * 0.45);
+        ctx.lineTo(x - dy * 0.45, y + dx * 0.45);
+        ctx.fill();
+      }
+    }
+    // pit lane and garage stalls
+    if (track.pitLane && track.pitLane.x.length > 1) {
+      const pit = track.pitLane;
+      ctx.save();
+      ctx.strokeStyle = '#94a3b8';
+      ctx.setLineDash([5, 4]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(tf.sx(pit.x[0]), tf.sy(pit.y[0]));
+      for (let i = 1; i < pit.x.length; i++) ctx.lineTo(tf.sx(pit.x[i]), tf.sy(pit.y[i]));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#94a3b8';
+      const step = Math.max(1, Math.floor((pit.x.length - 1) / pit.garages));
+      for (let g = 0; g < pit.garages; g++) {
+        const i = Math.min(pit.x.length - 1, g * step);
+        ctx.fillRect(tf.sx(pit.x[i]) - 1.5, tf.sy(pit.y[i]) - 1.5, 3, 3);
+      }
+      ctx.font = '10px Consolas, monospace';
+      ctx.fillText(`${pit.garages} pit`, tf.sx(pit.x[0]) + 6, tf.sy(pit.y[0]) - 6);
+      ctx.restore();
+    }
+    // corner labels — named landmarks when the circuit provides them
+    if (track.landmarks && track.landmarks.length > 0) {
+      ctx.font = 'bold 11px Consolas, monospace';
+      for (const lm of track.landmarks) {
+        const i = Math.min(n - 1, Math.round(lm.sApex / track.ds));
+        const off = (lm.direction === 'L' ? 1 : -1) * 14;
+        const px = track.x[i] + off * -Math.sin(track.heading[i]);
+        const py = track.y[i] + off * Math.cos(track.heading[i]);
+        ctx.fillStyle = lm.direction === 'L' ? '#22d3ee' : '#f59e0b';
+        ctx.beginPath();
+        ctx.arc(tf.sx(track.x[i]), tf.sy(track.y[i]), 3.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillText(`${lm.id} ${lm.direction === 'L' ? 'Sol' : 'Sağ'}`, tf.sx(px), tf.sy(py));
+      }
+    } else if (track.kind !== 'skidpad') {
       ctx.fillStyle = 'rgba(201,212,226,0.75)';
       for (const c of lap.corners) {
         const i = c.apexIndex;
@@ -166,7 +262,7 @@ export default function TrackCanvas({ track, lap, colorMode, cursor, onHover }: 
         ctx.fillText(`T${c.index}`, tf.sx(px) - 6, tf.sy(py) + 3);
       }
     }
-  }, [track, lap, tf, w, h, colorAt]);
+  }, [track, lap, tf, w, h, colorAt, mapImg, mapAlign]);
 
   // overlay: cursor
   useEffect(() => {
