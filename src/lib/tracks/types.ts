@@ -1,5 +1,23 @@
 export type TrackKind = 'skidpad' | 'acceleration' | 'autocross' | 'endurance' | 'custom';
 
+/** A named corner of a real circuit (apex station is the curvature peak of that arc). */
+export interface TrackLandmark {
+  id: string;
+  name: string;
+  direction: 'L' | 'R';
+  note: string;
+  sStart: number;
+  sApex: number;
+  sEnd: number;
+}
+
+/** Pit lane centre line parallel to the main straight, with a garage count. */
+export interface PitLane {
+  x: number[];
+  y: number[];
+  garages: number;
+}
+
 /**
  * A discretised track centre line / racing line sampled at uniform arc-length spacing `ds`.
  * Closed tracks wrap from the last sample back to the first (that final segment also has length ds),
@@ -26,6 +44,15 @@ export interface Track {
   startSpeed: number;
   /** Optional timed windows (e.g. the second right and left skidpad circles). */
   timedWindows?: { label: string; s0: number; s1: number }[];
+  /** Rise over run, positive uphill. One sample per centre-line point. */
+  grade?: number[];
+  /** Official named corners, in lap order. */
+  landmarks?: TrackLandmark[];
+  pitLane?: PitLane;
+  /** Racing-surface width (m). */
+  width?: number;
+  direction?: 'clockwise' | 'counter-clockwise';
+  venue?: 'formula-student' | 'korfez';
 }
 
 export interface Corner {

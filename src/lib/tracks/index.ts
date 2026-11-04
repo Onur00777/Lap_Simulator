@@ -1,5 +1,6 @@
 import { buildAcceleration } from './acceleration';
 import { buildAutocross, buildEndurance } from './circuits';
+import { getKorfezTrack, type KorfezTrackId } from './korfez';
 import { buildSkidpad } from './skidpad';
 import type { Track } from './types';
 
@@ -9,8 +10,9 @@ export * from './skidpad';
 export * from './acceleration';
 export * from './circuits';
 export * from './csv';
+export * from './korfez';
 
-export type PresetTrackId = 'skidpad' | 'acceleration' | 'autocross' | 'endurance';
+export type PresetTrackId = 'skidpad' | 'acceleration' | 'autocross' | 'endurance' | KorfezTrackId;
 
 export const PRESET_TRACKS: { id: PresetTrackId; label: string }[] = [
   { id: 'skidpad', label: 'FS Skidpad' },
@@ -37,6 +39,9 @@ export function getPresetTrack(id: PresetTrackId): Track {
       break;
     case 'endurance':
       t = buildEndurance();
+      break;
+    default:
+      t = getKorfezTrack(id);
       break;
   }
   cache.set(id, t);
