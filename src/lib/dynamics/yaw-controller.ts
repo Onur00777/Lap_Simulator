@@ -24,6 +24,8 @@ export interface TVControllerParams {
   gearboxEfficiency: number;
   understeerTarget: number; // rad / (m/s^2)
   ayLimit: number; // m/s^2 used to saturate the yaw-rate reference
+  /** Optional speed-scheduled lateral limit (from the simulated TV envelope); overrides ayLimit. */
+  ayLimitTable?: { speed: number[]; ay: number[] };
   kp: number; // Nm / (rad/s)
   ki: number; // Nm / rad
   mzLimit: number; // Nm
@@ -71,11 +73,24 @@ export function defaultTVParams(veh: VehicleParams, pt: PowertrainParams, ayLimi
   };
 }
 
+/** Lateral acceleration limit used for yaw-rate saturation (table lookup with end clamping). */
+export function ayLimitAt(p: TVControllerParams, v: number): number {
+  const tab = p.ayLimitTable;
+  if (!tab || tab.speed.length < 2) return p.ayLimit;
+  const n = tab.speed.length;
+  if (v <= tab.speed[0]) return tab.ay[0];
+  if (v >= tab.speed[n - 1]) return tab.ay[n - 1];
+  let i = 0;
+  while (i < n - 2 && v >= tab.speed[i + 1]) i++;
+  const f = (v - tab.speed[i]) / (tab.speed[i + 1] - tab.speed[i]);
+  return tab.ay[i] + f * (tab.ay[i + 1] - tab.ay[i]);
+}
+
 /** Steady-state yaw-rate reference with friction saturation. */
 export function yawRateTarget(p: TVControllerParams, vx: number, steer: number): number {
   const v = Math.max(vx, 0.1);
   const rLin = (v * steer) / (p.wheelbase + p.understeerTarget * v * v);
-  const rMax = (0.95 * p.ayLimit) / v;
+  const rMax = (0.95 * ayLimitAt(p, v)) / v;
   return clamp(rLin, -rMax, rMax);
 }
 
@@ -96,20 +111,23 @@ export function tvStep(p: TVControllerParams, state: TVState, inp: TVInputs): TV
   const integCandidate = state.integrator + p.ki * err * p.dt;
   const mzUnsat = p.kp * err + integCandidate;
   const mz = clamp(mzUnsat, -p.mzLimit, p.mzLimit);
-  const saturatedMz = mz !== mzUnsat;
+  const saturatedMz = mzUnsat > p.mzLimit || mzUnsat < -p.mzLimit;
   // conditional integration: only accept the integrator update if it does not deepen saturation
   if (!saturatedMz || Math.sign(err) !== Math.sign(mzUnsat)) {
     state.integrator = clamp(integCandidate, -p.mzLimit, p.mzLimit);
   }
   const dT = (mz * p.wheelRadius) / (p.trackWidth * p.gearRatio * p.gearboxEfficiency);
-  const tRR = clamp(base + dT, -p.motorTorqueLimit, p.motorTorqueLimit);
-  const tRL = clamp(base - dT, -p.motorTorqueLimit, p.motorTorqueLimit);
+  const rrRaw = base + dT;
+  const rlRaw = base - dT;
+  const tRR = clamp(rrRaw, -p.motorTorqueLimit, p.motorTorqueLimit);
+  const tRL = clamp(rlRaw, -p.motorTorqueLimit, p.motorTorqueLimit);
+  const motorSat = Math.abs(rrRaw) > p.motorTorqueLimit || Math.abs(rlRaw) > p.motorTorqueLimit;
   return {
     torqueRL: tRL,
     torqueRR: tRR,
     mz,
     yawRateRef: rRef,
     yawRateError: err,
-    saturated: saturatedMz || tRR !== base + dT || tRL !== base - dT,
+    saturated: saturatedMz || motorSat,
   };
 }
