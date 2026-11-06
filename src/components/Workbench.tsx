@@ -48,9 +48,10 @@ import LaunchPanel from './panels/LaunchPanel';
 import PowertrainPanel from './panels/PowertrainPanel';
 import CodegenPanel from './panels/CodegenPanel';
 import KorfezPanel, { KorfezFacilityBar } from './panels/KorfezPanel';
+import SensitivityPanel from './panels/SensitivityPanel';
 
 type TrackSel = PresetTrackId | 'custom';
-type Tab = 'corners' | 'tv' | 'launch' | 'powertrain' | 'codegen' | 'korfez';
+type Tab = 'corners' | 'tv' | 'sensitivity' | 'launch' | 'powertrain' | 'codegen' | 'korfez';
 type Venue = 'fs' | 'korfez';
 
 interface BaselineConfig {
@@ -75,6 +76,7 @@ const RACING_LINE_OPTIONS: { value: RacingLineMode; label: string }[] = [
 const TABS: { value: Tab; label: string }[] = [
   { value: 'corners', label: 'Corners · Sectors · Energy' },
   { value: 'tv', label: 'Torque Vectoring' },
+  { value: 'sensitivity', label: 'Sensitivity & Pareto Studio' },
   { value: 'launch', label: 'Launch (RK4)' },
   { value: 'powertrain', label: 'Powertrain & Tire' },
   { value: 'codegen', label: 'VCU Codegen' },
@@ -742,6 +744,7 @@ export default function Workbench() {
             )}
             {tab === 'corners' && <CornersPanel lap={lap} skid={skid} onSelect={(i) => setCursor(i)} />}
             {tab === 'tv' && (tv ? <TorqueVectoringPanel tv={tv} cursorS={safeCursor != null ? ch.s[safeCursor] : null} /> : <Busy />)}
+            {tab === 'sensitivity' && <SensitivityPanel track={dTrack} veh={dVeh} pt={dPt} model={model} integrator={integrator} />}
             {tab === 'launch' && <LaunchPanel launch={launch} qssTime={dTrack.kind === 'acceleration' ? lap.lapTime : undefined} />}
             {tab === 'powertrain' && <PowertrainPanel veh={dVeh} pt={dPt} map={ctx.map} />}
             {tab === 'codegen' && (bundle ? <CodegenPanel bundle={bundle} /> : <Busy />)}
