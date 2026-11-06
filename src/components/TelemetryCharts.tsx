@@ -35,6 +35,11 @@ interface Row {
   pElec: number;
   pWheel: number;
   torque: number;
+  fzFL: number;
+  fzFR: number;
+  fzRL: number;
+  fzRR: number;
+  kus: number;
 }
 
 const SYNC = 'lap-telemetry';
@@ -57,6 +62,11 @@ function useRows(lap: LapResult): Row[] {
         pElec: +ch.pElecKW[i].toFixed(2),
         pWheel: +ch.pWheelKW[i].toFixed(2),
         torque: +ch.motorTorque[i].toFixed(2),
+        fzFL: +ch.fzFL[i].toFixed(0),
+        fzFR: +ch.fzFR[i].toFixed(0),
+        fzRL: +ch.fzRL[i].toFixed(0),
+        fzRR: +ch.fzRR[i].toFixed(0),
+        kus: +ch.understeerDegPerG[i].toFixed(2),
       });
     }
     return rows;
@@ -72,7 +82,7 @@ const axisProps = {
 
 function ChartFrame({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="relative h-[150px] w-full">
+    <div className="relative h-[145px] w-full">
       <div className="pointer-events-none absolute left-12 top-0 z-10 font-mono text-[10px] uppercase tracking-widest text-hud-dim">{title}</div>
       {children}
     </div>
@@ -132,6 +142,22 @@ function TelemetryChartsImpl({ lap, cursorS, onHoverS }: Props) {
             <ReferenceLine y={0} stroke={CHART.grid} />
             <Line dataKey="gLong" name="G long" stroke={CHART.lime} dot={false} strokeWidth={1.3} isAnimationActive={false} />
             <Line dataKey="gLat" name="G lat" stroke={CHART.red} dot={false} strokeWidth={1.3} isAnimationActive={false} />
+            {cursor}
+          </LineChart>
+        </ResponsiveContainer>
+      </ChartFrame>
+      <ChartFrame title="4-Corner vertical wheel loads Fz [N] (FL · FR · RL · RR)">
+        <ResponsiveContainer>
+          <LineChart {...common}>
+            {grid}
+            {xAxis(false)}
+            <YAxis {...axisProps} width={44} domain={[0, 'auto']} />
+            {tt}
+            <ReferenceLine y={0} stroke={CHART.red} strokeDasharray="2 2" />
+            <Line dataKey="fzFL" name="Fz FL [N]" stroke={CHART.cyan} dot={false} strokeWidth={1.1} isAnimationActive={false} />
+            <Line dataKey="fzFR" name="Fz FR [N]" stroke={CHART.amber} dot={false} strokeWidth={1.1} isAnimationActive={false} />
+            <Line dataKey="fzRL" name="Fz RL [N]" stroke={CHART.lime} dot={false} strokeWidth={1.1} isAnimationActive={false} />
+            <Line dataKey="fzRR" name="Fz RR [N]" stroke={CHART.violet} dot={false} strokeWidth={1.1} isAnimationActive={false} />
             {cursor}
           </LineChart>
         </ResponsiveContainer>

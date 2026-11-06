@@ -262,7 +262,7 @@ export default function TrackCanvas({ track, lap, colorMode, cursor, onHover, ma
         ctx.fillText(`T${c.index}`, tf.sx(px) - 6, tf.sy(py) + 3);
       }
     }
-  }, [track, lap, tf, w, h, colorAt, mapImg, mapAlign]);
+  }, [track, lap, tf, w, h, colorAt, mapImg, mapAlign, mapSrcOverride]);
 
   // overlay: cursor
   useEffect(() => {
@@ -340,8 +340,8 @@ export default function TrackCanvas({ track, lap, colorMode, cursor, onHover, ma
       <div className="pointer-events-none absolute bottom-2 right-3 font-mono text-[10px] text-hud-dim">grid 10 m · {track.length.toFixed(0)} m</div>
       {tip != null && tipPos && (
         <div
-          className="pointer-events-none absolute z-10 w-48 rounded border border-hud-cyan/50 bg-hud-bg/95 px-2.5 py-2 font-mono text-[11px] shadow-glow"
-          style={{ left: Math.min(tipPos.x + 14, w - 200), top: Math.max(4, Math.min(tipPos.y - 70, h - 170)) }}
+          className="pointer-events-none absolute z-10 w-56 rounded border border-hud-cyan/50 bg-hud-bg/95 px-2.5 py-2 font-mono text-[11px] shadow-glow"
+          style={{ left: Math.min(tipPos.x + 14, w - 230), top: Math.max(4, Math.min(tipPos.y - 80, h - 220)) }}
         >
           <div className="mb-1 flex justify-between text-hud-cyan">
             <span>s = {fmt(ch.s[tip], 1)} m</span>
@@ -349,12 +349,14 @@ export default function TrackCanvas({ track, lap, colorMode, cursor, onHover, ma
           </div>
           <Row k="Speed" v={`${fmt(kph(ch.v[tip]), 1)} km/h`} />
           <Row k="Gear / rpm" v={`1 · ${fmt(ch.motorRpm[tip], 0)}`} />
-          <Row k="Long G" v={fmt(ch.gLong[tip], 2)} />
-          <Row k="Lat G" v={fmt(ch.gLat[tip], 2)} />
-          <Row k="Throttle / Brake" v={`${fmt(ch.throttle[tip] * 100, 0)} / ${fmt(ch.brake[tip] * 100, 0)} %`} />
-          <Row k="Motor T" v={`${fmt(ch.motorTorque[tip], 1)} Nm`} />
+          <Row k="Long / Lat G" v={`${fmt(ch.gLong[tip], 2)} / ${fmt(ch.gLat[tip], 2)} G`} />
+          <Row k="Fz FL / FR" v={`${fmt(ch.fzFL[tip], 0)} / ${fmt(ch.fzFR[tip], 0)} N`} />
+          <Row k="Fz RL / RR" v={`${fmt(ch.fzRL[tip], 0)} / ${fmt(ch.fzRR[tip], 0)} N`} />
+          <Row k="K_us / SI" v={`${fmt(ch.understeerDegPerG[tip], 2)}°/G · ${fmt(ch.stabilityIndex[tip] * 100, 1)}%`} />
+          <Row k="Thr / Brk" v={`${fmt(ch.throttle[tip] * 100, 0)} / ${fmt(ch.brake[tip] * 100, 0)} %`} />
           <Row k="P batt" v={`${fmt(ch.pElecKW[tip], 1)} kW`} />
           <Row k="Radius" v={Math.abs(ch.kappa[tip]) > 1e-4 ? `${fmt(1 / Math.abs(ch.kappa[tip]), 1)} m` : '∞'} />
+          {ch.wheelLift[tip] && <div className="mt-1 font-bold text-hud-red">⚠ Inner Wheel Lift!</div>}
           <div className="mt-1 text-[10px]" style={{ color: MODE_COLORS[ch.mode[tip]] }}>
             {MODE_LABELS[ch.mode[tip]]}
           </div>

@@ -1,4 +1,5 @@
 import {
+  camberPeakFactor,
   cgLocation,
   combinedLateralScale,
   GRAVITY,
@@ -50,14 +51,17 @@ function utilisation(veh: VehicleParams, v: number, ay: number, dFx: number): { 
   const L = veh.wheelbase;
   const W = wheelLoads(veh, v, 0, ay);
   const t = veh.tire;
-  const Cf = peakLateralForce(t, W.fl) + peakLateralForce(t, W.fr);
+  const kf = camberPeakFactor(veh.camberFront ?? -1.8, -1.8);
+  const kr = camberPeakFactor(veh.camberRear ?? -1.2, -1.2);
+  const Cf = (peakLateralForce(t, W.fl) + peakLateralForce(t, W.fr)) * kf;
   // ay > 0 : left turn, outer = right wheel (rr)
   const outer = W.rr;
   const inner = W.rl;
   const Cr =
-    peakLateralForce(t, outer) * combinedLateralScale(dFx, peakLongitudinalForce(t, outer)) +
-    peakLateralForce(t, inner) * combinedLateralScale(-dFx, peakLongitudinalForce(t, inner));
-  const Mz = dFx * veh.trackWidth;
+    (peakLateralForce(t, outer) * combinedLateralScale(dFx, peakLongitudinalForce(t, outer)) +
+      peakLateralForce(t, inner) * combinedLateralScale(-dFx, peakLongitudinalForce(t, inner))) *
+    kr;
+  const Mz = dFx * (veh.trackWidthRear ?? veh.trackWidth);
   const Fyf = (veh.mass * ay * b - Mz) / L;
   const Fyr = (veh.mass * ay * a + Mz) / L;
   return { uf: Cf > 0 ? Fyf / Cf : Infinity, ur: Cr > 0 ? Fyr / Cr : Infinity };
@@ -76,7 +80,7 @@ export function axleBalance(veh: VehicleParams, pt: PowertrainParams, v: number,
   };
   const best = goldenMax(cost, -lim, lim, 1e-3, 80);
   const { uf, ur } = utilisation(veh, v, ay, best.x);
-  return { ay, dFx: best.x, Mz: best.x * veh.trackWidth, frontUtil: uf, rearUtil: ur, maxUtil: Math.max(uf, ur) };
+  return { ay, dFx: best.x, Mz: best.x * (veh.trackWidthRear ?? veh.trackWidth), frontUtil: uf, rearUtil: ur, maxUtil: Math.max(uf, ur) };
 }
 
 /** Maximum steady-state lateral acceleration of the 2-track model at speed v. */

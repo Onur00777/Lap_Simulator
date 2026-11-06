@@ -4,23 +4,31 @@ import { downforce, GRAVITY, resistanceForce, wheelLoads, type VehicleParams } f
 
 /**
  * Vehicle-level grip capacities derived from the Pacejka tire peaks evaluated at the
- * quasi-static wheel loads (static + aero + load transfer).
+ * quasi-static wheel loads (static + aero + load transfer + camber modifier).
  */
+
+/** Peak lateral force multiplier from static camber relative to nominal optimal camber. */
+export function camberPeakFactor(camberDeg: number, nominalOptDeg: number): number {
+  const d = camberDeg - nominalOptDeg;
+  if (Math.abs(d) < 1e-6) return 1.0;
+  return Math.max(0.85, Math.min(1.04, 1.0 - 0.008 * d * d - 0.003 * d));
+}
 
 /** Sum of peak lateral forces of all four tires at (v, ax, ay). */
 export function totalLateralCapacity(veh: VehicleParams, v: number, ax: number, ay: number): number {
-  const L = wheelLoads(veh, v, ax, ay);
-  const t = veh.tire;
-  return peakLateralForce(t, L.fl) + peakLateralForce(t, L.fr) + peakLateralForce(t, L.rl) + peakLateralForce(t, L.rr);
+  const { front, rear } = axleLateralCapacity(veh, v, ax, ay);
+  return front + rear;
 }
 
 /** Axle-wise lateral capacities (front, rear). */
 export function axleLateralCapacity(veh: VehicleParams, v: number, ax: number, ay: number): { front: number; rear: number } {
   const L = wheelLoads(veh, v, ax, ay);
   const t = veh.tire;
+  const kf = camberPeakFactor(veh.camberFront ?? -1.8, -1.8);
+  const kr = camberPeakFactor(veh.camberRear ?? -1.2, -1.2);
   return {
-    front: peakLateralForce(t, L.fl) + peakLateralForce(t, L.fr),
-    rear: peakLateralForce(t, L.rl) + peakLateralForce(t, L.rr),
+    front: (peakLateralForce(t, L.fl) + peakLateralForce(t, L.fr)) * kf,
+    rear: (peakLateralForce(t, L.rl) + peakLateralForce(t, L.rr)) * kr,
   };
 }
 

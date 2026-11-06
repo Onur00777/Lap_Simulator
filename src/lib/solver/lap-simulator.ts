@@ -3,12 +3,14 @@ import {
   curveLimit,
   curveRegenForce,
   dragForce,
+  evaluateCorneringBalance,
   GRAVITY,
   powerFlow,
   rearBrakeShare,
   rearTractionCapacity,
   rollingResistanceForce,
   totalBrakeCapacity,
+  wheelLoads,
   type DriveLimit,
 } from '../physics';
 import { detectCorners } from '../tracks/geometry';
@@ -16,7 +18,7 @@ import type { Corner, Track } from '../tracks/types';
 import { ctxAyMax, ctxAySteady, type SimulationContext } from './context';
 
 /**
- * Quasi-steady-state (QSS) point-mass lap time simulation.
+ * Quasi-steady-state (QSS) point-mass / two-track lap time simulation.
  *
  *  Pass 1 — cornering limit:  v_lim(s) solves  v^2 |kappa| = ay_ss(v),
  *           ay_ss(v) = ay_max(v) sqrt(1 - (F_res / Fx_max)^2), ay_max from the Pacejka tires
@@ -68,6 +70,19 @@ export interface LapChannels {
   heatKJ: number[]; // cumulative heat rejected to the cooling loop
   mode: SegmentMode[];
   driveLimit: (DriveLimit | 'traction' | '')[];
+  /** 4-corner vertical wheel loads [N] at each node. */
+  fzFL: number[];
+  fzFR: number[];
+  fzRL: number[];
+  fzRR: number[];
+  /** True when any inner wheel reaches 0 N vertical load at node i. */
+  wheelLift: boolean[];
+  /** Instantaneous understeer gradient K_us [deg/G] at node i. */
+  understeerDegPerG: number[];
+  /** Instantaneous yaw stability index (static margin) at node i. */
+  stabilityIndex: number[];
+  /** Quasi-static body roll angle [deg] at node i. */
+  rollDeg: number[];
 }
 
 export interface EnergyBreakdown {
@@ -94,6 +109,8 @@ export interface CornerResult extends Corner {
   entrySpeed: number;
   exitSpeed: number;
   peakLatG: number;
+  understeerDegPerG?: number;
+  minInnerFzN?: number;
 }
 
 export interface LapResult {
@@ -118,6 +135,20 @@ export interface LapResult {
   energy: EnergyBreakdown;
   channels: LapChannels;
   event: { laps: number; totalTime: number; totalEnergyKWh: number; totalHeatMJ: number };
+  /** True if any inner wheel lifted (Fz == 0 N) at any point on the lap. */
+  hasWheelLift: boolean;
+  /** Number of track nodes where inner wheel lift occurred. */
+  wheelLiftCount: number;
+  /** Minimum inner wheel vertical load [N] encountered on the lap. */
+  minInnerWheelLoadN: number;
+  /** Average instantaneous understeer gradient [deg/G] across the lap. */
+  avgUndersteerDegPerG: number;
+  /** Average understeer gradient [deg/G] inside cornering zones (|gLat| > 0.4 G). */
+  cornerUndersteerDegPerG: number;
+  /** Average yaw stability index across the lap. */
+  avgStabilityIndex: number;
+  /** Minimum yaw stability index encountered on the lap. */
+  minStabilityIndex: number;
 }
 
 interface AccelEval {
@@ -288,7 +319,7 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     }
   }
 
-  // ---------------- Post-processing: forces, power flow, energy ----------------
+  // ---------------- Post-processing: forces, power flow, energy, 4-corner Fz & balance ----------------
   const ch: LapChannels = {
     s: track.s.slice(),
     x: track.x.slice(),
@@ -314,6 +345,14 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     heatKJ: new Array(N).fill(0),
     mode: new Array(N).fill('coast'),
     driveLimit: new Array(N).fill(''),
+    fzFL: new Array(N).fill(0),
+    fzFR: new Array(N).fill(0),
+    fzRL: new Array(N).fill(0),
+    fzRR: new Array(N).fill(0),
+    wheelLift: new Array(N).fill(false),
+    understeerDegPerG: new Array(N).fill(0),
+    stabilityIndex: new Array(N).fill(0),
+    rollDeg: new Array(N).fill(0),
   };
   const E = {
     discharge: 0,
@@ -401,6 +440,11 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     const gx = Ftire / Math.max(1, FxCap);
     const gy = Math.abs(ay) / ayMax;
 
+    // 4-corner wheel loads & cornering balance at node i
+    const ayNode = v[i] * v[i] * kap[i];
+    const wl = wheelLoads(veh, v[i], ax, ayNode);
+    const bal = evaluateCorneringBalance(veh, v[i], ax, ayNode);
+
     ch.t[i] = time;
     ch.ax[i] = ax;
     ch.ay[i] = ay;
@@ -417,19 +461,74 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     ch.heatKJ[i] = (E.motorInv + E.gearbox) / 1000;
     ch.mode[i] = mode;
     ch.driveLimit[i] = driveLimit;
+    ch.fzFL[i] = wl.fl;
+    ch.fzFR[i] = wl.fr;
+    ch.fzRL[i] = wl.rl;
+    ch.fzRR[i] = wl.rr;
+    ch.wheelLift[i] = Boolean(wl.wheelLift);
+    ch.understeerDegPerG[i] = bal.understeerDegPerG;
+    ch.stabilityIndex[i] = bal.stabilityIndex;
+    ch.rollDeg[i] = bal.rollDeg;
     time += dt;
   }
   if (!closed) {
     const L = N - 1;
     ch.t[L] = time;
-    for (const key of ['ax', 'ay', 'gLong', 'gLat', 'gripUsage', 'throttle', 'brake', 'motorTorque', 'motorRpm', 'pWheelKW', 'pElecKW'] as const) {
+    for (const key of [
+      'ax',
+      'ay',
+      'gLong',
+      'gLat',
+      'gripUsage',
+      'throttle',
+      'brake',
+      'motorTorque',
+      'motorRpm',
+      'pWheelKW',
+      'pElecKW',
+      'fzFL',
+      'fzFR',
+      'fzRL',
+      'fzRR',
+      'understeerDegPerG',
+      'stabilityIndex',
+      'rollDeg',
+    ] as const) {
       ch[key][L] = ch[key][L - 1];
     }
+    ch.wheelLift[L] = ch.wheelLift[L - 1];
     ch.energyKWh[L] = (E.discharge - E.regen) / 3.6e6;
     ch.heatKJ[L] = (E.motorInv + E.gearbox) / 1000;
     ch.mode[L] = ch.mode[L - 1];
   }
   const lapTime = time;
+
+  // Summary metrics for 4-corner wheel loads, wheel lift, understeer gradient, and stability index
+  let wheelLiftCount = 0;
+  let minInnerWheelLoadN = Infinity;
+  let sumUs = 0;
+  let sumCornerUs = 0;
+  let cornerNodes = 0;
+  let sumSi = 0;
+  let minSi = Infinity;
+
+  for (let i = 0; i < N; i++) {
+    if (ch.wheelLift[i]) wheelLiftCount++;
+    const minNodeFz = Math.min(ch.fzFL[i], ch.fzFR[i], ch.fzRL[i], ch.fzRR[i]);
+    if (minNodeFz < minInnerWheelLoadN) minInnerWheelLoadN = minNodeFz;
+    sumUs += ch.understeerDegPerG[i];
+    if (Math.abs(ch.gLat[i]) > 0.4) {
+      sumCornerUs += ch.understeerDegPerG[i];
+      cornerNodes++;
+    }
+    sumSi += ch.stabilityIndex[i];
+    if (ch.stabilityIndex[i] < minSi) minSi = ch.stabilityIndex[i];
+  }
+
+  const avgUndersteerDegPerG = sumUs / Math.max(1, N);
+  const cornerUndersteerDegPerG = cornerNodes > 0 ? sumCornerUs / cornerNodes : avgUndersteerDegPerG;
+  const avgStabilityIndex = sumSi / Math.max(1, N);
+  const minStabilityIndex = Number.isFinite(minSi) ? minSi : 0;
 
   // sectors
   const sectors = [];
@@ -456,17 +555,22 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     const i1 = Math.round(c.sEnd / ds);
     let vmin = Infinity;
     let peakLat = 0;
+    let minFz = Infinity;
     for (let i = i0; i <= i1 && i < N; i++) {
       vmin = Math.min(vmin, v[i]);
       peakLat = Math.max(peakLat, Math.abs(ch.gLat[i]));
+      minFz = Math.min(minFz, ch.fzFL[i], ch.fzFR[i], ch.fzRL[i], ch.fzRR[i]);
     }
+    const apexIdx = Math.min(c.apexIndex, N - 1);
     return {
       ...c,
-      apexSpeed: v[c.apexIndex],
+      apexSpeed: v[apexIdx],
       minSpeed: vmin,
       entrySpeed: v[Math.min(i0, N - 1)],
       exitSpeed: v[Math.min(i1, N - 1)],
       peakLatG: peakLat,
+      understeerDegPerG: ch.understeerDegPerG[apexIdx],
+      minInnerFzN: minFz,
     };
   });
 
@@ -528,5 +632,12 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
       totalEnergyKWh: netKWh * laps,
       totalHeatMJ: (energy.coolingHeatKJ * laps) / 1000,
     },
+    hasWheelLift: wheelLiftCount > 0,
+    wheelLiftCount,
+    minInnerWheelLoadN: Number.isFinite(minInnerWheelLoadN) ? minInnerWheelLoadN : 0,
+    avgUndersteerDegPerG,
+    cornerUndersteerDegPerG,
+    avgStabilityIndex,
+    minStabilityIndex,
   };
 }

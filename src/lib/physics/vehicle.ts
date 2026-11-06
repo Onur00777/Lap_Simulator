@@ -1,4 +1,4 @@
-import { DEFAULT_TIRE, type TireParams } from './tire';
+import { DEFAULT_TIRE, lateralCoefficients, type TireParams } from './tire';
 
 export const GRAVITY = 9.81;
 
@@ -10,7 +10,8 @@ export interface VehicleParams {
   mass: number; // kg, including driver
   frontWeightFraction: number; // static fraction of weight on the front axle
   wheelbase: number; // m
-  trackWidth: number; // m
+  trackWidth: number; // m (front track width; also rear unless trackWidthRear is set)
+  trackWidthRear?: number; // m (optional independent rear track width)
   cgHeight: number; // m
   ClA: number; // m^2, downforce coefficient x frontal area
   CdA: number; // m^2, drag coefficient x frontal area
@@ -20,7 +21,12 @@ export interface VehicleParams {
   wheelRadius: number; // m, loaded radius
   yawInertia: number; // kg m^2
   wheelInertia: number; // kg m^2 per driven wheel incl. reflected rotor + gearbox inertia
-  rollStiffnessFront: number; // front share of lateral load transfer (LLTD)
+  rollStiffnessFront: number; // front roll stiffness distribution / LLTD (default 0.52 = 52.0%)
+  rollCenterFront: number; // m, front kinematic roll center height (displayed in mm, default 35 mm)
+  rollCenterRear: number; // m, rear kinematic roll center height (displayed in mm, default 55 mm)
+  camberFront: number; // deg, static front camber (negative = top leaned inward, default -1.8 deg)
+  camberRear: number; // deg, static rear camber (negative = top leaned inward, default -1.2 deg)
+  rideHeightSensitivity: number; // fraction of aero balance shift per G of longitudinal accel
   tire: TireParams;
 }
 
@@ -39,7 +45,12 @@ export const DEFAULT_VEHICLE: VehicleParams = {
   wheelRadius: 0.2,
   yawInertia: 110,
   wheelInertia: 0.3,
-  rollStiffnessFront: 0.55,
+  rollStiffnessFront: 0.52,
+  rollCenterFront: 0.035,
+  rollCenterRear: 0.055,
+  camberFront: -1.8,
+  camberRear: -1.2,
+  rideHeightSensitivity: 0.04,
   tire: DEFAULT_TIRE,
 };
 
@@ -71,28 +82,146 @@ export interface WheelLoads {
   fr: number;
   rl: number;
   rr: number;
+  /** True if any inner wheel reached 0 N vertical load (wheel lift). */
+  wheelLift?: boolean;
+  /** Quasi-static body roll angle [deg], positive in left turn (roll to right). */
+  rollDeg?: number;
 }
 
 /**
- * Quasi-static vertical wheel loads.
+ * Effective front lateral load transfer share combining front roll stiffness distribution (LLTD),
+ * unsprung/jacking baseline offset, and kinematic roll center heights (rollCenterFront, rollCenterRear).
+ */
+export function effectiveFrontLateralShare(p: VehicleParams): number {
+  const hRcF = p.rollCenterFront ?? 0.035;
+  const hRcR = p.rollCenterRear ?? 0.055;
+  const hCg = Math.max(0.08, p.cgHeight);
+  const rcDelta = (p.frontWeightFraction * (hRcF - 0.035) - (1 - p.frontWeightFraction) * (hRcR - 0.055)) / hCg;
+  return Math.max(0.05, Math.min(0.95, p.rollStiffnessFront + 0.03 + rcDelta));
+}
+
+/**
+ * Quasi-static 4-corner vertical wheel loads (Fz_FL, Fz_FR, Fz_RL, Fz_RR).
  *  - ax > 0 is acceleration (load moves rearwards), ay > 0 is a left turn (load moves to the right).
- *  - Lateral load transfer per axle: dFz = m * ay * h * share / t.
- * Loads are clamped at zero (wheel lift).
+ *  - Includes longitudinal weight transfer (m * ax * h_cg / L) + aero pitch sensitivity,
+ *    and lateral weight transfer proportioned by LLTD (rollStiffnessFront), kinematic roll center
+ *    heights (rollCenterFront, rollCenterRear), and track width (t_f, t_r).
+ *  - Clamps inner wheel lift at 0 N while conserving total vertical load (sum(Fz) = m*g + F_downforce).
  */
 export function wheelLoads(p: VehicleParams, v: number, ax: number, ay: number): WheelLoads {
   const W = p.mass * GRAVITY;
   const DF = downforce(p, v);
+  const FzTotal = W + DF;
   const longTransfer = (p.mass * ax * p.cgHeight) / p.wheelbase;
-  const front = W * p.frontWeightFraction + DF * p.aeroBalanceFront - longTransfer;
-  const rear = W * (1 - p.frontWeightFraction) + DF * (1 - p.aeroBalanceFront) + longTransfer;
-  const latTotal = (p.mass * ay * p.cgHeight) / p.trackWidth;
-  const dF = latTotal * p.rollStiffnessFront;
-  const dR = latTotal * (1 - p.rollStiffnessFront);
+
+  // Aero pitch sensitivity: dive under braking shifts aero forward; squat under accel shifts rearward
+  const pitchSens = p.rideHeightSensitivity ?? 0;
+  const aeroShift = pitchSens * (-ax / GRAVITY) * 0.05;
+  const aeroFront = Math.max(0.05, Math.min(0.95, p.aeroBalanceFront + aeroShift));
+
+  const frontRaw = W * p.frontWeightFraction + DF * aeroFront - longTransfer;
+  const front = Math.max(0, Math.min(FzTotal, frontRaw));
+  const rear = FzTotal - front;
+
+  const tf = p.trackWidth;
+  const tr = p.trackWidthRear ?? p.trackWidth;
+  const hRcF = p.rollCenterFront ?? 0.035;
+  const hRcR = p.rollCenterRear ?? 0.055;
+  const hRc = p.frontWeightFraction * hRcF + (1 - p.frontWeightFraction) * hRcR;
+  const hRoll = Math.max(0, p.cgHeight - hRc);
+
+  const shareF = effectiveFrontLateralShare(p);
+  const dF = ((p.mass * ay * p.cgHeight) / tf) * shareF;
+  const dR = ((p.mass * ay * p.cgHeight) / tr) * (1 - shareF);
+
+  const flUnclamped = front / 2 - dF;
+  const rlUnclamped = rear / 2 - dR;
+  const liftFront = front > 0 && Math.abs(dF) >= front / 2;
+  const liftRear = rear > 0 && Math.abs(dR) >= rear / 2;
+
+  const fl = Math.max(0, Math.min(front, flUnclamped));
+  const fr = front - fl;
+  const rl = Math.max(0, Math.min(rear, rlUnclamped));
+  const rr = rear - rl;
+
+  // Quasi-static roll angle estimate (~1.2 deg/G nominal FS roll gradient scaled by h_roll)
+  const rollDeg = (ay / GRAVITY) * (hRoll / 0.215) * 1.15;
+
   return {
-    fl: Math.max(0, front / 2 - dF),
-    fr: Math.max(0, front / 2 + dF),
-    rl: Math.max(0, rear / 2 - dR),
-    rr: Math.max(0, rear / 2 + dR),
+    fl,
+    fr,
+    rl,
+    rr,
+    wheelLift: liftFront || liftRear,
+    rollDeg,
+  };
+}
+
+/**
+ * Camber cornering stiffness modifier for an axle given static camber [deg] and body roll [deg].
+ * Optimal negative camber (~ -1.8 deg) maximizes effective cornering stiffness under cornering roll.
+ */
+export function camberStiffnessMultiplier(staticCamberDeg: number, rollDeg = 0): number {
+  const effCamber = staticCamberDeg + 0.65 * Math.abs(rollDeg);
+  const deltaFromOpt = effCamber - (-1.6);
+  return Math.max(0.82, Math.min(1.08, 1.03 - 0.012 * deltaFromOpt * deltaFromOpt));
+}
+
+export interface CorneringBalanceMetrics {
+  /** Front axle cornering stiffness [N/rad]. */
+  cf: number;
+  /** Rear axle cornering stiffness [N/rad]. */
+  cr: number;
+  /** Instantaneous understeer gradient K_us [deg/G]. Positive = understeer, negative = oversteer. */
+  understeerDegPerG: number;
+  /** Yaw stability index (static margin): (b*Cr - a*Cf) / (L*(Cf + Cr)). Positive = stable. */
+  stabilityIndex: number;
+  /** True if any inner wheel is lifting (Fz == 0). */
+  wheelLift: boolean;
+  /** Quasi-static body roll angle [deg]. */
+  rollDeg: number;
+}
+
+/**
+ * Evaluates 4-wheel Pacejka load-sensitive cornering stiffnesses, camber effect,
+ * instantaneous Understeer Gradient (deg/G) and Yaw Stability Index at state (v, ax, ay).
+ */
+export function evaluateCorneringBalance(
+  p: VehicleParams,
+  v: number,
+  ax: number,
+  ay: number,
+): CorneringBalanceMetrics {
+  const L = wheelLoads(p, v, ax, ay);
+  const { a, b } = cgLocation(p);
+  const rollAbs = Math.abs(L.rollDeg ?? 0);
+
+  const cFL = lateralCoefficients(p.tire, L.fl);
+  const cFR = lateralCoefficients(p.tire, L.fr);
+  const cRL = lateralCoefficients(p.tire, L.rl);
+  const cRR = lateralCoefficients(p.tire, L.rr);
+
+  const kCamF = camberStiffnessMultiplier(p.camberFront ?? -1.8, rollAbs);
+  const kCamR = camberStiffnessMultiplier(p.camberRear ?? -1.2, rollAbs);
+
+  const cf = Math.max(1e3, (cFL.B * cFL.C * cFL.D + cFR.B * cFR.C * cFR.D) * kCamF);
+  const cr = Math.max(1e3, (cRL.B * cRL.C * cRL.D + cRR.B * cRR.C * cRR.D) * kCamR);
+
+  // Effective axle load shares for understeer gradient K_us = (Wf/Cf - Wr/Cr) in deg/G
+  const W = p.mass * GRAVITY;
+  const Wf = W * p.frontWeightFraction;
+  const Wr = W * (1 - p.frontWeightFraction);
+  const kusRadPerG = Wf / cf - Wr / cr;
+  const understeerDegPerG = (kusRadPerG * 180) / Math.PI;
+  const stabilityIndex = (b * cr - a * cf) / (p.wheelbase * (cf + cr));
+
+  return {
+    cf,
+    cr,
+    understeerDegPerG,
+    stabilityIndex,
+    wheelLift: Boolean(L.wheelLift),
+    rollDeg: L.rollDeg ?? 0,
   };
 }
 

@@ -345,7 +345,13 @@ export default function Workbench() {
               </button>
             }
           >
-            <VehicleForm veh={veh} onChange={(k, v) => setVehPatch((p) => ({ ...p, [k]: v }))} lambdaMu={lambdaMu} onLambdaMu={setLambdaMu} />
+            <VehicleForm
+              veh={veh}
+              onChange={(k, v) => setVehPatch((p) => ({ ...p, [k]: v }))}
+              lambdaMu={lambdaMu}
+              onLambdaMu={setLambdaMu}
+              lap={lap}
+            />
           </Panel>
           <Panel title="Powertrain">
             <PowertrainForm pt={pt} onChange={(k, v) => setPtPatch((p) => ({ ...p, [k]: v }))} onRegen={setRegen} />
@@ -358,7 +364,18 @@ export default function Workbench() {
             <Kpi label="Avg / max speed" value={`${fmt(kph(lap.avgSpeed), 1)} / ${fmt(kph(lap.maxSpeed), 1)}`} unit="km/h" />
             <Kpi label="Energy (net)" value={fmt(lap.energy.netKWh * 1000, 1)} unit="Wh" sub={`${fmt(lap.energy.dischargeKWh * 1000, 1)} out · ${fmt(lap.energy.regenKWh * 1000, 1)} regen`} accent="text-hud-amber" />
             <Kpi label="Cooling heat" value={fmt(lap.energy.coolingHeatKJ, 1)} unit="kJ" sub={`+ ${fmt(lap.energy.batteryLossKJ, 1)} kJ in accumulator`} accent="text-hud-violet" />
-            <Kpi label="Peak lat / long / brake" value={`${fmt(lap.peakLatG, 2)} / ${fmt(lap.peakLongG, 2)} / ${fmt(lap.peakBrakeG, 2)}`} unit="G" />
+            <Kpi
+              label="Peak lat / long / brake"
+              value={`${fmt(lap.peakLatG, 2)} / ${fmt(lap.peakLongG, 2)} / ${fmt(lap.peakBrakeG, 2)}`}
+              unit="G"
+              sub={
+                lap.hasWheelLift ? (
+                  <span className="font-bold text-hud-red">⚠ Inner Wheel Lift! ({lap.wheelLiftCount} pts)</span>
+                ) : (
+                  `K_us ${fmt(lap.cornerUndersteerDegPerG, 2)}°/G · SI ${fmt(lap.avgStabilityIndex * 100, 1)}%`
+                )
+              }
+            />
             <Kpi label="Skidpad (analytic)" value={fmtTime(skid.lapTime)} sub={`${fmt(skid.ayG, 3)} G · μ_eff ${fmt(skid.muEffective, 3)}`} />
             <Kpi label="Accel 75 m (RK4)" value={fmtTime(launch.time75)} sub={`0–100 ${fmt(launch.time0to100, 2)} s · ${fmt(kph(launch.trapSpeed), 0)} km/h`} />
             <Kpi
@@ -471,7 +488,8 @@ export default function Workbench() {
               safeCursor != null ? (
                 <span className="font-mono text-[10px] normal-case tracking-normal text-hud-cyan">
                   s {fmt(ch.s[safeCursor], 1)} m · {fmt(kph(ch.v[safeCursor]), 1)} km/h · {fmt(ch.gLat[safeCursor], 2)} G lat ·{' '}
-                  {fmt(Math.hypot(ch.gLat[safeCursor], ch.gLong[safeCursor]), 2)} G comb · {fmt(ch.pElecKW[safeCursor], 1)} kW
+                  Fz [{fmt(ch.fzFL[safeCursor], 0)}, {fmt(ch.fzFR[safeCursor], 0)}, {fmt(ch.fzRL[safeCursor], 0)}, {fmt(ch.fzRR[safeCursor], 0)}] N ·{' '}
+                  K_us {fmt(ch.understeerDegPerG[safeCursor], 2)}°/G
                 </span>
               ) : undefined
             }
