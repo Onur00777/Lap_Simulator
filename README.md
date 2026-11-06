@@ -1,1 +1,2 @@
-# Lap_Simulator
+# Lap_Simulator by Onur Yüksek
+
