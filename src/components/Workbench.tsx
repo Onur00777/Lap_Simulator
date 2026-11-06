@@ -10,7 +10,14 @@ import {
   type VehicleParams,
 } from '@/lib/physics';
 import { analyzeTorqueVectoring, buildTwoTrackEnvelope } from '@/lib/dynamics';
-import { createContext, ctxAyMax, simulateLap, type Integrator } from '@/lib/solver';
+import {
+  createContext,
+  ctxAyMax,
+  getTrackWithRacingLine,
+  simulateLap,
+  type Integrator,
+  type RacingLineMode,
+} from '@/lib/solver';
 import {
   getPresetTrack,
   IST27_PRESET,
@@ -52,6 +59,11 @@ const MODEL_OPTIONS: { value: LateralModel; label: string }[] = [
   { value: 'two-track-tv', label: '2-track TV' },
 ];
 
+const RACING_LINE_OPTIONS: { value: RacingLineMode; label: string }[] = [
+  { value: 'centerline', label: 'Centerline' },
+  { value: 'optimal', label: 'Optimal Apex' },
+];
+
 const TABS: { value: Tab; label: string }[] = [
   { value: 'corners', label: 'Corners · Sectors · Energy' },
   { value: 'tv', label: 'Torque Vectoring' },
@@ -59,6 +71,17 @@ const TABS: { value: Tab; label: string }[] = [
   { value: 'powertrain', label: 'Powertrain & Tire' },
   { value: 'codegen', label: 'VCU Codegen' },
 ];
+
+function findTimeCursor(tArr: number[], targetT: number): number {
+  let lo = 0;
+  let hi = tArr.length - 1;
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (tArr[mid] <= targetT) lo = mid;
+    else hi = mid;
+  }
+  return lo;
+}
 
 export default function Workbench() {
   const [trackSel, setTrackSel] = useState<TrackSel>('endurance');
@@ -69,10 +92,12 @@ export default function Workbench() {
   const [ptPatch, setPtPatch] = useState<Partial<Record<PowertrainKey, number>>>({});
   const [regen, setRegen] = useState(true);
   const [model, setModel] = useState<LateralModel>('point-mass');
+  const [racingLineMode, setRacingLineMode] = useState<RacingLineMode>('centerline');
   const [integrator, setIntegrator] = useState<Integrator>('rk4');
   const [colorMode, setColorMode] = useState<ColorMode>('mode');
   const [tab, setTab] = useState<Tab>('corners');
   const [cursor, setCursor] = useState<number | null>(null);
+  const [ghostCursor, setGhostCursor] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const [playRate, setPlayRate] = useState(1);
   const [venue, setVenue] = useState<Venue>('fs');
@@ -95,6 +120,8 @@ export default function Workbench() {
     if (tb && TABS.some((x) => x.value === tb)) setTab(tb as Tab);
     const m = q.get('model');
     if (m && MODEL_OPTIONS.some((x) => x.value === m)) setModel(m as LateralModel);
+    const rl = q.get('line');
+    if (rl === 'centerline' || rl === 'optimal') setRacingLineMode(rl);
     const c = q.get('color');
     if (c === 'mode' || c === 'speed' || c === 'latg' || c === 'grip') setColorMode(c);
     const cur = q.get('cursor');
@@ -112,8 +139,10 @@ export default function Workbench() {
   }, [venue, basePreset, ptPatch, regen]);
   const dVeh = useDeferredValue(veh);
   const dPt = useDeferredValue(pt);
-  const track: Track = trackSel === 'custom' && customTrack ? customTrack : getPresetTrack(trackSel === 'custom' ? 'endurance' : trackSel);
-  const dTrack = useDeferredValue(track);
+  const rawTrack: Track = trackSel === 'custom' && customTrack ? customTrack : getPresetTrack(trackSel === 'custom' ? 'endurance' : trackSel);
+  const dRawTrack = useDeferredValue(rawTrack);
+  const dTrack = useMemo(() => getTrackWithRacingLine(dRawTrack, racingLineMode), [dRawTrack, racingLineMode]);
+  const centerTrack = useMemo(() => getTrackWithRacingLine(dRawTrack, 'centerline'), [dRawTrack]);
 
   const sim = useMemo(() => {
     const t0 = performance.now();
@@ -123,9 +152,25 @@ export default function Workbench() {
     const t1 = performance.now();
     const lap = simulateLap(dTrack, ctx, { integrator });
     const t2 = performance.now();
-    return { ctx, lap, setupMs: t1 - t0, solveMs: t2 - t1 };
-  }, [dVeh, dPt, dTrack, model, integrator]);
-  const { ctx, lap } = sim;
+
+    // Ghost comparison lap: Centerline reference when Optimal Apex is active, or 2-track Open when 2-track TV is active
+    let ghostLap = null;
+    let ghostTrack: Track | null = null;
+    let ghostLabel = 'Centerline Ghost';
+    if (racingLineMode === 'optimal') {
+      ghostLap = simulateLap(centerTrack, ctx, { integrator });
+      ghostTrack = centerTrack;
+      ghostLabel = 'Centerline Ghost';
+    } else if (model === 'two-track-tv') {
+      const openCtx = createContext(dVeh, dPt, buildTwoTrackEnvelope(dVeh, dPt, vTop, 'open'));
+      ghostLap = simulateLap(dTrack, openCtx, { integrator });
+      ghostTrack = dTrack;
+      ghostLabel = '2-Track Open Ghost';
+    }
+
+    return { ctx, lap, ghostLap, ghostTrack, ghostLabel, setupMs: t1 - t0, solveMs: t2 - t1 };
+  }, [dVeh, dPt, dTrack, centerTrack, racingLineMode, model, integrator]);
+  const { ctx, lap, ghostLap, ghostTrack, ghostLabel } = sim;
 
   const launch = useMemo(() => simulateLaunch(dVeh, dPt, ctx.map), [dVeh, dPt, ctx]);
   const skid = useMemo(() => skidpadSteadyState(dVeh, (v) => ctxAyMax(ctx, v)), [dVeh, ctx]);
@@ -150,29 +195,31 @@ export default function Workbench() {
   const ch = lap.channels;
   const n = ch.s.length;
   const safeCursor = cursor != null && cursor < n ? cursor : null;
+  const effectiveGhostCursor = playing ? ghostCursor : safeCursor;
 
-  // real-time lap playback
+  // real-time dual-dot lap playback
   useEffect(() => {
-    if (!playing) return;
+    if (!playing) {
+      setGhostCursor(null);
+      return;
+    }
     let raf = 0;
     let last = performance.now();
     let simT = safeCursor != null ? ch.t[safeCursor] : 0;
     let lastPush = 0;
-    const tEnd = lap.lapTime;
+    const tEnd = Math.max(lap.lapTime, ghostLap?.lapTime ?? 0);
     const loop = (now: number) => {
       simT += ((now - last) / 1000) * playRate;
       last = now;
       if (simT >= tEnd) simT = lap.closed ? simT - tEnd : tEnd;
       if (now - lastPush > 33) {
         lastPush = now;
-        let lo = 0;
-        let hi = n - 1;
-        while (hi - lo > 1) {
-          const mid = (lo + hi) >> 1;
-          if (ch.t[mid] <= simT) lo = mid;
-          else hi = mid;
+        const activeT = lap.closed ? simT % lap.lapTime : Math.min(simT, lap.lapTime);
+        setCursor(findTimeCursor(ch.t, activeT));
+        if (ghostLap) {
+          const gT = ghostLap.closed ? simT % ghostLap.lapTime : Math.min(simT, ghostLap.lapTime);
+          setGhostCursor(findTimeCursor(ghostLap.channels.t, gT));
         }
-        setCursor(lo);
         if (!lap.closed && simT >= tEnd) {
           setPlaying(false);
           return;
@@ -183,7 +230,7 @@ export default function Workbench() {
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, playRate, lap]);
+  }, [playing, playRate, lap, ghostLap]);
 
   const onHoverCanvas = useCallback((i: number | null) => {
     if (!playing) setCursor(i);
@@ -209,19 +256,19 @@ export default function Workbench() {
 
   const timed = lap.timedWindows.length ? lap.timedWindows.reduce((a, w) => a + w.time, 0) / lap.timedWindows.length : null;
   const headline =
-    track.kind === 'skidpad' && timed != null
+    dTrack.kind === 'skidpad' && timed != null
       ? { label: 'Skidpad time (avg L/R)', value: fmtTime(timed) }
-      : track.kind === 'acceleration'
+      : dTrack.kind === 'acceleration'
         ? { label: '75 m · RK4 transient', value: fmtTime(launch.time75) }
         : { label: 'Lap time', value: fmtTime(lap.lapTime) };
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-30 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-hud-line bg-hud-bg/90 px-4 py-2 backdrop-blur">
+      <header className="sticky top-0 z-30 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-hud-line bg-hud-bg/90 px-4 py-2 backdrop-blur">
         <div className="flex items-baseline gap-2">
           <span className="font-mono text-lg font-bold tracking-[0.25em] text-hud-cyan">APEX</span>
           <span className="font-mono text-lg font-light tracking-[0.25em] text-hud-text">LAPSIM</span>
-          <span className="hidden font-mono text-[10px] uppercase tracking-widest text-hud-dim md:inline">
+          <span className="hidden font-mono text-[10px] uppercase tracking-widest text-hud-dim xl:inline">
             FS vehicle dynamics · QSS lap sim · torque vectoring · VCU codegen
           </span>
         </div>
@@ -254,6 +301,10 @@ export default function Workbench() {
             setPlaying(false);
           }}
         />
+        <div className="flex items-center gap-1.5">
+          <span className="hidden font-mono text-[9px] uppercase tracking-wider text-hud-dim sm:inline">Racing Line:</span>
+          <Segmented options={RACING_LINE_OPTIONS} value={racingLineMode} onChange={setRacingLineMode} />
+        </div>
         <Segmented options={MODEL_OPTIONS} value={model} onChange={setModel} />
         <Segmented
           options={[
@@ -286,30 +337,32 @@ export default function Workbench() {
         <aside className="flex flex-col gap-3">
           <Panel title="Track">
             <div className="space-y-2 px-3 py-2 font-mono text-[11px]">
-              <div className="text-hud-text">{track.name}</div>
-              <div className="text-hud-dim">{track.description}</div>
+              <div className="text-hud-text">{dTrack.name}</div>
+              <div className="text-hud-dim">{dTrack.description}</div>
               <div className="grid grid-cols-2 gap-x-2 text-hud-dim">
-                <span>Length</span>
-                <span className="text-right text-hud-text">{fmt(track.length, 1)} m</span>
+                <span>Length ({racingLineMode === 'optimal' ? 'optimal' : 'center'})</span>
+                <span className="text-right text-hud-text">{fmt(dTrack.length, 1)} m</span>
+                <span>Track width</span>
+                <span className="text-right text-hud-text">{fmt(dTrack.racingLine.trackWidthM, 1)} m</span>
                 <span>Corners</span>
                 <span className="text-right text-hud-text">{lap.corners.length}</span>
                 <span>Min radius</span>
                 <span className="text-right text-hud-text">
                   {(() => {
-                    const kMax = Math.max(...track.kappa.map(Math.abs));
+                    const kMax = Math.max(...dTrack.kappa.map(Math.abs));
                     return kMax > 1e-6 ? `${fmt(1 / kMax, 2)} m` : '∞';
                   })()}
                 </span>
                 <span>Closed / laps</span>
                 <span className="text-right text-hud-text">
-                  {track.closed ? 'yes' : 'no'} / {track.laps}
+                  {dTrack.closed ? 'yes' : 'no'} / {dTrack.laps}
                 </span>
               </div>
               <div className="flex flex-wrap gap-1 pt-1">
                 <button type="button" className="btn" onClick={() => fileRef.current?.click()}>
                   Import CSV
                 </button>
-                <button type="button" className="btn" onClick={() => downloadText(`${track.id}.csv`, trackToCsv(track), 'text/csv')}>
+                <button type="button" className="btn" onClick={() => downloadText(`${dTrack.id}.csv`, trackToCsv(dTrack), 'text/csv')}>
                   Export CSV
                 </button>
                 <input
@@ -360,7 +413,12 @@ export default function Workbench() {
 
         <main className="flex min-w-0 flex-col gap-3">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 2xl:grid-cols-8">
-            <Kpi label={headline.label} value={headline.value} accent="text-hud-cyan" sub={`${lap.integrator.toUpperCase()} · ${lap.lateralModel}`} />
+            <Kpi
+              label={headline.label}
+              value={headline.value}
+              accent="text-hud-cyan"
+              sub={`${lap.integrator.toUpperCase()} · ${lap.lateralModel} · ${racingLineMode === 'optimal' ? 'OPT-APEX' : 'CENTER'}`}
+            />
             <Kpi label="Avg / max speed" value={`${fmt(kph(lap.avgSpeed), 1)} / ${fmt(kph(lap.maxSpeed), 1)}`} unit="km/h" />
             <Kpi label="Energy (net)" value={fmt(lap.energy.netKWh * 1000, 1)} unit="Wh" sub={`${fmt(lap.energy.dischargeKWh * 1000, 1)} out · ${fmt(lap.energy.regenKWh * 1000, 1)} regen`} accent="text-hud-amber" />
             <Kpi label="Cooling heat" value={fmt(lap.energy.coolingHeatKJ, 1)} unit="kJ" sub={`+ ${fmt(lap.energy.batteryLossKJ, 1)} kJ in accumulator`} accent="text-hud-violet" />
@@ -471,6 +529,10 @@ export default function Workbench() {
                   lap={lap}
                   colorMode={colorMode}
                   cursor={safeCursor}
+                  ghostLap={ghostLap}
+                  ghostTrack={ghostTrack}
+                  ghostCursor={effectiveGhostCursor}
+                  ghostLabel={ghostLabel}
                   onHover={onHoverCanvas}
                   mapAlign={korfezOn ? mapAlign : undefined}
                   mapSrcOverride={mapUpload}
@@ -511,7 +573,7 @@ export default function Workbench() {
             )}
             {tab === 'corners' && <CornersPanel lap={lap} skid={skid} onSelect={(i) => setCursor(i)} />}
             {tab === 'tv' && (tv ? <TorqueVectoringPanel tv={tv} cursorS={safeCursor != null ? ch.s[safeCursor] : null} /> : <Busy />)}
-            {tab === 'launch' && <LaunchPanel launch={launch} qssTime={track.kind === 'acceleration' ? lap.lapTime : undefined} />}
+            {tab === 'launch' && <LaunchPanel launch={launch} qssTime={dTrack.kind === 'acceleration' ? lap.lapTime : undefined} />}
             {tab === 'powertrain' && <PowertrainPanel veh={dVeh} pt={dPt} map={ctx.map} />}
             {tab === 'codegen' && (bundle ? <CodegenPanel bundle={bundle} /> : <Busy />)}
           </Panel>
