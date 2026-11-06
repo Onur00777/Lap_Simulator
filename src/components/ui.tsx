@@ -27,22 +27,65 @@ export function Panel({
   );
 }
 
+export function DeltaBadge({
+  delta,
+  unit = '',
+  digits = 2,
+  invertGood = false,
+  prefix = 'Δ ',
+}: {
+  delta: number;
+  unit?: string;
+  digits?: number;
+  /** Default false = negative delta is good (green), e.g. lap time, energy, heat. True = positive delta is good (speed, G). */
+  invertGood?: boolean;
+  prefix?: string;
+}) {
+  const eps = Math.pow(10, -digits) * 0.5;
+  if (Math.abs(delta) < eps) {
+    return (
+      <span className="inline-flex items-center rounded border border-hud-line bg-hud-bg/80 px-1.5 py-0.5 font-mono text-[9px] tabular-nums text-hud-dim">
+        {prefix}0.{''.padEnd(digits, '0')}
+        {unit ? ` ${unit}` : ''}
+      </span>
+    );
+  }
+  const isGood = invertGood ? delta > 0 : delta < 0;
+  const sign = delta > 0 ? '+' : '−';
+  const cls = isGood
+    ? 'border-emerald-500/40 bg-emerald-500/15 text-hud-lime'
+    : 'border-red-500/40 bg-red-500/15 text-hud-red';
+  return (
+    <span className={`inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[9px] font-semibold tabular-nums ${cls}`}>
+      {prefix}
+      {sign}
+      {Math.abs(delta).toFixed(digits)}
+      {unit ? ` ${unit}` : ''}
+    </span>
+  );
+}
+
 export function Kpi({
   label,
   value,
   unit,
   sub,
+  delta,
   accent = 'text-hud-text',
 }: {
   label: string;
   value: string;
   unit?: string;
   sub?: ReactNode;
+  delta?: ReactNode;
   accent?: string;
 }) {
   return (
     <div className="panel px-3 py-2">
-      <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-hud-dim">{label}</div>
+      <div className="flex items-center justify-between gap-1">
+        <div className="truncate font-mono text-[10px] uppercase tracking-[0.16em] text-hud-dim">{label}</div>
+        {delta}
+      </div>
       <div className={`kpi-value ${accent}`}>
         {value}
         {unit && <span className="ml-1 text-xs font-normal text-hud-dim">{unit}</span>}

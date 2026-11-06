@@ -41,7 +41,7 @@ import TrackCanvas, { type ColorMode, type MapAlign } from './TrackCanvas';
 import TelemetryCharts from './TelemetryCharts';
 import GGDiagram from './GGDiagram';
 import { PowertrainForm, VehicleForm, type PowertrainKey, type VehicleKey } from './ParamPanel';
-import { Kpi, Panel, Segmented } from './ui';
+import { DeltaBadge, Kpi, Panel, Segmented } from './ui';
 import CornersPanel from './panels/CornersPanel';
 import TorqueVectoringPanel from './panels/TorqueVectoringPanel';
 import LaunchPanel from './panels/LaunchPanel';
@@ -52,6 +52,14 @@ import KorfezPanel, { KorfezFacilityBar } from './panels/KorfezPanel';
 type TrackSel = PresetTrackId | 'custom';
 type Tab = 'corners' | 'tv' | 'launch' | 'powertrain' | 'codegen' | 'korfez';
 type Venue = 'fs' | 'korfez';
+
+interface BaselineConfig {
+  veh: VehicleParams;
+  pt: PowertrainParams;
+  model: LateralModel;
+  racingLineMode: RacingLineMode;
+  integrator: Integrator;
+}
 
 const MODEL_OPTIONS: { value: LateralModel; label: string }[] = [
   { value: 'point-mass', label: 'Point-mass' },
@@ -102,6 +110,7 @@ export default function Workbench() {
   const [playRate, setPlayRate] = useState(1);
   const [venue, setVenue] = useState<Venue>('fs');
   const [presetId, setPresetId] = useState<'ist27' | 'tpsc'>('ist27');
+  const [baselineCfg, setBaselineCfg] = useState<BaselineConfig | null>(null);
   const [mapAlign, setMapAlign] = useState<MapAlign>({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true });
   const [mapUpload, setMapUpload] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -144,6 +153,22 @@ export default function Workbench() {
   const dTrack = useMemo(() => getTrackWithRacingLine(dRawTrack, racingLineMode), [dRawTrack, racingLineMode]);
   const centerTrack = useMemo(() => getTrackWithRacingLine(dRawTrack, 'centerline'), [dRawTrack]);
 
+  // Solve Setup A (Baseline) on the current circuit whenever baselineCfg is locked
+  const baselineSolved = useMemo(() => {
+    if (!baselineCfg) return null;
+    const bTrack = getTrackWithRacingLine(dRawTrack, baselineCfg.racingLineMode);
+    const vTopA = speedFromMotorRpm(baselineCfg.veh, baselineCfg.pt.motorMaxRpm, baselineCfg.pt.gearRatio) + 2;
+    const envA =
+      baselineCfg.model === 'point-mass'
+        ? undefined
+        : buildTwoTrackEnvelope(baselineCfg.veh, baselineCfg.pt, vTopA, baselineCfg.model === 'two-track-tv' ? 'tv' : 'open');
+    const ctxA = createContext(baselineCfg.veh, baselineCfg.pt, envA);
+    const lapA = simulateLap(bTrack, ctxA, { integrator: baselineCfg.integrator });
+    const launchA = simulateLaunch(baselineCfg.veh, baselineCfg.pt, ctxA.map);
+    const skidA = skidpadSteadyState(baselineCfg.veh, (v) => ctxAyMax(ctxA, v));
+    return { cfg: baselineCfg, track: bTrack, ctx: ctxA, lap: lapA, launch: launchA, skid: skidA };
+  }, [baselineCfg, dRawTrack]);
+
   const sim = useMemo(() => {
     const t0 = performance.now();
     const vTop = speedFromMotorRpm(dVeh, dPt.motorMaxRpm, dPt.gearRatio) + 2;
@@ -153,11 +178,15 @@ export default function Workbench() {
     const lap = simulateLap(dTrack, ctx, { integrator });
     const t2 = performance.now();
 
-    // Ghost comparison lap: Centerline reference when Optimal Apex is active, or 2-track Open when 2-track TV is active
+    // Ghost comparison lap: Setup A Baseline takes priority, otherwise Centerline / 2-track Open reference
     let ghostLap = null;
     let ghostTrack: Track | null = null;
     let ghostLabel = 'Centerline Ghost';
-    if (racingLineMode === 'optimal') {
+    if (baselineSolved) {
+      ghostLap = baselineSolved.lap;
+      ghostTrack = baselineSolved.track;
+      ghostLabel = 'Setup A (Baseline)';
+    } else if (racingLineMode === 'optimal') {
       ghostLap = simulateLap(centerTrack, ctx, { integrator });
       ghostTrack = centerTrack;
       ghostLabel = 'Centerline Ghost';
@@ -169,7 +198,7 @@ export default function Workbench() {
     }
 
     return { ctx, lap, ghostLap, ghostTrack, ghostLabel, setupMs: t1 - t0, solveMs: t2 - t1 };
-  }, [dVeh, dPt, dTrack, centerTrack, racingLineMode, model, integrator]);
+  }, [dVeh, dPt, dTrack, centerTrack, racingLineMode, model, integrator, baselineSolved]);
   const { ctx, lap, ghostLap, ghostTrack, ghostLabel } = sim;
 
   const launch = useMemo(() => simulateLaunch(dVeh, dPt, ctx.map), [dVeh, dPt, ctx]);
@@ -255,12 +284,39 @@ export default function Workbench() {
   };
 
   const timed = lap.timedWindows.length ? lap.timedWindows.reduce((a, w) => a + w.time, 0) / lap.timedWindows.length : null;
+  const timedBase =
+    baselineSolved && baselineSolved.lap.timedWindows.length
+      ? baselineSolved.lap.timedWindows.reduce((a, w) => a + w.time, 0) / baselineSolved.lap.timedWindows.length
+      : null;
+
   const headline =
     dTrack.kind === 'skidpad' && timed != null
-      ? { label: 'Skidpad time (avg L/R)', value: fmtTime(timed) }
+      ? {
+          label: 'Skidpad time (avg L/R)',
+          value: fmtTime(timed),
+          delta: timedBase != null ? timed - timedBase : null,
+        }
       : dTrack.kind === 'acceleration'
-        ? { label: '75 m · RK4 transient', value: fmtTime(launch.time75) }
-        : { label: 'Lap time', value: fmtTime(lap.lapTime) };
+        ? {
+            label: '75 m · RK4 transient',
+            value: fmtTime(launch.time75),
+            delta: baselineSolved ? launch.time75 - baselineSolved.launch.time75 : null,
+          }
+        : {
+            label: 'Lap time',
+            value: fmtTime(lap.lapTime),
+            delta: baselineSolved ? lap.lapTime - baselineSolved.lap.lapTime : null,
+          };
+
+  const snapshotBaseline = () => {
+    setBaselineCfg({
+      veh: structuredClone(dVeh),
+      pt: structuredClone(dPt),
+      model,
+      racingLineMode,
+      integrator,
+    });
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -268,7 +324,7 @@ export default function Workbench() {
         <div className="flex items-baseline gap-2">
           <span className="font-mono text-lg font-bold tracking-[0.25em] text-hud-cyan">APEX</span>
           <span className="font-mono text-lg font-light tracking-[0.25em] text-hud-text">LAPSIM</span>
-          <span className="hidden font-mono text-[10px] uppercase tracking-widest text-hud-dim xl:inline">
+          <span className="hidden font-mono text-[10px] uppercase tracking-widest text-hud-dim 2xl:inline">
             FS vehicle dynamics · QSS lap sim · torque vectoring · VCU codegen
           </span>
         </div>
@@ -302,7 +358,7 @@ export default function Workbench() {
           }}
         />
         <div className="flex items-center gap-1.5">
-          <span className="hidden font-mono text-[9px] uppercase tracking-wider text-hud-dim sm:inline">Racing Line:</span>
+          <span className="hidden font-mono text-[9px] uppercase tracking-wider text-hud-dim sm:inline">Line:</span>
           <Segmented options={RACING_LINE_OPTIONS} value={racingLineMode} onChange={setRacingLineMode} />
         </div>
         <Segmented options={MODEL_OPTIONS} value={model} onChange={setModel} />
@@ -314,6 +370,37 @@ export default function Workbench() {
           value={integrator}
           onChange={setIntegrator}
         />
+        <div className="flex items-center gap-1">
+          {!baselineSolved ? (
+            <button
+              type="button"
+              className="btn border-hud-cyan/50 text-hud-cyan hover:bg-hud-cyan/15"
+              onClick={snapshotBaseline}
+              title="Lock current Setup as Baseline (Setup A) for live Setup A vs Setup B diffing"
+            >
+              ⌖ Snapshot Baseline (Setup A)
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="btn btn-active"
+                onClick={snapshotBaseline}
+                title="Overwrite Setup A with current active Setup B"
+              >
+                ⌖ Update Setup A ({fmtTime(baselineSolved.lap.lapTime)})
+              </button>
+              <button
+                type="button"
+                className="btn text-hud-red"
+                onClick={() => setBaselineCfg(null)}
+                title="Clear Setup A baseline snapshot"
+              >
+                ✕ Clear A
+              </button>
+            </>
+          )}
+        </div>
         <span className="rounded border border-hud-line px-2 py-1 font-mono text-[10px] text-hud-dim" title="setup (envelope + powertrain tables) / 3-pass solve">
           {fmt(sim.setupMs, 0)} + {fmt(sim.solveMs, 0)} ms · {n} pts
         </span>
@@ -332,6 +419,25 @@ export default function Workbench() {
         )}
       </header>
       {venue === 'korfez' && <KorfezFacilityBar />}
+      {baselineSolved && (
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hud-line bg-hud-panel2/80 px-4 py-1.5 font-mono text-[11px]">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="rounded bg-hud-violet/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-hud-violet">
+              Setup A (Baseline)
+            </span>
+            <span className="text-hud-dim">
+              {baselineSolved.cfg.veh.mass.toFixed(0)} kg · ClA {baselineSolved.cfg.veh.ClA.toFixed(2)} · CdA {baselineSolved.cfg.veh.CdA.toFixed(2)} ·{' '}
+              LLTD {(baselineSolved.cfg.veh.rollStiffnessFront * 100).toFixed(1)}% · {(baselineSolved.cfg.pt.batteryPowerLimit / 1000).toFixed(0)} kW ·{' '}
+              {baselineSolved.cfg.model} · {baselineSolved.cfg.racingLineMode}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-hud-dim">Setup B vs Setup A:</span>
+            <DeltaBadge delta={lap.lapTime - baselineSolved.lap.lapTime} unit="s" digits={3} />
+            <DeltaBadge delta={(lap.lapTime - baselineSolved.lap.lapTime) * 1000} unit="ms" digits={0} />
+          </div>
+        </div>
+      )}
 
       <div className="grid flex-1 gap-3 p-3 lg:grid-cols-[290px_minmax(0,1fr)]">
         <aside className="flex flex-col gap-3">
@@ -417,15 +523,52 @@ export default function Workbench() {
               label={headline.label}
               value={headline.value}
               accent="text-hud-cyan"
+              delta={headline.delta != null ? <DeltaBadge delta={headline.delta} unit="s" digits={3} /> : undefined}
               sub={`${lap.integrator.toUpperCase()} · ${lap.lateralModel} · ${racingLineMode === 'optimal' ? 'OPT-APEX' : 'CENTER'}`}
             />
-            <Kpi label="Avg / max speed" value={`${fmt(kph(lap.avgSpeed), 1)} / ${fmt(kph(lap.maxSpeed), 1)}`} unit="km/h" />
-            <Kpi label="Energy (net)" value={fmt(lap.energy.netKWh * 1000, 1)} unit="Wh" sub={`${fmt(lap.energy.dischargeKWh * 1000, 1)} out · ${fmt(lap.energy.regenKWh * 1000, 1)} regen`} accent="text-hud-amber" />
-            <Kpi label="Cooling heat" value={fmt(lap.energy.coolingHeatKJ, 1)} unit="kJ" sub={`+ ${fmt(lap.energy.batteryLossKJ, 1)} kJ in accumulator`} accent="text-hud-violet" />
+            <Kpi
+              label="Avg / max speed"
+              value={`${fmt(kph(lap.avgSpeed), 1)} / ${fmt(kph(lap.maxSpeed), 1)}`}
+              unit="km/h"
+              delta={
+                baselineSolved ? (
+                  <DeltaBadge delta={kph(lap.avgSpeed - baselineSolved.lap.avgSpeed)} unit="km/h" digits={1} invertGood />
+                ) : undefined
+              }
+            />
+            <Kpi
+              label="Energy (net)"
+              value={fmt(lap.energy.netKWh * 1000, 1)}
+              unit="Wh"
+              delta={
+                baselineSolved ? (
+                  <DeltaBadge delta={(lap.energy.netKWh - baselineSolved.lap.energy.netKWh) * 1000} unit="Wh" digits={1} />
+                ) : undefined
+              }
+              sub={`${fmt(lap.energy.dischargeKWh * 1000, 1)} out · ${fmt(lap.energy.regenKWh * 1000, 1)} regen`}
+              accent="text-hud-amber"
+            />
+            <Kpi
+              label="Cooling heat"
+              value={fmt(lap.energy.coolingHeatKJ, 1)}
+              unit="kJ"
+              delta={
+                baselineSolved ? (
+                  <DeltaBadge delta={lap.energy.coolingHeatKJ - baselineSolved.lap.energy.coolingHeatKJ} unit="kJ" digits={1} />
+                ) : undefined
+              }
+              sub={`+ ${fmt(lap.energy.batteryLossKJ, 1)} kJ in accumulator`}
+              accent="text-hud-violet"
+            />
             <Kpi
               label="Peak lat / long / brake"
               value={`${fmt(lap.peakLatG, 2)} / ${fmt(lap.peakLongG, 2)} / ${fmt(lap.peakBrakeG, 2)}`}
               unit="G"
+              delta={
+                baselineSolved ? (
+                  <DeltaBadge delta={lap.peakLatG - baselineSolved.lap.peakLatG} unit="G" digits={2} invertGood />
+                ) : undefined
+              }
               sub={
                 lap.hasWheelLift ? (
                   <span className="font-bold text-hud-red">⚠ Inner Wheel Lift! ({lap.wheelLiftCount} pts)</span>
@@ -434,11 +577,26 @@ export default function Workbench() {
                 )
               }
             />
-            <Kpi label="Skidpad (analytic)" value={fmtTime(skid.lapTime)} sub={`${fmt(skid.ayG, 3)} G · μ_eff ${fmt(skid.muEffective, 3)}`} />
-            <Kpi label="Accel 75 m (RK4)" value={fmtTime(launch.time75)} sub={`0–100 ${fmt(launch.time0to100, 2)} s · ${fmt(kph(launch.trapSpeed), 0)} km/h`} />
+            <Kpi
+              label="Skidpad (analytic)"
+              value={fmtTime(skid.lapTime)}
+              delta={baselineSolved ? <DeltaBadge delta={skid.lapTime - baselineSolved.skid.lapTime} unit="s" digits={3} /> : undefined}
+              sub={`${fmt(skid.ayG, 3)} G · μ_eff ${fmt(skid.muEffective, 3)}`}
+            />
+            <Kpi
+              label="Accel 75 m (RK4)"
+              value={fmtTime(launch.time75)}
+              delta={baselineSolved ? <DeltaBadge delta={launch.time75 - baselineSolved.launch.time75} unit="s" digits={3} /> : undefined}
+              sub={`0–100 ${fmt(launch.time0to100, 2)} s · ${fmt(kph(launch.trapSpeed), 0)} km/h`}
+            />
             <Kpi
               label={`Event · ${lap.event.laps} lap${lap.event.laps > 1 ? 's' : ''}`}
               value={fmtTime(lap.event.totalTime)}
+              delta={
+                baselineSolved ? (
+                  <DeltaBadge delta={lap.event.totalTime - baselineSolved.lap.event.totalTime} unit="s" digits={2} />
+                ) : undefined
+              }
               sub={`${fmt(lap.event.totalEnergyKWh, 2)} kWh · ${fmt(lap.event.totalHeatMJ, 2)} MJ heat`}
               accent="text-hud-lime"
             />
@@ -540,7 +698,13 @@ export default function Workbench() {
               </div>
             </Panel>
             <Panel title="G-G diagram · friction ellipse" bodyClassName="h-[460px]">
-              <GGDiagram lap={lap} ctx={ctx} cursor={safeCursor} />
+              <GGDiagram
+                lap={lap}
+                ctx={ctx}
+                cursor={safeCursor}
+                baselineLap={baselineSolved?.lap}
+                baselineCtx={baselineSolved?.ctx}
+              />
             </Panel>
           </div>
 
@@ -557,7 +721,12 @@ export default function Workbench() {
             }
             bodyClassName="p-2"
           >
-            <TelemetryCharts lap={lap} cursorS={safeCursor != null ? ch.s[safeCursor] : null} onHoverS={onHoverS} />
+            <TelemetryCharts
+              lap={lap}
+              baselineLap={baselineSolved?.lap ?? ghostLap}
+              cursorS={safeCursor != null ? ch.s[safeCursor] : null}
+              onHoverS={onHoverS}
+            />
           </Panel>
 
           <Panel title={<Segmented options={tabs} value={tab} onChange={setTab} />}>
