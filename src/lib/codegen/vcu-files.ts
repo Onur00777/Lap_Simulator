@@ -10,8 +10,14 @@ import { buildTwoTrackEnvelope } from '../dynamics/two-track';
 import { defaultTVParams, type TVControllerParams } from '../dynamics/yaw-controller';
 import { banner, cArray1D, cf } from './c-format';
 import { buildTorqueMap, type TorqueMap, type TorqueMapOptions } from './torque-map';
+import {
+  buildAutogenDynamicsTables,
+  generateVcuDynamicsAutogenHeader,
+  generateVcuDynamicsAutogenSource,
+  type AutogenDynamicsTables,
+} from './vcu-dynamics-autogen';
 
-export const CODEGEN_VERSION = '1.0.0';
+export const CODEGEN_VERSION = '2.0.0';
 
 export interface GeneratedFile {
   name: string;
@@ -471,6 +477,7 @@ export interface VcuBundle {
   files: GeneratedFile[];
   torqueMap: TorqueMap;
   tvParams: TVControllerParams;
+  autogenTables: AutogenDynamicsTables;
 }
 
 /** Appended when the calibration is exported for a TOSFED Körfez layout. */
@@ -495,15 +502,19 @@ export function generateVcuBundle(
   const map = opts.map ?? buildEfficiencyMap(pt);
   const torqueMap = buildTorqueMap(veh, pt, map, opts.torqueMap);
   const tvParams = buildFirmwareTvParams(veh, pt, opts.tv);
+  const autogenTables = buildAutogenDynamicsTables(veh, pt, torqueMap, tvParams);
   const files: GeneratedFile[] = [
     { name: 'vcu_torque_map.h', language: 'c', content: generateTorqueMapHeader(torqueMap, veh, pt) },
     { name: 'vcu_torque_vectoring.h', language: 'c', content: generateTorqueVectoringHeader(tvParams, veh, pt) },
     { name: 'vcu_torque_vectoring.c', language: 'c', content: generateTorqueVectoringSource(tvParams, veh, pt) },
+    { name: 'vcu_dynamics_autogen.h', language: 'c', content: generateVcuDynamicsAutogenHeader(veh, pt, torqueMap, tvParams, autogenTables) },
+    { name: 'vcu_dynamics_autogen.c', language: 'c', content: generateVcuDynamicsAutogenSource(veh, pt, torqueMap, tvParams, autogenTables) },
   ];
   if (opts.korfezTrackId) {
     const block = korfezPresetBlock(opts.korfezTrackId, pt, tvParams);
     files[0].content = files[0].content.replace('#endif /* VCU_TORQUE_MAP_H */', `${block}#endif /* VCU_TORQUE_MAP_H */`);
     files[2].content = files[2].content.replace('#include "vcu_torque_vectoring.h"', `#include "vcu_torque_vectoring.h"\n#include "vcu_torque_map.h" /* KORFEZ_TRACK_PRESET */`);
+    files[3].content = files[3].content.replace('#endif /* VCU_DYNAMICS_AUTOGEN_H */', `${block}#endif /* VCU_DYNAMICS_AUTOGEN_H */`);
   }
-  return { torqueMap, tvParams, files };
+  return { torqueMap, tvParams, autogenTables, files };
 }

@@ -35,7 +35,7 @@ import {
   type Track,
 } from '@/lib/tracks';
 import { analyzeKorfezLayout, compareKorfezLayouts } from '@/lib/solver/korfez-analysis';
-import { generateVcuBundle } from '@/lib/codegen';
+import { generateFsaeDesignReport, generateVcuBundle } from '@/lib/codegen';
 import { downloadText, fmt, fmtTime, kph } from '@/lib/ui/format';
 import TrackCanvas, { type ColorMode, type MapAlign } from './TrackCanvas';
 import TelemetryCharts from './TelemetryCharts';
@@ -404,6 +404,26 @@ export default function Workbench() {
               </button>
             </>
           )}
+          <button
+            type="button"
+            className="btn border-hud-lime/50 text-hud-lime hover:bg-hud-lime/15"
+            onClick={() => {
+              const b = bundle ?? generateVcuBundle(dVeh, dPt, { map: ctx.map });
+              const md = generateFsaeDesignReport({
+                track: dTrack,
+                veh: dVeh,
+                pt: dPt,
+                lap,
+                bundle: b,
+                model,
+                integrator,
+              });
+              downloadText(`FSAE_Engineering_Design_Report_${dTrack.id}.md`, md, 'text/markdown');
+            }}
+            title="Export complete FSAE Engineering Design Judge Dossier (.md)"
+          >
+            ⬇ Export FSAE Design Report
+          </button>
         </div>
         <span className="rounded border border-hud-line px-2 py-1 font-mono text-[10px] text-hud-dim" title="setup (envelope + powertrain tables) / 3-pass solve">
           {fmt(sim.setupMs, 0)} + {fmt(sim.solveMs, 0)} ms · {n} pts
@@ -759,7 +779,20 @@ export default function Workbench() {
             )}
             {tab === 'launch' && <LaunchPanel launch={launch} qssTime={dTrack.kind === 'acceleration' ? lap.lapTime : undefined} />}
             {tab === 'powertrain' && <PowertrainPanel veh={dVeh} pt={dPt} map={ctx.map} />}
-            {tab === 'codegen' && (bundle ? <CodegenPanel bundle={bundle} /> : <Busy />)}
+            {tab === 'codegen' &&
+              (bundle ? (
+                <CodegenPanel
+                  bundle={bundle}
+                  track={dTrack}
+                  veh={dVeh}
+                  pt={dPt}
+                  lap={lap}
+                  model={model}
+                  integrator={integrator}
+                />
+              ) : (
+                <Busy />
+              ))}
           </Panel>
         </main>
       </div>

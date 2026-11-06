@@ -20,7 +20,7 @@ const hasGcc = (() => {
 
 const GCC_FLAGS = ['-std=c99', '-O1', '-Wall', '-Wextra', '-Wpedantic', '-Wconversion', '-Wshadow', '-Wdouble-promotion', '-Wcast-qual', '-Werror'];
 
-describe('Torque map', () => {
+describe('Torque map & VCU Dynamics Autogen Package', () => {
   it('reproduces the table at the breakpoints and is monotonic in pedal travel', () => {
     tm.pedalPct.forEach((p, i) => tm.speedKph.forEach((s, j) => expect(torqueMapLookup(tm, p, s)).toBeCloseTo(tm.torque[i][j], 9)));
     for (const s of tm.speedKph) {
@@ -36,12 +36,29 @@ describe('Torque map', () => {
     });
   });
 
-  it('emits the three firmware files with MISRA-style constructs', () => {
-    expect(bundle.files.map((f) => f.name)).toEqual(['vcu_torque_map.h', 'vcu_torque_vectoring.h', 'vcu_torque_vectoring.c']);
-    const src = bundle.files[2].content;
-    expect(src).not.toMatch(/\bmalloc\b|\bfree\b|\bgoto\b/);
-    expect(src).toContain('VCU_TV_Step');
-    expect(src).toContain('vTaskDelayUntil');
+  it('emits all five MISRA-C / STM32H7 firmware files including vcu_dynamics_autogen.h/.c', () => {
+    expect(bundle.files.map((f) => f.name)).toEqual([
+      'vcu_torque_map.h',
+      'vcu_torque_vectoring.h',
+      'vcu_torque_vectoring.c',
+      'vcu_dynamics_autogen.h',
+      'vcu_dynamics_autogen.c',
+    ]);
+    for (const f of bundle.files) {
+      expect(f.content).not.toMatch(/\bmalloc\b|\bfree\b|\bgoto\b/);
+    }
+    const autogenH = bundle.files[3].content;
+    const autogenC = bundle.files[4].content;
+    expect(autogenH).toContain('vcu_lookup_total_torque_nm');
+    expect(autogenH).toContain('vcu_lookup_tv_delta_torque_nm');
+    expect(autogenH).toContain('v_wheel_max_target');
+    expect(autogenH).toContain('vcu_calc_power_derating');
+    expect(autogenC).toContain('VCU_Autogen_TotalTorque_Nm');
+    expect(autogenC).toContain('VCU_Autogen_TvDeltaTorque_Nm');
+
+    const tvC = bundle.files[2].content;
+    expect(tvC).toContain('VCU_TV_Step');
+    expect(tvC).toContain('vTaskDelayUntil');
     expect(bundle.files[0].content).toContain('VCU_TM_Interpolate');
   });
 });
@@ -50,12 +67,13 @@ describe.skipIf(!hasGcc)('Generated C firmware (gcc)', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'apex-vcu-'));
   for (const f of bundle.files) fs.writeFileSync(path.join(dir, f.name), f.content);
 
-  it('compiles warning-free with -Wall -Wextra -Wpedantic -Wconversion -Werror (incl. FreeRTOS task)', () => {
+  it('compiles warning-free with -Wall -Wextra -Wpedantic -Wconversion -Werror (incl. FreeRTOS task and vcu_dynamics_autogen.c)', () => {
     fs.writeFileSync(
       path.join(dir, 'FreeRTOS.h'),
       '#include <stdint.h>\ntypedef uint32_t TickType_t;\n#define pdMS_TO_TICKS(ms) ((TickType_t)(ms))\n',
     );
     fs.writeFileSync(path.join(dir, 'task.h'), 'TickType_t xTaskGetTickCount(void);\nvoid vTaskDelayUntil(TickType_t *prev, TickType_t inc);\n');
+    execFileSync('gcc', [...GCC_FLAGS, '-c', '-I', dir, path.join(dir, 'vcu_dynamics_autogen.c'), '-o', path.join(dir, 'autogen.o')]);
     execFileSync('gcc', [...GCC_FLAGS, '-c', '-I', dir, path.join(dir, 'vcu_torque_vectoring.c'), '-o', path.join(dir, 'tv.o')]);
     execFileSync('gcc', [...GCC_FLAGS, '-DVCU_TV_USE_FREERTOS', '-c', '-I', dir, path.join(dir, 'vcu_torque_vectoring.c'), '-o', path.join(dir, 'tv_rtos.o')]);
   });
