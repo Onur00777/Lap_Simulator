@@ -16,6 +16,7 @@ import {
   getTrackWithRacingLine,
   simulateLap,
   type Integrator,
+  type LapResult,
   type RacingLineMode,
 } from '@/lib/solver';
 import {
@@ -37,7 +38,7 @@ import {
   type VehiclePresetId,
 } from '@/lib/tracks';
 import { analyzeKorfezLayout, compareKorfezLayouts } from '@/lib/solver/korfez-analysis';
-import { generateFsaeDesignReport, generateVcuBundle } from '@/lib/codegen';
+import { generateFsaeDesignReport, generateVcuBundle, printFsaeDesignReport } from '@/lib/codegen';
 import { downloadText, fmt, fmtTime, kph } from '@/lib/ui/format';
 import TrackCanvas, { type ColorMode, type MapAlign } from './TrackCanvas';
 import TelemetryCharts from './TelemetryCharts';
@@ -76,17 +77,6 @@ interface BaselineConfig {
   integrator: Integrator;
 }
 
-const MODEL_OPTIONS: { value: LateralModel; label: string }[] = [
-  { value: 'point-mass', label: 'Point-mass' },
-  { value: 'two-track-open', label: '2-track open' },
-  { value: 'two-track-tv', label: '2-track TV' },
-];
-
-const RACING_LINE_OPTIONS: { value: RacingLineMode; label: string }[] = [
-  { value: 'centerline', label: 'Centerline' },
-  { value: 'optimal', label: 'Optimal Apex' },
-];
-
 const TABS: { value: Tab; label: string }[] = [
   { value: 'corners', label: 'Corners · Sectors · Energy' },
   { value: 'tv', label: 'Torque Vectoring' },
@@ -106,6 +96,59 @@ function findTimeCursor(tArr: number[], targetT: number): number {
     else hi = mid;
   }
   return lo;
+}
+
+function lapTelemetryToCsv(lap: LapResult): string {
+  const ch = lap.channels;
+  const header = [
+    's_m',
+    'time_s',
+    'speed_kph',
+    'g_long',
+    'g_lat',
+    'grip_usage',
+    'throttle',
+    'brake',
+    'motor_torque_nm',
+    'motor_rpm',
+    'p_elec_kw',
+    'energy_kwh',
+    'heat_kj',
+    'fz_fl_n',
+    'fz_fr_n',
+    'fz_rl_n',
+    'fz_rr_n',
+    'understeer_deg_per_g',
+    'stability_index',
+    'roll_deg',
+    'mode',
+  ].join(',');
+  const rows = ch.s.map((_, i) =>
+    [
+      ch.s[i].toFixed(2),
+      ch.t[i].toFixed(4),
+      (ch.v[i] * 3.6).toFixed(2),
+      ch.gLong[i].toFixed(3),
+      ch.gLat[i].toFixed(3),
+      ch.gripUsage[i].toFixed(3),
+      ch.throttle[i].toFixed(3),
+      ch.brake[i].toFixed(3),
+      ch.motorTorque[i].toFixed(2),
+      ch.motorRpm[i].toFixed(0),
+      ch.pElecKW[i].toFixed(2),
+      ch.energyKWh[i].toFixed(4),
+      ch.heatKJ[i].toFixed(2),
+      ch.fzFL[i].toFixed(1),
+      ch.fzFR[i].toFixed(1),
+      ch.fzRL[i].toFixed(1),
+      ch.fzRR[i].toFixed(1),
+      ch.understeerDegPerG[i].toFixed(3),
+      ch.stabilityIndex[i].toFixed(4),
+      ch.rollDeg[i].toFixed(3),
+      ch.mode[i],
+    ].join(','),
+  );
+  return [header, ...rows].join('\n');
 }
 
 export default function Workbench() {
@@ -137,11 +180,25 @@ export default function Workbench() {
   const [playRate, setPlayRate] = useState(1);
   const [venue, setVenue] = useState<Venue>('fs');
   const [baselineCfg, setBaselineCfg] = useState<BaselineConfig | null>(null);
+  const [exportOpen, setExportOpen] = useState(false);
   const [mapAlign, setMapAlign] = useState<MapAlign>({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true });
   const [mapUpload, setMapUpload] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const mapFileRef = useRef<HTMLInputElement>(null);
   const presetFileRef = useRef<HTMLInputElement>(null);
+  const exportMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close export dropdown on outside click
+  useEffect(() => {
+    if (!exportOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(e.target as Node)) {
+        setExportOpen(false);
+      }
+    };
+    window.addEventListener('mousedown', onDown);
+    return () => window.removeEventListener('mousedown', onDown);
+  }, [exportOpen]);
 
   // Load saved IST27 - TwoTrackSim profile and active session from localStorage on mount
   useEffect(() => {
@@ -200,7 +257,7 @@ export default function Workbench() {
     const tb = q.get('tab');
     if (tb && TABS.some((x) => x.value === tb)) setTab(tb as Tab);
     const m = q.get('model');
-    if (m && MODEL_OPTIONS.some((x) => x.value === m)) setModel(m as LateralModel);
+    if (m === 'point-mass' || m === 'two-track-open' || m === 'two-track-tv') setModel(m);
     const rl = q.get('line');
     if (rl === 'centerline' || rl === 'optimal') setRacingLineMode(rl);
     const c = q.get('color');
@@ -245,6 +302,19 @@ export default function Workbench() {
     },
     [savedTwoTrack],
   );
+
+  const selectTrackUnified = useCallback((nextTrack: TrackSel) => {
+    const isKorfez = KORFEZ_TRACKS.some((t) => t.id === nextTrack);
+    setVenue(isKorfez ? 'korfez' : 'fs');
+    setTrackSel(nextTrack);
+    setTab((prev) => {
+      if (isKorfez) return 'korfez';
+      return prev === 'korfez' ? 'corners' : prev;
+    });
+    setCursor(null);
+    setPlaying(false);
+    if (!isKorfez) setMapUpload(null);
+  }, []);
 
   const saveCurrentToTwoTrack = useCallback(() => {
     const profile: SavedVehicleProfile = {
@@ -418,6 +488,7 @@ export default function Workbench() {
     try {
       const t = trackFromCsv(text, { name });
       setCustomTrack(t);
+      setVenue('fs');
       setTrackSel('custom');
       setCsvMsg(`Imported ${t.closed ? 'closed' : 'open'} track · ${t.length.toFixed(0)} m · ${t.s.length} samples`);
     } catch (e) {
@@ -460,120 +531,375 @@ export default function Workbench() {
     });
   };
 
+  const handleExportDossierMd = () => {
+    const b = bundle ?? generateVcuBundle(dVeh, dPt, { map: ctx.map, korfezTrackId: korfezOn ? dTrack.id : undefined });
+    const md = generateFsaeDesignReport({
+      track: dTrack,
+      veh: dVeh,
+      pt: dPt,
+      lap,
+      bundle: b,
+      model,
+      integrator,
+    });
+    downloadText(`FSAE_Engineering_Design_Report_${dTrack.id}.md`, md, 'text/markdown');
+    setExportOpen(false);
+  };
+
+  const handleExportDossierPdf = () => {
+    const b = bundle ?? generateVcuBundle(dVeh, dPt, { map: ctx.map, korfezTrackId: korfezOn ? dTrack.id : undefined });
+    const md = generateFsaeDesignReport({
+      track: dTrack,
+      veh: dVeh,
+      pt: dPt,
+      lap,
+      bundle: b,
+      model,
+      integrator,
+    });
+    printFsaeDesignReport(md);
+    setExportOpen(false);
+  };
+
+  const handleExportVcuHeaders = () => {
+    const b = bundle ?? generateVcuBundle(dVeh, dPt, { map: ctx.map, korfezTrackId: korfezOn ? dTrack.id : undefined });
+    for (const f of b.files) {
+      downloadText(f.name, f.content, 'text/x-c');
+    }
+    setExportOpen(false);
+  };
+
+  const handleExportTelemetryCsv = () => {
+    downloadText(`ApexLapSim_Telemetry_${dTrack.id}.csv`, lapTelemetryToCsv(lap), 'text/csv');
+    setExportOpen(false);
+  };
+
+  const pillBase =
+    'px-2.5 h-7 inline-flex items-center justify-center rounded-[3px] font-mono text-xs uppercase tracking-wider transition select-none whitespace-nowrap border';
+  const pillActive = 'bg-cyan-950/60 text-cyan-400 border-cyan-500/40';
+  const pillIdle = 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/60';
+
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-30 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-hud-line bg-hud-bg/90 px-4 py-2 backdrop-blur">
-        <div className="flex items-baseline gap-2">
-          <span className="font-mono text-lg font-bold tracking-[0.25em] text-hud-cyan">APEX</span>
-          <span className="font-mono text-lg font-light tracking-[0.25em] text-hud-text">LAPSIM</span>
-          <span className="hidden font-mono text-[10px] uppercase tracking-widest text-hud-dim 2xl:inline">
-            FS vehicle dynamics · QSS lap sim · torque vectoring · VCU codegen
+      {/* Unified 52px Single-Row Aerospace / Motorsport Control Ribbon */}
+      <header className="sticky top-0 z-30 flex h-13 min-h-[52px] max-h-[52px] items-center justify-between gap-2 border-b border-slate-800/80 bg-[#07090e] px-4">
+        {/* ZONE A (LEFT): BRANDING & CONTEXT SELECTORS */}
+        <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex shrink-0 items-baseline gap-1.5" title="ApexLapSim — Formula Student & Motorsport Vehicle Dynamics Suite">
+            <span className="font-mono text-base font-bold tracking-[0.22em] text-[#00f0ff] drop-shadow-[0_0_8px_rgba(0,240,255,0.35)]">
+              APEX
+            </span>
+            <span className="font-mono text-base font-light tracking-[0.22em] text-slate-400">LAPSIM</span>
+          </div>
+
+          <div className="h-5 w-[1px] shrink-0 bg-slate-800" />
+
+          {/* Compact Vehicle Profile Dropdown */}
+          <div className="relative flex items-center" title="Select Vehicle Profile Preset">
+            <svg
+              className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-cyan-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2" />
+              <circle cx="6.5" cy="16.5" r="2.5" />
+              <circle cx="16.5" cy="16.5" r="2.5" />
+            </svg>
+            <select
+              aria-label="Vehicle Profile"
+              value={presetId}
+              onChange={(e) => applyPreset(e.target.value as VehiclePresetId)}
+              className="h-8 cursor-pointer appearance-none rounded border border-slate-800 bg-slate-900/70 pl-8 pr-6 font-mono text-xs uppercase tracking-wider text-slate-200 outline-none transition hover:border-cyan-500/40 focus:border-cyan-500/60"
+            >
+              <option value="ist27" className="bg-[#07090e] text-slate-200">
+                IST27 Baseline (80 kW EV)
+              </option>
+              <option value="ist27-twotrack" className="bg-[#07090e] text-slate-200">
+                IST27 TwoTrackSim (11.8:1)
+              </option>
+              <option value="tpsc" className="bg-[#07090e] text-slate-200">
+                TPSC Reference (220+ km/h)
+              </option>
+            </select>
+            <svg
+              className="pointer-events-none absolute right-2 h-3 w-3 text-slate-400"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+
+          {/* Compact Track Selector Dropdown with Optgroups */}
+          <div className="relative flex items-center" title={`Active Circuit: ${dTrack.name} (${fmt(dTrack.length, 0)} m)`}>
+            <svg
+              className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-cyan-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+              <line x1="4" y1="22" x2="4" y2="15" />
+            </svg>
+            <select
+              aria-label="Track Selector"
+              value={trackSel}
+              onChange={(e) => selectTrackUnified(e.target.value as TrackSel)}
+              className="h-8 cursor-pointer appearance-none rounded border border-slate-800 bg-slate-900/70 pl-8 pr-6 font-mono text-xs uppercase tracking-wider text-slate-200 outline-none transition hover:border-cyan-500/40 focus:border-cyan-500/60"
+            >
+              <optgroup label="Formula Student" className="bg-[#07090e] text-cyan-400">
+                <option value="skidpad" className="bg-[#07090e] text-slate-200">
+                  FS Skidpad (75m)
+                </option>
+                <option value="acceleration" className="bg-[#07090e] text-slate-200">
+                  FS Accel (75m)
+                </option>
+                <option value="autocross" className="bg-[#07090e] text-slate-200">
+                  FS Autocross (840m)
+                </option>
+                <option value="endurance" className="bg-[#07090e] text-slate-200">
+                  FS Endurance (1268m)
+                </option>
+                {customTrack && (
+                  <option value="custom" className="bg-[#07090e] text-slate-200">
+                    Custom: {customTrack.name} ({Math.round(customTrack.length)}m)
+                  </option>
+                )}
+              </optgroup>
+              <optgroup label="Kocaeli — TOSFED Körfez" className="bg-[#07090e] text-cyan-400">
+                <option value="korfez-gp-1950" className="bg-[#07090e] text-slate-200">
+                  TOSFED Körfez GP (1950m)
+                </option>
+                <option value="korfez-karting-950" className="bg-[#07090e] text-slate-200">
+                  TOSFED Körfez Karting (950m)
+                </option>
+                <option value="korfez-fst-1380" className="bg-[#07090e] text-slate-200">
+                  TOSFED Körfez FST Endurance (1380m)
+                </option>
+              </optgroup>
+            </select>
+            <svg
+              className="pointer-events-none absolute right-2 h-3 w-3 text-slate-400"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
+
+        {/* ZONE B (CENTER): COMPACT SOLVER SEGMENTED PILLS */}
+        <div className="flex shrink-0 items-center gap-2">
+          {/* 1. Racing Line Group */}
+          <div
+            className="inline-flex items-center rounded border border-slate-800 bg-slate-950/90 p-0.5"
+            role="group"
+            aria-label="Racing Line Mode"
+          >
+            <button
+              type="button"
+              onClick={() => setRacingLineMode('centerline')}
+              title="Centerline — Geometric track centerline (n(s) = 0)"
+              className={`${pillBase} ${racingLineMode === 'centerline' ? pillActive : pillIdle}`}
+            >
+              Center
+            </button>
+            <button
+              type="button"
+              onClick={() => setRacingLineMode('optimal')}
+              title="Optimal Apex — Minimum-Curvature Out-In-Out racing line"
+              className={`${pillBase} ${racingLineMode === 'optimal' ? pillActive : pillIdle}`}
+            >
+              Apex
+            </button>
+          </div>
+
+          {/* 2. Dynamics Model Group */}
+          <div
+            className="inline-flex items-center rounded border border-slate-800 bg-slate-950/90 p-0.5"
+            role="group"
+            aria-label="Vehicle Dynamics Model"
+          >
+            <button
+              type="button"
+              onClick={() => setModel('point-mass')}
+              title="Point-Mass — Single-track friction-ellipse QSS solver"
+              className={`${pillBase} ${model === 'point-mass' ? pillActive : pillIdle}`}
+            >
+              <span className="hidden 2xl:inline">Point-Mass</span>
+              <span className="2xl:hidden">Point</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setModel('two-track-open')}
+              title="Open Diff — 2-Track 4-corner load transfer with open differential"
+              className={`${pillBase} ${model === 'two-track-open' ? pillActive : pillIdle}`}
+            >
+              <span className="hidden 2xl:inline">Open Diff</span>
+              <span className="2xl:hidden">Open</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setModel('two-track-tv')}
+              title="Torque Vectoring — 2-Track active direct yaw-moment allocation"
+              className={`${pillBase} ${model === 'two-track-tv' ? pillActive : pillIdle}`}
+            >
+              <span className="hidden 2xl:inline">Torque Vectoring</span>
+              <span className="2xl:hidden">TV</span>
+            </button>
+          </div>
+
+          {/* 3. Numerical ODE Solver Group */}
+          <div
+            className="inline-flex items-center rounded border border-slate-800 bg-slate-950/90 p-0.5"
+            role="group"
+            aria-label="Numerical ODE Solver"
+          >
+            <button
+              type="button"
+              onClick={() => setIntegrator('rk4')}
+              title="RK4 — 4th-Order Runge-Kutta integration in v² domain"
+              className={`${pillBase} ${integrator === 'rk4' ? pillActive : pillIdle}`}
+            >
+              RK4
+            </button>
+            <button
+              type="button"
+              onClick={() => setIntegrator('euler')}
+              title="Euler — Explicit 1st-Order Euler integration in v² domain"
+              className={`${pillBase} ${integrator === 'euler' ? pillActive : pillIdle}`}
+            >
+              Euler
+            </button>
+          </div>
+        </div>
+
+        {/* ZONE C (RIGHT): BENCHMARK METRICS & ACTION BUTTONS */}
+        <div className="flex shrink-0 items-center gap-2">
+          {/* Execution Telemetry Badge */}
+          <span
+            className="hidden h-8 items-center rounded border border-slate-800 bg-slate-900/60 px-2.5 font-mono text-xs tabular-nums text-slate-500 xl:inline-flex"
+            title="Solver telemetry: setup (envelope + powertrain tables) + 3-pass QSS solve time · mesh nodes"
+          >
+            {fmt(sim.setupMs, 0)} + {fmt(sim.solveMs, 0)} ms · {n} pts
           </span>
-        </div>
-        <span className="flex-1" />
-        <Segmented
-          options={KORFEZ_PRESETS.map((p) => ({
-            value: p.id,
-            label: p.id === 'ist27-twotrack' ? 'IST27 - TwoTrackSim' : p.id === 'ist27' ? 'IST27 Baseline' : 'TPSC 220+ km/h',
-          }))}
-          value={presetId}
-          onChange={applyPreset}
-        />
-        <Segmented
-          options={[
-            { value: 'fs' as Venue, label: 'Formula Student' },
-            { value: 'korfez' as Venue, label: 'Kocaeli — Körfez' },
-          ]}
-          value={venue}
-          onChange={(v) => {
-            setVenue(v);
-            setTrackSel(v === 'korfez' ? 'korfez-gp-1950' : 'endurance');
-            setTab(v === 'korfez' ? 'korfez' : 'corners');
-            setCursor(null);
-            setPlaying(false);
-            setMapUpload(null);
-          }}
-        />
-        <Segmented
-          options={
-            venue === 'korfez'
-              ? KORFEZ_TRACKS.map((t) => ({ value: t.id as TrackSel, label: t.label }))
-              : [...PRESET_TRACKS.map((t) => ({ value: t.id as TrackSel, label: t.label })), ...(customTrack ? [{ value: 'custom' as TrackSel, label: customTrack.name }] : [])]
-          }
-          value={trackSel}
-          onChange={(v) => {
-            setTrackSel(v);
-            setCursor(null);
-            setPlaying(false);
-          }}
-        />
-        <div className="flex items-center gap-1.5">
-          <span className="hidden font-mono text-[9px] uppercase tracking-wider text-hud-dim sm:inline">Line:</span>
-          <Segmented options={RACING_LINE_OPTIONS} value={racingLineMode} onChange={setRacingLineMode} />
-        </div>
-        <Segmented options={MODEL_OPTIONS} value={model} onChange={setModel} />
-        <Segmented
-          options={[
-            { value: 'rk4', label: 'RK4' },
-            { value: 'euler', label: 'Euler' },
-          ]}
-          value={integrator}
-          onChange={setIntegrator}
-        />
-        <div className="flex items-center gap-1">
+
+          {/* Snapshot Setup Button */}
           {!baselineSolved ? (
             <button
               type="button"
-              className="btn border-hud-cyan/50 text-hud-cyan hover:bg-hud-cyan/15"
               onClick={snapshotBaseline}
-              title="Lock current Setup as Baseline (Setup A) for live Setup A vs Setup B diffing"
+              title="Snapshot Baseline (Setup A) — Lock current setup to compare Δt and KPI deltas"
+              className="inline-flex h-8 items-center gap-1.5 rounded border border-slate-800 bg-slate-900/70 px-2.5 font-mono text-xs uppercase tracking-wider text-slate-300 transition hover:border-cyan-500/40 hover:bg-cyan-950/40 hover:text-cyan-400"
             >
-              ⌖ Snapshot Baseline (Setup A)
+              <span className="text-cyan-400">⌖</span>
+              <span className="hidden lg:inline">Snapshot A</span>
             </button>
           ) : (
-            <>
+            <div className="inline-flex h-8 items-center rounded border border-cyan-500/40 bg-cyan-950/60">
               <button
                 type="button"
-                className="btn btn-active"
                 onClick={snapshotBaseline}
-                title="Overwrite Setup A with current active Setup B"
+                title={`Locked (Setup A: ${fmtTime(baselineSolved.lap.lapTime)}) — Click to overwrite Setup A with active setup`}
+                className="inline-flex h-full items-center gap-1.5 px-2.5 font-mono text-xs uppercase tracking-wider text-cyan-400 transition hover:bg-cyan-900/40"
               >
-                ⌖ Update Setup A ({fmtTime(baselineSolved.lap.lapTime)})
+                <span>⌖</span>
+                <span>Locked (Setup A)</span>
               </button>
               <button
                 type="button"
-                className="btn text-hud-red"
                 onClick={() => setBaselineCfg(null)}
                 title="Clear Setup A baseline snapshot"
+                className="inline-flex h-full items-center border-l border-cyan-500/30 px-2 font-mono text-xs text-slate-400 transition hover:bg-red-950/60 hover:text-red-400"
               >
-                ✕ Clear A
+                ✕
               </button>
-            </>
+            </div>
           )}
-          <button
-            type="button"
-            className="btn border-hud-lime/50 text-hud-lime hover:bg-hud-lime/15"
-            onClick={() => {
-              const b = bundle ?? generateVcuBundle(dVeh, dPt, { map: ctx.map });
-              const md = generateFsaeDesignReport({
-                track: dTrack,
-                veh: dVeh,
-                pt: dPt,
-                lap,
-                bundle: b,
-                model,
-                integrator,
-              });
-              downloadText(`FSAE_Engineering_Design_Report_${dTrack.id}.md`, md, 'text/markdown');
-            }}
-            title="Export complete FSAE Engineering Design Judge Dossier (.md)"
-          >
-            ⬇ Export FSAE Design Report
-          </button>
+
+          {/* Export Dropdown Button */}
+          <div className="relative" ref={exportMenuRef}>
+            <div className="inline-flex h-8 items-center rounded border border-emerald-600/50 bg-emerald-950/50 font-mono text-xs uppercase tracking-wider text-emerald-400 transition hover:bg-emerald-900/60">
+              <button
+                type="button"
+                onClick={handleExportDossierMd}
+                title="Export FSAE Engineering Design Report (.md)"
+                className="inline-flex h-full items-center gap-1.5 px-2.5"
+              >
+                <span>⬇</span>
+                <span>Export</span>
+              </button>
+              <button
+                type="button"
+                aria-label="Open Export Menu"
+                onClick={() => setExportOpen((o) => !o)}
+                title="More export options (.pdf, .md, VCU .h/.c, CSV telemetry)"
+                className="inline-flex h-full items-center border-l border-emerald-600/40 px-1.5 hover:bg-emerald-900/80"
+              >
+                <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                  <path
+                    fillRule="evenodd"
+                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {exportOpen && (
+              <div className="absolute right-0 top-9 z-50 w-64 rounded border border-slate-800 bg-[#07090e] p-1 shadow-2xl">
+                <button
+                  type="button"
+                  onClick={handleExportDossierMd}
+                  className="flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider text-emerald-400 transition hover:bg-slate-900"
+                >
+                  <span>Export FSAE Report</span>
+                  <span className="text-[10px] text-slate-500">.md</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleExportDossierPdf}
+                  className="flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider text-slate-200 transition hover:bg-slate-900 hover:text-cyan-400"
+                >
+                  <span>Print / Save FSAE Report</span>
+                  <span className="text-[10px] text-slate-500">.pdf</span>
+                </button>
+                <div className="my-1 border-t border-slate-800/80" />
+                <button
+                  type="button"
+                  onClick={handleExportVcuHeaders}
+                  className="flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider text-slate-200 transition hover:bg-slate-900 hover:text-cyan-400"
+                >
+                  <span>Export VCU C Header</span>
+                  <span className="text-[10px] text-slate-500">.h / .c</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleExportTelemetryCsv}
+                  className="flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider text-slate-200 transition hover:bg-slate-900 hover:text-cyan-400"
+                >
+                  <span>Export CSV Telemetry</span>
+                  <span className="text-[10px] text-slate-500">.csv</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-        <span className="rounded border border-hud-line px-2 py-1 font-mono text-[10px] text-hud-dim" title="setup (envelope + powertrain tables) / 3-pass solve">
-          {fmt(sim.setupMs, 0)} + {fmt(sim.solveMs, 0)} ms · {n} pts
-        </span>
       </header>
       {venue === 'korfez' && <KorfezFacilityBar />}
       {baselineSolved && (

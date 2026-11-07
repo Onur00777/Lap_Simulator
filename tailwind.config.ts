@@ -4,6 +4,9 @@ const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      spacing: {
+        13: '3.25rem',
+      },
       colors: {
         hud: {
           bg: '#05070b',
