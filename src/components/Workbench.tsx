@@ -180,25 +180,36 @@ export default function Workbench() {
   const [playRate, setPlayRate] = useState(1);
   const [venue, setVenue] = useState<Venue>('fs');
   const [baselineCfg, setBaselineCfg] = useState<BaselineConfig | null>(null);
+  const [presetMenuOpen, setPresetMenuOpen] = useState(false);
+  const [trackMenuOpen, setTrackMenuOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [mapAlign, setMapAlign] = useState<MapAlign>({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true });
   const [mapUpload, setMapUpload] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const mapFileRef = useRef<HTMLInputElement>(null);
   const presetFileRef = useRef<HTMLInputElement>(null);
+  const presetMenuRef = useRef<HTMLDivElement>(null);
+  const trackMenuRef = useRef<HTMLDivElement>(null);
   const exportMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close export dropdown on outside click
+  // Close header dropdowns on outside click
   useEffect(() => {
-    if (!exportOpen) return;
+    if (!presetMenuOpen && !trackMenuOpen && !exportOpen) return;
     const onDown = (e: MouseEvent) => {
-      if (exportMenuRef.current && !exportMenuRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (presetMenuRef.current && !presetMenuRef.current.contains(target)) {
+        setPresetMenuOpen(false);
+      }
+      if (trackMenuRef.current && !trackMenuRef.current.contains(target)) {
+        setTrackMenuOpen(false);
+      }
+      if (exportMenuRef.current && !exportMenuRef.current.contains(target)) {
         setExportOpen(false);
       }
     };
     window.addEventListener('mousedown', onDown);
     return () => window.removeEventListener('mousedown', onDown);
-  }, [exportOpen]);
+  }, [presetMenuOpen, trackMenuOpen, exportOpen]);
 
   // Load saved IST27 - TwoTrackSim profile and active session from localStorage on mount
   useEffect(() => {
@@ -579,12 +590,38 @@ export default function Workbench() {
   const pillActive = 'bg-cyan-950/60 text-cyan-400 border-cyan-500/40';
   const pillIdle = 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/60';
 
+  const presetDisplayLabel =
+    presetId === 'ist27'
+      ? 'IST27 Baseline (80 kW EV)'
+      : presetId === 'ist27-twotrack'
+        ? 'IST27 TwoTrackSim'
+        : 'TPSC Reference (220+ km/h)';
+
+  const trackDisplayLabel =
+    trackSel === 'skidpad'
+      ? 'FS Skidpad (75m)'
+      : trackSel === 'acceleration'
+        ? 'FS Accel (75m)'
+        : trackSel === 'autocross'
+          ? 'FS Autocross (840m)'
+          : trackSel === 'endurance'
+            ? 'FS Endurance (1268m)'
+            : trackSel === 'korfez-gp-1950'
+              ? 'TOSFED Körfez GP (1950m)'
+              : trackSel === 'korfez-karting-950'
+                ? 'Körfez Karting (950m)'
+                : trackSel === 'korfez-fst-1380'
+                  ? 'Körfez FST Endurance (1380m)'
+                  : customTrack
+                    ? `Custom: ${customTrack.name} (${Math.round(customTrack.length)}m)`
+                    : `${dTrack.name} (${Math.round(dTrack.length)}m)`;
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Unified 52px Single-Row Aerospace / Motorsport Control Ribbon */}
       <header className="sticky top-0 z-30 flex h-13 min-h-[52px] max-h-[52px] items-center justify-between gap-2 border-b border-slate-800/80 bg-[#07090e] px-4">
         {/* ZONE A (LEFT): BRANDING & CONTEXT SELECTORS */}
-        <div className="flex min-w-0 items-center gap-2.5">
+        <div className="flex shrink-0 items-center gap-2">
           <div className="flex shrink-0 items-baseline gap-1.5" title="ApexLapSim — Formula Student & Motorsport Vehicle Dynamics Suite">
             <span className="font-mono text-base font-bold tracking-[0.22em] text-[#00f0ff] drop-shadow-[0_0_8px_rgba(0,240,255,0.35)]">
               APEX
@@ -594,112 +631,207 @@ export default function Workbench() {
 
           <div className="h-5 w-[1px] shrink-0 bg-slate-800" />
 
-          {/* Compact Vehicle Profile Dropdown */}
-          <div className="relative flex items-center" title="Select Vehicle Profile Preset">
-            <svg
-              className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-cyan-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2" />
-              <circle cx="6.5" cy="16.5" r="2.5" />
-              <circle cx="16.5" cy="16.5" r="2.5" />
-            </svg>
-            <select
+          {/* Compact Vehicle Profile Dropdown (Custom Popover — zero hidden-option width inflation) */}
+          <div className="relative shrink-0" ref={presetMenuRef}>
+            <button
+              type="button"
               aria-label="Vehicle Profile"
-              value={presetId}
-              onChange={(e) => applyPreset(e.target.value as VehiclePresetId)}
-              className="h-8 cursor-pointer appearance-none rounded border border-slate-800 bg-slate-900/70 pl-8 pr-6 font-mono text-xs uppercase tracking-wider text-slate-200 outline-none transition hover:border-cyan-500/40 focus:border-cyan-500/60"
+              aria-expanded={presetMenuOpen}
+              onClick={() => {
+                setPresetMenuOpen((o) => !o);
+                setTrackMenuOpen(false);
+                setExportOpen(false);
+              }}
+              title={`Vehicle Profile: ${presetDisplayLabel}`}
+              className="inline-flex h-8 shrink-0 items-center gap-2 rounded border border-slate-800 bg-slate-900/70 px-2.5 font-mono text-xs uppercase tracking-wider text-slate-200 outline-none transition hover:border-cyan-500/40 focus:border-cyan-500/60"
             >
-              <option value="ist27" className="bg-[#07090e] text-slate-200">
-                IST27 Baseline (80 kW EV)
-              </option>
-              <option value="ist27-twotrack" className="bg-[#07090e] text-slate-200">
-                IST27 TwoTrackSim (11.8:1)
-              </option>
-              <option value="tpsc" className="bg-[#07090e] text-slate-200">
-                TPSC Reference (220+ km/h)
-              </option>
-            </select>
-            <svg
-              className="pointer-events-none absolute right-2 h-3 w-3 text-slate-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                clipRule="evenodd"
-              />
-            </svg>
+              <svg
+                className="h-3.5 w-3.5 shrink-0 text-cyan-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2" />
+                <circle cx="6.5" cy="16.5" r="2.5" />
+                <circle cx="16.5" cy="16.5" r="2.5" />
+              </svg>
+              <span className="whitespace-nowrap">{presetDisplayLabel}</span>
+              <svg
+                className={`h-3 w-3 shrink-0 text-slate-400 transition-transform ${presetMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+
+            {presetMenuOpen && (
+              <div className="absolute left-0 top-full z-50 mt-1.5 w-72 rounded border border-slate-800 bg-[#07090e] p-1 shadow-2xl shadow-black/90">
+                <div className="px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-slate-500">
+                  Vehicle Profile Presets
+                </div>
+                {(
+                  [
+                    { id: 'ist27', label: 'IST27 Baseline', badge: '80 kW EV' },
+                    { id: 'ist27-twotrack', label: 'IST27 TwoTrackSim', badge: '11.8:1 · Saved' },
+                    { id: 'tpsc', label: 'TPSC Reference', badge: '220+ km/h' },
+                  ] as const
+                ).map((item) => {
+                  const active = presetId === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        applyPreset(item.id);
+                        setPresetMenuOpen(false);
+                      }}
+                      className={`flex w-full items-center justify-between rounded px-2.5 py-2 text-left font-mono text-xs uppercase tracking-wider transition ${
+                        active
+                          ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-500/40'
+                          : 'border border-transparent text-slate-300 hover:bg-slate-900 hover:text-cyan-400'
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      <span className="text-[10px] text-slate-500">{item.badge}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
-          {/* Compact Track Selector Dropdown with Optgroups */}
-          <div className="relative flex items-center" title={`Active Circuit: ${dTrack.name} (${fmt(dTrack.length, 0)} m)`}>
-            <svg
-              className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-cyan-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-              <line x1="4" y1="22" x2="4" y2="15" />
-            </svg>
-            <select
+          {/* Compact Track Selector Dropdown with Optgroups (Custom Popover — sizes strictly to active track) */}
+          <div className="relative shrink-0" ref={trackMenuRef}>
+            <button
+              type="button"
               aria-label="Track Selector"
-              value={trackSel}
-              onChange={(e) => selectTrackUnified(e.target.value as TrackSel)}
-              className="h-8 cursor-pointer appearance-none rounded border border-slate-800 bg-slate-900/70 pl-8 pr-6 font-mono text-xs uppercase tracking-wider text-slate-200 outline-none transition hover:border-cyan-500/40 focus:border-cyan-500/60"
+              aria-expanded={trackMenuOpen}
+              onClick={() => {
+                setTrackMenuOpen((o) => !o);
+                setPresetMenuOpen(false);
+                setExportOpen(false);
+              }}
+              title={`Active Circuit: ${dTrack.name} (${fmt(dTrack.length, 0)} m)`}
+              className="inline-flex h-8 shrink-0 items-center gap-2 rounded border border-slate-800 bg-slate-900/70 px-2.5 font-mono text-xs uppercase tracking-wider text-slate-200 outline-none transition hover:border-cyan-500/40 focus:border-cyan-500/60"
             >
-              <optgroup label="Formula Student" className="bg-[#07090e] text-cyan-400">
-                <option value="skidpad" className="bg-[#07090e] text-slate-200">
-                  FS Skidpad (75m)
-                </option>
-                <option value="acceleration" className="bg-[#07090e] text-slate-200">
-                  FS Accel (75m)
-                </option>
-                <option value="autocross" className="bg-[#07090e] text-slate-200">
-                  FS Autocross (840m)
-                </option>
-                <option value="endurance" className="bg-[#07090e] text-slate-200">
-                  FS Endurance (1268m)
-                </option>
+              <svg
+                className="h-3.5 w-3.5 shrink-0 text-cyan-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                <line x1="4" y1="22" x2="4" y2="15" />
+              </svg>
+              <span className="whitespace-nowrap">{trackDisplayLabel}</span>
+              <svg
+                className={`h-3 w-3 shrink-0 text-slate-400 transition-transform ${trackMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+
+            {trackMenuOpen && (
+              <div className="absolute left-0 top-full z-50 mt-1.5 w-80 rounded border border-slate-800 bg-[#07090e] p-1.5 shadow-2xl shadow-black/90">
+                <div className="px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-cyan-400/90">
+                  Formula Student
+                </div>
+                {(
+                  [
+                    { id: 'skidpad', label: 'FS Skidpad', len: '75m' },
+                    { id: 'acceleration', label: 'FS Accel', len: '75m' },
+                    { id: 'autocross', label: 'FS Autocross', len: '840m' },
+                    { id: 'endurance', label: 'FS Endurance', len: '1268m' },
+                  ] as const
+                ).map((t) => {
+                  const active = trackSel === t.id;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => {
+                        selectTrackUnified(t.id);
+                        setTrackMenuOpen(false);
+                      }}
+                      className={`flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider transition ${
+                        active
+                          ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-500/40'
+                          : 'border border-transparent text-slate-300 hover:bg-slate-900 hover:text-cyan-400'
+                      }`}
+                    >
+                      <span>{t.label}</span>
+                      <span className="text-[11px] tabular-nums text-slate-500">{t.len}</span>
+                    </button>
+                  );
+                })}
                 {customTrack && (
-                  <option value="custom" className="bg-[#07090e] text-slate-200">
-                    Custom: {customTrack.name} ({Math.round(customTrack.length)}m)
-                  </option>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      selectTrackUnified('custom');
+                      setTrackMenuOpen(false);
+                    }}
+                    className={`flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider transition ${
+                      trackSel === 'custom'
+                        ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-500/40'
+                        : 'border border-transparent text-slate-300 hover:bg-slate-900 hover:text-cyan-400'
+                    }`}
+                  >
+                    <span>Custom: {customTrack.name}</span>
+                    <span className="text-[11px] tabular-nums text-slate-500">{Math.round(customTrack.length)}m</span>
+                  </button>
                 )}
-              </optgroup>
-              <optgroup label="Kocaeli — TOSFED Körfez" className="bg-[#07090e] text-cyan-400">
-                <option value="korfez-gp-1950" className="bg-[#07090e] text-slate-200">
-                  TOSFED Körfez GP (1950m)
-                </option>
-                <option value="korfez-karting-950" className="bg-[#07090e] text-slate-200">
-                  TOSFED Körfez Karting (950m)
-                </option>
-                <option value="korfez-fst-1380" className="bg-[#07090e] text-slate-200">
-                  TOSFED Körfez FST Endurance (1380m)
-                </option>
-              </optgroup>
-            </select>
-            <svg
-              className="pointer-events-none absolute right-2 h-3 w-3 text-slate-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                clipRule="evenodd"
-              />
-            </svg>
+
+                <div className="my-1 border-t border-slate-800/80" />
+                <div className="px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-cyan-400/90">
+                  Kocaeli — TOSFED Körfez
+                </div>
+                {(
+                  [
+                    { id: 'korfez-gp-1950', label: 'TOSFED Körfez GP', len: '1950m' },
+                    { id: 'korfez-karting-950', label: 'TOSFED Körfez Karting', len: '950m' },
+                    { id: 'korfez-fst-1380', label: 'TOSFED Körfez FST Endurance', len: '1380m' },
+                  ] as const
+                ).map((t) => {
+                  const active = trackSel === t.id;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => {
+                        selectTrackUnified(t.id);
+                        setTrackMenuOpen(false);
+                      }}
+                      className={`flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider transition ${
+                        active
+                          ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-500/40'
+                          : 'border border-transparent text-slate-300 hover:bg-slate-900 hover:text-cyan-400'
+                      }`}
+                    >
+                      <span>{t.label}</span>
+                      <span className="text-[11px] tabular-nums text-slate-500">{t.len}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
