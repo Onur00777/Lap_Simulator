@@ -133,8 +133,8 @@ export function simulateIst26OnHavuz(
   const FzRearStat = isIst26 ? 2 * spec.massAndGeometry.staticWheelLoadRearN : m * g * (1 - frontWeightDist);
 
   // Tire peak grip multiplier relative to IST26 baseline when running IST27 TwoTrackSim or TPSC
-  const tireMu0 = vParam.tire?.mu0 ?? 1.55;
-  const vehicleGripRatio = isIst26 ? 1.0 : Math.max(0.85, Math.min(1.35, tireMu0 / 1.55));
+  const tireLambda = vParam.tire?.lambdaMu ?? 1.0;
+  const vehicleGripRatio = isIst26 ? 1.0 : Math.max(0.85, Math.min(1.35, tireLambda * (presetId === 'tpsc' ? 0.88 : 1.04)));
   const muLatEff = 1.42 * cal.lambdaMu * vehicleGripRatio;
   const muLongDriveEff = 1.28 * cal.lambdaMu * vehicleGripRatio;
   const muLongBrakeEff = 1.38 * cal.lambdaMu * vehicleGripRatio;

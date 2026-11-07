@@ -21,6 +21,7 @@ import {
 } from '@/lib/solver';
 import {
   getPresetTrack,
+  IST26_RWD_PRESET,
   IST27_PRESET,
   IST27_TWOTRACK_PRESET,
   isKorfezTrack,
@@ -151,11 +152,16 @@ function lapTelemetryToCsv(lap: LapResult): string {
   return [header, ...rows].join('\n');
 }
 
-export default function Workbench() {
+export interface WorkbenchProps {
+  externalPresetId?: VehiclePresetId;
+  onPresetIdChange?: (id: VehiclePresetId) => void;
+}
+
+export default function Workbench({ externalPresetId, onPresetIdChange }: WorkbenchProps = {}) {
   const [trackSel, setTrackSel] = useState<TrackSel>('endurance');
   const [customTrack, setCustomTrack] = useState<Track | null>(null);
   const [csvMsg, setCsvMsg] = useState<string | null>(null);
-  const [presetId, setPresetId] = useState<VehiclePresetId>('ist27-twotrack');
+  const [presetId, setPresetId] = useState<VehiclePresetId>(externalPresetId ?? 'ist27-twotrack');
   const [savedTwoTrack, setSavedTwoTrack] = useState<SavedVehicleProfile>({
     vehPatch: {},
     ptPatch: { gearRatio: 11.8 },
@@ -240,8 +246,14 @@ export default function Workbench() {
           regen?: boolean;
         };
         if (sess && typeof sess === 'object') {
-          if (sess.presetId === 'ist27-twotrack' || sess.presetId === 'ist27' || sess.presetId === 'tpsc') {
+          if (
+            sess.presetId === 'ist26-rwd' ||
+            sess.presetId === 'ist27-twotrack' ||
+            sess.presetId === 'ist27' ||
+            sess.presetId === 'tpsc'
+          ) {
             setPresetId(sess.presetId);
+            onPresetIdChange?.(sess.presetId);
           }
           if (sess.vehPatch) setVehPatch(sess.vehPatch);
           if (sess.ptPatch) setPtPatch(sess.ptPatch);
@@ -294,7 +306,13 @@ export default function Workbench() {
   const applyPreset = useCallback(
     (id: VehiclePresetId) => {
       setPresetId(id);
-      if (id === 'ist27-twotrack') {
+      onPresetIdChange?.(id);
+      if (id === 'ist26-rwd') {
+        setVehPatch({});
+        setPtPatch({});
+        setLambdaMu(IST26_RWD_PRESET.vehicle.tire.lambdaMu);
+        setRegen(false);
+      } else if (id === 'ist27-twotrack') {
         setVehPatch({ ...savedTwoTrack.vehPatch });
         setPtPatch({ ...savedTwoTrack.ptPatch });
         setLambdaMu(savedTwoTrack.lambdaMu);
@@ -311,8 +329,14 @@ export default function Workbench() {
         setRegen(true);
       }
     },
-    [savedTwoTrack],
+    [savedTwoTrack, onPresetIdChange],
   );
+
+  // Sync when primary top bar changes externalPresetId
+  useEffect(() => {
+    if (!hydrated || !externalPresetId || externalPresetId === presetId) return;
+    applyPreset(externalPresetId);
+  }, [hydrated, externalPresetId, presetId, applyPreset]);
 
   const selectTrackUnified = useCallback((nextTrack: TrackSel) => {
     const isKorfez = KORFEZ_TRACKS.some((t) => t.id === nextTrack);
@@ -337,6 +361,7 @@ export default function Workbench() {
     };
     setSavedTwoTrack(profile);
     setPresetId('ist27-twotrack');
+    onPresetIdChange?.('ist27-twotrack');
     try {
       window.localStorage.setItem(STORAGE_TWOTRACK_KEY, JSON.stringify(profile));
       setPresetMsg(`✓ IST27 - TwoTrackSim kaydedildi (${profile.savedAt})`);
@@ -344,10 +369,16 @@ export default function Workbench() {
     } catch {
       setPresetMsg('Kaydetme hatası (localStorage)');
     }
-  }, [vehPatch, ptPatch, lambdaMu, regen]);
+  }, [vehPatch, ptPatch, lambdaMu, regen, onPresetIdChange]);
 
   const basePreset =
-    presetId === 'tpsc' ? TPSC_PRESET : presetId === 'ist27-twotrack' ? IST27_TWOTRACK_PRESET : IST27_PRESET;
+    presetId === 'ist26-rwd'
+      ? IST26_RWD_PRESET
+      : presetId === 'tpsc'
+        ? TPSC_PRESET
+        : presetId === 'ist27-twotrack'
+          ? IST27_TWOTRACK_PRESET
+          : IST27_PRESET;
 
   const veh: VehicleParams = useMemo(() => {
     const base = basePreset.vehicle;
@@ -591,11 +622,13 @@ export default function Workbench() {
   const pillIdle = 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/60';
 
   const presetDisplayLabel =
-    presetId === 'ist27'
-      ? 'IST27 Baseline (80 kW EV)'
-      : presetId === 'ist27-twotrack'
-        ? 'IST27 TwoTrackSim'
-        : 'TPSC Reference (220+ km/h)';
+    presetId === 'ist26-rwd'
+      ? 'IST26 RWD (Cascadia · 3.2:1)'
+      : presetId === 'ist27'
+        ? 'IST27 Baseline (80 kW EV)'
+        : presetId === 'ist27-twotrack'
+          ? 'IST27 TwoTrackSim'
+          : 'TPSC Reference (220+ km/h)';
 
   const trackDisplayLabel =
     trackSel === 'skidpad'
@@ -606,15 +639,17 @@ export default function Workbench() {
           ? 'FS Autocross (840m)'
           : trackSel === 'endurance'
             ? 'FS Endurance (1268m)'
-            : trackSel === 'korfez-gp-1950'
-              ? 'TOSFED Körfez GP (1950m)'
-              : trackSel === 'korfez-karting-950'
-                ? 'Körfez Karting (950m)'
-                : trackSel === 'korfez-fst-1380'
-                  ? 'Körfez FST Endurance (1380m)'
-                  : customTrack
-                    ? `Custom: ${customTrack.name} (${Math.round(customTrack.length)}m)`
-                    : `${dTrack.name} (${Math.round(dTrack.length)}m)`;
+            : trackSel === 'itu-havuz'
+              ? 'İTÜ Havuz Otoparkı (135m)'
+              : trackSel === 'korfez-gp-1950'
+                ? 'TOSFED Körfez GP (1950m)'
+                : trackSel === 'korfez-karting-950'
+                  ? 'Körfez Karting (950m)'
+                  : trackSel === 'korfez-fst-1380'
+                    ? 'Körfez FST Endurance (1380m)'
+                    : customTrack
+                      ? `Custom: ${customTrack.name} (${Math.round(customTrack.length)}m)`
+                      : `${dTrack.name} (${Math.round(dTrack.length)}m)`;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -673,14 +708,15 @@ export default function Workbench() {
             </button>
 
             {presetMenuOpen && (
-              <div className="absolute left-0 top-full z-50 mt-1.5 w-72 rounded border border-slate-800 bg-[#07090e] p-1 shadow-2xl shadow-black/90">
+              <div className="absolute left-0 top-full z-50 mt-1.5 w-76 rounded border border-slate-800 bg-[#07090e] p-1 shadow-2xl shadow-black/90">
                 <div className="px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-slate-500">
                   Vehicle Profile Presets
                 </div>
                 {(
                   [
-                    { id: 'ist27', label: 'IST27 Baseline', badge: '80 kW EV' },
+                    { id: 'ist26-rwd', label: 'IST26 RWD (Cascadia)', badge: '335.5kg · 3.2:1' },
                     { id: 'ist27-twotrack', label: 'IST27 TwoTrackSim', badge: '11.8:1 · Saved' },
+                    { id: 'ist27', label: 'IST27 Baseline', badge: '80 kW EV' },
                     { id: 'tpsc', label: 'TPSC Reference', badge: '220+ km/h' },
                   ] as const
                 ).map((item) => {
@@ -751,10 +787,11 @@ export default function Workbench() {
             {trackMenuOpen && (
               <div className="absolute left-0 top-full z-50 mt-1.5 w-80 rounded border border-slate-800 bg-[#07090e] p-1.5 shadow-2xl shadow-black/90">
                 <div className="px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-cyan-400/90">
-                  Formula Student
+                  Formula Student & İTÜ Havuz
                 </div>
                 {(
                   [
+                    { id: 'itu-havuz', label: 'İTÜ Havuz Otoparkı (KDE Loop)', len: '135m' },
                     { id: 'skidpad', label: 'FS Skidpad', len: '75m' },
                     { id: 'acceleration', label: 'FS Accel', len: '75m' },
                     { id: 'autocross', label: 'FS Autocross', len: '840m' },
@@ -1135,7 +1172,7 @@ export default function Workbench() {
                   </span>
                 )}
               </div>
-              <div className="grid grid-cols-3 gap-1">
+              <div className="grid grid-cols-2 gap-1">
                 {KORFEZ_PRESETS.map((p) => (
                   <button
                     key={p.id}
@@ -1143,7 +1180,13 @@ export default function Workbench() {
                     className={`btn !px-1.5 !py-1 text-center text-[9px] normal-case ${presetId === p.id ? 'btn-active' : ''}`}
                     onClick={() => applyPreset(p.id)}
                   >
-                    {p.id === 'ist27-twotrack' ? 'IST27 - TwoTrackSim' : p.id === 'ist27' ? 'IST27 Baseline' : 'TPSC Touring'}
+                    {p.id === 'ist26-rwd'
+                      ? 'IST26 RWD (3.2:1)'
+                      : p.id === 'ist27-twotrack'
+                        ? 'IST27 - TwoTrackSim'
+                        : p.id === 'ist27'
+                          ? 'IST27 Baseline'
+                          : 'TPSC Touring'}
                   </button>
                 ))}
               </div>
