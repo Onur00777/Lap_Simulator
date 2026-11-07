@@ -688,15 +688,28 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
           </div>
 
           {onOpenHavuzLab && (
-            <button
-              type="button"
-              onClick={onOpenHavuzLab}
-              title="Switch to İTÜ Havuz Otoparkı Telemetry & SIL Lab"
-              className="inline-flex h-7 items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 font-mono text-[10px] font-medium uppercase tracking-wider text-amber-300 transition hover:bg-amber-500/20"
+            <div
+              className="inline-flex shrink-0 items-center rounded-lg border border-white/[0.1] bg-[#11141d] p-0.5 font-mono text-[10px]"
+              role="navigation"
+              aria-label="Çalışma Alanı Geçişi (Pist Simülatörü / İTÜ Havuz Lab)"
             >
-              <span>🅿️</span>
-              <span className="hidden sm:inline">Havuz SIL Lab</span>
-            </button>
+              <span
+                className="inline-flex h-7 items-center gap-1.5 rounded-md border border-cyan-500/40 bg-cyan-950/60 px-2.5 font-semibold uppercase tracking-wider text-cyan-300 shadow-sm"
+                title="Şu an buradasınız: Ana Pist Simülatörü (Körfez · FS · Havuz)"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
+                <span>🏁 Pist Simülatörü</span>
+              </span>
+              <button
+                type="button"
+                onClick={onOpenHavuzLab}
+                title="Tıklayarak İTÜ Havuz Otoparkı Telemetri & SIL Laboratuvarına geçin"
+                className="inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 font-medium uppercase tracking-wider text-amber-300/90 transition hover:bg-amber-500/15 hover:text-amber-200"
+              >
+                <span>🅿️ Havuz Lab&apos;a Geç</span>
+                <span>→</span>
+              </button>
+            </div>
           )}
 
           <div className="h-4 w-[1px] shrink-0 bg-white/[0.08]" />
@@ -1409,7 +1422,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                   {dTrack.name} · {fmt(dTrack.length, 1)} m · {lap.corners.length} corners
                 </span>
               }
-              bodyClassName="relative flex h-[500px] flex-col"
+              bodyClassName="flex h-[540px] flex-col"
             >
               {korfezOn && (
                 <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.06] px-3 py-1.5 font-mono text-[10px] text-slate-400">
@@ -1448,65 +1461,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                 </div>
               )}
 
-              {/* Floating Glass Playback Pill Docked Over Canvas */}
-              <div className="pointer-events-auto absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/[0.12] bg-[#090a0f]/85 px-3 py-1.5 shadow-2xl backdrop-blur-xl">
-                <button
-                  type="button"
-                  onClick={() => setPlaying((p) => !p)}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium transition ${
-                    playing
-                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                      : 'bg-white/[0.06] text-white hover:bg-white/[0.12]'
-                  }`}
-                >
-                  <span>{playing ? '❚❚' : '▶'}</span>
-                  <span>{playing ? 'Pause' : 'Play Lap'}</span>
-                </button>
-
-                <div className="h-4 w-[1px] bg-white/[0.1]" />
-
-                <label className="flex items-center gap-1 font-mono text-[11px] text-slate-300">
-                  <span className="text-[10px] uppercase text-slate-400">Speed:</span>
-                  <select
-                    className="rounded-md border border-white/[0.08] bg-slate-900/90 px-1.5 py-0.5 font-mono text-[11px] tabular-nums text-white outline-none"
-                    value={playRate}
-                    onChange={(e) => setPlayRate(Number(e.target.value))}
-                  >
-                    {[0.5, 1, 2, 4].map((r) => (
-                      <option key={r} value={r}>
-                        {r}x
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <div className="h-4 w-[1px] bg-white/[0.1]" />
-
-                <div className="flex items-center gap-0.5 font-mono text-[10px]">
-                  {(
-                    [
-                      { value: 'speed', label: 'Speed' },
-                      { value: 'latg', label: 'Lateral G' },
-                      { value: 'grip', label: 'Grip' },
-                      { value: 'mode', label: 'Mode' },
-                    ] as const
-                  ).map((m) => (
-                    <button
-                      key={m.value}
-                      type="button"
-                      onClick={() => setColorMode(m.value)}
-                      className={`rounded-full px-2.5 py-0.5 uppercase tracking-wider transition ${
-                        colorMode === m.value
-                          ? 'bg-slate-800 text-cyan-300 border border-white/[0.1]'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      {m.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
+              {/* Full Unobstructed Track Map Canvas */}
               <div className="min-h-0 flex-1">
                 <TrackCanvas
                   track={dTrack}
@@ -1521,6 +1476,74 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                   mapAlign={korfezOn ? mapAlign : undefined}
                   mapSrcOverride={mapUpload}
                 />
+              </div>
+
+              {/* Dedicated Non-Overlapping Bottom Playback & Color-Mode Bar */}
+              <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-white/[0.07] bg-[#0b0e17]/95 px-3.5 py-2 backdrop-blur-md">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setPlaying((p) => !p)}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 font-mono text-xs font-medium transition ${
+                      playing
+                        ? 'border border-cyan-500/50 bg-cyan-500/20 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.2)]'
+                        : 'border border-white/[0.1] bg-white/[0.06] text-white hover:bg-white/[0.12]'
+                    }`}
+                  >
+                    <span>{playing ? '❚❚' : '▶'}</span>
+                    <span>{playing ? 'Pause' : 'Play Lap'}</span>
+                  </button>
+
+                  <div className="h-4 w-[1px] bg-white/[0.1]" />
+
+                  <label className="flex items-center gap-1.5 font-mono text-[11px] text-slate-300">
+                    <span className="text-[10px] uppercase text-slate-400">Speed:</span>
+                    <select
+                      className="rounded-md border border-white/[0.08] bg-slate-900/90 px-2 py-0.5 font-mono text-[11px] tabular-nums text-white outline-none"
+                      value={playRate}
+                      onChange={(e) => setPlayRate(Number(e.target.value))}
+                    >
+                      {[0.5, 1, 2, 4].map((r) => (
+                        <option key={r} value={r}>
+                          {r}x
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <div className="h-4 w-[1px] bg-white/[0.1]" />
+
+                  <div className="flex items-center gap-0.5 rounded-full border border-white/[0.07] bg-[#090a0f]/80 p-0.5 font-mono text-[10px]">
+                    {(
+                      [
+                        { value: 'speed', label: 'Speed' },
+                        { value: 'latg', label: 'Lateral G' },
+                        { value: 'grip', label: 'Grip' },
+                        { value: 'mode', label: 'Mode' },
+                      ] as const
+                    ).map((m) => (
+                      <button
+                        key={m.value}
+                        type="button"
+                        onClick={() => setColorMode(m.value)}
+                        className={`rounded-full px-2.5 py-0.5 uppercase tracking-wider transition ${
+                          colorMode === m.value
+                            ? 'border border-white/[0.12] bg-slate-800 text-cyan-300'
+                            : 'text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        {m.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Live Cursor Position Readout During Playback / Hover */}
+                {safeCursor != null && (
+                  <div className="font-mono text-[11px] tabular-nums text-cyan-300">
+                    s = {fmt(ch.s[safeCursor], 1)} m · {fmt(kph(ch.v[safeCursor]), 1)} km/h
+                  </div>
+                )}
               </div>
             </Panel>
 

@@ -39,23 +39,38 @@ export default function ClientApp() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#090a0f] text-slate-200">
-      {/* When in IST26 Havuz SIL Lab, show a sleek 50px Apple Pro Top Bar to switch back or change vehicles */}
+      {/* When in IST26 Havuz SIL Lab, show the identical 50px Apple Pro Top Bar with the 2-state Workspace Switcher */}
       {workspaceMode === 'ist26-havuz-lab' && (
         <header className="sticky top-0 z-40 flex h-[50px] min-h-[50px] max-h-[50px] items-center justify-between gap-3 border-b border-white/[0.07] bg-[#090a0f]/85 px-4 font-mono text-xs backdrop-blur-xl">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <div className="flex items-baseline gap-1.5">
               <span className="text-sm font-bold tracking-[0.22em] text-white">APEX</span>
               <span className="text-sm font-light tracking-widest text-slate-400">LAPSIM</span>
             </div>
-            <div className="h-4 w-[1px] bg-white/[0.08]" />
-            <button
-              type="button"
-              onClick={() => setWorkspaceMode('main-simulator')}
-              className="inline-flex h-8 items-center gap-2 rounded-lg border border-white/[0.1] bg-[#11141d] px-3 text-xs font-medium text-cyan-300 transition hover:border-cyan-500/40 hover:text-white"
+
+            {/* Identical 2-State Segmented Workspace Switcher */}
+            <div
+              className="inline-flex shrink-0 items-center rounded-lg border border-white/[0.1] bg-[#11141d] p-0.5 font-mono text-[10px]"
+              role="navigation"
+              aria-label="Çalışma Alanı Geçişi (Pist Simülatörü / İTÜ Havuz Lab)"
             >
-              <span>←</span>
-              <span>Circuit Simulator (Körfez · FS · Havuz)</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => setWorkspaceMode('main-simulator')}
+                title="Tıklayarak Ana Pist Simülatörüne (Körfez · FS · Havuz) geri dönün"
+                className="inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 font-medium uppercase tracking-wider text-cyan-300/90 transition hover:bg-cyan-500/15 hover:text-cyan-200"
+              >
+                <span>←</span>
+                <span>🏁 Pist Simülatörü&apos;ne Geç</span>
+              </button>
+              <span
+                className="inline-flex h-7 items-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-950/60 px-2.5 font-semibold uppercase tracking-wider text-amber-300 shadow-sm"
+                title="Şu an buradasınız: İTÜ Havuz Otoparkı Telemetri & SIL Laboratuvarı"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]" />
+                <span>🅿️ İTÜ Havuz Lab</span>
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-1.5 rounded-lg border border-white/[0.07] bg-[#11141d]/90 p-0.5">
