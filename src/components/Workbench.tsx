@@ -191,7 +191,9 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
   const [presetMenuOpen, setPresetMenuOpen] = useState(false);
   const [trackMenuOpen, setTrackMenuOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [engineMenuOpen, setEngineMenuOpen] = useState(false);
   const [leftInspectorOpen, setLeftInspectorOpen] = useState(true);
+  const [ggDiagramOpen, setGgDiagramOpen] = useState(false);
   const [canCockpitOpen, setCanCockpitOpen] = useState(false);
   const [benchmarksOpen, setBenchmarksOpen] = useState(false);
   const [mapAlign, setMapAlign] = useState<MapAlign>({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true });
@@ -202,10 +204,11 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
   const presetMenuRef = useRef<HTMLDivElement>(null);
   const trackMenuRef = useRef<HTMLDivElement>(null);
   const exportMenuRef = useRef<HTMLDivElement>(null);
+  const engineMenuRef = useRef<HTMLDivElement>(null);
 
   // Close header dropdowns on outside click
   useEffect(() => {
-    if (!presetMenuOpen && !trackMenuOpen && !exportOpen) return;
+    if (!presetMenuOpen && !trackMenuOpen && !exportOpen && !engineMenuOpen) return;
     const onDown = (e: MouseEvent) => {
       const target = e.target as Node;
       if (presetMenuRef.current && !presetMenuRef.current.contains(target)) {
@@ -217,10 +220,13 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
       if (exportMenuRef.current && !exportMenuRef.current.contains(target)) {
         setExportOpen(false);
       }
+      if (engineMenuRef.current && !engineMenuRef.current.contains(target)) {
+        setEngineMenuOpen(false);
+      }
     };
     window.addEventListener('mousedown', onDown);
     return () => window.removeEventListener('mousedown', onDown);
-  }, [presetMenuOpen, trackMenuOpen, exportOpen]);
+  }, [presetMenuOpen, trackMenuOpen, exportOpen, engineMenuOpen]);
 
   // Load saved IST27 - TwoTrackSim profile and active session from localStorage on mount
   useEffect(() => {
@@ -659,62 +665,65 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
   return (
     <div className="flex min-h-screen flex-col bg-[#090a0f] text-slate-200">
       {/* ===================================================================== */}
-      {/* A. PERSISTENT TOP APP BAR (Single 50px Apple Pro Ribbon)              */}
+      {/* PHASE 1: PERSISTENT MACOS UNIFIED TOP TOOLBAR (48px Glass Ribbon)      */}
       {/* ===================================================================== */}
-      <header className="sticky top-0 z-30 flex h-[50px] min-h-[50px] max-h-[50px] items-center justify-between gap-2 border-b border-white/[0.07] bg-[#090a0f]/85 px-4 backdrop-blur-xl">
-        {/* ZONE A (LEFT): BRANDING, WORKSPACE SWITCHER & CONTEXT SELECTORS */}
-        <div className="flex shrink-0 items-center gap-2.5">
-          {/* Inspector Sidebar Toggle */}
+      <header className="sticky top-0 z-30 flex h-12 min-h-[48px] max-h-[48px] items-center justify-between gap-2 border-b border-white/[0.08] bg-[#0c0d14]/70 px-3.5 backdrop-blur-xl">
+        {/* 1. LEFT GROUP: SIDEBAR TOGGLE, BRANDING & WORKSPACE SWITCHER */}
+        <div className="flex shrink-0 items-center gap-2">
+          {/* Minimalist Sidebar Toggle Icon [ ◨ ] */}
           <button
             type="button"
             onClick={() => setLeftInspectorOpen((o) => !o)}
-            title={leftInspectorOpen ? 'Hide Vehicle Inspector Sidebar' : 'Show Vehicle Inspector Sidebar'}
-            className={`inline-flex h-8 w-8 items-center justify-center rounded-lg border transition ${
+            title={leftInspectorOpen ? 'Hide Vehicle Setup Drawer (Esc)' : 'Open Vehicle Setup Drawer'}
+            aria-label="Toggle Vehicle Setup Drawer"
+            className={`inline-flex h-7 w-7 items-center justify-center rounded-md border transition ${
               leftInspectorOpen
-                ? 'border-white/[0.12] bg-slate-800/80 text-cyan-300'
-                : 'border-white/[0.06] bg-slate-900/60 text-slate-400 hover:text-slate-200'
+                ? 'border-white/[0.16] bg-slate-800/90 text-cyan-300 shadow-sm'
+                : 'border-white/[0.06] bg-white/[0.03] text-slate-400 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white'
             }`}
           >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="3" width="18" height="18" rx="3" />
               <line x1="9" y1="3" x2="9" y2="21" />
             </svg>
           </button>
 
-          {/* Brand: Sleek "APEX" in crisp white, "LAPSIM" in subtle tracking-wide slate-400 */}
-          <div className="flex shrink-0 items-baseline gap-1.5" title="ApexLapSim — Motorsport Vehicle Dynamics Suite">
-            <span className="font-mono text-sm font-bold tracking-[0.22em] text-white">APEX</span>
-            <span className="font-mono text-sm font-light tracking-widest text-slate-400">LAPSIM</span>
+          {/* Brand: "APEX" in crisp white, "LAPSIM" in subtle tracking-wide slate-500 */}
+          <div className="flex shrink-0 items-baseline gap-1" title="ApexLapSim — Formula Student Lap Time Simulator">
+            <span className="font-mono text-xs font-bold tracking-[0.22em] text-white">APEX</span>
+            <span className="font-mono text-xs font-light tracking-widest text-slate-500">LAPSIM</span>
           </div>
 
           {onOpenHavuzLab && (
             <div
-              className="inline-flex shrink-0 items-center rounded-lg border border-white/[0.1] bg-[#11141d] p-0.5 font-mono text-[10px]"
+              className="inline-flex shrink-0 items-center rounded-lg border border-white/[0.08] bg-[#11141d]/90 p-0.5 font-mono text-[10px]"
               role="navigation"
-              aria-label="Çalışma Alanı Geçişi (Pist Simülatörü / İTÜ Havuz Lab)"
+              aria-label="Çalışma Alanı Seçimi"
             >
               <span
-                className="inline-flex h-7 items-center gap-1.5 rounded-md border border-cyan-500/40 bg-cyan-950/60 px-2.5 font-semibold uppercase tracking-wider text-cyan-300 shadow-sm"
+                className="inline-flex h-6 items-center gap-1.5 rounded-md border border-cyan-500/40 bg-cyan-950/60 px-2 font-semibold uppercase tracking-wider text-cyan-300 shadow-sm"
                 title="Şu an buradasınız: Ana Pist Simülatörü (Körfez · FS · Havuz)"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
-                <span>🏁 Pist Simülatörü</span>
+                <span className="hidden sm:inline">🏁 Pist Simülatörü</span>
+                <span className="sm:hidden">🏁 Pist</span>
               </span>
               <button
                 type="button"
                 onClick={onOpenHavuzLab}
                 title="Tıklayarak İTÜ Havuz Otoparkı Telemetri & SIL Laboratuvarına geçin"
-                className="inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 font-medium uppercase tracking-wider text-amber-300/90 transition hover:bg-amber-500/15 hover:text-amber-200"
+                className="inline-flex h-6 items-center gap-1 rounded-md px-2 font-medium uppercase tracking-wider text-amber-300/90 transition hover:bg-amber-500/15 hover:text-amber-200"
               >
-                <span>🅿️ Havuz Lab&apos;a Geç</span>
+                <span>🅿️ Havuz Lab</span>
                 <span>→</span>
               </button>
             </div>
           )}
+        </div>
 
-          <div className="h-4 w-[1px] shrink-0 bg-white/[0.08]" />
-
-          {/* Vehicle Preset Segmented Popover */}
+        {/* 2. CENTER CONTEXT SELECTORS (Subtle macOS Popover Buttons) */}
+        <div className="flex shrink-0 items-center gap-1.5">
+          {/* Vehicle Preset Popover Button */}
           <div className="relative shrink-0" ref={presetMenuRef}>
             <button
               type="button"
@@ -724,16 +733,15 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                 setPresetMenuOpen((o) => !o);
                 setTrackMenuOpen(false);
                 setExportOpen(false);
+                setEngineMenuOpen(false);
               }}
               title={`Vehicle Preset: ${presetDisplayLabel}`}
-              className="inline-flex h-8 shrink-0 items-center gap-2 rounded-lg border border-white/[0.08] bg-[#11141d]/90 px-2.5 font-mono text-xs text-slate-200 outline-none transition hover:border-white/[0.16]"
+              className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-white/[0.08] bg-[#11141d]/90 px-2 font-mono text-xs text-slate-200 outline-none transition hover:border-white/[0.18]"
             >
-              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400 hidden md:inline">
-                Vehicle:
-              </span>
-              <span className="whitespace-nowrap font-medium text-white">{presetDisplayLabel}</span>
+              <span className="text-[10px] text-slate-500 hidden xl:inline">Vehicle:</span>
+              <span className="max-w-[120px] truncate sm:max-w-none font-medium text-white">{presetDisplayLabel}</span>
               <svg
-                className={`h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform ${presetMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
+                className={`h-3 w-3 shrink-0 text-slate-400 transition-transform ${presetMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -746,7 +754,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
             </button>
 
             {presetMenuOpen && (
-              <div className="absolute left-0 top-full z-50 mt-1.5 w-76 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl">
+              <div className="absolute left-0 top-full z-50 mt-1.5 w-72 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl">
                 <div className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-slate-400">
                   Vehicle Preset
                 </div>
@@ -767,7 +775,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                         applyPreset(item.id);
                         setPresetMenuOpen(false);
                       }}
-                      className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left font-mono text-xs transition ${
+                      className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left font-mono text-xs transition ${
                         active
                           ? 'bg-slate-800/95 text-cyan-300 border border-white/[0.1]'
                           : 'border border-transparent text-slate-300 hover:bg-white/[0.04] hover:text-white'
@@ -782,7 +790,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
             )}
           </div>
 
-          {/* Circuit Selector Segmented Popover */}
+          {/* Circuit Selector Popover Button */}
           <div className="relative shrink-0" ref={trackMenuRef}>
             <button
               type="button"
@@ -792,16 +800,15 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                 setTrackMenuOpen((o) => !o);
                 setPresetMenuOpen(false);
                 setExportOpen(false);
+                setEngineMenuOpen(false);
               }}
               title={`Active Circuit: ${dTrack.name} (${fmt(dTrack.length, 0)} m)`}
-              className="inline-flex h-8 shrink-0 items-center gap-2 rounded-lg border border-white/[0.08] bg-[#11141d]/90 px-2.5 font-mono text-xs text-slate-200 outline-none transition hover:border-white/[0.16]"
+              className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-white/[0.08] bg-[#11141d]/90 px-2 font-mono text-xs text-slate-200 outline-none transition hover:border-white/[0.18]"
             >
-              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400 hidden md:inline">
-                Circuit:
-              </span>
-              <span className="whitespace-nowrap font-medium text-white">{trackDisplayLabel}</span>
+              <span className="text-[10px] text-slate-500 hidden xl:inline">Circuit:</span>
+              <span className="max-w-[110px] truncate sm:max-w-none font-medium text-white">{trackDisplayLabel}</span>
               <svg
-                className={`h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform ${trackMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
+                className={`h-3 w-3 shrink-0 text-slate-400 transition-transform ${trackMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -899,13 +906,10 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
               </div>
             )}
           </div>
-        </div>
 
-        {/* ZONE B (CENTER): SOLVER ENGINE QUICK-BAR (Minimal Segmented Controls) */}
-        <div className="hidden shrink-0 items-center gap-1.5 lg:flex">
-          {/* 1. Line: [Center | Apex] */}
+          {/* Minimalist Segmented Line Toggle: [ Center | Apex ] */}
           <div
-            className="inline-flex items-center rounded-lg border border-white/[0.07] bg-[#11141d]/90 p-0.5"
+            className="hidden sm:inline-flex items-center rounded-md border border-white/[0.08] bg-[#11141d]/90 p-0.5"
             role="group"
             aria-label="Racing Line Mode"
           >
@@ -927,89 +931,180 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
             </button>
           </div>
 
-          {/* 2. Model: [Point | 2-Track Open | 2-Track TV] */}
-          <div
-            className="inline-flex items-center rounded-lg border border-white/[0.07] bg-[#11141d]/90 p-0.5"
-            role="group"
-            aria-label="Vehicle Dynamics Model"
-          >
+          {/* Secondary Settings Popover Button [ ⚙ Engine ▾ ] */}
+          <div className="relative shrink-0" ref={engineMenuRef}>
             <button
               type="button"
-              onClick={() => setModel('point-mass')}
-              title="Point-Mass — Single-track friction-ellipse QSS solver"
-              className={`${pillBase} ${model === 'point-mass' ? pillActive : pillIdle}`}
+              aria-label="Engine Settings"
+              aria-expanded={engineMenuOpen}
+              onClick={() => {
+                setEngineMenuOpen((o) => !o);
+                setPresetMenuOpen(false);
+                setTrackMenuOpen(false);
+                setExportOpen(false);
+              }}
+              title="Solver Engine: Model & ODE Solver Settings"
+              className={`inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition ${
+                engineMenuOpen
+                  ? 'border-cyan-500/50 bg-slate-800 text-cyan-300'
+                  : 'border-white/[0.08] bg-[#11141d]/90 text-slate-300 hover:border-white/[0.18] hover:text-white'
+              }`}
             >
-              Point
+              <span>⚙ Engine</span>
+              <span className="hidden md:inline text-[10px] text-slate-400">
+                ({model === 'point-mass' ? 'Point' : model === 'two-track-open' ? 'Open' : 'TV'} · {integrator.toUpperCase()})
+              </span>
+              <svg
+                className={`h-3 w-3 shrink-0 text-slate-400 transition-transform ${engineMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </button>
-            <button
-              type="button"
-              onClick={() => setModel('two-track-open')}
-              title="2-Track Open — 4-corner load transfer with open differential"
-              className={`${pillBase} ${model === 'two-track-open' ? pillActive : pillIdle}`}
-            >
-              <span className="hidden 2xl:inline">2-Track Open</span>
-              <span className="2xl:hidden">Open</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setModel('two-track-tv')}
-              title="2-Track TV — Active direct yaw-moment torque vectoring"
-              className={`${pillBase} ${model === 'two-track-tv' ? pillActive : pillIdle}`}
-            >
-              <span className="hidden 2xl:inline">2-Track TV</span>
-              <span className="2xl:hidden">TV</span>
-            </button>
-          </div>
 
-          {/* 3. Solver: [RK4 | Euler] */}
-          <div
-            className="inline-flex items-center rounded-lg border border-white/[0.07] bg-[#11141d]/90 p-0.5"
-            role="group"
-            aria-label="Numerical ODE Solver"
-          >
-            <button
-              type="button"
-              onClick={() => setIntegrator('rk4')}
-              title="RK4 — 4th-Order Runge-Kutta integration in v² domain"
-              className={`${pillBase} ${integrator === 'rk4' ? pillActive : pillIdle}`}
-            >
-              RK4
-            </button>
-            <button
-              type="button"
-              onClick={() => setIntegrator('euler')}
-              title="Euler — Explicit 1st-Order Euler integration in v² domain"
-              className={`${pillBase} ${integrator === 'euler' ? pillActive : pillIdle}`}
-            >
-              Euler
-            </button>
+            {engineMenuOpen && (
+              <div className="absolute left-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-2 shadow-2xl backdrop-blur-xl">
+                <div className="px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-slate-400">
+                  Vehicle Dynamics Model
+                </div>
+                <div className="grid grid-cols-3 gap-1 p-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setModel('point-mass');
+                      setEngineMenuOpen(false);
+                    }}
+                    title="Point-Mass — Single-track friction-ellipse QSS solver"
+                    className={`rounded-md py-1 text-center font-mono text-xs transition ${
+                      model === 'point-mass'
+                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-medium'
+                        : 'text-slate-400 hover:bg-white/[0.05] hover:text-white'
+                    }`}
+                  >
+                    Point
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setModel('two-track-open');
+                      setEngineMenuOpen(false);
+                    }}
+                    title="2-Track Open — 4-corner load transfer with open differential"
+                    className={`rounded-md py-1 text-center font-mono text-xs transition ${
+                      model === 'two-track-open'
+                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-medium'
+                        : 'text-slate-400 hover:bg-white/[0.05] hover:text-white'
+                    }`}
+                  >
+                    Open
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setModel('two-track-tv');
+                      setEngineMenuOpen(false);
+                    }}
+                    title="2-Track TV — Active direct yaw-moment torque vectoring"
+                    className={`rounded-md py-1 text-center font-mono text-xs transition ${
+                      model === 'two-track-tv'
+                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-medium'
+                        : 'text-slate-400 hover:bg-white/[0.05] hover:text-white'
+                    }`}
+                  >
+                    TV
+                  </button>
+                </div>
+
+                <div className="my-1.5 border-t border-white/[0.06]" />
+
+                <div className="px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-slate-400">
+                  Numerical ODE Solver
+                </div>
+                <div className="grid grid-cols-2 gap-1 p-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIntegrator('rk4');
+                      setEngineMenuOpen(false);
+                    }}
+                    title="RK4 — 4th-Order Runge-Kutta integration in v² domain"
+                    className={`rounded-md py-1 text-center font-mono text-xs transition ${
+                      integrator === 'rk4'
+                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-medium'
+                        : 'text-slate-400 hover:bg-white/[0.05] hover:text-white'
+                    }`}
+                  >
+                    RK4
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIntegrator('euler');
+                      setEngineMenuOpen(false);
+                    }}
+                    title="Euler — Explicit 1st-Order Euler integration in v² domain"
+                    className={`rounded-md py-1 text-center font-mono text-xs transition ${
+                      integrator === 'euler'
+                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-medium'
+                        : 'text-slate-400 hover:bg-white/[0.05] hover:text-white'
+                    }`}
+                  >
+                    Euler
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* ZONE C (RIGHT): TELEMETRY BADGE, CAN COCKPIT, SNAPSHOT & EXPORT */}
-        <div className="flex shrink-0 items-center gap-2">
-          {/* Subtle Monospace Telemetry Badge */}
-          <span
-            className="hidden h-8 items-center rounded-lg border border-white/[0.06] bg-[#11141d]/80 px-2.5 font-mono text-[11px] tabular-nums text-slate-400 2xl:inline-flex"
-            title="Solver telemetry: setup (envelope + powertrain tables) + 3-pass QSS solve time · mesh nodes"
+        {/* 3. RIGHT CONTROLS: G-G DIAGRAM, CAN COCKPIT, SNAPSHOT A & EXPORT */}
+        <div className="flex shrink-0 items-center gap-1.5">
+          {/* G-G Diagram Drawer Toggle */}
+          <button
+            type="button"
+            onClick={() => setGgDiagramOpen((o) => !o)}
+            title={ggDiagramOpen ? 'Hide G-G Polar Studio' : 'Open G-G Polar Studio (Friction Ellipse)'}
+            className={`inline-flex h-7 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition ${
+              ggDiagramOpen
+                ? 'border-cyan-500/50 bg-cyan-500/20 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.2)]'
+                : 'border-white/[0.08] bg-[#11141d]/90 text-slate-300 hover:border-white/[0.18] hover:text-white'
+            }`}
           >
-            {fmt(sim.setupMs, 0)} + {fmt(sim.solveMs, 0)} ms · {n} pts
-          </span>
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="9" />
+              <line x1="12" y1="3" x2="12" y2="21" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+            </svg>
+            <span className="hidden sm:inline">G-G Diagram</span>
+          </button>
 
           {/* CAN Cockpit Drawer Toggle Button */}
           <button
             type="button"
             onClick={() => setCanCockpitOpen((o) => !o)}
             title="Toggle Right Drawer: CAN Bus Monitor (FDCAN1/FDCAN2), Fault Injection & VCU C Codegen"
-            className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 font-mono text-xs transition ${
+            className={`inline-flex h-7 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition ${
               canCockpitOpen
-                ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300'
-                : 'border-white/[0.08] bg-[#11141d]/90 text-slate-300 hover:border-white/[0.16] hover:text-white'
+                ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-300 shadow-[0_0_10px_rgba(52,211,153,0.2)]'
+                : 'border-white/[0.08] bg-[#11141d]/90 text-slate-300 hover:border-white/[0.18] hover:text-white'
             }`}
           >
-            <span className={`h-2 w-2 rounded-full ${canCockpitOpen ? 'bg-emerald-400' : 'bg-slate-500'}`} />
-            <span>CAN Cockpit</span>
+            <span className={`h-1.5 w-1.5 rounded-full ${canCockpitOpen ? 'bg-emerald-400 shadow-[0_0_6px_#34d399]' : 'bg-slate-500'}`} />
+            <span>⚡ CAN Cockpit</span>
           </button>
+
+          {/* Monospace Execution Telemetry Badge */}
+          <span
+            className="hidden h-7 items-center rounded-md border border-white/[0.06] bg-[#11141d]/60 px-2 font-mono text-[10px] tabular-nums text-slate-400 2xl:inline-flex"
+            title="Solver telemetry: setup (envelope + powertrain tables) + 3-pass QSS solve time"
+          >
+            {fmt(sim.setupMs, 0)}+{fmt(sim.solveMs, 0)} ms
+          </span>
 
           {/* Snapshot Setup A Button */}
           {!baselineSolved ? (
@@ -1017,18 +1112,18 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
               type="button"
               onClick={snapshotBaseline}
               title="Snapshot Setup A — Lock current setup to compare Δt and KPI deltas"
-              className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/[0.08] bg-[#11141d]/90 px-2.5 font-mono text-xs text-slate-300 transition hover:border-white/[0.16] hover:text-white"
+              className="inline-flex h-7 items-center gap-1 rounded-md border border-white/[0.08] bg-[#11141d]/90 px-2 font-mono text-xs text-slate-300 transition hover:border-white/[0.18] hover:text-white"
             >
               <span className="text-cyan-400">⌖</span>
               <span className="hidden xl:inline">Snapshot Setup A</span>
             </button>
           ) : (
-            <div className="inline-flex h-8 items-center rounded-lg border border-cyan-500/40 bg-cyan-950/40">
+            <div className="inline-flex h-7 items-center rounded-md border border-cyan-500/40 bg-cyan-950/40">
               <button
                 type="button"
                 onClick={snapshotBaseline}
                 title={`Locked (Setup A: ${fmtTime(baselineSolved.lap.lapTime)}) — Click to overwrite Setup A`}
-                className="inline-flex h-full items-center gap-1.5 px-2.5 font-mono text-xs text-cyan-300 transition hover:bg-cyan-900/30"
+                className="inline-flex h-full items-center gap-1 px-2 font-mono text-xs text-cyan-300 transition hover:bg-cyan-900/30"
               >
                 <span>⌖</span>
                 <span>Setup A</span>
@@ -1037,7 +1132,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                 type="button"
                 onClick={() => setBaselineCfg(null)}
                 title="Clear Setup A baseline snapshot"
-                className="inline-flex h-full items-center border-l border-cyan-500/30 px-2 font-mono text-xs text-slate-400 transition hover:text-rose-400"
+                className="inline-flex h-full items-center border-l border-cyan-500/30 px-1.5 font-mono text-xs text-slate-400 transition hover:text-rose-400"
               >
                 ✕
               </button>
@@ -1046,24 +1141,24 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
 
           {/* Export Data Dropdown Button */}
           <div className="relative" ref={exportMenuRef}>
-            <div className="inline-flex h-8 items-center rounded-lg border border-white/[0.09] bg-[#11141d]/90 font-mono text-xs text-slate-200 transition hover:border-white/[0.18]">
+            <div className="inline-flex h-7 items-center rounded-md border border-white/[0.09] bg-[#11141d]/90 font-mono text-xs text-slate-200 transition hover:border-white/[0.18]">
               <button
                 type="button"
                 onClick={handleExportDossierMd}
                 title="Export FSAE Engineering Design Report (.md)"
-                className="inline-flex h-full items-center gap-1.5 px-2.5"
+                className="inline-flex h-full items-center gap-1.5 px-2"
               >
                 <span className="text-emerald-400">⬇</span>
-                <span>Export Data</span>
+                <span className="hidden sm:inline">Export</span>
               </button>
               <button
                 type="button"
                 aria-label="Open Export Menu"
                 onClick={() => setExportOpen((o) => !o)}
                 title="More export options (.pdf, .md, VCU .h/.c, CSV telemetry)"
-                className="inline-flex h-full items-center border-l border-white/[0.08] px-1.5 hover:bg-white/[0.04]"
+                className="inline-flex h-full items-center border-l border-white/[0.08] px-1 hover:bg-white/[0.04]"
               >
-                <svg className="h-3.5 w-3.5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="h-3 w-3 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
                   <path
                     fillRule="evenodd"
                     d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
@@ -1074,7 +1169,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
             </div>
 
             {exportOpen && (
-              <div className="absolute right-0 top-9 z-50 w-64 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl">
+              <div className="absolute right-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl">
                 <button
                   type="button"
                   onClick={handleExportDossierMd}

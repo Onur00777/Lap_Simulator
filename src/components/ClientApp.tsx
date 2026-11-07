@@ -39,18 +39,18 @@ export default function ClientApp() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#090a0f] text-slate-200">
-      {/* When in IST26 Havuz SIL Lab, show the identical 50px Apple Pro Top Bar with the 2-state Workspace Switcher */}
+      {/* When in IST26 Havuz SIL Lab, show the unified 48px macOS toolbar with the 2-state Workspace Switcher */}
       {workspaceMode === 'ist26-havuz-lab' && (
-        <header className="sticky top-0 z-40 flex h-[50px] min-h-[50px] max-h-[50px] items-center justify-between gap-3 border-b border-white/[0.07] bg-[#090a0f]/85 px-4 font-mono text-xs backdrop-blur-xl">
-          <div className="flex items-center gap-2.5">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-sm font-bold tracking-[0.22em] text-white">APEX</span>
-              <span className="text-sm font-light tracking-widest text-slate-400">LAPSIM</span>
+        <header className="sticky top-0 z-40 flex h-12 min-h-[48px] max-h-[48px] items-center justify-between gap-3 border-b border-white/[0.08] bg-[#0c0d14]/70 px-3.5 font-mono text-xs backdrop-blur-xl">
+          <div className="flex items-center gap-2">
+            <div className="flex items-baseline gap-1" title="ApexLapSim — Formula Student Lap Time Simulator">
+              <span className="font-mono text-xs font-bold tracking-[0.22em] text-white">APEX</span>
+              <span className="font-mono text-xs font-light tracking-widest text-slate-500">LAPSIM</span>
             </div>
 
             {/* Identical 2-State Segmented Workspace Switcher */}
             <div
-              className="inline-flex shrink-0 items-center rounded-lg border border-white/[0.1] bg-[#11141d] p-0.5 font-mono text-[10px]"
+              className="inline-flex shrink-0 items-center rounded-lg border border-white/[0.08] bg-[#11141d]/90 p-0.5 font-mono text-[10px]"
               role="navigation"
               aria-label="Çalışma Alanı Geçişi (Pist Simülatörü / İTÜ Havuz Lab)"
             >
@@ -58,13 +58,13 @@ export default function ClientApp() {
                 type="button"
                 onClick={() => setWorkspaceMode('main-simulator')}
                 title="Tıklayarak Ana Pist Simülatörüne (Körfez · FS · Havuz) geri dönün"
-                className="inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 font-medium uppercase tracking-wider text-cyan-300/90 transition hover:bg-cyan-500/15 hover:text-cyan-200"
+                className="inline-flex h-6 items-center gap-1.5 rounded-md px-2 font-medium uppercase tracking-wider text-cyan-300/90 transition hover:bg-cyan-500/15 hover:text-cyan-200"
               >
                 <span>←</span>
-                <span>🏁 Pist Simülatörü&apos;ne Geç</span>
+                <span>🏁 Pist Simülatörü</span>
               </button>
               <span
-                className="inline-flex h-7 items-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-950/60 px-2.5 font-semibold uppercase tracking-wider text-amber-300 shadow-sm"
+                className="inline-flex h-6 items-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-950/60 px-2 font-semibold uppercase tracking-wider text-amber-300 shadow-sm"
                 title="Şu an buradasınız: İTÜ Havuz Otoparkı Telemetri & SIL Laboratuvarı"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]" />
@@ -73,7 +73,7 @@ export default function ClientApp() {
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 rounded-lg border border-white/[0.07] bg-[#11141d]/90 p-0.5">
+          <div className="flex items-center gap-1 rounded-md border border-white/[0.08] bg-[#11141d]/90 p-0.5">
             {VEHICLE_OPTIONS.map((v) => {
               const active = activePresetId === v.id;
               return (
@@ -81,7 +81,7 @@ export default function ClientApp() {
                   key={v.id}
                   type="button"
                   onClick={() => setActivePresetId(v.id)}
-                  className={`inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 text-[11px] uppercase tracking-wider transition ${
+                  className={`inline-flex h-6 items-center gap-1.5 rounded px-2 text-[10px] uppercase tracking-wider transition ${
                     active
                       ? 'border border-white/[0.12] bg-slate-800/95 font-medium text-cyan-300 shadow-sm'
                       : 'border border-transparent text-slate-400 hover:text-slate-200'
