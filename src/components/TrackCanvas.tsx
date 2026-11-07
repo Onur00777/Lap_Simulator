@@ -102,7 +102,7 @@ export default function TrackCanvas({
   const tf: Transform = useMemo(() => {
     const padTop = 36;
     const padX = 36;
-    const padBottom = 84;
+    const padBottom = 96;
     const allX = [...rl.leftCurbX, ...rl.rightCurbX, ...track.x];
     const allY = [...rl.leftCurbY, ...rl.rightCurbY, ...track.y];
     const minX = Math.min(...allX);
@@ -332,14 +332,14 @@ export default function TrackCanvas({
     }
   }, [track, lap, rl, tf, w, h, colorAt, mapImg, mapAlign, mapSrcOverride]);
 
-  // overlay: active cursor dot + ghost dot (dual-dot replay)
+  // overlay: active directional car + ghost car (dual-vehicle replay)
   useEffect(() => {
     const c = overRef.current;
     if (!c) return;
     const ctx = setupCanvas(c, w, h);
     ctx.clearRect(0, 0, w, h);
 
-    // 1. Draw Ghost Dot (Baseline / Centerline Ghost)
+    // 1. Draw Orange Ghost Car (Centerline Reference) FIRST so active car is on top
     if (ghostLap && ghostCursor != null) {
       const gxArr = ghostTrack ? ghostTrack.x : rl.centerX;
       const gyArr = ghostTrack ? ghostTrack.y : rl.centerY;
@@ -350,51 +350,131 @@ export default function TrackCanvas({
       const gth = ghArr[gi] ?? 0;
 
       ctx.save();
-      ctx.shadowColor = '#f59e0b';
-      ctx.shadowBlur = 10;
-      ctx.fillStyle = 'rgba(245, 158, 11, 0.9)';
-      ctx.strokeStyle = '#fef3c7';
-      ctx.lineWidth = 1.5;
+      // Outer subtle dashed ring (#f59e0b with 60% opacity)
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.6)';
+      ctx.lineWidth = 1.4;
+      ctx.setLineDash([3, 2.5]);
       ctx.beginPath();
-      ctx.arc(gx, gy, 5.5, 0, Math.PI * 2);
+      ctx.arc(gx, gy, 10, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Stylized translucent ghost chevron oriented along heading
+      ctx.save();
+      ctx.translate(gx, gy);
+      ctx.rotate(-gth);
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.55)';
+      ctx.strokeStyle = 'rgba(254, 243, 199, 0.85)';
+      ctx.lineWidth = 1.2;
+      ctx.shadowColor = '#f59e0b';
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      ctx.moveTo(8, 0); // nose
+      ctx.lineTo(-6, -5.5); // left wing
+      ctx.lineTo(-2.5, 0); // inner notch
+      ctx.lineTo(-6, 5.5); // right wing
+      ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      ctx.shadowBlur = 0;
+      ctx.restore();
 
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 1.8;
-      ctx.beginPath();
-      ctx.moveTo(gx, gy);
-      ctx.lineTo(gx + 15 * Math.cos(gth), gy - 15 * Math.sin(gth));
-      ctx.stroke();
-
-      ctx.font = 'bold 9px Consolas, monospace';
-      ctx.fillStyle = '#fbbf24';
-      ctx.fillText('GHOST', gx + 8, gy + 12);
+      // Label "GHOST" in tiny 8px uppercase font directly above it
+      ctx.font = 'bold 8px Consolas, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.9)';
+      ctx.shadowColor = '#000000';
+      ctx.shadowBlur = 3;
+      ctx.fillText('GHOST', gx, gy - 12);
       ctx.restore();
     }
 
-    // 2. Draw Primary Active Dot (Optimal Racing Line / Active Setup)
-    if (cursor == null || cursor >= track.x.length) return;
-    const x = tf.sx(track.x[cursor]);
-    const y = tf.sy(track.y[cursor]);
-    const th = track.heading[cursor];
-    ctx.save();
-    ctx.shadowColor = '#22d3ee';
-    ctx.shadowBlur = 14;
-    ctx.fillStyle = '#22d3ee';
-    ctx.beginPath();
-    ctx.arc(x, y, 6.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.strokeStyle = '#e0f2fe';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + 18 * Math.cos(th), y - 18 * Math.sin(th));
-    ctx.stroke();
-    ctx.restore();
-  }, [cursor, ghostLap, ghostTrack, ghostCursor, rl, tf, track, w, h]);
+    // 2. Draw Cyan Active Car (Optimal Apex Line) on top
+    if (cursor != null && cursor < track.x.length) {
+      const ci = cursor;
+      const x = tf.sx(track.x[ci]);
+      const y = tf.sy(track.y[ci]);
+      const th = track.heading[ci];
+      const nPts = track.x.length;
+
+      ctx.save();
+
+      // A. 10-meter fading neon speed trail behind it
+      const trailPoints = Math.min(28, Math.max(8, Math.round(10 / Math.max(0.2, track.ds))));
+      const currentSpeed = ch.v[ci] ?? 10;
+      const speedAlpha = Math.min(1, Math.max(0.4, currentSpeed / 25));
+
+      for (let k = trailPoints; k >= 1; k--) {
+        const prevIdx = track.closed ? (ci - k + nPts) % nPts : Math.max(0, ci - k);
+        const nextIdx = track.closed ? (ci - k + 1 + nPts) % nPts : Math.max(0, ci - k + 1);
+        if (prevIdx === nextIdx) continue;
+
+        const x0 = tf.sx(track.x[prevIdx]);
+        const y0 = tf.sy(track.y[prevIdx]);
+        const x1 = tf.sx(track.x[nextIdx]);
+        const y1 = tf.sy(track.y[nextIdx]);
+
+        const fraction = 1 - k / trailPoints;
+        const alpha = fraction * fraction * 0.75 * speedAlpha;
+        const lineW = 1.0 + fraction * 2.8;
+
+        ctx.strokeStyle = `rgba(34, 211, 238, ${alpha.toFixed(3)})`;
+        ctx.lineWidth = lineW;
+        ctx.shadowColor = '#06b6d4';
+        ctx.shadowBlur = fraction * 8;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.stroke();
+      }
+
+      // B. Subtle dynamic radial glow
+      ctx.shadowBlur = 0;
+      const glowGrad = ctx.createRadialGradient(x, y, 1, x, y, 18);
+      glowGrad.addColorStop(0, 'rgba(34, 211, 238, 0.45)');
+      glowGrad.addColorStop(0.5, 'rgba(6, 182, 212, 0.2)');
+      glowGrad.addColorStop(1, 'rgba(6, 182, 212, 0)');
+      ctx.fillStyle = glowGrad;
+      ctx.beginPath();
+      ctx.arc(x, y, 18, 0, Math.PI * 2);
+      ctx.fill();
+
+      // C. Sleek directional arrow / teardrop wedge oriented along instantaneous yaw
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(-th);
+
+      const bodyGrad = ctx.createLinearGradient(-8, 0, 10, 0);
+      bodyGrad.addColorStop(0, '#0284c7');
+      bodyGrad.addColorStop(0.6, '#06b6d4');
+      bodyGrad.addColorStop(1, '#e0f2fe');
+
+      ctx.shadowColor = '#22d3ee';
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = bodyGrad;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.4;
+
+      ctx.beginPath();
+      ctx.moveTo(10, 0); // nose
+      ctx.lineTo(-7, -5.5); // left wing
+      ctx.lineTo(-4, 0); // rear diffuser notch
+      ctx.lineTo(-7, 5.5); // right wing
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Center luminous core cockpit dot
+      ctx.shadowBlur = 4;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(1, 0, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+      ctx.restore();
+    }
+  }, [cursor, ghostLap, ghostTrack, ghostCursor, rl, tf, track, w, h, ch.v]);
 
   const onMove = (e: React.MouseEvent) => {
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
@@ -419,8 +499,23 @@ export default function TrackCanvas({
       ? (['brake', 'full-throttle', 'part-throttle', 'cornering', 'coast'] as const).map((m) => ({ c: MODE_COLORS[m], l: MODE_LABELS[m] }))
       : null;
 
-  const tip = cursor != null && cursor < ch.v.length ? cursor : null;
-  const tipPos = tip != null ? { x: tf.sx(track.x[tip]), y: tf.sy(track.y[tip]) } : null;
+  const activeIdx = cursor != null && cursor >= 0 && cursor < ch.v.length ? cursor : 0;
+
+  const deltaInfo = useMemo(() => {
+    if (!ghostLap || ghostCursor == null) return null;
+    const gi = Math.min(ghostLap.channels.s.length - 1, Math.max(0, ghostCursor));
+    const sOpt = ch.s[activeIdx] ?? 0;
+    const sGhost = ghostLap.channels.s[gi] ?? 0;
+    const distDelta = sOpt - sGhost;
+    const vAvg = Math.max(2, ((ch.v[activeIdx] ?? 10) + (ghostLap.channels.v[gi] ?? 10)) / 2);
+    const timeDelta = -distDelta / vAvg;
+    const isOptimalLeading = distDelta >= 0;
+    return {
+      isOptimalLeading,
+      timeStr: `${isOptimalLeading ? '-' : '+'}${Math.abs(timeDelta).toFixed(2)} s`,
+      distStr: `${isOptimalLeading ? '-' : '+'}${Math.abs(distDelta).toFixed(1)} m`,
+    };
+  }, [ghostLap, ghostCursor, activeIdx, ch.s, ch.v]);
 
   return (
     <div ref={wrapRef} className="relative h-full min-h-[360px] w-full" onMouseMove={onMove} onMouseLeave={() => onHover(null)}>
@@ -460,49 +555,124 @@ export default function TrackCanvas({
           )}
         </div>
       </div>
-      <div className="pointer-events-none absolute bottom-2 left-3 font-mono text-[10px] text-hud-dim">
+
+      {/* Track & Alignment Footnote */}
+      <div className="pointer-events-none absolute bottom-2.5 left-3 z-10 font-mono text-[10px] text-slate-400">
         {rl.mode === 'optimal' ? (
-          <span className="text-hud-cyan">
+          <span className="text-cyan-300">
             Out-In-Out Optimal Line · width {fmt(rl.trackWidthM, 1)} m · ΔL {fmt(rl.lengthDeltaM, 1)} m · κ_peak −{fmt(rl.peakCurvatureReductionPct, 1)}%
           </span>
         ) : (
           <span>Geometric Centerline · width {fmt(rl.trackWidthM, 1)} m</span>
         )}
+        <span className="ml-2 text-slate-500">· grid 10 m · {track.length.toFixed(0)} m</span>
       </div>
-      <div className="pointer-events-none absolute bottom-2 right-3 font-mono text-[10px] text-hud-dim">grid 10 m · {track.length.toFixed(0)} m</div>
-      {tip != null && tipPos && (
-        <div
-          className="pointer-events-none absolute z-10 w-56 rounded border border-hud-cyan/50 bg-hud-bg/95 px-2.5 py-2 font-mono text-[11px] shadow-glow"
-          style={{ left: Math.min(tipPos.x + 14, w - 230), top: Math.max(4, Math.min(tipPos.y - 80, h - 235)) }}
-        >
-          <div className="mb-1 flex justify-between text-hud-cyan">
-            <span>s = {fmt(ch.s[tip], 1)} m</span>
-            <span>t = {fmt(ch.t[tip], 2)} s</span>
+
+      {/* Docked Live Car Telemetry HUD */}
+      <aside
+        aria-label="Live Car Telemetry HUD"
+        className="pointer-events-none absolute bottom-3 right-3 z-10 w-[300px] max-w-[calc(100%-24px)] rounded-xl border border-white/10 bg-[#0b0e17]/85 p-3 font-mono text-xs shadow-2xl backdrop-blur-md"
+      >
+        <div className="mb-2 flex items-center justify-between border-b border-white/[0.08] pb-1.5">
+          <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-slate-300">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_6px_#22d3ee]" />
+            <span>LIVE CAR TELEMETRY HUD</span>
           </div>
-          <Row k="Speed" v={`${fmt(kph(ch.v[tip]), 1)} km/h`} />
-          <Row k="Lat offset n(s)" v={`${rl.offsetN[tip] >= 0 ? '+' : ''}${fmt(rl.offsetN[tip], 2)} m`} />
-          <Row k="Long / Lat G" v={`${fmt(ch.gLong[tip], 2)} / ${fmt(ch.gLat[tip], 2)} G`} />
-          <Row k="Fz FL / FR" v={`${fmt(ch.fzFL[tip], 0)} / ${fmt(ch.fzFR[tip], 0)} N`} />
-          <Row k="Fz RL / RR" v={`${fmt(ch.fzRL[tip], 0)} / ${fmt(ch.fzRR[tip], 0)} N`} />
-          <Row k="K_us / SI" v={`${fmt(ch.understeerDegPerG[tip], 2)}°/G · ${fmt(ch.stabilityIndex[tip] * 100, 1)}%`} />
-          <Row k="Thr / Brk" v={`${fmt(ch.throttle[tip] * 100, 0)} / ${fmt(ch.brake[tip] * 100, 0)} %`} />
-          <Row k="P batt" v={`${fmt(ch.pElecKW[tip], 1)} kW`} />
-          <Row k="Radius" v={Math.abs(ch.kappa[tip]) > 1e-4 ? `${fmt(1 / Math.abs(ch.kappa[tip]), 1)} m` : '∞'} />
-          {ch.wheelLift[tip] && <div className="mt-1 font-bold text-hud-red">⚠ Inner Wheel Lift!</div>}
-          <div className="mt-1 text-[10px]" style={{ color: MODE_COLORS[ch.mode[tip]] }}>
-            {MODE_LABELS[ch.mode[tip]]}
+          <span
+            className="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
+            style={{
+              backgroundColor: `${MODE_COLORS[ch.mode[activeIdx]]}22`,
+              color: MODE_COLORS[ch.mode[activeIdx]],
+              border: `1px solid ${MODE_COLORS[ch.mode[activeIdx]]}55`,
+            }}
+          >
+            {MODE_LABELS[ch.mode[activeIdx]]}
+          </span>
+        </div>
+
+        {deltaInfo && (
+          <div
+            className={`mb-2 flex items-center justify-between rounded-md px-2 py-1 text-[10px] font-semibold ${
+              deltaInfo.isOptimalLeading
+                ? 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+                : 'border border-amber-500/30 bg-amber-500/10 text-amber-300'
+            }`}
+          >
+            <span className="flex items-center gap-1">
+              <span>{deltaInfo.isOptimalLeading ? '▲' : '▼'}</span>
+              <span>{deltaInfo.isOptimalLeading ? 'OPTIMAL LEAD' : 'GHOST LEAD'}</span>
+            </span>
+            <span className="tabular-nums">
+              {deltaInfo.timeStr} ({deltaInfo.distStr})
+            </span>
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[11px]">
+          <div className="flex justify-between">
+            <span className="text-slate-400">Distance s:</span>
+            <span className="tabular-nums text-white font-medium">{fmt(ch.s[activeIdx], 1)} m</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-400">Lap time t:</span>
+            <span className="tabular-nums text-cyan-300 font-medium">{fmt(ch.t[activeIdx], 2)} s</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-slate-400">Speed:</span>
+            <span className="tabular-nums text-white font-medium">{fmt(kph(ch.v[activeIdx]), 1)} km/h</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-400">Lat offset:</span>
+            <span className="tabular-nums text-slate-300">
+              {rl.offsetN[activeIdx] >= 0 ? '+' : ''}
+              {fmt(rl.offsetN[activeIdx], 2)} m
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-slate-400">Long G:</span>
+            <span className="tabular-nums text-white font-medium">{fmt(ch.gLong[activeIdx], 2)} G</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-400">Lat G:</span>
+            <span className="tabular-nums text-white font-medium">{fmt(ch.gLat[activeIdx], 2)} G</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-slate-400">Fz Front:</span>
+            <span className="tabular-nums text-slate-300">
+              {fmt(ch.fzFL[activeIdx], 0)} / {fmt(ch.fzFR[activeIdx], 0)} N
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-400">Fz Rear:</span>
+            <span className="tabular-nums text-slate-300">
+              {fmt(ch.fzRL[activeIdx], 0)} / {fmt(ch.fzRR[activeIdx], 0)} N
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-slate-400">Thr / Brk:</span>
+            <span className="tabular-nums text-white">
+              {fmt(ch.throttle[activeIdx] * 100, 0)}% / {fmt(ch.brake[activeIdx] * 100, 0)}%
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-400">Radius:</span>
+            <span className="tabular-nums text-slate-300">
+              {Math.abs(ch.kappa[activeIdx]) > 1e-4 ? `${fmt(1 / Math.abs(ch.kappa[activeIdx]), 1)} m` : '∞'}
+            </span>
           </div>
         </div>
-      )}
-    </div>
-  );
-}
 
-function Row({ k, v }: { k: string; v: string }) {
-  return (
-    <div className="flex justify-between gap-2">
-      <span className="text-hud-dim">{k}</span>
-      <span className="tabular-nums text-hud-text">{v}</span>
+        {ch.wheelLift[activeIdx] && (
+          <div className="mt-1.5 flex items-center justify-center gap-1 rounded bg-rose-500/20 py-0.5 text-[10px] font-bold text-rose-300 border border-rose-500/30">
+            <span>⚠</span>
+            <span>Inner Wheel Lift!</span>
+          </div>
+        )}
+      </aside>
     </div>
   );
 }
