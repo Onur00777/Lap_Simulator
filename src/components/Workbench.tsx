@@ -21,6 +21,7 @@ import {
 import {
   getPresetTrack,
   IST27_PRESET,
+  IST27_TWOTRACK_PRESET,
   isKorfezTrack,
   KORFEZ_PRESETS,
   KORFEZ_TRACKS,
@@ -33,6 +34,7 @@ import {
   type KorfezTrackId,
   type PresetTrackId,
   type Track,
+  type VehiclePresetId,
 } from '@/lib/tracks';
 import { analyzeKorfezLayout, compareKorfezLayouts } from '@/lib/solver/korfez-analysis';
 import { generateFsaeDesignReport, generateVcuBundle } from '@/lib/codegen';
@@ -54,6 +56,17 @@ import EndurancePanel from './panels/EndurancePanel';
 type TrackSel = PresetTrackId | 'custom';
 type Tab = 'corners' | 'tv' | 'sensitivity' | 'endurance' | 'launch' | 'powertrain' | 'codegen' | 'korfez';
 type Venue = 'fs' | 'korfez';
+
+interface SavedVehicleProfile {
+  vehPatch: Partial<Record<VehicleKey, number>>;
+  ptPatch: Partial<Record<PowertrainKey, number>>;
+  lambdaMu: number;
+  regen: boolean;
+  savedAt?: string;
+}
+
+const STORAGE_TWOTRACK_KEY = 'apexlapsim.preset.ist27-twotrack.v1';
+const STORAGE_SESSION_KEY = 'apexlapsim.activeSession.v1';
 
 interface BaselineConfig {
   veh: VehicleParams;
@@ -99,10 +112,20 @@ export default function Workbench() {
   const [trackSel, setTrackSel] = useState<TrackSel>('endurance');
   const [customTrack, setCustomTrack] = useState<Track | null>(null);
   const [csvMsg, setCsvMsg] = useState<string | null>(null);
+  const [presetId, setPresetId] = useState<VehiclePresetId>('ist27-twotrack');
+  const [savedTwoTrack, setSavedTwoTrack] = useState<SavedVehicleProfile>({
+    vehPatch: {},
+    ptPatch: { gearRatio: 11.8 },
+    lambdaMu: IST27_TWOTRACK_PRESET.vehicle.tire.lambdaMu,
+    regen: true,
+  });
   const [vehPatch, setVehPatch] = useState<Partial<Record<VehicleKey, number>>>({});
-  const [lambdaMu, setLambdaMu] = useState(DEFAULT_VEHICLE.tire.lambdaMu);
-  const [ptPatch, setPtPatch] = useState<Partial<Record<PowertrainKey, number>>>({});
+  const [lambdaMu, setLambdaMu] = useState(IST27_TWOTRACK_PRESET.vehicle.tire.lambdaMu);
+  const [ptPatch, setPtPatch] = useState<Partial<Record<PowertrainKey, number>>>({ gearRatio: 11.8 });
   const [regen, setRegen] = useState(true);
+  const [presetMsg, setPresetMsg] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+
   const [model, setModel] = useState<LateralModel>('point-mass');
   const [racingLineMode, setRacingLineMode] = useState<RacingLineMode>('centerline');
   const [integrator, setIntegrator] = useState<Integrator>('rk4');
@@ -113,15 +136,60 @@ export default function Workbench() {
   const [playing, setPlaying] = useState(false);
   const [playRate, setPlayRate] = useState(1);
   const [venue, setVenue] = useState<Venue>('fs');
-  const [presetId, setPresetId] = useState<'ist27' | 'tpsc'>('ist27');
   const [baselineCfg, setBaselineCfg] = useState<BaselineConfig | null>(null);
   const [mapAlign, setMapAlign] = useState<MapAlign>({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true });
   const [mapUpload, setMapUpload] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const mapFileRef = useRef<HTMLInputElement>(null);
+  const presetFileRef = useRef<HTMLInputElement>(null);
 
-  // deep links: ?track=autocross&tab=tv&model=two-track-tv&color=speed
+  // Load saved IST27 - TwoTrackSim profile and active session from localStorage on mount
   useEffect(() => {
+    try {
+      const rawTwoTrack = window.localStorage.getItem(STORAGE_TWOTRACK_KEY);
+      let loadedTwoTrack: SavedVehicleProfile | null = null;
+      if (rawTwoTrack) {
+        const parsed = JSON.parse(rawTwoTrack) as SavedVehicleProfile;
+        if (parsed && typeof parsed === 'object') {
+          loadedTwoTrack = {
+            vehPatch: parsed.vehPatch ?? {},
+            ptPatch: { gearRatio: 11.8, ...(parsed.ptPatch ?? {}) },
+            lambdaMu: typeof parsed.lambdaMu === 'number' ? parsed.lambdaMu : IST27_TWOTRACK_PRESET.vehicle.tire.lambdaMu,
+            regen: typeof parsed.regen === 'boolean' ? parsed.regen : true,
+            savedAt: parsed.savedAt,
+          };
+          setSavedTwoTrack(loadedTwoTrack);
+        }
+      }
+
+      const rawSession = window.localStorage.getItem(STORAGE_SESSION_KEY);
+      if (rawSession) {
+        const sess = JSON.parse(rawSession) as {
+          presetId?: VehiclePresetId;
+          vehPatch?: Partial<Record<VehicleKey, number>>;
+          ptPatch?: Partial<Record<PowertrainKey, number>>;
+          lambdaMu?: number;
+          regen?: boolean;
+        };
+        if (sess && typeof sess === 'object') {
+          if (sess.presetId === 'ist27-twotrack' || sess.presetId === 'ist27' || sess.presetId === 'tpsc') {
+            setPresetId(sess.presetId);
+          }
+          if (sess.vehPatch) setVehPatch(sess.vehPatch);
+          if (sess.ptPatch) setPtPatch(sess.ptPatch);
+          if (typeof sess.lambdaMu === 'number') setLambdaMu(sess.lambdaMu);
+          if (typeof sess.regen === 'boolean') setRegen(sess.regen);
+        }
+      } else if (loadedTwoTrack) {
+        setVehPatch(loadedTwoTrack.vehPatch);
+        setPtPatch(loadedTwoTrack.ptPatch);
+        setLambdaMu(loadedTwoTrack.lambdaMu);
+        setRegen(loadedTwoTrack.regen);
+      }
+    } catch {
+      // ignore localStorage read errors
+    }
+
     const q = new URLSearchParams(window.location.search);
     const t = q.get('track');
     if (t && KORFEZ_TRACKS.some((p) => p.id === t)) {
@@ -139,17 +207,87 @@ export default function Workbench() {
     if (c === 'mode' || c === 'speed' || c === 'latg' || c === 'grip') setColorMode(c);
     const cur = q.get('cursor');
     if (cur) setCursor(Number(cur));
+    setHydrated(true);
   }, []);
 
-  const basePreset = venue === 'korfez' && presetId === 'tpsc' ? TPSC_PRESET : IST27_PRESET;
+  // Auto-save active session on every parameter change so edits never disappear on refresh
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      window.localStorage.setItem(
+        STORAGE_SESSION_KEY,
+        JSON.stringify({ presetId, vehPatch, ptPatch, lambdaMu, regen }),
+      );
+    } catch {
+      // ignore quota errors
+    }
+  }, [hydrated, presetId, vehPatch, ptPatch, lambdaMu, regen]);
+
+  const applyPreset = useCallback(
+    (id: VehiclePresetId) => {
+      setPresetId(id);
+      if (id === 'ist27-twotrack') {
+        setVehPatch({ ...savedTwoTrack.vehPatch });
+        setPtPatch({ ...savedTwoTrack.ptPatch });
+        setLambdaMu(savedTwoTrack.lambdaMu);
+        setRegen(savedTwoTrack.regen);
+      } else if (id === 'tpsc') {
+        setVehPatch({});
+        setPtPatch({});
+        setLambdaMu(TPSC_PRESET.vehicle.tire.lambdaMu);
+        setRegen(true);
+      } else {
+        setVehPatch({});
+        setPtPatch({});
+        setLambdaMu(IST27_PRESET.vehicle.tire.lambdaMu);
+        setRegen(true);
+      }
+    },
+    [savedTwoTrack],
+  );
+
+  const saveCurrentToTwoTrack = useCallback(() => {
+    const profile: SavedVehicleProfile = {
+      vehPatch: { ...vehPatch },
+      ptPatch: { ...ptPatch },
+      lambdaMu,
+      regen,
+      savedAt: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+    };
+    setSavedTwoTrack(profile);
+    setPresetId('ist27-twotrack');
+    try {
+      window.localStorage.setItem(STORAGE_TWOTRACK_KEY, JSON.stringify(profile));
+      setPresetMsg(`✓ IST27 - TwoTrackSim kaydedildi (${profile.savedAt})`);
+      setTimeout(() => setPresetMsg(null), 3500);
+    } catch {
+      setPresetMsg('Kaydetme hatası (localStorage)');
+    }
+  }, [vehPatch, ptPatch, lambdaMu, regen]);
+
+  const basePreset =
+    presetId === 'tpsc' ? TPSC_PRESET : presetId === 'ist27-twotrack' ? IST27_TWOTRACK_PRESET : IST27_PRESET;
+
   const veh: VehicleParams = useMemo(() => {
-    const base = venue === 'korfez' ? basePreset.vehicle : DEFAULT_VEHICLE;
+    const base = basePreset.vehicle;
     return { ...base, ...vehPatch, tire: { ...base.tire, lambdaMu } };
-  }, [venue, basePreset, vehPatch, lambdaMu]);
+  }, [basePreset, vehPatch, lambdaMu]);
+
   const pt: PowertrainParams = useMemo(() => {
-    const base = venue === 'korfez' ? basePreset.powertrain : DEFAULT_POWERTRAIN;
+    const base = basePreset.powertrain;
     return { ...base, ...ptPatch, regenEnabled: regen };
-  }, [venue, basePreset, ptPatch, regen]);
+  }, [basePreset, ptPatch, regen]);
+
+  const isTwoTrackDirty = useMemo(() => {
+    if (presetId !== 'ist27-twotrack') return false;
+    return (
+      JSON.stringify(vehPatch) !== JSON.stringify(savedTwoTrack.vehPatch) ||
+      JSON.stringify(ptPatch) !== JSON.stringify(savedTwoTrack.ptPatch) ||
+      Math.abs(lambdaMu - savedTwoTrack.lambdaMu) > 1e-6 ||
+      regen !== savedTwoTrack.regen
+    );
+  }, [presetId, vehPatch, ptPatch, lambdaMu, regen, savedTwoTrack]);
+
   const dVeh = useDeferredValue(veh);
   const dPt = useDeferredValue(pt);
   const rawTrack: Track = trackSel === 'custom' && customTrack ? customTrack : getPresetTrack(trackSel === 'custom' ? 'endurance' : trackSel);
@@ -334,6 +472,14 @@ export default function Workbench() {
         </div>
         <span className="flex-1" />
         <Segmented
+          options={KORFEZ_PRESETS.map((p) => ({
+            value: p.id,
+            label: p.id === 'ist27-twotrack' ? 'IST27 - TwoTrackSim' : p.id === 'ist27' ? 'IST27 Baseline' : 'TPSC 220+ km/h',
+          }))}
+          value={presetId}
+          onChange={applyPreset}
+        />
+        <Segmented
           options={[
             { value: 'fs' as Venue, label: 'Formula Student' },
             { value: 'korfez' as Venue, label: 'Kocaeli — Körfez' },
@@ -428,19 +574,6 @@ export default function Workbench() {
         <span className="rounded border border-hud-line px-2 py-1 font-mono text-[10px] text-hud-dim" title="setup (envelope + powertrain tables) / 3-pass solve">
           {fmt(sim.setupMs, 0)} + {fmt(sim.solveMs, 0)} ms · {n} pts
         </span>
-        {venue === 'korfez' && (
-          <Segmented
-            options={KORFEZ_PRESETS.map((p) => ({ value: p.id, label: p.id === 'ist27' ? 'IST27 FS EV' : 'TPSC 220+ km/h' }))}
-            value={presetId}
-            onChange={(id) => {
-              setPresetId(id);
-              setVehPatch({});
-              setPtPatch({});
-              setLambdaMu((id === 'tpsc' ? TPSC_PRESET : IST27_PRESET).vehicle.tire.lambdaMu);
-              setRegen(true);
-            }}
-          />
-        )}
       </header>
       {venue === 'korfez' && <KorfezFacilityBar />}
       {baselineSolved && (
@@ -450,8 +583,8 @@ export default function Workbench() {
               Setup A (Baseline)
             </span>
             <span className="text-hud-dim">
-              {baselineSolved.cfg.veh.mass.toFixed(0)} kg · ClA {baselineSolved.cfg.veh.ClA.toFixed(2)} · CdA {baselineSolved.cfg.veh.CdA.toFixed(2)} ·{' '}
-              LLTD {(baselineSolved.cfg.veh.rollStiffnessFront * 100).toFixed(1)}% · {(baselineSolved.cfg.pt.batteryPowerLimit / 1000).toFixed(0)} kW ·{' '}
+              {baselineSolved.cfg.veh.mass.toFixed(1)} kg · ClA {baselineSolved.cfg.veh.ClA.toFixed(2)} · CdA {baselineSolved.cfg.veh.CdA.toFixed(2)} ·{' '}
+              LLTD {(baselineSolved.cfg.veh.rollStiffnessFront * 100).toFixed(1)}% · {(baselineSolved.cfg.pt.batteryPowerLimit / 1000).toFixed(1)} kW ·{' '}
               {baselineSolved.cfg.model} · {baselineSolved.cfg.racingLineMode}
             </span>
           </div>
@@ -514,20 +647,104 @@ export default function Workbench() {
           <Panel
             title="Vehicle"
             right={
-              <button
-                type="button"
-                className="btn !px-1.5 !py-0 text-[9px]"
-                onClick={() => {
-                  setVehPatch({});
-                  setPtPatch({});
-                  setLambdaMu(DEFAULT_VEHICLE.tire.lambdaMu);
-                  setRegen(true);
-                }}
-              >
-                reset
-              </button>
+              <div className="flex items-center gap-1 normal-case">
+                <button
+                  type="button"
+                  className="btn !px-1.5 !py-0 text-[9px] border-hud-lime/50 text-hud-lime hover:bg-hud-lime/15"
+                  onClick={saveCurrentToTwoTrack}
+                  title="Ekrandaki mevcut verileri IST27 - TwoTrackSim profiline kalıcı olarak kaydet"
+                >
+                  💾 Kaydet (TwoTrackSim)
+                </button>
+                <button
+                  type="button"
+                  className="btn !px-1.5 !py-0 text-[9px]"
+                  onClick={() => applyPreset(presetId)}
+                  title="Seçili profilin kayıtlı değerlerine geri dön"
+                >
+                  ↺ Geri Yükle
+                </button>
+              </div>
             }
           >
+            {/* Preset Selector & Persistence Controls inside Vehicle Panel */}
+            <div className="space-y-1.5 border-b border-hud-line bg-hud-panel2/50 px-3 py-2 font-mono text-[10px]">
+              <div className="flex items-center justify-between">
+                <span className="uppercase tracking-wider text-hud-cyan">Araç Profili (Preset)</span>
+                {presetId === 'ist27-twotrack' && (
+                  <span className={`text-[9px] ${isTwoTrackDirty ? 'text-hud-amber' : 'text-hud-lime'}`}>
+                    {isTwoTrackDirty ? '● Değiştirildi (Kaydedilmedi)' : '✓ Kayıtlı Profil Aktif'}
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-3 gap-1">
+                {KORFEZ_PRESETS.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className={`btn !px-1.5 !py-1 text-center text-[9px] normal-case ${presetId === p.id ? 'btn-active' : ''}`}
+                    onClick={() => applyPreset(p.id)}
+                  >
+                    {p.id === 'ist27-twotrack' ? 'IST27 - TwoTrackSim' : p.id === 'ist27' ? 'IST27 Baseline' : 'TPSC Touring'}
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center gap-1 pt-0.5">
+                <button
+                  type="button"
+                  className="btn flex-1 !py-0.5 text-[9px] border-hud-cyan/50 text-hud-cyan"
+                  onClick={saveCurrentToTwoTrack}
+                >
+                  💾 IST27 - TwoTrackSim Olarak Kaydet
+                </button>
+                <button
+                  type="button"
+                  className="btn !px-1.5 !py-0.5 text-[9px]"
+                  onClick={() =>
+                    downloadText(
+                      'IST27-TwoTrackSim-setup.json',
+                      JSON.stringify({ name: 'IST27 - TwoTrackSim', vehPatch, ptPatch, lambdaMu, regen, veh, pt }, null, 2),
+                      'application/json',
+                    )
+                  }
+                  title="Araç verilerini JSON dosyası olarak bilgisayarınıza yedekleyin"
+                >
+                  📥 JSON
+                </button>
+                <button
+                  type="button"
+                  className="btn !px-1.5 !py-0.5 text-[9px]"
+                  onClick={() => presetFileRef.current?.click()}
+                  title="JSON yedek dosyasından araç verilerini yükleyin"
+                >
+                  📤 Yükle
+                </button>
+                <input
+                  ref={presetFileRef}
+                  type="file"
+                  accept=".json"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      try {
+                        const data = JSON.parse(await f.text());
+                        if (data.vehPatch) setVehPatch(data.vehPatch);
+                        if (data.ptPatch) setPtPatch(data.ptPatch);
+                        if (typeof data.lambdaMu === 'number') setLambdaMu(data.lambdaMu);
+                        if (typeof data.regen === 'boolean') setRegen(data.regen);
+                        setPresetMsg('✓ JSON profil yüklendi');
+                        setTimeout(() => setPresetMsg(null), 3000);
+                      } catch {
+                        setPresetMsg('JSON okuma hatası');
+                      }
+                    }
+                    e.target.value = '';
+                  }}
+                />
+              </div>
+              {presetMsg && <div className="text-[10px] font-semibold text-hud-lime">{presetMsg}</div>}
+            </div>
             <VehicleForm
               veh={veh}
               onChange={(k, v) => setVehPatch((p) => ({ ...p, [k]: v }))}

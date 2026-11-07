@@ -157,12 +157,6 @@ function pitLane(track: Track, offset: number) {
   return { x, y, garages: KORFEZ_FACILITY.pitGarages };
 }
 
-/**
- * Corners are same-sign bends whose integrated heading change exceeds `minDeg`.
- * Curvature is smoothed first so the traced drawing's pixel noise does not split one
- * bend into a dozen. A bend that wraps past the start/finish line is handled by
- * rotating the trace to begin on a straight.
- */
 function significantCorners(track: Track, minDeg: number): { direction: 'L' | 'R'; sStart: number; sApex: number; sEnd: number }[] {
   const n = track.kappa.length;
   const half = Math.max(1, Math.round(18 / track.ds));
@@ -218,11 +212,6 @@ function turnAt(pts: XY[], i: number): number {
   return wrapAngle(Math.atan2(c[1] - b[1], c[0] - b[0]) - Math.atan2(b[1] - a[1], b[0] - a[0]));
 }
 
-/**
- * FST endurance layout: the GP with the long lake sweeper cut out (inner link) and a
- * cone chicane dropped onto each of the two remaining straights. Scaled to 1 380 m.
- */
-/** GP racing line with a cone chicane on each of the two longest straights, then scaled to 1 380 m. */
 function fstDrawing(gp: XY[]): XY[] {
   return chicanesOnStraights(gp);
 }
@@ -240,7 +229,6 @@ function chicanesOnStraights(pts: XY[]): XY[] {
   runs.sort((p, q) => q.b - q.a - (p.b - p.a));
   const chosen = runs.slice(0, 2).sort((p, q) => p.a - q.a);
   let out = pts.slice();
-  // insert from the end so indices stay valid
   for (const run of chosen.reverse()) {
     const i0 = run.a + Math.round((run.b - run.a) * 0.45);
     const p = out[i0];
@@ -316,7 +304,7 @@ export function isKorfezTrack(track: { id: string; venue?: string }): boolean {
 }
 
 // -------------------------------------------------------------------------------------------------
-// Vehicle presets selectable on the Körfez layouts
+// Vehicle presets selectable across all layouts (Formula Student & TOSFED Körfez)
 // -------------------------------------------------------------------------------------------------
 
 const TOURING_TIRE: TireParams = {
@@ -327,8 +315,10 @@ const TOURING_TIRE: TireParams = {
   nominalLoad: 3200,
 };
 
+export type VehiclePresetId = 'ist27-twotrack' | 'ist27' | 'tpsc';
+
 export interface KorfezPreset {
-  id: 'ist27' | 'tpsc';
+  id: VehiclePresetId;
   label: string;
   blurb: string;
   vehicle: VehicleParams;
@@ -338,10 +328,29 @@ export interface KorfezPreset {
 /** IST27 Formula Student EV — the suite's baseline car. */
 export const IST27_PRESET: KorfezPreset = {
   id: 'ist27',
-  label: 'IST27 Formula Student EV',
-  blurb: '230 kg · 80 kW · ~125 km/h',
+  label: 'IST27 FS Baseline',
+  blurb: '230 kg · 80 kW · 12.0:1',
   vehicle: DEFAULT_VEHICLE,
   powertrain: DEFAULT_POWERTRAIN,
+};
+
+/**
+ * IST27 - TwoTrackSim — real vehicle setup imported from Two-Track-simulation
+ * (with 11.8:1 planetary ratio and persistent user overrides).
+ */
+export const IST27_TWOTRACK_PRESET: KorfezPreset = {
+  id: 'ist27-twotrack',
+  label: 'IST27 - TwoTrackSim',
+  blurb: 'IST27 Gerçek Veri · 11.8:1',
+  vehicle: {
+    ...DEFAULT_VEHICLE,
+    name: 'IST27 - TwoTrackSim',
+  },
+  powertrain: {
+    ...DEFAULT_POWERTRAIN,
+    name: 'IST27 - TwoTrackSim (2x PMSM, 1:11.8 planetary)',
+    gearRatio: 11.8,
+  },
 };
 
 /**
@@ -388,4 +397,4 @@ export const TPSC_PRESET: KorfezPreset = {
   },
 };
 
-export const KORFEZ_PRESETS: KorfezPreset[] = [IST27_PRESET, TPSC_PRESET];
+export const KORFEZ_PRESETS: KorfezPreset[] = [IST27_TWOTRACK_PRESET, IST27_PRESET, TPSC_PRESET];
