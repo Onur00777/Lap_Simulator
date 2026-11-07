@@ -100,7 +100,9 @@ export default function TrackCanvas({
   }, [track.mapImage?.src, mapSrcOverride]);
 
   const tf: Transform = useMemo(() => {
-    const pad = 38;
+    const padTop = 36;
+    const padX = 36;
+    const padBottom = 84;
     const allX = [...rl.leftCurbX, ...rl.rightCurbX, ...track.x];
     const allY = [...rl.leftCurbY, ...rl.rightCurbY, ...track.y];
     const minX = Math.min(...allX);
@@ -109,9 +111,9 @@ export default function TrackCanvas({
     const maxY = Math.max(...allY);
     const spanX = Math.max(maxX - minX, 1);
     const spanY = Math.max(maxY - minY, 1);
-    const scale = Math.min((w - 2 * pad) / spanX, (h - 2 * pad) / spanY);
+    const scale = Math.min((w - 2 * padX) / spanX, (h - padTop - padBottom) / spanY);
     const ox = (w - spanX * scale) / 2;
-    const oy = (h - spanY * scale) / 2;
+    const oy = padBottom + (h - padTop - padBottom - spanY * scale) / 2;
     return { sx: (x) => ox + (x - minX) * scale, sy: (y) => h - oy - (y - minY) * scale, scale };
   }, [track, rl, w, h]);
 
@@ -424,32 +426,36 @@ export default function TrackCanvas({
     <div ref={wrapRef} className="relative h-full min-h-[360px] w-full" onMouseMove={onMove} onMouseLeave={() => onHover(null)}>
       <canvas ref={baseRef} className="absolute inset-0" />
       <canvas ref={overRef} className="pointer-events-none absolute inset-0" />
-      <div className="pointer-events-none absolute left-2 top-2 flex flex-col gap-1 font-mono text-[10px] text-hud-dim">
+      {/* Apple Pro Minimalist Horizontal Canvas Legend */}
+      <div className="pointer-events-none absolute left-3 top-3 z-10 flex flex-wrap items-center gap-2.5 rounded-lg border border-white/[0.08] bg-[#0c0e17]/85 px-3 py-1.5 font-mono text-[10px] text-slate-300 shadow-lg backdrop-blur-md">
         {legend ? (
-          legend.map((g) => (
-            <div key={g.l} className="flex items-center gap-1.5">
-              <span className="inline-block h-1.5 w-4 rounded" style={{ background: g.c }} />
-              {g.l}
-            </div>
-          ))
+          <div className="flex flex-wrap items-center gap-2.5">
+            {legend.map((g) => (
+              <div key={g.l} className="flex items-center gap-1.5">
+                <span className="inline-block h-2 w-2 rounded-full shadow-sm" style={{ background: g.c }} />
+                <span>{g.l}</span>
+              </div>
+            ))}
+          </div>
         ) : (
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <span
-              className="inline-block h-1.5 w-24 rounded"
+              className="inline-block h-2 w-20 rounded-full"
               style={{ background: `linear-gradient(90deg, ${[0, 0.25, 0.5, 0.75, 1].map((t) => rgb(turbo(t))).join(',')})` }}
             />
-            {colorMode === 'speed' ? 'min → max speed' : colorMode === 'latg' ? '0 → peak lateral G' : '0 → 100 % grip'}
+            <span>{colorMode === 'speed' ? 'Min → Max Speed' : colorMode === 'latg' ? '0 → Peak Lat G' : '0 → 100% Grip'}</span>
           </div>
         )}
-        <div className="mt-1 flex items-center gap-2 border-t border-hud-line/60 pt-1 text-[9px]">
-          <span className="inline-block h-0.5 w-3.5 border-b border-dashed border-slate-400" />
+        <div className="h-3 w-[1px] bg-white/[0.12]" />
+        <div className="flex items-center gap-2 text-[9px] text-slate-400">
+          <span className="inline-block h-0.5 w-3 border-b border-dashed border-slate-400" />
           <span>Centerline</span>
-          <span className="inline-block h-2 w-2 rounded-full bg-hud-cyan shadow-[0_0_5px_#22d3ee]" />
-          <span className="text-hud-cyan">{rl.mode === 'optimal' ? 'Optimal Apex' : 'Active Car'}</span>
+          <span className="inline-block h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
+          <span className="text-cyan-300 font-medium">{rl.mode === 'optimal' ? 'Optimal Apex' : 'Active Car'}</span>
           {ghostLap && (
             <>
-              <span className="inline-block h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_5px_#f59e0b]" />
-              <span className="text-hud-amber">{ghostLabel}</span>
+              <span className="inline-block h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]" />
+              <span className="text-amber-300 font-medium">{ghostLabel}</span>
             </>
           )}
         </div>

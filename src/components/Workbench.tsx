@@ -1229,14 +1229,14 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
       {venue === 'korfez' && <KorfezFacilityBar />}
 
       {/* ===================================================================== */}
-      {/* B. KPI HERO METRIC ROW (Big Numbers, Zero Visual Noise)               */}
+      {/* PHASE 3: AMBIENT KPI HERO BAR (Low-Opacity Captions & SF Numerals)     */}
       {/* ===================================================================== */}
-      <div className="border-b border-white/[0.06] bg-[#0c0e16]/80 px-4 py-3 backdrop-blur-md">
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="border-b border-white/[0.06] bg-[#090b12]/90 px-4 py-3 backdrop-blur-xl">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:divide-x lg:divide-white/[0.06]">
           {/* 1. LAP TIME */}
-          <div className="flex flex-col justify-between border-r border-white/[0.06] pr-4 last:border-r-0">
+          <div className="flex flex-col justify-between pr-0 lg:pr-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400/80">
                 LAP TIME ({dTrack.name})
               </span>
               <DeltaBadge
@@ -1245,18 +1245,18 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                 digits={3}
               />
             </div>
-            <div className="mt-1 font-mono text-2xl font-semibold tabular-nums tracking-tight text-white drop-shadow-[0_0_16px_rgba(56,189,248,0.2)] sm:text-3xl">
+            <div className="mt-1 font-mono text-2xl sm:text-3xl font-semibold tabular-nums tracking-tight text-white drop-shadow-[0_0_20px_rgba(56,189,248,0.2)]">
               {headline.value}
             </div>
-            <div className="mt-1 font-mono text-[10px] tabular-nums text-slate-400">
+            <div className="mt-1 font-mono text-[10px] tabular-nums text-slate-400/80">
               {lap.integrator.toUpperCase()} · {lap.lateralModel} · {racingLineMode === 'optimal' ? 'Optimal Apex' : 'Centerline'}
             </div>
           </div>
 
           {/* 2. SPEED */}
-          <div className="flex flex-col justify-between border-r border-white/[0.06] pr-4 last:border-r-0">
+          <div className="flex flex-col justify-between pl-0 lg:pl-4 pr-0 lg:pr-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">SPEED</span>
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400/80">SPEED</span>
               {baselineSolved && (
                 <DeltaBadge
                   delta={kph(lap.avgSpeed - baselineSolved.lap.avgSpeed)}
@@ -1267,22 +1267,22 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
               )}
             </div>
             <div className="mt-1 flex items-baseline gap-2 font-mono tabular-nums">
-              <span className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                 {fmt(kph(lap.avgSpeed), 1)}
               </span>
-              <span className="text-xs text-slate-400">avg /</span>
+              <span className="text-xs text-slate-400/70">avg /</span>
               <span className="text-lg font-medium text-cyan-300">{fmt(kph(lap.maxSpeed), 1)}</span>
-              <span className="text-xs text-slate-400">max km/h</span>
+              <span className="text-xs text-slate-400/70">max km/h</span>
             </div>
-            <div className="mt-1 font-mono text-[10px] tabular-nums text-slate-400">
+            <div className="mt-1 font-mono text-[10px] tabular-nums text-slate-400/80">
               Peak {fmt(lap.peakLatG, 2)}G lat · {fmt(lap.peakLongG, 2)}G accel · {fmt(lap.peakBrakeG, 2)}G brake
             </div>
           </div>
 
           {/* 3. NET ENERGY */}
-          <div className="flex flex-col justify-between border-r border-white/[0.06] pr-4 last:border-r-0">
+          <div className="flex flex-col justify-between pl-0 lg:pl-4 pr-0 lg:pr-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">NET ENERGY</span>
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400/80">NET ENERGY</span>
               {baselineSolved && (
                 <DeltaBadge
                   delta={(lap.energy.netKWh - baselineSolved.lap.energy.netKWh) * 1000}
@@ -1292,10 +1292,10 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
               )}
             </div>
             <div className="mt-1 flex items-baseline gap-1.5 font-mono tabular-nums">
-              <span className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                 {fmt(lap.energy.netKWh * 1000, 1)}
               </span>
-              <span className="text-xs text-slate-400">Wh</span>
+              <span className="text-xs text-slate-400/70">Wh</span>
             </div>
             <div className="mt-1 font-mono text-[10px] tabular-nums text-emerald-400/90">
               {fmt(lap.energy.regenKWh * 1000, 1)} Wh regen ({fmt(lap.energy.dischargeKWh * 1000, 1)} Wh out)
@@ -1303,9 +1303,9 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
           </div>
 
           {/* 4. COOLING HEAT */}
-          <div className="flex flex-col justify-between">
+          <div className="flex flex-col justify-between pl-0 lg:pl-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">COOLING HEAT</span>
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400/80">COOLING HEAT</span>
               <button
                 type="button"
                 onClick={() => setBenchmarksOpen((o) => !o)}
@@ -1316,16 +1316,16 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
               </button>
             </div>
             <div className="mt-1 flex items-baseline gap-2 font-mono tabular-nums">
-              <span className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                 {fmt(lap.energy.coolingHeatKJ, 1)}
               </span>
-              <span className="text-xs text-slate-400">kJ</span>
+              <span className="text-xs text-slate-400/70">kJ</span>
               <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
                 Normal
               </span>
             </div>
-            <div className="mt-1 font-mono text-[10px] tabular-nums text-slate-400">
+            <div className="mt-1 font-mono text-[10px] tabular-nums text-slate-400/80">
               + {fmt(lap.energy.batteryLossKJ, 1)} kJ accumulator I²R loss
             </div>
           </div>
@@ -1609,7 +1609,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                 </button>
               </div>
             }
-            bodyClassName="flex h-[540px] flex-col"
+            bodyClassName="relative flex h-[540px] flex-col overflow-hidden"
           >
             {korfezOn && (
               <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.06] px-3 py-1.5 font-mono text-[10px] text-slate-400">
@@ -1648,8 +1648,8 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
               </div>
             )}
 
-            {/* Full Unobstructed Track Map Canvas */}
-            <div className="min-h-0 flex-1">
+            {/* Full Unobstructed Track Map Canvas with Generous Bottom Clearance */}
+            <div className="relative min-h-0 flex-1">
               <TrackCanvas
                 track={dTrack}
                 lap={lap}
@@ -1663,30 +1663,30 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                 mapAlign={korfezOn ? mapAlign : undefined}
                 mapSrcOverride={mapUpload}
               />
-            </div>
 
-            {/* Dedicated Non-Overlapping Bottom Playback & Color-Mode Bar */}
-            <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-white/[0.07] bg-[#0b0e17]/95 px-3.5 py-2 backdrop-blur-md">
-              <div className="flex flex-wrap items-center gap-2.5">
+              {/* Floating Frosted-Glass Canvas HUD Controls */}
+              <div className="pointer-events-auto absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex flex-wrap items-center gap-2.5 rounded-full border border-white/10 bg-slate-900/60 px-4 py-1.5 shadow-2xl backdrop-blur-md">
+                {/* Play / Pause Lap */}
                 <button
                   type="button"
                   onClick={() => setPlaying((p) => !p)}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 font-mono text-xs font-medium transition ${
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium transition ${
                     playing
-                      ? 'border border-cyan-500/50 bg-cyan-500/20 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.2)]'
-                      : 'border border-white/[0.1] bg-white/[0.06] text-white hover:bg-white/[0.12]'
+                      ? 'border border-cyan-500/50 bg-cyan-500/20 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.3)]'
+                      : 'border border-white/[0.1] bg-white/[0.08] text-white hover:bg-white/[0.16]'
                   }`}
                 >
                   <span>{playing ? '❚❚' : '▶'}</span>
                   <span>{playing ? 'Pause' : 'Play Lap'}</span>
                 </button>
 
-                <div className="h-4 w-[1px] bg-white/[0.1]" />
+                <div className="h-4 w-[1px] bg-white/[0.12]" />
 
-                <label className="flex items-center gap-1.5 font-mono text-[11px] text-slate-300">
-                  <span className="text-[10px] uppercase text-slate-400">Speed:</span>
+                {/* Speed Rate Dropdown */}
+                <label className="flex items-center gap-1 font-mono text-[11px] text-slate-300">
+                  <span className="text-[10px] text-slate-400">Speed:</span>
                   <select
-                    className="rounded-md border border-white/[0.08] bg-slate-900/90 px-2 py-0.5 font-mono text-[11px] tabular-nums text-white outline-none"
+                    className="rounded-md border border-white/[0.1] bg-[#0c0e17]/90 px-1.5 py-0.5 font-mono text-[11px] tabular-nums text-white outline-none cursor-pointer"
                     value={playRate}
                     onChange={(e) => setPlayRate(Number(e.target.value))}
                   >
@@ -1698,9 +1698,14 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                   </select>
                 </label>
 
-                <div className="h-4 w-[1px] bg-white/[0.1]" />
+                <div className="h-4 w-[1px] bg-white/[0.12]" />
 
-                <div className="flex items-center gap-0.5 rounded-full border border-white/[0.07] bg-[#090a0f]/80 p-0.5 font-mono text-[10px]">
+                {/* Color Mode Segmented Pill */}
+                <div
+                  className="flex items-center gap-0.5 rounded-full border border-white/[0.08] bg-[#090a0f]/80 p-0.5 font-mono text-[10px]"
+                  role="group"
+                  aria-label="Color Mode"
+                >
                   {(
                     [
                       { value: 'speed', label: 'Speed' },
@@ -1715,7 +1720,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                       onClick={() => setColorMode(m.value)}
                       className={`rounded-full px-2.5 py-0.5 uppercase tracking-wider transition ${
                         colorMode === m.value
-                          ? 'border border-white/[0.12] bg-slate-800 text-cyan-300'
+                          ? 'border border-white/[0.14] bg-slate-800 text-cyan-300 font-medium shadow-sm'
                           : 'text-slate-400 hover:text-slate-200'
                       }`}
                     >
@@ -1723,14 +1728,17 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                     </button>
                   ))}
                 </div>
-              </div>
 
-              {/* Live Cursor Position Readout During Playback / Hover */}
-              {safeCursor != null && (
-                <div className="font-mono text-[11px] tabular-nums text-cyan-300">
-                  s = {fmt(ch.s[safeCursor], 1)} m · {fmt(kph(ch.v[safeCursor]), 1)} km/h
-                </div>
-              )}
+                {/* Live Cursor Readout */}
+                {safeCursor != null && (
+                  <>
+                    <div className="h-4 w-[1px] bg-white/[0.12]" />
+                    <div className="font-mono text-[11px] tabular-nums text-cyan-300 font-medium">
+                      s = {fmt(ch.s[safeCursor], 1)} m · {fmt(kph(ch.v[safeCursor]), 1)} km/h
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </Panel>
 
