@@ -315,7 +315,7 @@ const TOURING_TIRE: TireParams = {
   nominalLoad: 3200,
 };
 
-export type VehiclePresetId = 'ist27-twotrack' | 'ist27' | 'tpsc';
+export type VehiclePresetId = 'ist26-rwd' | 'ist27-twotrack' | 'ist27' | 'tpsc';
 
 export interface KorfezPreset {
   id: VehiclePresetId;
@@ -324,6 +324,56 @@ export interface KorfezPreset {
   vehicle: VehicleParams;
   powertrain: PowertrainParams;
 }
+
+/**
+ * IST26 RWD (1 Motor + Cascadia Motion PM100DX Inverter, 3.2:1 reduction)
+ * Exact physical parameters extracted from IST26_RWD_Vehicle_Parameters.pdf.
+ */
+export const IST26_RWD_PRESET: KorfezPreset = {
+  id: 'ist26-rwd',
+  label: 'IST26 RWD (Cascadia)',
+  blurb: '335.5 kg · 1 Motor RWD · 3.2:1',
+  vehicle: {
+    ...DEFAULT_VEHICLE,
+    name: 'IST26 RWD (1 Motor · Cascadia)',
+    mass: 335.5,
+    frontWeightFraction: 0.479,
+    wheelbase: 1.6,
+    trackWidth: 1.27,
+    cgHeight: 0.2472,
+    ClA: 4.14,
+    CdA: 1.58,
+    airDensity: 1.225,
+    aeroBalanceFront: 0.482,
+    aeroPitchSens: 0.0,
+    rollingResistance: 0.01,
+    wheelRadius: 0.205,
+    yawInertia: 129.0,
+    wheelInertia: 0.2567,
+    rollStiffnessFront: 0.3831,
+    rollCenterFront: 0.03142,
+    rollCenterRear: 0.0365,
+    staticCamberFront: -1.7,
+    staticCamberRear: -1.4,
+  },
+  powertrain: {
+    ...DEFAULT_POWERTRAIN,
+    name: 'IST26 RWD (1x Motor + Cascadia PM100DX, 3.2:1)',
+    motorCount: 1,
+    motorPeakTorque: 310.0,
+    motorPeakPower: 80000,
+    motorMaxRpm: 6000,
+    gearRatio: 3.2,
+    gearboxEfficiency: 0.95,
+    batteryPowerLimit: 80000,
+    regenPowerLimit: 0,
+    regenEnabled: false,
+    batteryVoltage: 342.0,
+    batteryResistance: 0.12,
+    batteryCapacityKWh: 7.2,
+    losses: { ...DEFAULT_POWERTRAIN.losses, copper: 0.018 },
+  },
+};
 
 /** IST27 Formula Student EV — the suite's baseline car. */
 export const IST27_PRESET: KorfezPreset = {
@@ -397,4 +447,4 @@ export const TPSC_PRESET: KorfezPreset = {
   },
 };
 
-export const KORFEZ_PRESETS: KorfezPreset[] = [IST27_TWOTRACK_PRESET, IST27_PRESET, TPSC_PRESET];
+export const KORFEZ_PRESETS: KorfezPreset[] = [IST26_RWD_PRESET, IST27_TWOTRACK_PRESET, IST27_PRESET, TPSC_PRESET];

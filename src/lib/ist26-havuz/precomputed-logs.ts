@@ -1,0 +1,8061 @@
+// AUTO-GENERATED FROM ./logs TELEMETRY DATASET — DO NOT EDIT MANUALLY
+// Strictly isolated data module for İTÜ Havuz Otoparkı — IST26 RWD SIL & Telemetry Lab
+
+export interface HavuzLogEntry {
+  id: string;
+  relativePath: string;
+  folder: string;
+  format: 'csv' | 'xlsx';
+  fileSizeBytes: number;
+  totalRows: number;
+  activeRows: number;
+  zeroVelClampedRows: number;
+  spikesFiltered: number;
+  totalDurationS: number;
+  activeDrivingTimeS: number;
+  distanceM: number;
+  estimatedLaps: number;
+  maxSpeedKmh: number;
+  maxMotorRpm: number;
+  maxTorqueNm: number;
+  hasImu: boolean;
+  hasWheelSpeed: boolean;
+  hasCascadia: boolean;
+  hasGps: boolean;
+  qualityScore: number;
+  status: 'Temiz' | 'Kısmi' | 'Bozuk';
+  statusReason: string;
+  autoSelected: boolean;
+  detectedColumns: {
+    time: string;
+    vx: string;
+    wheelFl: string;
+    wheelFr: string;
+    wheelRl: string;
+    wheelRr: string;
+    ax: string;
+    ay: string;
+    yawRate: string;
+    steer: string;
+    torqueCmd: string;
+    torqueEst: string;
+    motorRpm: string;
+    dcVolt: string;
+    dcCurr: string;
+    apps: string;
+    brakeFront: string;
+  };
+}
+
+export interface HavuzCenterlineNode {
+  s: number;
+  x: number;
+  y: number;
+  kappa: number;
+  leftConeX: number;
+  leftConeY: number;
+  rightConeX: number;
+  rightConeY: number;
+}
+
+export interface HavuzTrajectoryTrace {
+  id: string;
+  logId: string;
+  isOutlier: boolean;
+  points: [number, number][];
+}
+
+export interface HavuzRealTelemetrySample {
+  s: number;
+  vx: number;
+  ax: number;
+  ay: number;
+  yawRate: number;
+  rpm: number;
+  trqCmd: number;
+  trqEst: number;
+  vdc: number;
+  idc: number;
+  thr: number;
+  pot1: number;
+  pot2: number;
+  brkF: number;
+  brkR: number;
+  invT: number;
+  motT: number;
+}
+
+export const HAVUZ_LOG_ENTRIES: HavuzLogEntry[] = [
+  {
+    "id": "18_08_Logs/18_08_0026-07.48.33.csv",
+    "relativePath": "18_08_Logs/18_08_0026-07.48.33.csv",
+    "folder": "18_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 465333,
+    "totalRows": 293,
+    "activeRows": 0,
+    "zeroVelClampedRows": 293,
+    "spikesFiltered": 0,
+    "totalDurationS": 7.2,
+    "activeDrivingTimeS": 0,
+    "distanceM": 0,
+    "estimatedLaps": 0,
+    "maxSpeedKmh": 0,
+    "maxMotorRpm": 1,
+    "maxTorqueNm": 2,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": false,
+    "qualityScore": 0,
+    "status": "Bozuk",
+    "statusReason": "Kısa veya hareketsiz kayıt (0.0 sn aktif, 0 m < 50 m eşiği)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "18_08_Logs/18_08_0026-07.49.01.csv",
+    "relativePath": "18_08_Logs/18_08_0026-07.49.01.csv",
+    "folder": "18_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 3627234,
+    "totalRows": 2298,
+    "activeRows": 1009,
+    "zeroVelClampedRows": 1289,
+    "spikesFiltered": 0,
+    "totalDurationS": 54.8,
+    "activeDrivingTimeS": 24.3,
+    "distanceM": 161.4,
+    "estimatedLaps": 1.1,
+    "maxSpeedKmh": 34.3,
+    "maxMotorRpm": 2216,
+    "maxTorqueNm": 147,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": false,
+    "qualityScore": 49,
+    "status": "Kısmi",
+    "statusReason": "Tekerlek hızı ve Cascadia verisi temiz, ancak IMU (ax, ay, yaw_rate) kanalları devre dışı (0.00)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "18_08_Logs/18_08_0026-08.04.27.csv",
+    "relativePath": "18_08_Logs/18_08_0026-08.04.27.csv",
+    "folder": "18_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 4154713,
+    "totalRows": 2649,
+    "activeRows": 0,
+    "zeroVelClampedRows": 2649,
+    "spikesFiltered": 0,
+    "totalDurationS": 63,
+    "activeDrivingTimeS": 0,
+    "distanceM": 0,
+    "estimatedLaps": 0,
+    "maxSpeedKmh": 0,
+    "maxMotorRpm": 5,
+    "maxTorqueNm": 2,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": false,
+    "qualityScore": 0,
+    "status": "Bozuk",
+    "statusReason": "Kısa veya hareketsiz kayıt (0.0 sn aktif, 0 m < 50 m eşiği)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "18_08_Logs/18_08_0026-08.08.45.csv",
+    "relativePath": "18_08_Logs/18_08_0026-08.08.45.csv",
+    "folder": "18_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 8113195,
+    "totalRows": 5100,
+    "activeRows": 4506,
+    "zeroVelClampedRows": 594,
+    "spikesFiltered": 0,
+    "totalDurationS": 121.6,
+    "activeDrivingTimeS": 107.7,
+    "distanceM": 656.7,
+    "estimatedLaps": 4.46,
+    "maxSpeedKmh": 36.3,
+    "maxMotorRpm": 1872,
+    "maxTorqueNm": 214,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": false,
+    "qualityScore": 52,
+    "status": "Kısmi",
+    "statusReason": "Tekerlek hızı ve Cascadia verisi temiz, ancak IMU (ax, ay, yaw_rate) kanalları devre dışı (0.00)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "18_08_Logs/18_08_0026-08.11.08.csv",
+    "relativePath": "18_08_Logs/18_08_0026-08.11.08.csv",
+    "folder": "18_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 1034607,
+    "totalRows": 654,
+    "activeRows": 0,
+    "zeroVelClampedRows": 654,
+    "spikesFiltered": 0,
+    "totalDurationS": 15.7,
+    "activeDrivingTimeS": 0,
+    "distanceM": 0,
+    "estimatedLaps": 0,
+    "maxSpeedKmh": 0,
+    "maxMotorRpm": 3,
+    "maxTorqueNm": 2,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": false,
+    "qualityScore": 0,
+    "status": "Bozuk",
+    "statusReason": "Kısa veya hareketsiz kayıt (0.0 sn aktif, 0 m < 50 m eşiği)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "18_08_Logs/18_08_0026-08.11.25.csv",
+    "relativePath": "18_08_Logs/18_08_0026-08.11.25.csv",
+    "folder": "18_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 3754775,
+    "totalRows": 2352,
+    "activeRows": 2214,
+    "zeroVelClampedRows": 138,
+    "spikesFiltered": 0,
+    "totalDurationS": 56.2,
+    "activeDrivingTimeS": 52.9,
+    "distanceM": 374.8,
+    "estimatedLaps": 2.55,
+    "maxSpeedKmh": 36.8,
+    "maxMotorRpm": 1928,
+    "maxTorqueNm": 102,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": false,
+    "qualityScore": 50,
+    "status": "Kısmi",
+    "statusReason": "Tekerlek hızı ve Cascadia verisi temiz, ancak IMU (ax, ay, yaw_rate) kanalları devre dışı (0.00)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "19_08_Logs/19_08_2026-09.23.49.csv",
+    "relativePath": "19_08_Logs/19_08_2026-09.23.49.csv",
+    "folder": "19_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 19285013,
+    "totalRows": 12070,
+    "activeRows": 9895,
+    "zeroVelClampedRows": 2175,
+    "spikesFiltered": 0,
+    "totalDurationS": 288.2,
+    "activeDrivingTimeS": 236.2,
+    "distanceM": 1060.7,
+    "estimatedLaps": 7.21,
+    "maxSpeedKmh": 49.1,
+    "maxMotorRpm": 4454,
+    "maxTorqueNm": 313,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": false,
+    "qualityScore": 54,
+    "status": "Kısmi",
+    "statusReason": "Tekerlek hızı ve Cascadia verisi temiz, ancak IMU (ax, ay, yaw_rate) kanalları devre dışı (0.00)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "19_08_Logs/19_08_2026-09.59.26.csv",
+    "relativePath": "19_08_Logs/19_08_2026-09.59.26.csv",
+    "folder": "19_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 33345890,
+    "totalRows": 20850,
+    "activeRows": 17315,
+    "zeroVelClampedRows": 3535,
+    "spikesFiltered": 0,
+    "totalDurationS": 502.5,
+    "activeDrivingTimeS": 417.1,
+    "distanceM": 2167.1,
+    "estimatedLaps": 14.72,
+    "maxSpeedKmh": 61.4,
+    "maxMotorRpm": 4424,
+    "maxTorqueNm": 355,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": false,
+    "qualityScore": 60,
+    "status": "Kısmi",
+    "statusReason": "Tekerlek hızı ve Cascadia verisi temiz, ancak IMU (ax, ay, yaw_rate) kanalları devre dışı (0.00)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "19_08_Logs/19_08_2026-10.23.20.csv",
+    "relativePath": "19_08_Logs/19_08_2026-10.23.20.csv",
+    "folder": "19_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 14702367,
+    "totalRows": 9227,
+    "activeRows": 4422,
+    "zeroVelClampedRows": 4805,
+    "spikesFiltered": 0,
+    "totalDurationS": 223.9,
+    "activeDrivingTimeS": 107.5,
+    "distanceM": 798.9,
+    "estimatedLaps": 5.43,
+    "maxSpeedKmh": 55.6,
+    "maxMotorRpm": 3524,
+    "maxTorqueNm": 284,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": false,
+    "qualityScore": 52,
+    "status": "Kısmi",
+    "statusReason": "Tekerlek hızı ve Cascadia verisi temiz, ancak IMU (ax, ay, yaw_rate) kanalları devre dışı (0.00)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "19_08_Logs/19_08_2026-10.30.52.csv",
+    "relativePath": "19_08_Logs/19_08_2026-10.30.52.csv",
+    "folder": "19_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 9644665,
+    "totalRows": 5995,
+    "activeRows": 5473,
+    "zeroVelClampedRows": 522,
+    "spikesFiltered": 0,
+    "totalDurationS": 146.2,
+    "activeDrivingTimeS": 133.6,
+    "distanceM": 1224.9,
+    "estimatedLaps": 8.32,
+    "maxSpeedKmh": 56.7,
+    "maxMotorRpm": 3097,
+    "maxTorqueNm": 252,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": false,
+    "qualityScore": 55,
+    "status": "Kısmi",
+    "statusReason": "Tekerlek hızı ve Cascadia verisi temiz, ancak IMU (ax, ay, yaw_rate) kanalları devre dışı (0.00)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "19_08_Logs/19_08_2026-10.48.37.csv",
+    "relativePath": "19_08_Logs/19_08_2026-10.48.37.csv",
+    "folder": "19_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 3949053,
+    "totalRows": 2499,
+    "activeRows": 2499,
+    "zeroVelClampedRows": 0,
+    "spikesFiltered": 0,
+    "totalDurationS": 60.5,
+    "activeDrivingTimeS": 60.5,
+    "distanceM": 43.1,
+    "estimatedLaps": 0.29,
+    "maxSpeedKmh": 3.8,
+    "maxMotorRpm": 3,
+    "maxTorqueNm": 2,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": false,
+    "hasGps": false,
+    "qualityScore": 24,
+    "status": "Bozuk",
+    "statusReason": "Kısa veya hareketsiz kayıt (60.5 sn aktif, 43 m < 50 m eşiği)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "19_08_Logs/19_08_2026-11.31.41.csv",
+    "relativePath": "19_08_Logs/19_08_2026-11.31.41.csv",
+    "folder": "19_08_Logs",
+    "format": "csv",
+    "fileSizeBytes": 47667110,
+    "totalRows": 29472,
+    "activeRows": 22528,
+    "zeroVelClampedRows": 6944,
+    "spikesFiltered": 0,
+    "totalDurationS": 716.9,
+    "activeDrivingTimeS": 548.3,
+    "distanceM": 3283.7,
+    "estimatedLaps": 22.31,
+    "maxSpeedKmh": 61.3,
+    "maxMotorRpm": 2692,
+    "maxTorqueNm": 226,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 68,
+    "status": "Kısmi",
+    "statusReason": "Tekerlek hızı ve Cascadia verisi temiz, ancak IMU (ax, ay, yaw_rate) kanalları devre dışı (0.00)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "20_09_Logs/20_09_2026-23.48.06.csv",
+    "relativePath": "20_09_Logs/20_09_2026-23.48.06.csv",
+    "folder": "20_09_Logs",
+    "format": "csv",
+    "fileSizeBytes": 6975627,
+    "totalRows": 4296,
+    "activeRows": 3004,
+    "zeroVelClampedRows": 1292,
+    "spikesFiltered": 0,
+    "totalDurationS": 104.9,
+    "activeDrivingTimeS": 73.3,
+    "distanceM": 292.3,
+    "estimatedLaps": 2.57,
+    "maxSpeedKmh": 68.6,
+    "maxMotorRpm": 3352,
+    "maxTorqueNm": 322,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 70,
+    "status": "Kısmi",
+    "statusReason": "Aktif sürüş mevcut, kısmi tur / kısa stint",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "20_09_Logs/20_09_2026-23.50.21.csv",
+    "relativePath": "20_09_Logs/20_09_2026-23.50.21.csv",
+    "folder": "20_09_Logs",
+    "format": "csv",
+    "fileSizeBytes": 10495331,
+    "totalRows": 6445,
+    "activeRows": 3957,
+    "zeroVelClampedRows": 2488,
+    "spikesFiltered": 0,
+    "totalDurationS": 157.1,
+    "activeDrivingTimeS": 96.7,
+    "distanceM": 433.5,
+    "estimatedLaps": 3.71,
+    "maxSpeedKmh": 79.2,
+    "maxMotorRpm": 3406,
+    "maxTorqueNm": 362,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 75,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 4 aktif sürüş segmenti",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "21_09_Logs/21_09_2026-00.47.36.csv",
+    "relativePath": "21_09_Logs/21_09_2026-00.47.36.csv",
+    "folder": "21_09_Logs",
+    "format": "csv",
+    "fileSizeBytes": 10229705,
+    "totalRows": 6248,
+    "activeRows": 5144,
+    "zeroVelClampedRows": 1104,
+    "spikesFiltered": 24,
+    "totalDurationS": 152.6,
+    "activeDrivingTimeS": 125.4,
+    "distanceM": 991.8,
+    "estimatedLaps": 12.26,
+    "maxSpeedKmh": 56.9,
+    "maxMotorRpm": 2667,
+    "maxTorqueNm": 201,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 91,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 1 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "21_09_Logs/21_09_2026-00.52.20.csv",
+    "relativePath": "21_09_Logs/21_09_2026-00.52.20.csv",
+    "folder": "21_09_Logs",
+    "format": "csv",
+    "fileSizeBytes": 16569604,
+    "totalRows": 10128,
+    "activeRows": 6024,
+    "zeroVelClampedRows": 4104,
+    "spikesFiltered": 124,
+    "totalDurationS": 247.6,
+    "activeDrivingTimeS": 147.4,
+    "distanceM": 1367.5,
+    "estimatedLaps": 18.47,
+    "maxSpeedKmh": 64,
+    "maxMotorRpm": 3227,
+    "maxTorqueNm": 268,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 84,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 2 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "21_09_Logs/21_09_2026-00.56.31.csv",
+    "relativePath": "21_09_Logs/21_09_2026-00.56.31.csv",
+    "folder": "21_09_Logs",
+    "format": "csv",
+    "fileSizeBytes": 16023682,
+    "totalRows": 9798,
+    "activeRows": 7443,
+    "zeroVelClampedRows": 2355,
+    "spikesFiltered": 102,
+    "totalDurationS": 238.7,
+    "activeDrivingTimeS": 181.2,
+    "distanceM": 1701,
+    "estimatedLaps": 18.73,
+    "maxSpeedKmh": 65.4,
+    "maxMotorRpm": 2954,
+    "maxTorqueNm": 304,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 92,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 2 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "21_09_Logs/21_09_2026-02.55.12.csv",
+    "relativePath": "21_09_Logs/21_09_2026-02.55.12.csv",
+    "folder": "21_09_Logs",
+    "format": "csv",
+    "fileSizeBytes": 6413,
+    "totalRows": 0,
+    "activeRows": 0,
+    "zeroVelClampedRows": 0,
+    "spikesFiltered": 0,
+    "totalDurationS": 0,
+    "activeDrivingTimeS": 0,
+    "distanceM": 0,
+    "estimatedLaps": 0,
+    "maxSpeedKmh": 0,
+    "maxMotorRpm": 0,
+    "maxTorqueNm": 0,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": false,
+    "qualityScore": 0,
+    "status": "Bozuk",
+    "statusReason": "Boş veya yarıda kesilmiş log dosyası (<15 sn aktif sürüş)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "21_09_Logs/21_09_2026-02.55.27.csv",
+    "relativePath": "21_09_Logs/21_09_2026-02.55.27.csv",
+    "folder": "21_09_Logs",
+    "format": "csv",
+    "fileSizeBytes": 15206203,
+    "totalRows": 9348,
+    "activeRows": 8593,
+    "zeroVelClampedRows": 755,
+    "spikesFiltered": 0,
+    "totalDurationS": 227.7,
+    "activeDrivingTimeS": 209.3,
+    "distanceM": 1757.9,
+    "estimatedLaps": 11.94,
+    "maxSpeedKmh": 61.8,
+    "maxMotorRpm": 2678,
+    "maxTorqueNm": 238,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 62,
+    "status": "Kısmi",
+    "statusReason": "Tekerlek hızı ve Cascadia verisi temiz, ancak IMU (ax, ay, yaw_rate) kanalları devre dışı (0.00)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "21_09_Logs/21_09_2026-02.59.23.csv",
+    "relativePath": "21_09_Logs/21_09_2026-02.59.23.csv",
+    "folder": "21_09_Logs",
+    "format": "csv",
+    "fileSizeBytes": 1461593,
+    "totalRows": 921,
+    "activeRows": 0,
+    "zeroVelClampedRows": 921,
+    "spikesFiltered": 0,
+    "totalDurationS": 22.1,
+    "activeDrivingTimeS": 0,
+    "distanceM": 0,
+    "estimatedLaps": 0,
+    "maxSpeedKmh": 0,
+    "maxMotorRpm": 0,
+    "maxTorqueNm": 0,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": false,
+    "qualityScore": 0,
+    "status": "Bozuk",
+    "statusReason": "Kısa veya hareketsiz kayıt (0.0 sn aktif, 0 m < 50 m eşiği)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "21_09_Logs/21_09_2026-03.08.17.csv",
+    "relativePath": "21_09_Logs/21_09_2026-03.08.17.csv",
+    "folder": "21_09_Logs",
+    "format": "csv",
+    "fileSizeBytes": 29293744,
+    "totalRows": 18249,
+    "activeRows": 11981,
+    "zeroVelClampedRows": 6268,
+    "spikesFiltered": 0,
+    "totalDurationS": 442.8,
+    "activeDrivingTimeS": 291.3,
+    "distanceM": 2206.3,
+    "estimatedLaps": 14.99,
+    "maxSpeedKmh": 60.5,
+    "maxMotorRpm": 2804,
+    "maxTorqueNm": 232,
+    "hasImu": false,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": false,
+    "qualityScore": 60,
+    "status": "Kısmi",
+    "statusReason": "Tekerlek hızı ve Cascadia verisi temiz, ancak IMU (ax, ay, yaw_rate) kanalları devre dışı (0.00)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-02.25.26.csv",
+    "relativePath": "23_08/23_08_2026-02.25.26.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 11244313,
+    "totalRows": 6953,
+    "activeRows": 2948,
+    "zeroVelClampedRows": 4005,
+    "spikesFiltered": 0,
+    "totalDurationS": 170.2,
+    "activeDrivingTimeS": 72.4,
+    "distanceM": 264.9,
+    "estimatedLaps": 1.71,
+    "maxSpeedKmh": 53.7,
+    "maxMotorRpm": 2280,
+    "maxTorqueNm": 325,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 63,
+    "status": "Kısmi",
+    "statusReason": "Aktif sürüş mevcut, kısmi tur / kısa stint",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-02.29.02.csv",
+    "relativePath": "23_08/23_08_2026-02.29.02.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 4304678,
+    "totalRows": 2650,
+    "activeRows": 1887,
+    "zeroVelClampedRows": 763,
+    "spikesFiltered": 0,
+    "totalDurationS": 65,
+    "activeDrivingTimeS": 46.3,
+    "distanceM": 167.8,
+    "estimatedLaps": 1.67,
+    "maxSpeedKmh": 51.6,
+    "maxMotorRpm": 2198,
+    "maxTorqueNm": 239,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 63,
+    "status": "Kısmi",
+    "statusReason": "Aktif sürüş mevcut, kısmi tur / kısa stint",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-02.50.43.csv",
+    "relativePath": "23_08/23_08_2026-02.50.43.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 32216244,
+    "totalRows": 19896,
+    "activeRows": 6998,
+    "zeroVelClampedRows": 12898,
+    "spikesFiltered": 0,
+    "totalDurationS": 487.6,
+    "activeDrivingTimeS": 172.9,
+    "distanceM": 999.6,
+    "estimatedLaps": 7.95,
+    "maxSpeedKmh": 80.1,
+    "maxMotorRpm": 4403,
+    "maxTorqueNm": 340,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 92,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 7 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-04.29.27.csv",
+    "relativePath": "23_08/23_08_2026-04.29.27.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 703344,
+    "totalRows": 437,
+    "activeRows": 0,
+    "zeroVelClampedRows": 437,
+    "spikesFiltered": 0,
+    "totalDurationS": 10.9,
+    "activeDrivingTimeS": 0,
+    "distanceM": 0,
+    "estimatedLaps": 0,
+    "maxSpeedKmh": 0,
+    "maxMotorRpm": 2,
+    "maxTorqueNm": 2,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": true,
+    "qualityScore": 0,
+    "status": "Bozuk",
+    "statusReason": "Kısa veya hareketsiz kayıt (0.0 sn aktif, 0 m < 50 m eşiği)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-04.29.41.csv",
+    "relativePath": "23_08/23_08_2026-04.29.41.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 102095,
+    "totalRows": 60,
+    "activeRows": 0,
+    "zeroVelClampedRows": 60,
+    "spikesFiltered": 0,
+    "totalDurationS": 1.5,
+    "activeDrivingTimeS": 0,
+    "distanceM": 0,
+    "estimatedLaps": 0,
+    "maxSpeedKmh": 0,
+    "maxMotorRpm": 1,
+    "maxTorqueNm": 2,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": false,
+    "qualityScore": 0,
+    "status": "Bozuk",
+    "statusReason": "Kısa veya hareketsiz kayıt (0.0 sn aktif, 0 m < 50 m eşiği)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-04.29.45.csv",
+    "relativePath": "23_08/23_08_2026-04.29.45.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 228045,
+    "totalRows": 139,
+    "activeRows": 0,
+    "zeroVelClampedRows": 139,
+    "spikesFiltered": 0,
+    "totalDurationS": 3.5,
+    "activeDrivingTimeS": 0,
+    "distanceM": 0,
+    "estimatedLaps": 0,
+    "maxSpeedKmh": 0,
+    "maxMotorRpm": 1,
+    "maxTorqueNm": 1,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": true,
+    "qualityScore": 0,
+    "status": "Bozuk",
+    "statusReason": "Kısa veya hareketsiz kayıt (0.0 sn aktif, 0 m < 50 m eşiği)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-06.07.33.csv",
+    "relativePath": "23_08/23_08_2026-06.07.33.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 23831742,
+    "totalRows": 14748,
+    "activeRows": 10109,
+    "zeroVelClampedRows": 4639,
+    "spikesFiltered": 0,
+    "totalDurationS": 358.4,
+    "activeDrivingTimeS": 245.2,
+    "distanceM": 684.3,
+    "estimatedLaps": 5.3,
+    "maxSpeedKmh": 63.5,
+    "maxMotorRpm": 2706,
+    "maxTorqueNm": 203,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 92,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 3 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-06.38.48.csv",
+    "relativePath": "23_08/23_08_2026-06.38.48.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 5929083,
+    "totalRows": 3702,
+    "activeRows": 0,
+    "zeroVelClampedRows": 3702,
+    "spikesFiltered": 0,
+    "totalDurationS": 90.5,
+    "activeDrivingTimeS": 0,
+    "distanceM": 0,
+    "estimatedLaps": 0,
+    "maxSpeedKmh": 0,
+    "maxMotorRpm": 2,
+    "maxTorqueNm": 2,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": true,
+    "qualityScore": 0,
+    "status": "Bozuk",
+    "statusReason": "Kısa veya hareketsiz kayıt (0.0 sn aktif, 0 m < 50 m eşiği)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-06.41.14.csv",
+    "relativePath": "23_08/23_08_2026-06.41.14.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 13514706,
+    "totalRows": 8349,
+    "activeRows": 4197,
+    "zeroVelClampedRows": 4152,
+    "spikesFiltered": 0,
+    "totalDurationS": 204.3,
+    "activeDrivingTimeS": 103,
+    "distanceM": 477.5,
+    "estimatedLaps": 6.26,
+    "maxSpeedKmh": 67.9,
+    "maxMotorRpm": 2906,
+    "maxTorqueNm": 203,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 83,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 3 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-06.57.59.csv",
+    "relativePath": "23_08/23_08_2026-06.57.59.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 10035656,
+    "totalRows": 6153,
+    "activeRows": 5500,
+    "zeroVelClampedRows": 653,
+    "spikesFiltered": 0,
+    "totalDurationS": 150.7,
+    "activeDrivingTimeS": 134.8,
+    "distanceM": 565.8,
+    "estimatedLaps": 5.31,
+    "maxSpeedKmh": 71.1,
+    "maxMotorRpm": 3042,
+    "maxTorqueNm": 220,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 89,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 6 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-07.01.11.csv",
+    "relativePath": "23_08/23_08_2026-07.01.11.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 6821253,
+    "totalRows": 4197,
+    "activeRows": 3097,
+    "zeroVelClampedRows": 1100,
+    "spikesFiltered": 0,
+    "totalDurationS": 102.4,
+    "activeDrivingTimeS": 75.6,
+    "distanceM": 286.8,
+    "estimatedLaps": 2.1,
+    "maxSpeedKmh": 67.8,
+    "maxMotorRpm": 2915,
+    "maxTorqueNm": 208,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 69,
+    "status": "Kısmi",
+    "statusReason": "Aktif sürüş mevcut, kısmi tur / kısa stint",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-07.15.59.csv",
+    "relativePath": "23_08/23_08_2026-07.15.59.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 8164303,
+    "totalRows": 5022,
+    "activeRows": 2934,
+    "zeroVelClampedRows": 2088,
+    "spikesFiltered": 0,
+    "totalDurationS": 122.4,
+    "activeDrivingTimeS": 71.6,
+    "distanceM": 362.9,
+    "estimatedLaps": 2.73,
+    "maxSpeedKmh": 81.2,
+    "maxMotorRpm": 4618,
+    "maxTorqueNm": 223,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 68,
+    "status": "Kısmi",
+    "statusReason": "Aktif sürüş mevcut, kısmi tur / kısa stint",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-07.30.55.csv",
+    "relativePath": "23_08/23_08_2026-07.30.55.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 24532144,
+    "totalRows": 15143,
+    "activeRows": 8438,
+    "zeroVelClampedRows": 6705,
+    "spikesFiltered": 0,
+    "totalDurationS": 370,
+    "activeDrivingTimeS": 206.3,
+    "distanceM": 905.5,
+    "estimatedLaps": 6.61,
+    "maxSpeedKmh": 80.2,
+    "maxMotorRpm": 4643,
+    "maxTorqueNm": 308,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 94,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 7 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-07.49.03.csv",
+    "relativePath": "23_08/23_08_2026-07.49.03.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 24261088,
+    "totalRows": 14959,
+    "activeRows": 8029,
+    "zeroVelClampedRows": 6930,
+    "spikesFiltered": 0,
+    "totalDurationS": 365,
+    "activeDrivingTimeS": 196.1,
+    "distanceM": 856.4,
+    "estimatedLaps": 7.91,
+    "maxSpeedKmh": 81.2,
+    "maxMotorRpm": 4691,
+    "maxTorqueNm": 310,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 96,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 6 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-10.27.17.csv",
+    "relativePath": "23_08/23_08_2026-10.27.17.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 1905114,
+    "totalRows": 1179,
+    "activeRows": 0,
+    "zeroVelClampedRows": 1179,
+    "spikesFiltered": 0,
+    "totalDurationS": 28.7,
+    "activeDrivingTimeS": 0,
+    "distanceM": 0,
+    "estimatedLaps": 0,
+    "maxSpeedKmh": 0,
+    "maxMotorRpm": 3,
+    "maxTorqueNm": 2,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": true,
+    "qualityScore": 0,
+    "status": "Bozuk",
+    "statusReason": "Kısa veya hareketsiz kayıt (0.0 sn aktif, 0 m < 50 m eşiği)",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-10.29.23.csv",
+    "relativePath": "23_08/23_08_2026-10.29.23.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 12337831,
+    "totalRows": 7597,
+    "activeRows": 3948,
+    "zeroVelClampedRows": 3649,
+    "spikesFiltered": 0,
+    "totalDurationS": 185.7,
+    "activeDrivingTimeS": 96.8,
+    "distanceM": 498.9,
+    "estimatedLaps": 4.29,
+    "maxSpeedKmh": 81.8,
+    "maxMotorRpm": 4413,
+    "maxTorqueNm": 300,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 76,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 3 aktif sürüş segmenti",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-10.45.00.csv",
+    "relativePath": "23_08/23_08_2026-10.45.00.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 16387500,
+    "totalRows": 10102,
+    "activeRows": 4935,
+    "zeroVelClampedRows": 5167,
+    "spikesFiltered": 0,
+    "totalDurationS": 246.6,
+    "activeDrivingTimeS": 121,
+    "distanceM": 599.1,
+    "estimatedLaps": 5.51,
+    "maxSpeedKmh": 85.9,
+    "maxMotorRpm": 4576,
+    "maxTorqueNm": 299,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 83,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 5 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-11.03.02.csv",
+    "relativePath": "23_08/23_08_2026-11.03.02.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 12388009,
+    "totalRows": 7626,
+    "activeRows": 5214,
+    "zeroVelClampedRows": 2412,
+    "spikesFiltered": 0,
+    "totalDurationS": 186.6,
+    "activeDrivingTimeS": 127.6,
+    "distanceM": 633.9,
+    "estimatedLaps": 4.79,
+    "maxSpeedKmh": 82.9,
+    "maxMotorRpm": 4617,
+    "maxTorqueNm": 311,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 84,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 4 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "23_08/23_08_2026-11.31.49.csv",
+    "relativePath": "23_08/23_08_2026-11.31.49.csv",
+    "folder": "23_08",
+    "format": "csv",
+    "fileSizeBytes": 64935257,
+    "totalRows": 40062,
+    "activeRows": 22467,
+    "zeroVelClampedRows": 17595,
+    "spikesFiltered": 0,
+    "totalDurationS": 976.2,
+    "activeDrivingTimeS": 547.8,
+    "distanceM": 2159.9,
+    "estimatedLaps": 18.98,
+    "maxSpeedKmh": 79.4,
+    "maxMotorRpm": 4190,
+    "maxTorqueNm": 308,
+    "hasImu": true,
+    "hasWheelSpeed": true,
+    "hasCascadia": true,
+    "hasGps": true,
+    "qualityScore": 96,
+    "status": "Temiz",
+    "statusReason": "Tam sensör paketi (IMU + 4 Teker Hızı + Cascadia + GPS) · 18 aktif sürüş segmenti",
+    "autoSelected": true,
+    "detectedColumns": {
+      "time": "INV_POWERON_TIMER_u32",
+      "vx": "WHEEL_OMEGA_FL/FR_FILT_f + VCU_EKF_VX_EST_f",
+      "wheelFl": "WHEEL_OMEGA_FL_FILT_f",
+      "wheelFr": "WHEEL_OMEGA_FR_FILT_f",
+      "wheelRl": "WHEEL_OMEGA_RL_FILT_f",
+      "wheelRr": "WHEEL_OMEGA_RR_FILT_f",
+      "ax": "IMU_ACCEL_X_f",
+      "ay": "IMU_ACCEL_Y_f",
+      "yawRate": "IMU_GYRO_Z_f",
+      "steer": "STEERING_ANGLE_f",
+      "torqueCmd": "INV_TORQUE_CMD_NM_i16",
+      "torqueEst": "INV_TORQUE_EST_NM_i16",
+      "motorRpm": "INV_MOTOR_SPEED_RPM_i32",
+      "dcVolt": "INV_DCBUS_VOLTAGE_u16",
+      "dcCurr": "INV_DCBUS_CURRENT_i16",
+      "apps": "THROTTLE_PERCENT_u8 (POT1/POT2)",
+      "brakeFront": "BRAKE_PRESSURE_FRONT_u8"
+    }
+  },
+  {
+    "id": "imu_logs.xlsx",
+    "relativePath": "imu_logs.xlsx",
+    "folder": "root",
+    "format": "xlsx",
+    "fileSizeBytes": 224216,
+    "totalRows": 20001,
+    "activeRows": 9714,
+    "zeroVelClampedRows": 10287,
+    "spikesFiltered": 4,
+    "totalDurationS": 200,
+    "activeDrivingTimeS": 97.1,
+    "distanceM": 480.9,
+    "estimatedLaps": 3.27,
+    "maxSpeedKmh": 78.1,
+    "maxMotorRpm": 0,
+    "maxTorqueNm": 0,
+    "hasImu": false,
+    "hasWheelSpeed": false,
+    "hasCascadia": false,
+    "hasGps": true,
+    "qualityScore": 44,
+    "status": "Kısmi",
+    "statusReason": "Run 64 EKF Launch GPS hız kanalı (vx_gps_raw) mevcut; Cascadia & IMU kanalları yok",
+    "autoSelected": false,
+    "detectedColumns": {
+      "time": "time",
+      "vx": "vx_gps_raw",
+      "wheelFl": "—",
+      "wheelFr": "—",
+      "wheelRl": "—",
+      "wheelRr": "—",
+      "ax": "—",
+      "ay": "—",
+      "yawRate": "—",
+      "steer": "—",
+      "torqueCmd": "—",
+      "torqueEst": "—",
+      "motorRpm": "—",
+      "dcVolt": "—",
+      "dcCurr": "—",
+      "apps": "—",
+      "brakeFront": "—"
+    }
+  }
+];
+
+export const HAVUZ_CENTERLINE_NODES: HavuzCenterlineNode[] = [
+  {
+    "s": 0,
+    "x": -0.196,
+    "y": -10.672,
+    "kappa": 0.00089,
+    "leftConeX": -0.194,
+    "leftConeY": -9.172,
+    "rightConeX": -0.198,
+    "rightConeY": -12.172
+  },
+  {
+    "s": 0.97,
+    "x": 0.775,
+    "y": -10.673,
+    "kappa": 0.00077,
+    "leftConeX": 0.775,
+    "leftConeY": -9.173,
+    "rightConeX": 0.775,
+    "rightConeY": -12.173
+  },
+  {
+    "s": 1.94,
+    "x": 1.747,
+    "y": -10.672,
+    "kappa": 0.00062,
+    "leftConeX": 1.745,
+    "leftConeY": -9.172,
+    "rightConeX": 1.75,
+    "rightConeY": -12.172
+  },
+  {
+    "s": 2.92,
+    "x": 2.72,
+    "y": -10.67,
+    "kappa": 0.00047,
+    "leftConeX": 2.717,
+    "leftConeY": -9.17,
+    "rightConeX": 2.724,
+    "rightConeY": -12.17
+  },
+  {
+    "s": 3.89,
+    "x": 3.694,
+    "y": -10.667,
+    "kappa": 0.00033,
+    "leftConeX": 3.689,
+    "leftConeY": -9.167,
+    "rightConeX": 3.699,
+    "rightConeY": -12.167
+  },
+  {
+    "s": 4.86,
+    "x": 4.668,
+    "y": -10.663,
+    "kappa": 0.00023,
+    "leftConeX": 4.663,
+    "leftConeY": -9.164,
+    "rightConeX": 4.674,
+    "rightConeY": -12.163
+  },
+  {
+    "s": 5.84,
+    "x": 5.643,
+    "y": -10.66,
+    "kappa": 0.0002,
+    "leftConeX": 5.636,
+    "leftConeY": -9.16,
+    "rightConeX": 5.649,
+    "rightConeY": -12.16
+  },
+  {
+    "s": 6.81,
+    "x": 6.617,
+    "y": -10.655,
+    "kappa": 0.00024,
+    "leftConeX": 6.61,
+    "leftConeY": -9.155,
+    "rightConeX": 6.624,
+    "rightConeY": -12.155
+  },
+  {
+    "s": 7.79,
+    "x": 7.591,
+    "y": -10.65,
+    "kappa": 0.00036,
+    "leftConeX": 7.583,
+    "leftConeY": -9.15,
+    "rightConeX": 7.599,
+    "rightConeY": -12.15
+  },
+  {
+    "s": 8.76,
+    "x": 8.565,
+    "y": -10.645,
+    "kappa": 0.00056,
+    "leftConeX": 8.556,
+    "leftConeY": -9.145,
+    "rightConeX": 8.575,
+    "rightConeY": -12.145
+  },
+  {
+    "s": 9.74,
+    "x": 9.54,
+    "y": -10.638,
+    "kappa": 0.00082,
+    "leftConeX": 9.529,
+    "leftConeY": -9.138,
+    "rightConeX": 9.551,
+    "rightConeY": -12.138
+  },
+  {
+    "s": 10.71,
+    "x": 10.514,
+    "y": -10.63,
+    "kappa": 0.00113,
+    "leftConeX": 10.5,
+    "leftConeY": -9.13,
+    "rightConeX": 10.529,
+    "rightConeY": -12.13
+  },
+  {
+    "s": 11.69,
+    "x": 11.489,
+    "y": -10.62,
+    "kappa": 0.00146,
+    "leftConeX": 11.471,
+    "leftConeY": -9.12,
+    "rightConeX": 11.507,
+    "rightConeY": -12.12
+  },
+  {
+    "s": 12.66,
+    "x": 12.465,
+    "y": -10.607,
+    "kappa": 0.00178,
+    "leftConeX": 12.442,
+    "leftConeY": -9.107,
+    "rightConeX": 12.487,
+    "rightConeY": -12.107
+  },
+  {
+    "s": 13.64,
+    "x": 13.44,
+    "y": -10.591,
+    "kappa": 0.00206,
+    "leftConeX": 13.412,
+    "leftConeY": -9.091,
+    "rightConeX": 13.469,
+    "rightConeY": -12.09
+  },
+  {
+    "s": 14.61,
+    "x": 14.417,
+    "y": -10.57,
+    "kappa": 0.00229,
+    "leftConeX": 14.382,
+    "leftConeY": -9.071,
+    "rightConeX": 14.451,
+    "rightConeY": -12.07
+  },
+  {
+    "s": 15.59,
+    "x": 15.393,
+    "y": -10.546,
+    "kappa": 0.00246,
+    "leftConeX": 15.352,
+    "leftConeY": -9.046,
+    "rightConeX": 15.435,
+    "rightConeY": -12.045
+  },
+  {
+    "s": 16.57,
+    "x": 16.37,
+    "y": -10.516,
+    "kappa": 0.00257,
+    "leftConeX": 16.321,
+    "leftConeY": -9.017,
+    "rightConeX": 16.419,
+    "rightConeY": -12.015
+  },
+  {
+    "s": 17.54,
+    "x": 17.347,
+    "y": -10.482,
+    "kappa": 0.00265,
+    "leftConeX": 17.29,
+    "leftConeY": -8.983,
+    "rightConeX": 17.403,
+    "rightConeY": -11.981
+  },
+  {
+    "s": 18.52,
+    "x": 18.323,
+    "y": -10.442,
+    "kappa": 0.00276,
+    "leftConeX": 18.259,
+    "leftConeY": -8.944,
+    "rightConeX": 18.387,
+    "rightConeY": -11.941
+  },
+  {
+    "s": 19.5,
+    "x": 19.299,
+    "y": -10.398,
+    "kappa": 0.00298,
+    "leftConeX": 19.226,
+    "leftConeY": -8.9,
+    "rightConeX": 19.372,
+    "rightConeY": -11.896
+  },
+  {
+    "s": 20.48,
+    "x": 20.274,
+    "y": -10.348,
+    "kappa": 0.00336,
+    "leftConeX": 20.192,
+    "leftConeY": -8.85,
+    "rightConeX": 20.356,
+    "rightConeY": -11.845
+  },
+  {
+    "s": 21.45,
+    "x": 21.249,
+    "y": -10.291,
+    "kappa": 0.00403,
+    "leftConeX": 21.156,
+    "leftConeY": -8.794,
+    "rightConeX": 21.342,
+    "rightConeY": -11.788
+  },
+  {
+    "s": 22.43,
+    "x": 22.223,
+    "y": -10.227,
+    "kappa": 0.0051,
+    "leftConeX": 22.116,
+    "leftConeY": -8.73,
+    "rightConeX": 22.329,
+    "rightConeY": -11.723
+  },
+  {
+    "s": 23.4,
+    "x": 23.195,
+    "y": -10.153,
+    "kappa": 0.00664,
+    "leftConeX": 23.072,
+    "leftConeY": -8.658,
+    "rightConeX": 23.319,
+    "rightConeY": -11.648
+  },
+  {
+    "s": 24.38,
+    "x": 24.166,
+    "y": -10.066,
+    "kappa": 0.00877,
+    "leftConeX": 24.02,
+    "leftConeY": -8.573,
+    "rightConeX": 24.312,
+    "rightConeY": -11.559
+  },
+  {
+    "s": 25.35,
+    "x": 25.134,
+    "y": -9.963,
+    "kappa": 0.01155,
+    "leftConeX": 24.958,
+    "leftConeY": -8.474,
+    "rightConeX": 25.309,
+    "rightConeY": -11.453
+  },
+  {
+    "s": 26.32,
+    "x": 26.096,
+    "y": -9.839,
+    "kappa": 0.01507,
+    "leftConeX": 25.882,
+    "leftConeY": -8.355,
+    "rightConeX": 26.309,
+    "rightConeY": -11.324
+  },
+  {
+    "s": 27.29,
+    "x": 27.049,
+    "y": -9.688,
+    "kappa": 0.01938,
+    "leftConeX": 26.786,
+    "leftConeY": -8.211,
+    "rightConeX": 27.311,
+    "rightConeY": -11.165
+  },
+  {
+    "s": 28.24,
+    "x": 27.988,
+    "y": -9.503,
+    "kappa": 0.02456,
+    "leftConeX": 27.663,
+    "leftConeY": -8.038,
+    "rightConeX": 28.312,
+    "rightConeY": -10.967
+  },
+  {
+    "s": 29.19,
+    "x": 28.906,
+    "y": -9.277,
+    "kappa": 0.03068,
+    "leftConeX": 28.506,
+    "leftConeY": -7.831,
+    "rightConeX": 29.306,
+    "rightConeY": -10.722
+  },
+  {
+    "s": 30.12,
+    "x": 29.795,
+    "y": -9.002,
+    "kappa": 0.03786,
+    "leftConeX": 29.304,
+    "leftConeY": -7.585,
+    "rightConeX": 30.286,
+    "rightConeY": -10.42
+  },
+  {
+    "s": 31.03,
+    "x": 30.645,
+    "y": -8.674,
+    "kappa": 0.04625,
+    "leftConeX": 30.047,
+    "leftConeY": -7.298,
+    "rightConeX": 31.242,
+    "rightConeY": -10.05
+  },
+  {
+    "s": 31.92,
+    "x": 31.443,
+    "y": -8.287,
+    "kappa": 0.05605,
+    "leftConeX": 30.724,
+    "leftConeY": -6.971,
+    "rightConeX": 32.162,
+    "rightConeY": -9.604
+  },
+  {
+    "s": 32.78,
+    "x": 32.176,
+    "y": -7.838,
+    "kappa": 0.06743,
+    "leftConeX": 31.322,
+    "leftConeY": -6.605,
+    "rightConeX": 33.029,
+    "rightConeY": -9.072
+  },
+  {
+    "s": 33.61,
+    "x": 32.83,
+    "y": -7.328,
+    "kappa": 0.08035,
+    "leftConeX": 31.833,
+    "leftConeY": -6.207,
+    "rightConeX": 33.827,
+    "rightConeY": -8.448
+  },
+  {
+    "s": 34.41,
+    "x": 33.391,
+    "y": -6.758,
+    "kappa": 0.09436,
+    "leftConeX": 32.248,
+    "leftConeY": -5.786,
+    "rightConeX": 34.533,
+    "rightConeY": -7.73
+  },
+  {
+    "s": 35.18,
+    "x": 33.845,
+    "y": -6.134,
+    "kappa": 0.10816,
+    "leftConeX": 32.566,
+    "leftConeY": -5.351,
+    "rightConeX": 35.125,
+    "rightConeY": -6.916
+  },
+  {
+    "s": 35.93,
+    "x": 34.182,
+    "y": -5.464,
+    "kappa": 0.11948,
+    "leftConeX": 32.788,
+    "leftConeY": -4.91,
+    "rightConeX": 35.576,
+    "rightConeY": -6.018
+  },
+  {
+    "s": 36.66,
+    "x": 34.392,
+    "y": -4.758,
+    "kappa": 0.12557,
+    "leftConeX": 32.921,
+    "leftConeY": -4.463,
+    "rightConeX": 35.863,
+    "rightConeY": -5.053
+  },
+  {
+    "s": 37.4,
+    "x": 34.47,
+    "y": -4.029,
+    "kappa": 0.12444,
+    "leftConeX": 32.97,
+    "leftConeY": -4.007,
+    "rightConeX": 35.97,
+    "rightConeY": -4.051
+  },
+  {
+    "s": 38.14,
+    "x": 34.413,
+    "y": -3.288,
+    "kappa": 0.11613,
+    "leftConeX": 32.934,
+    "leftConeY": -3.534,
+    "rightConeX": 35.893,
+    "rightConeY": -3.043
+  },
+  {
+    "s": 38.9,
+    "x": 34.224,
+    "y": -2.548,
+    "kappa": 0.10277,
+    "leftConeX": 32.806,
+    "leftConeY": -3.036,
+    "rightConeX": 35.643,
+    "rightConeY": -2.061
+  },
+  {
+    "s": 39.7,
+    "x": 33.909,
+    "y": -1.82,
+    "kappa": 0.08728,
+    "leftConeX": 32.579,
+    "leftConeY": -2.515,
+    "rightConeX": 35.238,
+    "rightConeY": -1.126
+  },
+  {
+    "s": 40.53,
+    "x": 33.475,
+    "y": -1.114,
+    "kappa": 0.07207,
+    "leftConeX": 32.248,
+    "leftConeY": -1.976,
+    "rightConeX": 34.702,
+    "rightConeY": -0.251
+  },
+  {
+    "s": 41.39,
+    "x": 32.935,
+    "y": -0.435,
+    "kappa": 0.05849,
+    "leftConeX": 31.812,
+    "leftConeY": -1.43,
+    "rightConeX": 34.057,
+    "rightConeY": 0.56
+  },
+  {
+    "s": 42.3,
+    "x": 32.302,
+    "y": 0.21,
+    "kappa": 0.04702,
+    "leftConeX": 31.278,
+    "leftConeY": -0.887,
+    "rightConeX": 33.325,
+    "rightConeY": 1.306
+  },
+  {
+    "s": 43.23,
+    "x": 31.59,
+    "y": 0.82,
+    "kappa": 0.03764,
+    "leftConeX": 30.656,
+    "leftConeY": -0.354,
+    "rightConeX": 32.525,
+    "rightConeY": 1.993
+  },
+  {
+    "s": 44.2,
+    "x": 30.815,
+    "y": 1.394,
+    "kappa": 0.03004,
+    "leftConeX": 29.959,
+    "leftConeY": 0.162,
+    "rightConeX": 31.671,
+    "rightConeY": 2.625
+  },
+  {
+    "s": 45.19,
+    "x": 29.989,
+    "y": 1.933,
+    "kappa": 0.02394,
+    "leftConeX": 29.199,
+    "leftConeY": 0.658,
+    "rightConeX": 30.779,
+    "rightConeY": 3.208
+  },
+  {
+    "s": 46.19,
+    "x": 29.125,
+    "y": 2.44,
+    "kappa": 0.01903,
+    "leftConeX": 28.39,
+    "leftConeY": 1.132,
+    "rightConeX": 29.859,
+    "rightConeY": 3.748
+  },
+  {
+    "s": 47.2,
+    "x": 28.234,
+    "y": 2.919,
+    "kappa": 0.01509,
+    "leftConeX": 27.545,
+    "leftConeY": 1.586,
+    "rightConeX": 28.923,
+    "rightConeY": 4.251
+  },
+  {
+    "s": 48.22,
+    "x": 27.324,
+    "y": 3.372,
+    "kappa": 0.01194,
+    "leftConeX": 26.671,
+    "leftConeY": 2.021,
+    "rightConeX": 27.976,
+    "rightConeY": 4.723
+  },
+  {
+    "s": 49.23,
+    "x": 26.401,
+    "y": 3.804,
+    "kappa": 0.00946,
+    "leftConeX": 25.779,
+    "leftConeY": 2.439,
+    "rightConeX": 27.024,
+    "rightConeY": 5.168
+  },
+  {
+    "s": 50.25,
+    "x": 25.472,
+    "y": 4.217,
+    "kappa": 0.00751,
+    "leftConeX": 24.872,
+    "leftConeY": 2.842,
+    "rightConeX": 26.071,
+    "rightConeY": 5.592
+  },
+  {
+    "s": 51.27,
+    "x": 24.538,
+    "y": 4.615,
+    "kappa": 0.00599,
+    "leftConeX": 23.957,
+    "leftConeY": 3.232,
+    "rightConeX": 25.118,
+    "rightConeY": 5.999
+  },
+  {
+    "s": 52.28,
+    "x": 23.601,
+    "y": 5.001,
+    "kappa": 0.00479,
+    "leftConeX": 23.036,
+    "leftConeY": 3.612,
+    "rightConeX": 24.166,
+    "rightConeY": 6.391
+  },
+  {
+    "s": 53.29,
+    "x": 22.664,
+    "y": 5.377,
+    "kappa": 0.0038,
+    "leftConeX": 22.111,
+    "leftConeY": 3.983,
+    "rightConeX": 23.217,
+    "rightConeY": 6.772
+  },
+  {
+    "s": 54.3,
+    "x": 21.726,
+    "y": 5.745,
+    "kappa": 0.00294,
+    "leftConeX": 21.183,
+    "leftConeY": 4.347,
+    "rightConeX": 22.27,
+    "rightConeY": 7.143
+  },
+  {
+    "s": 55.3,
+    "x": 20.788,
+    "y": 6.106,
+    "kappa": 0.00216,
+    "leftConeX": 20.252,
+    "leftConeY": 4.706,
+    "rightConeX": 21.325,
+    "rightConeY": 7.507
+  },
+  {
+    "s": 56.3,
+    "x": 19.851,
+    "y": 6.463,
+    "kappa": 0.00141,
+    "leftConeX": 19.319,
+    "leftConeY": 5.06,
+    "rightConeX": 20.382,
+    "rightConeY": 7.866
+  },
+  {
+    "s": 57.31,
+    "x": 18.914,
+    "y": 6.816,
+    "kappa": 0.0007,
+    "leftConeX": 18.386,
+    "leftConeY": 5.412,
+    "rightConeX": 19.442,
+    "rightConeY": 8.22
+  },
+  {
+    "s": 58.31,
+    "x": 17.978,
+    "y": 7.168,
+    "kappa": 0.00002,
+    "leftConeX": 17.451,
+    "leftConeY": 5.763,
+    "rightConeX": 18.506,
+    "rightConeY": 8.572
+  },
+  {
+    "s": 59.3,
+    "x": 17.044,
+    "y": 7.518,
+    "kappa": -0.00058,
+    "leftConeX": 16.516,
+    "leftConeY": 6.114,
+    "rightConeX": 17.572,
+    "rightConeY": 8.922
+  },
+  {
+    "s": 60.3,
+    "x": 16.113,
+    "y": 7.869,
+    "kappa": -0.00105,
+    "leftConeX": 15.582,
+    "leftConeY": 6.466,
+    "rightConeX": 16.643,
+    "rightConeY": 9.273
+  },
+  {
+    "s": 61.29,
+    "x": 15.183,
+    "y": 8.222,
+    "kappa": -0.00138,
+    "leftConeX": 14.65,
+    "leftConeY": 6.82,
+    "rightConeX": 15.717,
+    "rightConeY": 9.624
+  },
+  {
+    "s": 62.28,
+    "x": 14.257,
+    "y": 8.576,
+    "kappa": -0.00153,
+    "leftConeX": 13.719,
+    "leftConeY": 7.176,
+    "rightConeX": 14.794,
+    "rightConeY": 9.976
+  },
+  {
+    "s": 63.27,
+    "x": 13.333,
+    "y": 8.933,
+    "kappa": -0.0015,
+    "leftConeX": 12.791,
+    "leftConeY": 7.534,
+    "rightConeX": 13.875,
+    "rightConeY": 10.331
+  },
+  {
+    "s": 64.26,
+    "x": 12.411,
+    "y": 9.291,
+    "kappa": -0.00133,
+    "leftConeX": 11.865,
+    "leftConeY": 7.894,
+    "rightConeX": 12.957,
+    "rightConeY": 10.688
+  },
+  {
+    "s": 65.25,
+    "x": 11.492,
+    "y": 9.652,
+    "kappa": -0.00104,
+    "leftConeX": 10.943,
+    "leftConeY": 8.256,
+    "rightConeX": 12.041,
+    "rightConeY": 11.047
+  },
+  {
+    "s": 66.24,
+    "x": 10.576,
+    "y": 10.013,
+    "kappa": -0.00068,
+    "leftConeX": 10.024,
+    "leftConeY": 8.618,
+    "rightConeX": 11.127,
+    "rightConeY": 11.408
+  },
+  {
+    "s": 67.22,
+    "x": 9.662,
+    "y": 10.375,
+    "kappa": -0.00027,
+    "leftConeX": 9.109,
+    "leftConeY": 8.981,
+    "rightConeX": 10.214,
+    "rightConeY": 11.77
+  },
+  {
+    "s": 68.2,
+    "x": 8.75,
+    "y": 10.737,
+    "kappa": 0.00017,
+    "leftConeX": 8.197,
+    "leftConeY": 9.342,
+    "rightConeX": 9.303,
+    "rightConeY": 12.131
+  },
+  {
+    "s": 69.18,
+    "x": 7.842,
+    "y": 11.097,
+    "kappa": 0.00067,
+    "leftConeX": 7.291,
+    "leftConeY": 9.702,
+    "rightConeX": 8.394,
+    "rightConeY": 12.492
+  },
+  {
+    "s": 70.15,
+    "x": 6.939,
+    "y": 11.453,
+    "kappa": 0.00128,
+    "leftConeX": 6.39,
+    "leftConeY": 10.058,
+    "rightConeX": 7.488,
+    "rightConeY": 12.849
+  },
+  {
+    "s": 71.11,
+    "x": 6.041,
+    "y": 11.805,
+    "kappa": 0.00206,
+    "leftConeX": 5.497,
+    "leftConeY": 10.408,
+    "rightConeX": 6.586,
+    "rightConeY": 13.203
+  },
+  {
+    "s": 72.07,
+    "x": 5.151,
+    "y": 12.15,
+    "kappa": 0.00311,
+    "leftConeX": 4.613,
+    "leftConeY": 10.75,
+    "rightConeX": 5.688,
+    "rightConeY": 13.551
+  },
+  {
+    "s": 73.01,
+    "x": 4.268,
+    "y": 12.486,
+    "kappa": 0.00451,
+    "leftConeX": 3.741,
+    "leftConeY": 11.082,
+    "rightConeX": 4.796,
+    "rightConeY": 13.89
+  },
+  {
+    "s": 73.94,
+    "x": 3.396,
+    "y": 12.81,
+    "kappa": 0.00636,
+    "leftConeX": 2.882,
+    "leftConeY": 11.401,
+    "rightConeX": 3.909,
+    "rightConeY": 14.219
+  },
+  {
+    "s": 74.86,
+    "x": 2.534,
+    "y": 13.118,
+    "kappa": 0.00874,
+    "leftConeX": 2.039,
+    "leftConeY": 11.702,
+    "rightConeX": 3.028,
+    "rightConeY": 14.535
+  },
+  {
+    "s": 75.76,
+    "x": 1.682,
+    "y": 13.408,
+    "kappa": 0.01169,
+    "leftConeX": 1.214,
+    "leftConeY": 11.983,
+    "rightConeX": 2.15,
+    "rightConeY": 14.833
+  },
+  {
+    "s": 76.64,
+    "x": 0.84,
+    "y": 13.675,
+    "kappa": 0.01521,
+    "leftConeX": 0.405,
+    "leftConeY": 12.239,
+    "rightConeX": 1.274,
+    "rightConeY": 15.111
+  },
+  {
+    "s": 77.51,
+    "x": 0.006,
+    "y": 13.915,
+    "kappa": 0.01921,
+    "leftConeX": -0.385,
+    "leftConeY": 12.467,
+    "rightConeX": 0.397,
+    "rightConeY": 15.363
+  },
+  {
+    "s": 78.36,
+    "x": -0.821,
+    "y": 14.123,
+    "kappa": 0.02349,
+    "leftConeX": -1.159,
+    "leftConeY": 12.662,
+    "rightConeX": -0.483,
+    "rightConeY": 15.585
+  },
+  {
+    "s": 79.2,
+    "x": -1.643,
+    "y": 14.296,
+    "kappa": 0.02782,
+    "leftConeX": -1.918,
+    "leftConeY": 12.822,
+    "rightConeX": -1.369,
+    "rightConeY": 15.771
+  },
+  {
+    "s": 80.03,
+    "x": -2.464,
+    "y": 14.43,
+    "kappa": 0.03188,
+    "leftConeX": -2.665,
+    "leftConeY": 12.943,
+    "rightConeX": -2.263,
+    "rightConeY": 15.916
+  },
+  {
+    "s": 80.86,
+    "x": -3.285,
+    "y": 14.519,
+    "kappa": 0.03538,
+    "leftConeX": -3.404,
+    "leftConeY": 13.023,
+    "rightConeX": -3.167,
+    "rightConeY": 16.014
+  },
+  {
+    "s": 81.68,
+    "x": -4.109,
+    "y": 14.56,
+    "kappa": 0.03812,
+    "leftConeX": -4.136,
+    "leftConeY": 13.06,
+    "rightConeX": -4.081,
+    "rightConeY": 16.06
+  },
+  {
+    "s": 82.51,
+    "x": -4.936,
+    "y": 14.549,
+    "kappa": 0.03998,
+    "leftConeX": -4.866,
+    "leftConeY": 13.051,
+    "rightConeX": -5.005,
+    "rightConeY": 16.047
+  },
+  {
+    "s": 83.34,
+    "x": -5.766,
+    "y": 14.483,
+    "kappa": 0.04089,
+    "leftConeX": -5.596,
+    "leftConeY": 12.993,
+    "rightConeX": -5.937,
+    "rightConeY": 15.973
+  },
+  {
+    "s": 84.19,
+    "x": -6.6,
+    "y": 14.359,
+    "kappa": 0.04086,
+    "leftConeX": -6.327,
+    "leftConeY": 12.884,
+    "rightConeX": -6.873,
+    "rightConeY": 15.834
+  },
+  {
+    "s": 85.04,
+    "x": -7.435,
+    "y": 14.174,
+    "kappa": 0.03998,
+    "leftConeX": -7.061,
+    "leftConeY": 12.722,
+    "rightConeX": -7.809,
+    "rightConeY": 15.627
+  },
+  {
+    "s": 85.91,
+    "x": -8.269,
+    "y": 13.929,
+    "kappa": 0.03834,
+    "leftConeX": -7.797,
+    "leftConeY": 12.505,
+    "rightConeX": -8.741,
+    "rightConeY": 15.353
+  },
+  {
+    "s": 86.79,
+    "x": -9.098,
+    "y": 13.623,
+    "kappa": 0.03608,
+    "leftConeX": -8.534,
+    "leftConeY": 12.233,
+    "rightConeX": -9.662,
+    "rightConeY": 15.013
+  },
+  {
+    "s": 87.69,
+    "x": -9.918,
+    "y": 13.26,
+    "kappa": 0.03337,
+    "leftConeX": -9.268,
+    "leftConeY": 11.907,
+    "rightConeX": -10.567,
+    "rightConeY": 14.612
+  },
+  {
+    "s": 88.6,
+    "x": -10.724,
+    "y": 12.842,
+    "kappa": 0.03039,
+    "leftConeX": -9.998,
+    "leftConeY": 11.53,
+    "rightConeX": -11.451,
+    "rightConeY": 14.154
+  },
+  {
+    "s": 89.52,
+    "x": -11.514,
+    "y": 12.376,
+    "kappa": 0.02736,
+    "leftConeX": -10.719,
+    "leftConeY": 11.104,
+    "rightConeX": -12.308,
+    "rightConeY": 13.649
+  },
+  {
+    "s": 90.44,
+    "x": -12.282,
+    "y": 11.87,
+    "kappa": 0.02445,
+    "leftConeX": -11.427,
+    "leftConeY": 10.636,
+    "rightConeX": -13.136,
+    "rightConeY": 13.103
+  },
+  {
+    "s": 91.36,
+    "x": -13.025,
+    "y": 11.329,
+    "kappa": 0.02181,
+    "leftConeX": -12.12,
+    "leftConeY": 10.134,
+    "rightConeX": -13.931,
+    "rightConeY": 12.525
+  },
+  {
+    "s": 92.27,
+    "x": -13.742,
+    "y": 10.764,
+    "kappa": 0.01957,
+    "leftConeX": -12.792,
+    "leftConeY": 9.603,
+    "rightConeX": -14.692,
+    "rightConeY": 11.924
+  },
+  {
+    "s": 93.17,
+    "x": -14.431,
+    "y": 10.179,
+    "kappa": 0.01783,
+    "leftConeX": -13.442,
+    "leftConeY": 9.051,
+    "rightConeX": -15.419,
+    "rightConeY": 11.307
+  },
+  {
+    "s": 94.06,
+    "x": -15.09,
+    "y": 9.582,
+    "kappa": 0.01674,
+    "leftConeX": -14.067,
+    "leftConeY": 8.485,
+    "rightConeX": -16.113,
+    "rightConeY": 10.68
+  },
+  {
+    "s": 94.93,
+    "x": -15.72,
+    "y": 8.978,
+    "kappa": 0.01637,
+    "leftConeX": -14.666,
+    "leftConeY": 7.91,
+    "rightConeX": -16.774,
+    "rightConeY": 10.045
+  },
+  {
+    "s": 95.79,
+    "x": -16.321,
+    "y": 8.366,
+    "kappa": 0.01674,
+    "leftConeX": -15.237,
+    "leftConeY": 7.33,
+    "rightConeX": -17.405,
+    "rightConeY": 9.403
+  },
+  {
+    "s": 96.63,
+    "x": -16.895,
+    "y": 7.749,
+    "kappa": 0.01765,
+    "leftConeX": -15.781,
+    "leftConeY": 6.744,
+    "rightConeX": -18.008,
+    "rightConeY": 8.754
+  },
+  {
+    "s": 97.47,
+    "x": -17.443,
+    "y": 7.123,
+    "kappa": 0.01879,
+    "leftConeX": -16.299,
+    "leftConeY": 6.152,
+    "rightConeX": -18.587,
+    "rightConeY": 8.094
+  },
+  {
+    "s": 98.29,
+    "x": -17.967,
+    "y": 6.486,
+    "kappa": 0.0197,
+    "leftConeX": -16.793,
+    "leftConeY": 5.552,
+    "rightConeX": -19.141,
+    "rightConeY": 7.419
+  },
+  {
+    "s": 99.11,
+    "x": -18.469,
+    "y": 5.833,
+    "kappa": 0.02,
+    "leftConeX": -17.265,
+    "leftConeY": 4.938,
+    "rightConeX": -19.673,
+    "rightConeY": 6.727
+  },
+  {
+    "s": 99.94,
+    "x": -18.951,
+    "y": 5.161,
+    "kappa": 0.01953,
+    "leftConeX": -17.719,
+    "leftConeY": 4.306,
+    "rightConeX": -20.184,
+    "rightConeY": 6.016
+  },
+  {
+    "s": 100.78,
+    "x": -19.415,
+    "y": 4.468,
+    "kappa": 0.01841,
+    "leftConeX": -18.156,
+    "leftConeY": 3.653,
+    "rightConeX": -20.675,
+    "rightConeY": 5.283
+  },
+  {
+    "s": 101.62,
+    "x": -19.863,
+    "y": 3.753,
+    "kappa": 0.01696,
+    "leftConeX": -18.58,
+    "leftConeY": 2.976,
+    "rightConeX": -21.146,
+    "rightConeY": 4.531
+  },
+  {
+    "s": 102.47,
+    "x": -20.295,
+    "y": 3.017,
+    "kappa": 0.0156,
+    "leftConeX": -18.991,
+    "leftConeY": 2.275,
+    "rightConeX": -21.599,
+    "rightConeY": 3.758
+  },
+  {
+    "s": 103.34,
+    "x": -20.711,
+    "y": 2.262,
+    "kappa": 0.01476,
+    "leftConeX": -19.388,
+    "leftConeY": 1.555,
+    "rightConeX": -22.034,
+    "rightConeY": 2.969
+  },
+  {
+    "s": 104.2,
+    "x": -21.111,
+    "y": 1.491,
+    "kappa": 0.01483,
+    "leftConeX": -19.77,
+    "leftConeY": 0.818,
+    "rightConeX": -22.451,
+    "rightConeY": 2.164
+  },
+  {
+    "s": 105.07,
+    "x": -21.491,
+    "y": 0.709,
+    "kappa": 0.01615,
+    "leftConeX": -20.133,
+    "leftConeY": 0.073,
+    "rightConeX": -22.849,
+    "rightConeY": 1.346
+  },
+  {
+    "s": 105.94,
+    "x": -21.847,
+    "y": -0.079,
+    "kappa": 0.01904,
+    "leftConeX": -20.47,
+    "leftConeY": -0.675,
+    "rightConeX": -23.224,
+    "rightConeY": 0.516
+  },
+  {
+    "s": 106.79,
+    "x": -22.174,
+    "y": -0.87,
+    "kappa": 0.02387,
+    "leftConeX": -20.776,
+    "leftConeY": -1.415,
+    "rightConeX": -23.571,
+    "rightConeY": -0.325
+  },
+  {
+    "s": 107.63,
+    "x": -22.463,
+    "y": -1.659,
+    "kappa": 0.031,
+    "leftConeX": -21.042,
+    "leftConeY": -2.139,
+    "rightConeX": -23.884,
+    "rightConeY": -1.179
+  },
+  {
+    "s": 108.45,
+    "x": -22.705,
+    "y": -2.441,
+    "kappa": 0.0408,
+    "leftConeX": -21.258,
+    "leftConeY": -2.838,
+    "rightConeX": -24.151,
+    "rightConeY": -2.045
+  },
+  {
+    "s": 109.25,
+    "x": -22.889,
+    "y": -3.213,
+    "kappa": 0.05352,
+    "leftConeX": -21.417,
+    "leftConeY": -3.501,
+    "rightConeX": -24.361,
+    "rightConeY": -2.925
+  },
+  {
+    "s": 110.01,
+    "x": -23.004,
+    "y": -3.969,
+    "kappa": 0.06897,
+    "leftConeX": -21.511,
+    "leftConeY": -4.119,
+    "rightConeX": -24.496,
+    "rightConeY": -3.819
+  },
+  {
+    "s": 110.75,
+    "x": -23.039,
+    "y": -4.704,
+    "kappa": 0.08615,
+    "leftConeX": -21.539,
+    "leftConeY": -4.684,
+    "rightConeX": -24.538,
+    "rightConeY": -4.725
+  },
+  {
+    "s": 111.46,
+    "x": -22.984,
+    "y": -5.414,
+    "kappa": 0.10268,
+    "leftConeX": -21.5,
+    "leftConeY": -5.193,
+    "rightConeX": -24.468,
+    "rightConeY": -5.634
+  },
+  {
+    "s": 112.15,
+    "x": -22.832,
+    "y": -6.09,
+    "kappa": 0.11497,
+    "leftConeX": -21.399,
+    "leftConeY": -5.648,
+    "rightConeX": -24.266,
+    "rightConeY": -6.532
+  },
+  {
+    "s": 112.84,
+    "x": -22.579,
+    "y": -6.727,
+    "kappa": 0.11951,
+    "leftConeX": -21.235,
+    "leftConeY": -6.061,
+    "rightConeX": -23.923,
+    "rightConeY": -7.393
+  },
+  {
+    "s": 113.53,
+    "x": -22.224,
+    "y": -7.318,
+    "kappa": 0.11508,
+    "leftConeX": -21.005,
+    "leftConeY": -6.444,
+    "rightConeX": -23.442,
+    "rightConeY": -8.193
+  },
+  {
+    "s": 114.23,
+    "x": -21.768,
+    "y": -7.858,
+    "kappa": 0.1035,
+    "leftConeX": -20.698,
+    "leftConeY": -6.806,
+    "rightConeX": -22.837,
+    "rightConeY": -8.909
+  },
+  {
+    "s": 114.97,
+    "x": -21.218,
+    "y": -8.341,
+    "kappa": 0.08835,
+    "leftConeX": -20.306,
+    "leftConeY": -7.15,
+    "rightConeX": -22.13,
+    "rightConeY": -9.532
+  },
+  {
+    "s": 115.73,
+    "x": -20.582,
+    "y": -8.766,
+    "kappa": 0.07284,
+    "leftConeX": -19.822,
+    "leftConeY": -7.473,
+    "rightConeX": -21.342,
+    "rightConeY": -10.06
+  },
+  {
+    "s": 116.53,
+    "x": -19.871,
+    "y": -9.132,
+    "kappa": 0.05881,
+    "leftConeX": -19.25,
+    "leftConeY": -7.767,
+    "rightConeX": -20.491,
+    "rightConeY": -10.498
+  },
+  {
+    "s": 117.36,
+    "x": -19.095,
+    "y": -9.442,
+    "kappa": 0.04692,
+    "leftConeX": -18.597,
+    "leftConeY": -8.027,
+    "rightConeX": -19.594,
+    "rightConeY": -10.856
+  },
+  {
+    "s": 118.23,
+    "x": -18.268,
+    "y": -9.697,
+    "kappa": 0.03716,
+    "leftConeX": -17.873,
+    "leftConeY": -8.25,
+    "rightConeX": -18.663,
+    "rightConeY": -11.144
+  },
+  {
+    "s": 119.12,
+    "x": -17.4,
+    "y": -9.905,
+    "kappa": 0.02922,
+    "leftConeX": -17.091,
+    "leftConeY": -8.437,
+    "rightConeX": -17.709,
+    "rightConeY": -11.372
+  },
+  {
+    "s": 120.04,
+    "x": -16.501,
+    "y": -10.07,
+    "kappa": 0.02278,
+    "leftConeX": -16.261,
+    "leftConeY": -8.589,
+    "rightConeX": -16.741,
+    "rightConeY": -11.551
+  },
+  {
+    "s": 120.97,
+    "x": -15.579,
+    "y": -10.2,
+    "kappa": 0.01755,
+    "leftConeX": -15.395,
+    "leftConeY": -8.711,
+    "rightConeX": -15.763,
+    "rightConeY": -11.688
+  },
+  {
+    "s": 121.91,
+    "x": -14.641,
+    "y": -10.3,
+    "kappa": 0.01333,
+    "leftConeX": -14.5,
+    "leftConeY": -8.807,
+    "rightConeX": -14.782,
+    "rightConeY": -11.793
+  },
+  {
+    "s": 122.86,
+    "x": -13.693,
+    "y": -10.378,
+    "kappa": 0.00995,
+    "leftConeX": -13.585,
+    "leftConeY": -8.881,
+    "rightConeX": -13.801,
+    "rightConeY": -11.874
+  },
+  {
+    "s": 123.82,
+    "x": -12.738,
+    "y": -10.437,
+    "kappa": 0.00731,
+    "leftConeX": -12.655,
+    "leftConeY": -8.94,
+    "rightConeX": -12.821,
+    "rightConeY": -11.935
+  },
+  {
+    "s": 124.78,
+    "x": -11.778,
+    "y": -10.484,
+    "kappa": 0.0053,
+    "leftConeX": -11.713,
+    "leftConeY": -8.986,
+    "rightConeX": -11.844,
+    "rightConeY": -11.983
+  },
+  {
+    "s": 125.74,
+    "x": -10.817,
+    "y": -10.521,
+    "kappa": 0.00383,
+    "leftConeX": -10.765,
+    "leftConeY": -9.022,
+    "rightConeX": -10.869,
+    "rightConeY": -12.02
+  },
+  {
+    "s": 126.71,
+    "x": -9.853,
+    "y": -10.551,
+    "kappa": 0.00281,
+    "leftConeX": -9.811,
+    "leftConeY": -9.052,
+    "rightConeX": -9.896,
+    "rightConeY": -12.05
+  },
+  {
+    "s": 127.67,
+    "x": -8.889,
+    "y": -10.576,
+    "kappa": 0.00213,
+    "leftConeX": -8.854,
+    "leftConeY": -9.076,
+    "rightConeX": -8.925,
+    "rightConeY": -12.075
+  },
+  {
+    "s": 128.64,
+    "x": -7.925,
+    "y": -10.596,
+    "kappa": 0.0017,
+    "leftConeX": -7.896,
+    "leftConeY": -9.097,
+    "rightConeX": -7.955,
+    "rightConeY": -12.096
+  },
+  {
+    "s": 129.6,
+    "x": -6.961,
+    "y": -10.614,
+    "kappa": 0.00144,
+    "leftConeX": -6.936,
+    "leftConeY": -9.114,
+    "rightConeX": -6.986,
+    "rightConeY": -12.114
+  },
+  {
+    "s": 130.56,
+    "x": -5.997,
+    "y": -10.629,
+    "kappa": 0.00128,
+    "leftConeX": -5.975,
+    "leftConeY": -9.129,
+    "rightConeX": -6.018,
+    "rightConeY": -12.129
+  },
+  {
+    "s": 131.53,
+    "x": -5.032,
+    "y": -10.641,
+    "kappa": 0.00119,
+    "leftConeX": -5.014,
+    "leftConeY": -9.141,
+    "rightConeX": -5.05,
+    "rightConeY": -12.141
+  },
+  {
+    "s": 132.49,
+    "x": -4.067,
+    "y": -10.651,
+    "kappa": 0.00114,
+    "leftConeX": -4.053,
+    "leftConeY": -9.151,
+    "rightConeX": -4.081,
+    "rightConeY": -12.151
+  },
+  {
+    "s": 133.46,
+    "x": -3.101,
+    "y": -10.66,
+    "kappa": 0.0011,
+    "leftConeX": -3.09,
+    "leftConeY": -9.16,
+    "rightConeX": -3.112,
+    "rightConeY": -12.16
+  },
+  {
+    "s": 134.43,
+    "x": -2.134,
+    "y": -10.666,
+    "kappa": 0.00105,
+    "leftConeX": -2.126,
+    "leftConeY": -9.166,
+    "rightConeX": -2.142,
+    "rightConeY": -12.166
+  },
+  {
+    "s": 135.4,
+    "x": -1.165,
+    "y": -10.67,
+    "kappa": 0.00098,
+    "leftConeX": -1.16,
+    "leftConeY": -9.17,
+    "rightConeX": -1.17,
+    "rightConeY": -12.17
+  }
+];
+
+export const HAVUZ_TRAJECTORY_CLOUD: HavuzTrajectoryTrace[] = [
+  {
+    "id": "20_09_Logs/20_09_2026-23.48.06.csv#lap1",
+    "logId": "20_09_Logs/20_09_2026-23.48.06.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.04,
+        -6.37
+      ],
+      [
+        1.91,
+        -6.24
+      ],
+      [
+        3.81,
+        -6.09
+      ],
+      [
+        5.67,
+        -5.99
+      ],
+      [
+        7.61,
+        -5.84
+      ],
+      [
+        9.59,
+        -5.69
+      ],
+      [
+        11.62,
+        -5.55
+      ],
+      [
+        13.52,
+        -5.44
+      ],
+      [
+        15.59,
+        -5.34
+      ],
+      [
+        17.47,
+        -5.37
+      ],
+      [
+        19.37,
+        -5.57
+      ],
+      [
+        21.28,
+        -5.93
+      ],
+      [
+        23.05,
+        -6.31
+      ],
+      [
+        24.86,
+        -6.88
+      ],
+      [
+        26.52,
+        -7.25
+      ],
+      [
+        28.17,
+        -7.27
+      ],
+      [
+        30.01,
+        -7.02
+      ],
+      [
+        31.52,
+        -6.3
+      ],
+      [
+        32.74,
+        -5.58
+      ],
+      [
+        33.7,
+        -4.02
+      ],
+      [
+        34.25,
+        -2.67
+      ],
+      [
+        34.3,
+        -1.23
+      ],
+      [
+        34.01,
+        0.51
+      ],
+      [
+        33.07,
+        2.19
+      ],
+      [
+        31.72,
+        3.36
+      ],
+      [
+        30.01,
+        4.27
+      ],
+      [
+        28.46,
+        4.98
+      ],
+      [
+        26.49,
+        5.56
+      ],
+      [
+        24.46,
+        6.09
+      ],
+      [
+        22.75,
+        6.49
+      ],
+      [
+        20.53,
+        6.94
+      ],
+      [
+        18.65,
+        7.3
+      ],
+      [
+        16.55,
+        7.76
+      ],
+      [
+        14.77,
+        8.17
+      ],
+      [
+        12.77,
+        8.49
+      ],
+      [
+        10.87,
+        8.8
+      ],
+      [
+        8.85,
+        9.21
+      ],
+      [
+        6.94,
+        9.51
+      ],
+      [
+        5.15,
+        9.79
+      ],
+      [
+        3.4,
+        10.03
+      ],
+      [
+        1.45,
+        10.13
+      ],
+      [
+        -0.49,
+        10.12
+      ],
+      [
+        -2.35,
+        10.11
+      ],
+      [
+        -4.2,
+        9.96
+      ],
+      [
+        -6.13,
+        9.93
+      ],
+      [
+        -8.09,
+        9.7
+      ],
+      [
+        -9.75,
+        9.28
+      ],
+      [
+        -11.54,
+        9.25
+      ],
+      [
+        -13.29,
+        9.13
+      ],
+      [
+        -15.05,
+        8.92
+      ],
+      [
+        -16.71,
+        8.52
+      ],
+      [
+        -18.47,
+        8
+      ],
+      [
+        -20.12,
+        7.36
+      ],
+      [
+        -21.68,
+        5.72
+      ],
+      [
+        -23.1,
+        4.6
+      ],
+      [
+        -24.43,
+        3.55
+      ],
+      [
+        -25.45,
+        2.26
+      ],
+      [
+        -26.31,
+        0.71
+      ],
+      [
+        -26.83,
+        -0.87
+      ],
+      [
+        -26.82,
+        -2.53
+      ],
+      [
+        -26.1,
+        -4.35
+      ],
+      [
+        -24.78,
+        -5.43
+      ],
+      [
+        -23.35,
+        -5.98
+      ],
+      [
+        -22.02,
+        -6.05
+      ],
+      [
+        -20.61,
+        -6.27
+      ],
+      [
+        -19.14,
+        -6.69
+      ],
+      [
+        -17.4,
+        -6.98
+      ],
+      [
+        -15.63,
+        -7.07
+      ],
+      [
+        -13.61,
+        -7.13
+      ],
+      [
+        -11.66,
+        -7.15
+      ],
+      [
+        -9.89,
+        -7.06
+      ],
+      [
+        -7.85,
+        -6.93
+      ],
+      [
+        -5.93,
+        -6.78
+      ],
+      [
+        -3.93,
+        -6.71
+      ],
+      [
+        -1.97,
+        -6.52
+      ]
+    ]
+  },
+  {
+    "id": "20_09_Logs/20_09_2026-23.48.06.csv#lap2",
+    "logId": "20_09_Logs/20_09_2026-23.48.06.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.36,
+        -7.52
+      ],
+      [
+        1.53,
+        -7.47
+      ],
+      [
+        3.39,
+        -7.37
+      ],
+      [
+        5.37,
+        -7.28
+      ],
+      [
+        7.54,
+        -7.16
+      ],
+      [
+        9.49,
+        -7.06
+      ],
+      [
+        11.54,
+        -6.96
+      ],
+      [
+        13.57,
+        -6.87
+      ],
+      [
+        15.56,
+        -6.82
+      ],
+      [
+        17.44,
+        -6.83
+      ],
+      [
+        19.51,
+        -6.98
+      ],
+      [
+        21.39,
+        -7.21
+      ],
+      [
+        23.36,
+        -7.55
+      ],
+      [
+        25.04,
+        -7.94
+      ],
+      [
+        27.01,
+        -8.3
+      ],
+      [
+        28.71,
+        -8.09
+      ],
+      [
+        30.61,
+        -7.42
+      ],
+      [
+        31.91,
+        -6.26
+      ],
+      [
+        32.82,
+        -4.99
+      ],
+      [
+        33.18,
+        -3.05
+      ],
+      [
+        32.99,
+        -1.58
+      ],
+      [
+        32.33,
+        -0.3
+      ],
+      [
+        31.42,
+        1.02
+      ],
+      [
+        30.14,
+        2.24
+      ],
+      [
+        28.8,
+        3.1
+      ],
+      [
+        27.1,
+        3.94
+      ],
+      [
+        25.41,
+        4.72
+      ],
+      [
+        23.49,
+        5.37
+      ],
+      [
+        21.6,
+        5.95
+      ],
+      [
+        19.66,
+        6.42
+      ],
+      [
+        17.73,
+        6.87
+      ],
+      [
+        15.87,
+        7.22
+      ],
+      [
+        13.9,
+        7.64
+      ],
+      [
+        12.13,
+        7.99
+      ],
+      [
+        10.33,
+        8.25
+      ],
+      [
+        8.32,
+        8.52
+      ],
+      [
+        6.49,
+        8.88
+      ],
+      [
+        4.6,
+        9.15
+      ],
+      [
+        2.92,
+        9.42
+      ],
+      [
+        0.93,
+        9.7
+      ],
+      [
+        -0.93,
+        9.86
+      ],
+      [
+        -2.81,
+        9.92
+      ],
+      [
+        -4.67,
+        9.95
+      ],
+      [
+        -6.51,
+        9.78
+      ],
+      [
+        -8.3,
+        9.71
+      ],
+      [
+        -10.11,
+        9.39
+      ],
+      [
+        -11.85,
+        8.78
+      ],
+      [
+        -13.5,
+        8.52
+      ],
+      [
+        -15.2,
+        8.17
+      ],
+      [
+        -16.94,
+        7.84
+      ],
+      [
+        -18.59,
+        7.39
+      ],
+      [
+        -20.16,
+        6.88
+      ],
+      [
+        -21.83,
+        6.24
+      ],
+      [
+        -23.35,
+        4.59
+      ],
+      [
+        -24.71,
+        3.45
+      ],
+      [
+        -25.96,
+        2.47
+      ],
+      [
+        -26.98,
+        1.17
+      ],
+      [
+        -27.77,
+        -0.38
+      ],
+      [
+        -28.14,
+        -2.08
+      ],
+      [
+        -27.97,
+        -3.62
+      ],
+      [
+        -27.1,
+        -5.36
+      ],
+      [
+        -25.66,
+        -6.3
+      ],
+      [
+        -24.15,
+        -6.69
+      ],
+      [
+        -22.78,
+        -6.81
+      ],
+      [
+        -21.48,
+        -7.07
+      ],
+      [
+        -19.87,
+        -7.5
+      ],
+      [
+        -18.3,
+        -7.82
+      ],
+      [
+        -16.31,
+        -7.94
+      ],
+      [
+        -14.12,
+        -8.02
+      ],
+      [
+        -12.33,
+        -8.06
+      ],
+      [
+        -10.25,
+        -7.93
+      ],
+      [
+        -8.2,
+        -7.8
+      ],
+      [
+        -6.4,
+        -7.71
+      ],
+      [
+        -4.57,
+        -7.71
+      ],
+      [
+        -2.21,
+        -7.6
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-02.50.43.csv#lap3",
+    "logId": "23_08/23_08_2026-02.50.43.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.33,
+        -10.69
+      ],
+      [
+        1.9,
+        -10.82
+      ],
+      [
+        3.97,
+        -10.88
+      ],
+      [
+        5.87,
+        -10.93
+      ],
+      [
+        7.63,
+        -10.91
+      ],
+      [
+        9.6,
+        -10.85
+      ],
+      [
+        11.67,
+        -10.81
+      ],
+      [
+        13.57,
+        -10.79
+      ],
+      [
+        15.66,
+        -10.78
+      ],
+      [
+        17.6,
+        -10.77
+      ],
+      [
+        19.3,
+        -10.78
+      ],
+      [
+        21.34,
+        -10.8
+      ],
+      [
+        23.48,
+        -10.73
+      ],
+      [
+        25.32,
+        -10.7
+      ],
+      [
+        27.4,
+        -10.6
+      ],
+      [
+        29.12,
+        -10.27
+      ],
+      [
+        30.94,
+        -9.71
+      ],
+      [
+        32.38,
+        -8.69
+      ],
+      [
+        33.39,
+        -7.79
+      ],
+      [
+        34.18,
+        -5.99
+      ],
+      [
+        34.48,
+        -4.52
+      ],
+      [
+        34.27,
+        -3.01
+      ],
+      [
+        33.78,
+        -1.36
+      ],
+      [
+        32.83,
+        0.18
+      ],
+      [
+        31.55,
+        1.53
+      ],
+      [
+        30.13,
+        2.73
+      ],
+      [
+        28.52,
+        3.93
+      ],
+      [
+        26.63,
+        5.01
+      ],
+      [
+        24.89,
+        5.93
+      ],
+      [
+        22.99,
+        6.81
+      ],
+      [
+        21.37,
+        7.6
+      ],
+      [
+        19.4,
+        8.46
+      ],
+      [
+        17.41,
+        9.31
+      ],
+      [
+        15.66,
+        10.15
+      ],
+      [
+        13.83,
+        10.82
+      ],
+      [
+        12.17,
+        11.44
+      ],
+      [
+        9.99,
+        12.38
+      ],
+      [
+        8.23,
+        13.06
+      ],
+      [
+        6.62,
+        13.76
+      ],
+      [
+        4.85,
+        14.51
+      ],
+      [
+        2.88,
+        15.24
+      ],
+      [
+        1.24,
+        15.66
+      ],
+      [
+        -0.91,
+        16.12
+      ],
+      [
+        -2.75,
+        16.22
+      ],
+      [
+        -4.57,
+        16.27
+      ],
+      [
+        -6.58,
+        15.9
+      ],
+      [
+        -8.19,
+        15.12
+      ],
+      [
+        -9.77,
+        14.51
+      ],
+      [
+        -11.21,
+        13.68
+      ],
+      [
+        -12.65,
+        12.73
+      ],
+      [
+        -14.05,
+        11.59
+      ],
+      [
+        -15.29,
+        10.42
+      ],
+      [
+        -16.4,
+        9.29
+      ],
+      [
+        -17.48,
+        7.11
+      ],
+      [
+        -18.45,
+        5.59
+      ],
+      [
+        -19.43,
+        4.25
+      ],
+      [
+        -20.23,
+        2.79
+      ],
+      [
+        -21.01,
+        1.26
+      ],
+      [
+        -21.71,
+        -0.29
+      ],
+      [
+        -22.29,
+        -1.82
+      ],
+      [
+        -22.59,
+        -3.56
+      ],
+      [
+        -22.59,
+        -5.11
+      ],
+      [
+        -22.24,
+        -6.54
+      ],
+      [
+        -21.56,
+        -7.64
+      ],
+      [
+        -20.4,
+        -8.58
+      ],
+      [
+        -18.92,
+        -9.25
+      ],
+      [
+        -17.23,
+        -9.72
+      ],
+      [
+        -15.45,
+        -9.99
+      ],
+      [
+        -13.47,
+        -10.22
+      ],
+      [
+        -11.53,
+        -10.4
+      ],
+      [
+        -9.73,
+        -10.45
+      ],
+      [
+        -7.76,
+        -10.49
+      ],
+      [
+        -5.88,
+        -10.53
+      ],
+      [
+        -4,
+        -10.64
+      ],
+      [
+        -1.81,
+        -10.67
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-02.50.43.csv#lap4",
+    "logId": "23_08/23_08_2026-02.50.43.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.12,
+        -10.67
+      ],
+      [
+        1.8,
+        -10.75
+      ],
+      [
+        3.76,
+        -10.76
+      ],
+      [
+        5.78,
+        -10.78
+      ],
+      [
+        7.67,
+        -10.76
+      ],
+      [
+        9.48,
+        -10.74
+      ],
+      [
+        11.28,
+        -10.71
+      ],
+      [
+        13.41,
+        -10.69
+      ],
+      [
+        15.36,
+        -10.67
+      ],
+      [
+        17.42,
+        -10.63
+      ],
+      [
+        19.37,
+        -10.61
+      ],
+      [
+        21.06,
+        -10.58
+      ],
+      [
+        23.34,
+        -10.45
+      ],
+      [
+        25.12,
+        -10.35
+      ],
+      [
+        27.2,
+        -10.17
+      ],
+      [
+        28.91,
+        -9.79
+      ],
+      [
+        30.63,
+        -9.38
+      ],
+      [
+        32.24,
+        -8.58
+      ],
+      [
+        33.42,
+        -7.75
+      ],
+      [
+        34.23,
+        -6.14
+      ],
+      [
+        34.62,
+        -4.73
+      ],
+      [
+        34.51,
+        -3.3
+      ],
+      [
+        34.06,
+        -1.62
+      ],
+      [
+        33.07,
+        -0.02
+      ],
+      [
+        31.72,
+        1.3
+      ],
+      [
+        30.25,
+        2.44
+      ],
+      [
+        28.63,
+        3.57
+      ],
+      [
+        26.75,
+        4.57
+      ],
+      [
+        24.9,
+        5.52
+      ],
+      [
+        22.99,
+        6.36
+      ],
+      [
+        21.23,
+        7.2
+      ],
+      [
+        19.4,
+        7.99
+      ],
+      [
+        17.4,
+        8.83
+      ],
+      [
+        15.65,
+        9.68
+      ],
+      [
+        13.95,
+        10.31
+      ],
+      [
+        11.93,
+        11.11
+      ],
+      [
+        10.19,
+        11.89
+      ],
+      [
+        8.13,
+        12.71
+      ],
+      [
+        6.47,
+        13.45
+      ],
+      [
+        4.92,
+        14.09
+      ],
+      [
+        2.92,
+        14.84
+      ],
+      [
+        0.92,
+        15.46
+      ],
+      [
+        -0.92,
+        16
+      ],
+      [
+        -2.76,
+        16.27
+      ],
+      [
+        -4.68,
+        16.46
+      ],
+      [
+        -6.6,
+        16.2
+      ],
+      [
+        -8.27,
+        15.45
+      ],
+      [
+        -9.81,
+        14.83
+      ],
+      [
+        -11.26,
+        13.92
+      ],
+      [
+        -12.66,
+        12.92
+      ],
+      [
+        -13.94,
+        11.74
+      ],
+      [
+        -15.06,
+        10.55
+      ],
+      [
+        -16.24,
+        9.19
+      ],
+      [
+        -17.24,
+        7.08
+      ],
+      [
+        -18.22,
+        5.55
+      ],
+      [
+        -19.25,
+        4.18
+      ],
+      [
+        -20.02,
+        2.78
+      ],
+      [
+        -20.79,
+        1.19
+      ],
+      [
+        -21.48,
+        -0.42
+      ],
+      [
+        -22.01,
+        -1.92
+      ],
+      [
+        -22.33,
+        -3.77
+      ],
+      [
+        -22.38,
+        -5.29
+      ],
+      [
+        -22.11,
+        -6.73
+      ],
+      [
+        -21.48,
+        -7.86
+      ],
+      [
+        -20.34,
+        -8.84
+      ],
+      [
+        -18.89,
+        -9.58
+      ],
+      [
+        -17.31,
+        -9.97
+      ],
+      [
+        -15.39,
+        -10.2
+      ],
+      [
+        -13.42,
+        -10.43
+      ],
+      [
+        -11.61,
+        -10.63
+      ],
+      [
+        -9.71,
+        -10.72
+      ],
+      [
+        -7.67,
+        -10.75
+      ],
+      [
+        -6,
+        -10.74
+      ],
+      [
+        -3.84,
+        -10.77
+      ],
+      [
+        -2.11,
+        -10.69
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-02.50.43.csv#lap5",
+    "logId": "23_08/23_08_2026-02.50.43.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.23,
+        -10.53
+      ],
+      [
+        1.85,
+        -10.53
+      ],
+      [
+        3.51,
+        -10.5
+      ],
+      [
+        5.52,
+        -10.49
+      ],
+      [
+        7.58,
+        -10.45
+      ],
+      [
+        9.45,
+        -10.4
+      ],
+      [
+        11.49,
+        -10.36
+      ],
+      [
+        13.11,
+        -10.32
+      ],
+      [
+        15.29,
+        -10.26
+      ],
+      [
+        17.31,
+        -10.19
+      ],
+      [
+        19.22,
+        -10.14
+      ],
+      [
+        21.18,
+        -10.06
+      ],
+      [
+        23.15,
+        -9.89
+      ],
+      [
+        25.12,
+        -9.74
+      ],
+      [
+        27.03,
+        -9.49
+      ],
+      [
+        28.73,
+        -9.05
+      ],
+      [
+        30.46,
+        -8.59
+      ],
+      [
+        32.05,
+        -7.9
+      ],
+      [
+        33.39,
+        -7.33
+      ],
+      [
+        34.45,
+        -6.02
+      ],
+      [
+        35.17,
+        -4.75
+      ],
+      [
+        35.35,
+        -3.37
+      ],
+      [
+        35.17,
+        -1.57
+      ],
+      [
+        34.34,
+        0.12
+      ],
+      [
+        33,
+        1.4
+      ],
+      [
+        31.37,
+        2.48
+      ],
+      [
+        29.71,
+        3.44
+      ],
+      [
+        27.83,
+        4.25
+      ],
+      [
+        25.86,
+        5.07
+      ],
+      [
+        23.96,
+        5.76
+      ],
+      [
+        22.19,
+        6.46
+      ],
+      [
+        20.29,
+        7.14
+      ],
+      [
+        18.14,
+        7.9
+      ],
+      [
+        16.44,
+        8.58
+      ],
+      [
+        14.56,
+        9.15
+      ],
+      [
+        12.59,
+        9.77
+      ],
+      [
+        10.65,
+        10.51
+      ],
+      [
+        8.71,
+        11.17
+      ],
+      [
+        7.11,
+        11.8
+      ],
+      [
+        5.18,
+        12.54
+      ],
+      [
+        3.55,
+        13.08
+      ],
+      [
+        1.48,
+        13.67
+      ],
+      [
+        -0.35,
+        14.2
+      ],
+      [
+        -2.19,
+        14.59
+      ],
+      [
+        -4.11,
+        15.07
+      ],
+      [
+        -6.08,
+        15.16
+      ],
+      [
+        -7.75,
+        14.8
+      ],
+      [
+        -9.53,
+        14.55
+      ],
+      [
+        -11.22,
+        13.99
+      ],
+      [
+        -12.68,
+        13.32
+      ],
+      [
+        -14.25,
+        12.18
+      ],
+      [
+        -15.51,
+        11.02
+      ],
+      [
+        -16.64,
+        9.81
+      ],
+      [
+        -17.66,
+        7.64
+      ],
+      [
+        -18.58,
+        6.14
+      ],
+      [
+        -19.59,
+        4.71
+      ],
+      [
+        -20.34,
+        3.21
+      ],
+      [
+        -21.05,
+        1.64
+      ],
+      [
+        -21.68,
+        0.04
+      ],
+      [
+        -22.17,
+        -1.53
+      ],
+      [
+        -22.43,
+        -3.44
+      ],
+      [
+        -22.4,
+        -4.92
+      ],
+      [
+        -22.14,
+        -6.31
+      ],
+      [
+        -21.48,
+        -7.49
+      ],
+      [
+        -20.38,
+        -8.5
+      ],
+      [
+        -18.99,
+        -9.36
+      ],
+      [
+        -17.34,
+        -9.83
+      ],
+      [
+        -15.5,
+        -10.07
+      ],
+      [
+        -13.57,
+        -10.27
+      ],
+      [
+        -11.72,
+        -10.41
+      ],
+      [
+        -9.78,
+        -10.46
+      ],
+      [
+        -8.01,
+        -10.5
+      ],
+      [
+        -5.95,
+        -10.53
+      ],
+      [
+        -3.95,
+        -10.6
+      ],
+      [
+        -2.34,
+        -10.56
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-02.50.43.csv#lap6",
+    "logId": "23_08/23_08_2026-02.50.43.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.22,
+        -10.89
+      ],
+      [
+        1.79,
+        -10.97
+      ],
+      [
+        3.54,
+        -11
+      ],
+      [
+        5.21,
+        -11.04
+      ],
+      [
+        7.41,
+        -11.05
+      ],
+      [
+        9.33,
+        -11.03
+      ],
+      [
+        11.44,
+        -10.99
+      ],
+      [
+        13.26,
+        -10.94
+      ],
+      [
+        15.24,
+        -10.89
+      ],
+      [
+        16.96,
+        -10.84
+      ],
+      [
+        19.21,
+        -10.79
+      ],
+      [
+        21.04,
+        -10.73
+      ],
+      [
+        23.06,
+        -10.58
+      ],
+      [
+        25.1,
+        -10.45
+      ],
+      [
+        26.94,
+        -10.23
+      ],
+      [
+        28.71,
+        -9.76
+      ],
+      [
+        30.51,
+        -9.06
+      ],
+      [
+        31.97,
+        -7.84
+      ],
+      [
+        32.85,
+        -6.71
+      ],
+      [
+        33.32,
+        -4.91
+      ],
+      [
+        33.36,
+        -3.5
+      ],
+      [
+        32.91,
+        -2.05
+      ],
+      [
+        32.23,
+        -0.55
+      ],
+      [
+        31.07,
+        1
+      ],
+      [
+        29.74,
+        2.24
+      ],
+      [
+        28.25,
+        3.36
+      ],
+      [
+        26.58,
+        4.5
+      ],
+      [
+        24.74,
+        5.48
+      ],
+      [
+        22.93,
+        6.42
+      ],
+      [
+        21.11,
+        7.24
+      ],
+      [
+        19.26,
+        8.13
+      ],
+      [
+        17.68,
+        8.81
+      ],
+      [
+        15.49,
+        9.75
+      ],
+      [
+        13.88,
+        10.54
+      ],
+      [
+        11.89,
+        11.33
+      ],
+      [
+        10.07,
+        12.06
+      ],
+      [
+        8.22,
+        12.9
+      ],
+      [
+        6.33,
+        13.66
+      ],
+      [
+        4.59,
+        14.44
+      ],
+      [
+        2.85,
+        15.17
+      ],
+      [
+        1.16,
+        15.71
+      ],
+      [
+        -0.91,
+        16.11
+      ],
+      [
+        -2.86,
+        16.35
+      ],
+      [
+        -4.73,
+        16.3
+      ],
+      [
+        -6.62,
+        16.2
+      ],
+      [
+        -8.44,
+        15.77
+      ],
+      [
+        -10.06,
+        14.89
+      ],
+      [
+        -11.62,
+        14.18
+      ],
+      [
+        -13.04,
+        13.3
+      ],
+      [
+        -14.42,
+        12.33
+      ],
+      [
+        -15.78,
+        11.14
+      ],
+      [
+        -16.99,
+        9.95
+      ],
+      [
+        -18.14,
+        8.7
+      ],
+      [
+        -19.21,
+        6.49
+      ],
+      [
+        -20.16,
+        4.98
+      ],
+      [
+        -21.18,
+        3.59
+      ],
+      [
+        -21.91,
+        2.23
+      ],
+      [
+        -22.76,
+        0.56
+      ],
+      [
+        -23.43,
+        -0.93
+      ],
+      [
+        -23.97,
+        -2.44
+      ],
+      [
+        -24.17,
+        -4.47
+      ],
+      [
+        -23.76,
+        -5.92
+      ],
+      [
+        -22.95,
+        -7.28
+      ],
+      [
+        -21.91,
+        -8.1
+      ],
+      [
+        -20.63,
+        -8.78
+      ],
+      [
+        -19.14,
+        -9.46
+      ],
+      [
+        -17.55,
+        -9.95
+      ],
+      [
+        -15.77,
+        -10.22
+      ],
+      [
+        -13.92,
+        -10.42
+      ],
+      [
+        -12.03,
+        -10.55
+      ],
+      [
+        -10.18,
+        -10.59
+      ],
+      [
+        -7.9,
+        -10.63
+      ],
+      [
+        -6.03,
+        -10.67
+      ],
+      [
+        -4.23,
+        -10.79
+      ],
+      [
+        -2.15,
+        -10.83
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-02.50.43.csv#lap7",
+    "logId": "23_08/23_08_2026-02.50.43.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.32,
+        -10.69
+      ],
+      [
+        1.56,
+        -10.66
+      ],
+      [
+        3.68,
+        -10.64
+      ],
+      [
+        5.58,
+        -10.66
+      ],
+      [
+        7.46,
+        -10.65
+      ],
+      [
+        9.56,
+        -10.64
+      ],
+      [
+        11.45,
+        -10.62
+      ],
+      [
+        13.19,
+        -10.6
+      ],
+      [
+        15.42,
+        -10.57
+      ],
+      [
+        17.35,
+        -10.54
+      ],
+      [
+        19.3,
+        -10.52
+      ],
+      [
+        21.15,
+        -10.48
+      ],
+      [
+        22.97,
+        -10.36
+      ],
+      [
+        25.06,
+        -10.25
+      ],
+      [
+        27.14,
+        -10.06
+      ],
+      [
+        28.87,
+        -9.68
+      ],
+      [
+        30.66,
+        -9.26
+      ],
+      [
+        32.2,
+        -8.49
+      ],
+      [
+        33.42,
+        -7.7
+      ],
+      [
+        34.22,
+        -6.23
+      ],
+      [
+        34.69,
+        -4.83
+      ],
+      [
+        34.6,
+        -3.29
+      ],
+      [
+        34.18,
+        -1.65
+      ],
+      [
+        33.23,
+        -0.05
+      ],
+      [
+        31.92,
+        1.32
+      ],
+      [
+        30.49,
+        2.49
+      ],
+      [
+        29,
+        3.59
+      ],
+      [
+        27,
+        4.69
+      ],
+      [
+        25.22,
+        5.6
+      ],
+      [
+        23.52,
+        6.34
+      ],
+      [
+        21.58,
+        7.24
+      ],
+      [
+        19.76,
+        8
+      ],
+      [
+        17.7,
+        8.82
+      ],
+      [
+        16.03,
+        9.55
+      ],
+      [
+        14.19,
+        10.15
+      ],
+      [
+        12.33,
+        10.77
+      ],
+      [
+        10.32,
+        11.53
+      ],
+      [
+        8.34,
+        12.17
+      ],
+      [
+        6.57,
+        12.8
+      ],
+      [
+        4.82,
+        13.39
+      ],
+      [
+        3.25,
+        13.83
+      ],
+      [
+        1.17,
+        14.32
+      ],
+      [
+        -0.82,
+        14.8
+      ],
+      [
+        -2.71,
+        15.11
+      ],
+      [
+        -4.61,
+        15.39
+      ],
+      [
+        -6.49,
+        15.27
+      ],
+      [
+        -8.17,
+        14.71
+      ],
+      [
+        -9.92,
+        14.25
+      ],
+      [
+        -11.51,
+        13.52
+      ],
+      [
+        -13.03,
+        12.66
+      ],
+      [
+        -14.43,
+        11.59
+      ],
+      [
+        -15.72,
+        10.42
+      ],
+      [
+        -16.89,
+        9.21
+      ],
+      [
+        -17.97,
+        7.07
+      ],
+      [
+        -18.95,
+        5.51
+      ],
+      [
+        -19.86,
+        4.31
+      ],
+      [
+        -20.71,
+        2.72
+      ],
+      [
+        -21.49,
+        1.13
+      ],
+      [
+        -22.17,
+        -0.47
+      ],
+      [
+        -22.7,
+        -2
+      ],
+      [
+        -23,
+        -3.91
+      ],
+      [
+        -22.93,
+        -5.34
+      ],
+      [
+        -22.53,
+        -6.8
+      ],
+      [
+        -21.78,
+        -7.89
+      ],
+      [
+        -20.58,
+        -8.83
+      ],
+      [
+        -19.16,
+        -9.58
+      ],
+      [
+        -17.52,
+        -10.04
+      ],
+      [
+        -15.72,
+        -10.28
+      ],
+      [
+        -13.65,
+        -10.52
+      ],
+      [
+        -11.79,
+        -10.72
+      ],
+      [
+        -9.9,
+        -10.82
+      ],
+      [
+        -8.02,
+        -10.87
+      ],
+      [
+        -6.34,
+        -10.89
+      ],
+      [
+        -4.16,
+        -10.92
+      ],
+      [
+        -2.13,
+        -10.79
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-02.50.43.csv#lap8",
+    "logId": "23_08/23_08_2026-02.50.43.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.18,
+        -11.47
+      ],
+      [
+        1.72,
+        -11.59
+      ],
+      [
+        3.69,
+        -11.64
+      ],
+      [
+        5.55,
+        -11.71
+      ],
+      [
+        7.37,
+        -11.75
+      ],
+      [
+        9.63,
+        -11.83
+      ],
+      [
+        11.5,
+        -11.9
+      ],
+      [
+        13.19,
+        -11.95
+      ],
+      [
+        15.33,
+        -12.02
+      ],
+      [
+        17.42,
+        -12.08
+      ],
+      [
+        19.22,
+        -12.14
+      ],
+      [
+        21.32,
+        -12.19
+      ],
+      [
+        23.21,
+        -12.14
+      ],
+      [
+        25.2,
+        -12.12
+      ],
+      [
+        27.21,
+        -12.02
+      ],
+      [
+        28.92,
+        -11.67
+      ],
+      [
+        30.75,
+        -11.08
+      ],
+      [
+        32.18,
+        -9.91
+      ],
+      [
+        33.05,
+        -8.83
+      ],
+      [
+        33.55,
+        -6.93
+      ],
+      [
+        33.54,
+        -5.52
+      ],
+      [
+        33.04,
+        -4.07
+      ],
+      [
+        32.34,
+        -2.57
+      ],
+      [
+        31.22,
+        -1.02
+      ],
+      [
+        29.96,
+        0.22
+      ],
+      [
+        28.62,
+        1.29
+      ],
+      [
+        26.85,
+        2.55
+      ],
+      [
+        25,
+        3.56
+      ],
+      [
+        23.21,
+        4.5
+      ],
+      [
+        21.33,
+        5.38
+      ],
+      [
+        19.59,
+        6.31
+      ],
+      [
+        17.86,
+        7.17
+      ],
+      [
+        15.86,
+        8.14
+      ],
+      [
+        14.26,
+        9.04
+      ],
+      [
+        12.41,
+        9.85
+      ],
+      [
+        10.58,
+        10.66
+      ],
+      [
+        8.75,
+        11.5
+      ],
+      [
+        6.94,
+        12.13
+      ],
+      [
+        5.19,
+        12.69
+      ],
+      [
+        3.27,
+        13.15
+      ],
+      [
+        1.49,
+        13.4
+      ],
+      [
+        -0.39,
+        13.5
+      ],
+      [
+        -2.29,
+        13.56
+      ],
+      [
+        -4.23,
+        13.41
+      ],
+      [
+        -6.06,
+        13.33
+      ],
+      [
+        -7.91,
+        12.97
+      ],
+      [
+        -9.67,
+        12.27
+      ],
+      [
+        -11.27,
+        11.87
+      ],
+      [
+        -12.93,
+        11.29
+      ],
+      [
+        -14.61,
+        10.61
+      ],
+      [
+        -16.12,
+        9.78
+      ],
+      [
+        -17.58,
+        8.82
+      ],
+      [
+        -18.96,
+        7.75
+      ],
+      [
+        -20.16,
+        5.73
+      ],
+      [
+        -21.24,
+        4.29
+      ],
+      [
+        -22.34,
+        2.98
+      ],
+      [
+        -23.19,
+        1.57
+      ],
+      [
+        -24.01,
+        -0.02
+      ],
+      [
+        -24.68,
+        -1.58
+      ],
+      [
+        -25.12,
+        -3.14
+      ],
+      [
+        -25.01,
+        -5.08
+      ],
+      [
+        -24.26,
+        -6.52
+      ],
+      [
+        -23.23,
+        -7.64
+      ],
+      [
+        -22.01,
+        -8.27
+      ],
+      [
+        -20.61,
+        -8.77
+      ],
+      [
+        -19.11,
+        -9.41
+      ],
+      [
+        -17.53,
+        -9.9
+      ],
+      [
+        -15.62,
+        -10.2
+      ],
+      [
+        -13.73,
+        -10.47
+      ],
+      [
+        -11.87,
+        -10.71
+      ],
+      [
+        -9.86,
+        -10.86
+      ],
+      [
+        -7.92,
+        -10.98
+      ],
+      [
+        -6.2,
+        -11.1
+      ],
+      [
+        -4.11,
+        -11.3
+      ],
+      [
+        -2.24,
+        -11.37
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-06.41.14.csv#lap9",
+    "logId": "23_08/23_08_2026-06.41.14.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.01,
+        -4.83
+      ],
+      [
+        2,
+        -5.14
+      ],
+      [
+        4.07,
+        -5.48
+      ],
+      [
+        5.85,
+        -6.25
+      ],
+      [
+        7.12,
+        -7.35
+      ],
+      [
+        7.78,
+        -8.46
+      ],
+      [
+        7.85,
+        -9.24
+      ],
+      [
+        7.68,
+        -9.58
+      ],
+      [
+        7.35,
+        -9.47
+      ],
+      [
+        6.95,
+        -8.85
+      ],
+      [
+        6.79,
+        -8.11
+      ],
+      [
+        6.6,
+        -7.35
+      ],
+      [
+        6.42,
+        -6.5
+      ],
+      [
+        6.25,
+        -5.73
+      ],
+      [
+        6.12,
+        -4.96
+      ],
+      [
+        5.51,
+        -3.81
+      ],
+      [
+        5.17,
+        -2.8
+      ],
+      [
+        4.51,
+        -1.67
+      ],
+      [
+        3.64,
+        -0.93
+      ],
+      [
+        2.73,
+        0.18
+      ],
+      [
+        1.8,
+        0.87
+      ],
+      [
+        0.8,
+        1.56
+      ],
+      [
+        -0.13,
+        2.32
+      ],
+      [
+        -1.32,
+        2.95
+      ],
+      [
+        -2.53,
+        2.96
+      ],
+      [
+        -3.48,
+        2.52
+      ],
+      [
+        -4.02,
+        1.88
+      ],
+      [
+        -4.15,
+        1.08
+      ],
+      [
+        -3.74,
+        0.52
+      ],
+      [
+        -3.2,
+        0.21
+      ],
+      [
+        -2.42,
+        0.09
+      ],
+      [
+        -1.59,
+        0.08
+      ],
+      [
+        -0.9,
+        0.22
+      ],
+      [
+        0.1,
+        0.35
+      ],
+      [
+        0.94,
+        0.44
+      ],
+      [
+        1.82,
+        0.66
+      ],
+      [
+        2.64,
+        1.15
+      ],
+      [
+        3.41,
+        1.71
+      ],
+      [
+        4.39,
+        2.44
+      ],
+      [
+        5.29,
+        3.19
+      ],
+      [
+        6.16,
+        3.68
+      ],
+      [
+        6.91,
+        3.9
+      ],
+      [
+        7.75,
+        3.91
+      ],
+      [
+        8.65,
+        3.5
+      ],
+      [
+        9.39,
+        3.04
+      ],
+      [
+        10.13,
+        2.58
+      ],
+      [
+        11.23,
+        2.34
+      ],
+      [
+        12.15,
+        2.97
+      ],
+      [
+        12.63,
+        3.87
+      ],
+      [
+        12.63,
+        5.07
+      ],
+      [
+        12.05,
+        6.21
+      ],
+      [
+        11.02,
+        7
+      ],
+      [
+        9.65,
+        7.41
+      ],
+      [
+        8.31,
+        6.54
+      ],
+      [
+        6.79,
+        6.22
+      ],
+      [
+        5.36,
+        6.02
+      ],
+      [
+        4.1,
+        5.53
+      ],
+      [
+        2.84,
+        4.68
+      ],
+      [
+        1.74,
+        3.88
+      ],
+      [
+        0.75,
+        3.23
+      ],
+      [
+        -0.11,
+        2.49
+      ],
+      [
+        -0.86,
+        2.43
+      ],
+      [
+        -1.65,
+        2.57
+      ],
+      [
+        -2.54,
+        2.69
+      ],
+      [
+        -3.46,
+        2.39
+      ],
+      [
+        -4.01,
+        1.7
+      ],
+      [
+        -4.62,
+        0.89
+      ],
+      [
+        -4.94,
+        0.37
+      ],
+      [
+        -5.31,
+        -0.1
+      ],
+      [
+        -5.66,
+        -0.43
+      ],
+      [
+        -6.02,
+        -0.79
+      ],
+      [
+        -5.88,
+        -1.59
+      ],
+      [
+        -5.35,
+        -2.7
+      ],
+      [
+        -4.04,
+        -3.85
+      ],
+      [
+        -2.17,
+        -4.54
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-06.57.59.csv#lap10",
+    "logId": "23_08/23_08_2026-06.57.59.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.13,
+        -6.95
+      ],
+      [
+        1.82,
+        -6.97
+      ],
+      [
+        3.7,
+        -6.82
+      ],
+      [
+        5.68,
+        -6.66
+      ],
+      [
+        7.6,
+        -6.55
+      ],
+      [
+        9.49,
+        -6.51
+      ],
+      [
+        11.4,
+        -6.46
+      ],
+      [
+        13.44,
+        -6.33
+      ],
+      [
+        15.41,
+        -6.17
+      ],
+      [
+        17.23,
+        -6.05
+      ],
+      [
+        19.13,
+        -5.97
+      ],
+      [
+        21.07,
+        -5.89
+      ],
+      [
+        23.03,
+        -5.72
+      ],
+      [
+        25.04,
+        -5.61
+      ],
+      [
+        26.95,
+        -5.43
+      ],
+      [
+        28.65,
+        -5.07
+      ],
+      [
+        30.45,
+        -4.69
+      ],
+      [
+        31.93,
+        -3.94
+      ],
+      [
+        33.07,
+        -3.15
+      ],
+      [
+        33.8,
+        -1.64
+      ],
+      [
+        34.14,
+        -0.3
+      ],
+      [
+        33.94,
+        1.09
+      ],
+      [
+        33.4,
+        2.64
+      ],
+      [
+        32.3,
+        4.01
+      ],
+      [
+        30.82,
+        4.86
+      ],
+      [
+        29.13,
+        5.28
+      ],
+      [
+        27.32,
+        5.37
+      ],
+      [
+        25.47,
+        5.17
+      ],
+      [
+        23.6,
+        4.92
+      ],
+      [
+        21.73,
+        4.78
+      ],
+      [
+        19.85,
+        4.78
+      ],
+      [
+        17.98,
+        4.95
+      ],
+      [
+        16.11,
+        5.35
+      ],
+      [
+        13.99,
+        5.8
+      ],
+      [
+        12.16,
+        6.04
+      ],
+      [
+        10.21,
+        6.19
+      ],
+      [
+        8.11,
+        6.32
+      ],
+      [
+        6.1,
+        6.33
+      ],
+      [
+        4.36,
+        6.42
+      ],
+      [
+        2.48,
+        6.59
+      ],
+      [
+        0.63,
+        6.77
+      ],
+      [
+        -1.36,
+        6.93
+      ],
+      [
+        -3.14,
+        7.11
+      ],
+      [
+        -5.2,
+        7.18
+      ],
+      [
+        -7.09,
+        7.35
+      ],
+      [
+        -9.08,
+        7.31
+      ],
+      [
+        -10.84,
+        7.03
+      ],
+      [
+        -12.55,
+        7.05
+      ],
+      [
+        -14.38,
+        7.01
+      ],
+      [
+        -16.03,
+        7.02
+      ],
+      [
+        -17.89,
+        7.05
+      ],
+      [
+        -19.55,
+        7.15
+      ],
+      [
+        -21.24,
+        7.32
+      ],
+      [
+        -22.97,
+        6.37
+      ],
+      [
+        -24.61,
+        5.6
+      ],
+      [
+        -26.09,
+        4.64
+      ],
+      [
+        -27.12,
+        3.19
+      ],
+      [
+        -27.72,
+        1.46
+      ],
+      [
+        -27.74,
+        -0.32
+      ],
+      [
+        -27.24,
+        -1.84
+      ],
+      [
+        -26.09,
+        -3.46
+      ],
+      [
+        -24.61,
+        -4.22
+      ],
+      [
+        -23.1,
+        -4.67
+      ],
+      [
+        -21.74,
+        -4.87
+      ],
+      [
+        -20.41,
+        -5.19
+      ],
+      [
+        -18.91,
+        -5.68
+      ],
+      [
+        -17.27,
+        -6.04
+      ],
+      [
+        -15.41,
+        -6.2
+      ],
+      [
+        -13.69,
+        -6.35
+      ],
+      [
+        -11.52,
+        -6.5
+      ],
+      [
+        -9.68,
+        -6.6
+      ],
+      [
+        -7.68,
+        -6.69
+      ],
+      [
+        -5.89,
+        -6.74
+      ],
+      [
+        -3.92,
+        -6.84
+      ],
+      [
+        -1.88,
+        -6.87
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-07.01.11.csv#lap11",
+    "logId": "23_08/23_08_2026-07.01.11.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.08,
+        -13.84
+      ],
+      [
+        2.1,
+        -13.95
+      ],
+      [
+        4.12,
+        -14.02
+      ],
+      [
+        6.48,
+        -14.13
+      ],
+      [
+        8.69,
+        -14.17
+      ],
+      [
+        10.82,
+        -14.19
+      ],
+      [
+        13.1,
+        -14.2
+      ],
+      [
+        15.28,
+        -14.21
+      ],
+      [
+        17.47,
+        -14.23
+      ],
+      [
+        19.75,
+        -14.27
+      ],
+      [
+        21.83,
+        -14.32
+      ],
+      [
+        24.15,
+        -14.23
+      ],
+      [
+        26.09,
+        -13.73
+      ],
+      [
+        28.15,
+        -12.69
+      ],
+      [
+        29.6,
+        -11.45
+      ],
+      [
+        30.45,
+        -9.83
+      ],
+      [
+        31.01,
+        -8.28
+      ],
+      [
+        30.97,
+        -6.65
+      ],
+      [
+        30.54,
+        -5.46
+      ],
+      [
+        29.97,
+        -4.02
+      ],
+      [
+        29.31,
+        -3.08
+      ],
+      [
+        28.63,
+        -2.25
+      ],
+      [
+        27.8,
+        -1.04
+      ],
+      [
+        26.77,
+        0.24
+      ],
+      [
+        25.64,
+        1.31
+      ],
+      [
+        24.4,
+        2.33
+      ],
+      [
+        23.04,
+        3.41
+      ],
+      [
+        21.55,
+        4.33
+      ],
+      [
+        20,
+        5.29
+      ],
+      [
+        18.39,
+        6.19
+      ],
+      [
+        16.92,
+        7.1
+      ],
+      [
+        15.43,
+        7.93
+      ],
+      [
+        13.75,
+        8.85
+      ],
+      [
+        12.39,
+        9.71
+      ],
+      [
+        10.83,
+        10.48
+      ],
+      [
+        9.3,
+        11.24
+      ],
+      [
+        7.7,
+        12.13
+      ],
+      [
+        6.14,
+        12.91
+      ],
+      [
+        4.74,
+        13.68
+      ],
+      [
+        3.23,
+        14.36
+      ],
+      [
+        1.68,
+        14.83
+      ],
+      [
+        0.01,
+        15.14
+      ],
+      [
+        -1.64,
+        15.37
+      ],
+      [
+        -3.29,
+        15.35
+      ],
+      [
+        -4.94,
+        15.33
+      ],
+      [
+        -6.57,
+        14.99
+      ],
+      [
+        -7.99,
+        14.24
+      ],
+      [
+        -9.41,
+        13.68
+      ],
+      [
+        -10.77,
+        12.91
+      ],
+      [
+        -12.06,
+        12.07
+      ],
+      [
+        -13.37,
+        10.95
+      ],
+      [
+        -14.52,
+        9.88
+      ],
+      [
+        -15.68,
+        8.76
+      ],
+      [
+        -16.77,
+        6.76
+      ],
+      [
+        -17.8,
+        5.34
+      ],
+      [
+        -18.85,
+        4.12
+      ],
+      [
+        -19.68,
+        2.76
+      ],
+      [
+        -20.52,
+        1.26
+      ],
+      [
+        -21.28,
+        -0.2
+      ],
+      [
+        -21.92,
+        -1.64
+      ],
+      [
+        -22.28,
+        -3.4
+      ],
+      [
+        -22.4,
+        -4.75
+      ],
+      [
+        -22.6,
+        -6.11
+      ],
+      [
+        -22.65,
+        -7.42
+      ],
+      [
+        -22.19,
+        -8.99
+      ],
+      [
+        -21.12,
+        -10.63
+      ],
+      [
+        -19.52,
+        -11.82
+      ],
+      [
+        -17.53,
+        -12.5
+      ],
+      [
+        -15.35,
+        -12.96
+      ],
+      [
+        -13.21,
+        -13.27
+      ],
+      [
+        -11.16,
+        -13.4
+      ],
+      [
+        -8.78,
+        -13.5
+      ],
+      [
+        -6.72,
+        -13.57
+      ],
+      [
+        -4.53,
+        -13.72
+      ],
+      [
+        -2.34,
+        -13.76
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-07.15.59.csv#lap12",
+    "logId": "23_08/23_08_2026-07.15.59.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.34,
+        -11.05
+      ],
+      [
+        1.73,
+        -11.06
+      ],
+      [
+        3.71,
+        -11.03
+      ],
+      [
+        5.62,
+        -11.04
+      ],
+      [
+        7.38,
+        -11.03
+      ],
+      [
+        9.32,
+        -11.01
+      ],
+      [
+        11.49,
+        -10.96
+      ],
+      [
+        13.2,
+        -10.9
+      ],
+      [
+        15.24,
+        -10.82
+      ],
+      [
+        17.11,
+        -10.73
+      ],
+      [
+        19.23,
+        -10.64
+      ],
+      [
+        21.1,
+        -10.54
+      ],
+      [
+        23.16,
+        -10.33
+      ],
+      [
+        25.11,
+        -10.15
+      ],
+      [
+        27.05,
+        -9.87
+      ],
+      [
+        28.72,
+        -9.4
+      ],
+      [
+        30.61,
+        -8.9
+      ],
+      [
+        32.11,
+        -8.07
+      ],
+      [
+        33.19,
+        -7.15
+      ],
+      [
+        33.82,
+        -5.46
+      ],
+      [
+        33.94,
+        -4.03
+      ],
+      [
+        33.46,
+        -2.55
+      ],
+      [
+        32.7,
+        -1.11
+      ],
+      [
+        31.49,
+        0.3
+      ],
+      [
+        30.1,
+        1.39
+      ],
+      [
+        28.49,
+        2.4
+      ],
+      [
+        26.78,
+        3.37
+      ],
+      [
+        24.85,
+        4.22
+      ],
+      [
+        22.99,
+        5.02
+      ],
+      [
+        21.09,
+        5.75
+      ],
+      [
+        19.33,
+        6.49
+      ],
+      [
+        17.43,
+        7.23
+      ],
+      [
+        15.37,
+        8.03
+      ],
+      [
+        13.69,
+        8.76
+      ],
+      [
+        11.76,
+        9.41
+      ],
+      [
+        9.87,
+        10.06
+      ],
+      [
+        7.91,
+        10.82
+      ],
+      [
+        6.04,
+        11.48
+      ],
+      [
+        4.37,
+        12.2
+      ],
+      [
+        2.56,
+        13.02
+      ],
+      [
+        0.83,
+        13.77
+      ],
+      [
+        -1.09,
+        14.43
+      ],
+      [
+        -2.96,
+        14.91
+      ],
+      [
+        -4.86,
+        15.08
+      ],
+      [
+        -6.59,
+        15.14
+      ],
+      [
+        -8.65,
+        14.74
+      ],
+      [
+        -10.21,
+        13.93
+      ],
+      [
+        -11.76,
+        13.26
+      ],
+      [
+        -13.23,
+        12.38
+      ],
+      [
+        -14.7,
+        11.33
+      ],
+      [
+        -16.02,
+        10.18
+      ],
+      [
+        -17.24,
+        8.98
+      ],
+      [
+        -18.39,
+        7.75
+      ],
+      [
+        -19.45,
+        5.61
+      ],
+      [
+        -20.44,
+        4.09
+      ],
+      [
+        -21.47,
+        2.75
+      ],
+      [
+        -22.28,
+        1.31
+      ],
+      [
+        -23.1,
+        -0.32
+      ],
+      [
+        -23.76,
+        -1.87
+      ],
+      [
+        -24.29,
+        -3.46
+      ],
+      [
+        -24.36,
+        -5.36
+      ],
+      [
+        -23.77,
+        -6.86
+      ],
+      [
+        -22.88,
+        -8.12
+      ],
+      [
+        -21.89,
+        -8.99
+      ],
+      [
+        -20.59,
+        -9.66
+      ],
+      [
+        -19.09,
+        -10.2
+      ],
+      [
+        -17.46,
+        -10.63
+      ],
+      [
+        -15.58,
+        -10.86
+      ],
+      [
+        -13.63,
+        -11.04
+      ],
+      [
+        -11.85,
+        -11.15
+      ],
+      [
+        -10.01,
+        -11.13
+      ],
+      [
+        -7.96,
+        -11.05
+      ],
+      [
+        -6.21,
+        -10.98
+      ],
+      [
+        -4.22,
+        -11.03
+      ],
+      [
+        -2.18,
+        -11.04
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-07.15.59.csv#lap13",
+    "logId": "23_08/23_08_2026-07.15.59.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.09,
+        -11.97
+      ],
+      [
+        1.72,
+        -11.99
+      ],
+      [
+        3.59,
+        -11.98
+      ],
+      [
+        5.7,
+        -12
+      ],
+      [
+        7.68,
+        -11.99
+      ],
+      [
+        9.69,
+        -11.98
+      ],
+      [
+        11.17,
+        -11.96
+      ],
+      [
+        13.41,
+        -11.93
+      ],
+      [
+        15.54,
+        -11.89
+      ],
+      [
+        17.49,
+        -11.84
+      ],
+      [
+        19.45,
+        -11.8
+      ],
+      [
+        21.4,
+        -11.75
+      ],
+      [
+        23.16,
+        -11.61
+      ],
+      [
+        25.35,
+        -11.49
+      ],
+      [
+        27.19,
+        -11.29
+      ],
+      [
+        28.97,
+        -10.89
+      ],
+      [
+        30.85,
+        -10.42
+      ],
+      [
+        32.22,
+        -9.44
+      ],
+      [
+        33.22,
+        -8.26
+      ],
+      [
+        33.63,
+        -6.49
+      ],
+      [
+        33.56,
+        -5.04
+      ],
+      [
+        33.02,
+        -3.53
+      ],
+      [
+        32.48,
+        -2.03
+      ],
+      [
+        31.43,
+        -0.32
+      ],
+      [
+        30.16,
+        1
+      ],
+      [
+        28.74,
+        2.12
+      ],
+      [
+        27.06,
+        3.26
+      ],
+      [
+        25.22,
+        4.17
+      ],
+      [
+        23.36,
+        5.02
+      ],
+      [
+        21.41,
+        5.79
+      ],
+      [
+        19.71,
+        6.52
+      ],
+      [
+        17.8,
+        7.24
+      ],
+      [
+        15.79,
+        7.99
+      ],
+      [
+        14.15,
+        8.71
+      ],
+      [
+        12.12,
+        9.43
+      ],
+      [
+        10.23,
+        10.12
+      ],
+      [
+        8.32,
+        10.9
+      ],
+      [
+        6.51,
+        11.55
+      ],
+      [
+        4.77,
+        12.24
+      ],
+      [
+        3,
+        12.91
+      ],
+      [
+        1.15,
+        13.49
+      ],
+      [
+        -0.75,
+        13.97
+      ],
+      [
+        -2.68,
+        14.4
+      ],
+      [
+        -4.56,
+        14.52
+      ],
+      [
+        -6.42,
+        14.55
+      ],
+      [
+        -8.31,
+        14.15
+      ],
+      [
+        -9.83,
+        13.33
+      ],
+      [
+        -11.43,
+        12.59
+      ],
+      [
+        -12.86,
+        11.68
+      ],
+      [
+        -14.25,
+        10.69
+      ],
+      [
+        -15.51,
+        9.59
+      ],
+      [
+        -16.78,
+        8.33
+      ],
+      [
+        -17.89,
+        7.18
+      ],
+      [
+        -19.01,
+        4.97
+      ],
+      [
+        -19.97,
+        3.5
+      ],
+      [
+        -21,
+        2.17
+      ],
+      [
+        -21.84,
+        0.68
+      ],
+      [
+        -22.62,
+        -0.85
+      ],
+      [
+        -23.31,
+        -2.4
+      ],
+      [
+        -23.87,
+        -3.97
+      ],
+      [
+        -24.09,
+        -5.85
+      ],
+      [
+        -23.72,
+        -7.38
+      ],
+      [
+        -22.95,
+        -8.7
+      ],
+      [
+        -21.92,
+        -9.52
+      ],
+      [
+        -20.58,
+        -10.11
+      ],
+      [
+        -19.09,
+        -10.67
+      ],
+      [
+        -17.4,
+        -11.09
+      ],
+      [
+        -15.67,
+        -11.29
+      ],
+      [
+        -13.62,
+        -11.45
+      ],
+      [
+        -11.78,
+        -11.57
+      ],
+      [
+        -9.85,
+        -11.62
+      ],
+      [
+        -7.97,
+        -11.68
+      ],
+      [
+        -5.94,
+        -11.8
+      ],
+      [
+        -4.18,
+        -11.97
+      ],
+      [
+        -2.23,
+        -11.99
+      ]
+    ]
+  },
+  {
+    "id": "23_08/23_08_2026-07.30.55.csv#lap14",
+    "logId": "23_08/23_08_2026-07.30.55.csv",
+    "isOutlier": false,
+    "points": [
+      [
+        -0.23,
+        -10.35
+      ],
+      [
+        1.86,
+        -10.43
+      ],
+      [
+        3.79,
+        -10.43
+      ],
+      [
+        5.64,
+        -10.43
+      ],
+      [
+        7.77,
+        -10.39
+      ],
+      [
+        9.46,
+        -10.35
+      ],
+      [
+        11.51,
+        -10.32
+      ],
+      [
+        13.53,
+        -10.3
+      ],
+      [
+        15.46,
+        -10.28
+      ],
+      [
+        17.25,
+        -10.27
+      ],
+      [
+        19.41,
+        -10.29
+      ],
+      [
+        21.16,
+        -10.29
+      ],
+      [
+        23.26,
+        -10.23
+      ],
+      [
+        25.13,
+        -10.19
+      ],
+      [
+        27.03,
+        -10.09
+      ],
+      [
+        28.78,
+        -9.81
+      ],
+      [
+        30.64,
+        -9.53
+      ],
+      [
+        32.15,
+        -9.12
+      ],
+      [
+        33.44,
+        -8.81
+      ],
+      [
+        34.62,
+        -7.55
+      ],
+      [
+        35.36,
+        -6.39
+      ],
+      [
+        35.62,
+        -4.85
+      ],
+      [
+        35.48,
+        -3.17
+      ],
+      [
+        34.61,
+        -1.43
+      ],
+      [
+        33.28,
+        -0.18
+      ],
+      [
+        31.69,
+        0.89
+      ],
+      [
+        29.98,
+        1.93
+      ],
+      [
+        28.11,
+        2.82
+      ],
+      [
+        26.25,
+        3.72
+      ],
+      [
+        24.32,
+        4.58
+      ],
+      [
+        22.53,
+        5.47
+      ],
+      [
+        20.75,
+        6.29
+      ],
+      [
+        18.77,
+        7.18
+      ],
+      [
+        17.15,
+        8.02
+      ],
+      [
+        15.22,
+        8.81
+      ],
+      [
+        13.32,
+        9.59
+      ],
+      [
+        11.42,
+        10.48
+      ],
+      [
+        9.55,
+        11.25
+      ],
+      [
+        7.92,
+        12
+      ],
+      [
+        6.14,
+        12.78
+      ],
+      [
+        4.31,
+        13.48
+      ],
+      [
+        2.41,
+        14.08
+      ],
+      [
+        0.51,
+        14.6
+      ],
+      [
+        -1.35,
+        14.8
+      ],
+      [
+        -3.23,
+        14.95
+      ],
+      [
+        -5.22,
+        14.72
+      ],
+      [
+        -6.88,
+        14.07
+      ],
+      [
+        -8.46,
+        13.61
+      ],
+      [
+        -10.13,
+        12.86
+      ],
+      [
+        -11.65,
+        12.06
+      ],
+      [
+        -13.18,
+        11.02
+      ],
+      [
+        -14.55,
+        9.95
+      ],
+      [
+        -15.85,
+        8.82
+      ],
+      [
+        -17.01,
+        6.78
+      ],
+      [
+        -18.1,
+        5.29
+      ],
+      [
+        -19.15,
+        3.98
+      ],
+      [
+        -19.97,
+        2.56
+      ],
+      [
+        -20.79,
+        0.98
+      ],
+      [
+        -21.49,
+        -0.57
+      ],
+      [
+        -22.07,
+        -2.12
+      ],
+      [
+        -22.4,
+        -3.97
+      ],
+      [
+        -22.46,
+        -5.41
+      ],
+      [
+        -22.18,
+        -6.84
+      ],
+      [
+        -21.5,
+        -7.95
+      ],
+      [
+        -20.32,
+        -8.83
+      ],
+      [
+        -18.84,
+        -9.46
+      ],
+      [
+        -17.19,
+        -9.83
+      ],
+      [
+        -15.41,
+        -10.04
+      ],
+      [
+        -13.44,
+        -10.23
+      ],
+      [
+        -11.63,
+        -10.38
+      ],
+      [
+        -9.71,
+        -10.41
+      ],
+      [
+        -7.66,
+        -10.4
+      ],
+      [
+        -5.97,
+        -10.36
+      ],
+      [
+        -4.07,
+        -10.39
+      ],
+      [
+        -1.85,
+        -10.34
+      ]
+    ]
+  },
+  {
+    "id": "outlier_spin_1",
+    "logId": "23_08/23_08_2026-07.30.55.csv",
+    "isOutlier": true,
+    "points": [
+      [
+        21.25,
+        -10.29
+      ],
+      [
+        22.22,
+        -10.23
+      ],
+      [
+        23.2,
+        -10.15
+      ],
+      [
+        24.17,
+        -10.07
+      ],
+      [
+        25.13,
+        -9.96
+      ],
+      [
+        26.1,
+        -9.84
+      ],
+      [
+        27.05,
+        -9.69
+      ],
+      [
+        27.99,
+        -9.5
+      ],
+      [
+        28.91,
+        -9.28
+      ],
+      [
+        30.22,
+        -8.52
+      ],
+      [
+        31.48,
+        -7.71
+      ],
+      [
+        32.7,
+        -6.84
+      ],
+      [
+        33.86,
+        -5.91
+      ],
+      [
+        34.93,
+        -4.91
+      ],
+      [
+        35.91,
+        -3.86
+      ],
+      [
+        36.78,
+        -2.75
+      ],
+      [
+        37.54,
+        -1.6
+      ],
+      [
+        38.17,
+        -0.41
+      ],
+      [
+        38.67,
+        0.8
+      ],
+      [
+        39.03,
+        2.02
+      ],
+      [
+        39.26,
+        3.25
+      ],
+      [
+        39.37,
+        4.46
+      ],
+      [
+        39.36,
+        5.65
+      ],
+      [
+        39.23,
+        6.81
+      ],
+      [
+        39.02,
+        7.94
+      ]
+    ]
+  },
+  {
+    "id": "outlier_spin_2",
+    "logId": "21_09_Logs/21_09_2026-00.47.36.csv",
+    "isOutlier": true,
+    "points": [
+      [
+        13.33,
+        8.93
+      ],
+      [
+        12.41,
+        9.29
+      ],
+      [
+        11.49,
+        9.65
+      ],
+      [
+        10.58,
+        10.01
+      ],
+      [
+        9.66,
+        10.38
+      ],
+      [
+        8.75,
+        10.74
+      ],
+      [
+        7.84,
+        11.1
+      ],
+      [
+        6.94,
+        11.45
+      ],
+      [
+        6.04,
+        11.8
+      ],
+      [
+        4.73,
+        11.67
+      ],
+      [
+        3.43,
+        11.52
+      ],
+      [
+        2.14,
+        11.36
+      ],
+      [
+        0.85,
+        11.19
+      ],
+      [
+        -0.42,
+        10.99
+      ],
+      [
+        -1.68,
+        10.78
+      ],
+      [
+        -2.93,
+        10.53
+      ],
+      [
+        -4.18,
+        10.26
+      ],
+      [
+        -5.42,
+        9.95
+      ],
+      [
+        -6.66,
+        9.6
+      ],
+      [
+        -7.91,
+        9.21
+      ],
+      [
+        -9.15,
+        8.76
+      ],
+      [
+        -10.4,
+        8.27
+      ],
+      [
+        -11.65,
+        7.72
+      ],
+      [
+        -12.9,
+        7.11
+      ],
+      [
+        -14.15,
+        6.45
+      ]
+    ]
+  },
+  {
+    "id": "outlier_spin_3",
+    "logId": "23_08/23_08_2026-10.45.00.csv",
+    "isOutlier": true,
+    "points": [
+      [
+        -20.71,
+        2.26
+      ],
+      [
+        -21.11,
+        1.49
+      ],
+      [
+        -21.49,
+        0.71
+      ],
+      [
+        -21.85,
+        -0.08
+      ],
+      [
+        -22.17,
+        -0.87
+      ],
+      [
+        -22.46,
+        -1.66
+      ],
+      [
+        -22.7,
+        -2.44
+      ],
+      [
+        -22.89,
+        -3.21
+      ],
+      [
+        -23,
+        -3.97
+      ],
+      [
+        -22.62,
+        -4.22
+      ],
+      [
+        -22.14,
+        -4.45
+      ],
+      [
+        -21.57,
+        -4.64
+      ],
+      [
+        -20.9,
+        -4.8
+      ],
+      [
+        -20.12,
+        -4.9
+      ],
+      [
+        -19.25,
+        -4.96
+      ],
+      [
+        -18.28,
+        -4.96
+      ],
+      [
+        -17.22,
+        -4.9
+      ],
+      [
+        -16.09,
+        -4.79
+      ],
+      [
+        -14.89,
+        -4.61
+      ],
+      [
+        -13.65,
+        -4.38
+      ],
+      [
+        -12.36,
+        -4.11
+      ],
+      [
+        -11.04,
+        -3.79
+      ],
+      [
+        -9.7,
+        -3.44
+      ],
+      [
+        -8.34,
+        -3.06
+      ],
+      [
+        -6.97,
+        -2.65
+      ]
+    ]
+  }
+];
+
+export const HAVUZ_REAL_TELEMETRY_BY_LOG: Record<string, HavuzRealTelemetrySample[]> = {"20_09_Logs/20_09_2026-23.48.06.csv":[{"s":0,"vx":18.51,"ax":-5.15,"ay":1.38,"yawRate":0.115,"rpm":2698,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":9,"pot1":314,"pot2":716,"brkF":109,"brkR":0,"invT":36,"motT":35},{"s":0.97,"vx":18.36,"ax":-7.59,"ay":2.15,"yawRate":0.106,"rpm":2714,"trqCmd":0,"trqEst":-1,"vdc":364,"idc":0,"thr":0,"pot1":315,"pot2":723,"brkF":109,"brkR":0,"invT":36,"motT":34},{"s":1.94,"vx":18.15,"ax":-7.27,"ay":1.44,"yawRate":0.096,"rpm":2709,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":316,"pot2":722,"brkF":110,"brkR":0,"invT":36,"motT":34},{"s":2.92,"vx":17.45,"ax":-7.6,"ay":0.9,"yawRate":0.022,"rpm":2510,"trqCmd":0,"trqEst":-1,"vdc":365,"idc":0,"thr":0,"pot1":307,"pot2":714,"brkF":110,"brkR":0,"invT":35,"motT":35},{"s":3.89,"vx":17.17,"ax":-8.25,"ay":0.5,"yawRate":-0.017,"rpm":2489,"trqCmd":0,"trqEst":2,"vdc":366,"idc":0,"thr":0,"pot1":312,"pot2":716,"brkF":110,"brkR":0,"invT":35,"motT":35},{"s":4.86,"vx":16.6,"ax":-9.15,"ay":-0.26,"yawRate":-0.068,"rpm":2435,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":309,"pot2":718,"brkF":110,"brkR":0,"invT":35,"motT":34},{"s":5.84,"vx":16.16,"ax":-9.41,"ay":-0.75,"yawRate":-0.092,"rpm":2338,"trqCmd":0,"trqEst":3,"vdc":366,"idc":0,"thr":0,"pot1":309,"pot2":715,"brkF":110,"brkR":0,"invT":35,"motT":34},{"s":6.81,"vx":15.65,"ax":-9.77,"ay":-1.22,"yawRate":-0.09,"rpm":2246,"trqCmd":0,"trqEst":-3,"vdc":365,"idc":0,"thr":0,"pot1":310,"pot2":720,"brkF":110,"brkR":0,"invT":35,"motT":35},{"s":7.79,"vx":14.83,"ax":-9.64,"ay":-1.62,"yawRate":-0.083,"rpm":2119,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":313,"pot2":722,"brkF":110,"brkR":0,"invT":34,"motT":33},{"s":8.76,"vx":14.06,"ax":-9.86,"ay":-1.19,"yawRate":-0.085,"rpm":2059,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":307,"pot2":713,"brkF":110,"brkR":0,"invT":34,"motT":33},{"s":9.74,"vx":13.62,"ax":-9.14,"ay":0.25,"yawRate":-0.091,"rpm":1963,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":309,"pot2":715,"brkF":110,"brkR":0,"invT":34,"motT":34},{"s":10.71,"vx":13.15,"ax":-8.88,"ay":-0.73,"yawRate":-0.092,"rpm":1812,"trqCmd":0,"trqEst":-2,"vdc":367,"idc":0,"thr":0,"pot1":310,"pot2":717,"brkF":110,"brkR":0,"invT":34,"motT":34},{"s":11.69,"vx":12.33,"ax":-10.2,"ay":-1.15,"yawRate":-0.097,"rpm":1702,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":315,"pot2":718,"brkF":110,"brkR":0,"invT":33,"motT":35},{"s":12.66,"vx":11.57,"ax":-10.02,"ay":-1.17,"yawRate":-0.098,"rpm":1689,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":309,"pot2":718,"brkF":110,"brkR":0,"invT":33,"motT":35},{"s":13.64,"vx":10.69,"ax":-9.41,"ay":-1.14,"yawRate":-0.104,"rpm":1573,"trqCmd":0,"trqEst":2,"vdc":367,"idc":0,"thr":0,"pot1":305,"pot2":707,"brkF":110,"brkR":0,"invT":33,"motT":35},{"s":14.61,"vx":9.92,"ax":-8.6,"ay":-2.33,"yawRate":-0.206,"rpm":1490,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":307,"pot2":714,"brkF":110,"brkR":0,"invT":33,"motT":35},{"s":15.59,"vx":9.3,"ax":-7.76,"ay":-2.67,"yawRate":-0.423,"rpm":1334,"trqCmd":0,"trqEst":-2,"vdc":368,"idc":0,"thr":0,"pot1":310,"pot2":715,"brkF":110,"brkR":0,"invT":33,"motT":33},{"s":16.57,"vx":8.68,"ax":-7.23,"ay":-4.02,"yawRate":-0.391,"rpm":1230,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":309,"pot2":716,"brkF":110,"brkR":0,"invT":32,"motT":34},{"s":17.54,"vx":7.94,"ax":-6.46,"ay":-2.43,"yawRate":-0.302,"rpm":1200,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":307,"pot2":715,"brkF":110,"brkR":0,"invT":32,"motT":34},{"s":18.52,"vx":7.31,"ax":-5.67,"ay":-1.84,"yawRate":-0.296,"rpm":1085,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":310,"pot2":715,"brkF":110,"brkR":0,"invT":32,"motT":33},{"s":19.5,"vx":6.63,"ax":-4.18,"ay":-2.64,"yawRate":-0.39,"rpm":972,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":311,"pot2":714,"brkF":110,"brkR":0,"invT":31,"motT":35},{"s":20.48,"vx":6.22,"ax":-2.16,"ay":-2.8,"yawRate":-0.427,"rpm":911,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":311,"pot2":713,"brkF":110,"brkR":0,"invT":31,"motT":35},{"s":21.45,"vx":6.06,"ax":-1.48,"ay":-3.2,"yawRate":-0.494,"rpm":900,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":308,"pot2":709,"brkF":88,"brkR":0,"invT":31,"motT":35},{"s":22.43,"vx":5.94,"ax":-0.59,"ay":-2,"yawRate":-0.464,"rpm":883,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":309,"pot2":721,"brkF":28,"brkR":0,"invT":31,"motT":34},{"s":23.4,"vx":5.78,"ax":-0.08,"ay":-0.9,"yawRate":-0.335,"rpm":862,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":307,"pot2":715,"brkF":17,"brkR":0,"invT":31,"motT":35},{"s":24.38,"vx":5.73,"ax":-0.08,"ay":0.48,"yawRate":-0.149,"rpm":852,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":315,"pot2":720,"brkF":6,"brkR":0,"invT":30,"motT":35},{"s":25.35,"vx":5.68,"ax":-0.21,"ay":2.51,"yawRate":0.095,"rpm":845,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":305,"pot2":708,"brkF":3,"brkR":0,"invT":30,"motT":33},{"s":26.32,"vx":5.6,"ax":-0.57,"ay":4.73,"yawRate":0.567,"rpm":826,"trqCmd":0,"trqEst":-1,"vdc":369,"idc":0,"thr":0,"pot1":307,"pot2":716,"brkF":2,"brkR":0,"invT":30,"motT":36},{"s":27.29,"vx":5.53,"ax":-0.88,"ay":5,"yawRate":0.895,"rpm":811,"trqCmd":0,"trqEst":-3,"vdc":370,"idc":0,"thr":0,"pot1":310,"pot2":721,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":28.24,"vx":5.47,"ax":-1.21,"ay":5.25,"yawRate":1.016,"rpm":799,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":309,"pot2":717,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":29.19,"vx":5.38,"ax":-1.17,"ay":4.97,"yawRate":1.012,"rpm":779,"trqCmd":0,"trqEst":1,"vdc":368,"idc":0,"thr":0,"pot1":310,"pot2":717,"brkF":3,"brkR":0,"invT":30,"motT":36},{"s":30.12,"vx":5.2,"ax":-1.53,"ay":5.46,"yawRate":1.013,"rpm":750,"trqCmd":0,"trqEst":-2,"vdc":370,"idc":0,"thr":0,"pot1":311,"pot2":722,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":31.03,"vx":5.06,"ax":-1.74,"ay":5.07,"yawRate":1.086,"rpm":723,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":309,"pot2":719,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":31.92,"vx":4.88,"ax":-1.73,"ay":4.53,"yawRate":1.061,"rpm":686,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":0,"pot1":306,"pot2":704,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":32.78,"vx":4.74,"ax":-1.75,"ay":4.97,"yawRate":1.035,"rpm":679,"trqCmd":0,"trqEst":-1,"vdc":370,"idc":0,"thr":4,"pot1":384,"pot2":867,"brkF":3,"brkR":0,"invT":30,"motT":33},{"s":33.61,"vx":4.58,"ax":-1.15,"ay":4.16,"yawRate":1.01,"rpm":679,"trqCmd":22,"trqEst":25,"vdc":368,"idc":6,"thr":14,"pot1":509,"pot2":1103,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":34.41,"vx":4.61,"ax":0.48,"ay":4.74,"yawRate":1.022,"rpm":688,"trqCmd":53,"trqEst":54,"vdc":365,"idc":11,"thr":24,"pot1":610,"pot2":1299,"brkF":3,"brkR":0,"invT":30,"motT":37},{"s":35.18,"vx":4.84,"ax":-0.05,"ay":5.03,"yawRate":1.085,"rpm":690,"trqCmd":46,"trqEst":47,"vdc":366,"idc":10,"thr":23,"pot1":568,"pot2":1229,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":35.93,"vx":4.98,"ax":-0.71,"ay":5.23,"yawRate":1.113,"rpm":720,"trqCmd":37,"trqEst":40,"vdc":366,"idc":8,"thr":20,"pot1":558,"pot2":1193,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":36.66,"vx":5.09,"ax":-0.32,"ay":5.82,"yawRate":1.128,"rpm":732,"trqCmd":44,"trqEst":41,"vdc":369,"idc":10,"thr":22,"pot1":579,"pot2":1241,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":37.4,"vx":5.27,"ax":-0.05,"ay":5.91,"yawRate":1.157,"rpm":760,"trqCmd":52,"trqEst":55,"vdc":365,"idc":12,"thr":24,"pot1":600,"pot2":1282,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":38.14,"vx":5.38,"ax":0.27,"ay":6.31,"yawRate":1.139,"rpm":792,"trqCmd":57,"trqEst":65,"vdc":366,"idc":13,"thr":25,"pot1":619,"pot2":1312,"brkF":3,"brkR":0,"invT":31,"motT":36},{"s":38.9,"vx":5.61,"ax":0.51,"ay":5.93,"yawRate":1.078,"rpm":838,"trqCmd":56,"trqEst":59,"vdc":364,"idc":13,"thr":25,"pot1":612,"pot2":1302,"brkF":3,"brkR":0,"invT":31,"motT":34},{"s":39.7,"vx":5.83,"ax":1,"ay":5.03,"yawRate":0.922,"rpm":870,"trqCmd":54,"trqEst":55,"vdc":365,"idc":14,"thr":25,"pot1":617,"pot2":1318,"brkF":3,"brkR":0,"invT":31,"motT":34},{"s":40.53,"vx":6.07,"ax":1.4,"ay":4.37,"yawRate":0.693,"rpm":902,"trqCmd":54,"trqEst":54,"vdc":366,"idc":16,"thr":25,"pot1":618,"pot2":1309,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":41.39,"vx":6.31,"ax":1.28,"ay":3.01,"yawRate":0.573,"rpm":943,"trqCmd":57,"trqEst":63,"vdc":364,"idc":16,"thr":25,"pot1":617,"pot2":1317,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":42.3,"vx":6.48,"ax":1.73,"ay":1.92,"yawRate":0.437,"rpm":985,"trqCmd":56,"trqEst":57,"vdc":365,"idc":16,"thr":25,"pot1":608,"pot2":1300,"brkF":3,"brkR":0,"invT":31,"motT":34},{"s":43.23,"vx":6.72,"ax":1.45,"ay":2.5,"yawRate":0.301,"rpm":1015,"trqCmd":50,"trqEst":51,"vdc":365,"idc":15,"thr":23,"pot1":589,"pot2":1262,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":44.2,"vx":6.87,"ax":1.28,"ay":1.57,"yawRate":0.258,"rpm":1043,"trqCmd":47,"trqEst":47,"vdc":366,"idc":15,"thr":23,"pot1":591,"pot2":1262,"brkF":3,"brkR":0,"invT":31,"motT":33},{"s":45.19,"vx":7.1,"ax":1.31,"ay":1.92,"yawRate":0.211,"rpm":1055,"trqCmd":48,"trqEst":49,"vdc":365,"idc":16,"thr":23,"pot1":589,"pot2":1263,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":46.19,"vx":7.27,"ax":1.4,"ay":2.15,"yawRate":0.17,"rpm":1098,"trqCmd":45,"trqEst":46,"vdc":367,"idc":15,"thr":22,"pot1":581,"pot2":1253,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":47.2,"vx":7.38,"ax":0.76,"ay":1.39,"yawRate":0.134,"rpm":1116,"trqCmd":41,"trqEst":42,"vdc":366,"idc":13,"thr":20,"pot1":556,"pot2":1200,"brkF":3,"brkR":0,"invT":31,"motT":34},{"s":48.22,"vx":7.5,"ax":0.16,"ay":1.89,"yawRate":0.132,"rpm":1113,"trqCmd":24,"trqEst":22,"vdc":366,"idc":8,"thr":17,"pot1":521,"pot2":1124,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":49.23,"vx":7.5,"ax":0.22,"ay":2.12,"yawRate":0.124,"rpm":1125,"trqCmd":13,"trqEst":15,"vdc":368,"idc":4,"thr":15,"pot1":477,"pot2":1036,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":50.25,"vx":7.55,"ax":-0.33,"ay":2.28,"yawRate":0.129,"rpm":1127,"trqCmd":12,"trqEst":11,"vdc":368,"idc":3,"thr":12,"pot1":466,"pot2":1021,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":51.27,"vx":7.52,"ax":-0.34,"ay":2.37,"yawRate":0.155,"rpm":1103,"trqCmd":11,"trqEst":8,"vdc":368,"idc":2,"thr":13,"pot1":463,"pot2":1019,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":52.28,"vx":7.52,"ax":-0.38,"ay":1.77,"yawRate":0.16,"rpm":1129,"trqCmd":11,"trqEst":10,"vdc":369,"idc":3,"thr":12,"pot1":460,"pot2":1019,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":53.29,"vx":7.45,"ax":-0.15,"ay":1.74,"yawRate":0.154,"rpm":1129,"trqCmd":11,"trqEst":8,"vdc":369,"idc":4,"thr":13,"pot1":470,"pot2":1027,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":54.3,"vx":7.5,"ax":-0.13,"ay":2.01,"yawRate":0.155,"rpm":1112,"trqCmd":11,"trqEst":9,"vdc":369,"idc":3,"thr":13,"pot1":461,"pot2":1020,"brkF":3,"brkR":0,"invT":31,"motT":33},{"s":55.3,"vx":7.4,"ax":-0.21,"ay":1.94,"yawRate":0.147,"rpm":1102,"trqCmd":15,"trqEst":14,"vdc":369,"idc":5,"thr":14,"pot1":481,"pot2":1049,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":56.3,"vx":7.52,"ax":0.26,"ay":1.68,"yawRate":0.117,"rpm":1116,"trqCmd":25,"trqEst":25,"vdc":367,"idc":8,"thr":16,"pot1":508,"pot2":1115,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":57.31,"vx":7.55,"ax":0.48,"ay":1.22,"yawRate":0.09,"rpm":1138,"trqCmd":32,"trqEst":34,"vdc":367,"idc":11,"thr":18,"pot1":534,"pot2":1155,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":58.31,"vx":7.69,"ax":0.87,"ay":0.82,"yawRate":0.046,"rpm":1149,"trqCmd":32,"trqEst":35,"vdc":366,"idc":11,"thr":19,"pot1":545,"pot2":1179,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":59.3,"vx":7.82,"ax":0.72,"ay":1.11,"yawRate":0.036,"rpm":1167,"trqCmd":32,"trqEst":30,"vdc":367,"idc":11,"thr":19,"pot1":534,"pot2":1150,"brkF":3,"brkR":0,"invT":30,"motT":36},{"s":60.3,"vx":7.89,"ax":0.64,"ay":1.59,"yawRate":0.03,"rpm":1190,"trqCmd":31,"trqEst":31,"vdc":366,"idc":11,"thr":18,"pot1":529,"pot2":1143,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":61.29,"vx":7.95,"ax":0.46,"ay":0.94,"yawRate":0.037,"rpm":1189,"trqCmd":30,"trqEst":28,"vdc":366,"idc":10,"thr":18,"pot1":530,"pot2":1147,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":62.28,"vx":8.03,"ax":-0.01,"ay":1.34,"yawRate":0.023,"rpm":1206,"trqCmd":22,"trqEst":25,"vdc":365,"idc":8,"thr":17,"pot1":497,"pot2":1084,"brkF":3,"brkR":0,"invT":30,"motT":37},{"s":63.27,"vx":8.05,"ax":0.26,"ay":1.21,"yawRate":0.021,"rpm":1209,"trqCmd":20,"trqEst":23,"vdc":369,"idc":7,"thr":15,"pot1":495,"pot2":1084,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":64.26,"vx":8.11,"ax":0.15,"ay":1.12,"yawRate":0.02,"rpm":1215,"trqCmd":18,"trqEst":19,"vdc":369,"idc":6,"thr":15,"pot1":493,"pot2":1076,"brkF":3,"brkR":0,"invT":30,"motT":36},{"s":65.25,"vx":8.13,"ax":-0.05,"ay":0.87,"yawRate":0.014,"rpm":1211,"trqCmd":18,"trqEst":22,"vdc":367,"idc":7,"thr":15,"pot1":491,"pot2":1077,"brkF":3,"brkR":0,"invT":30,"motT":37},{"s":66.24,"vx":8.16,"ax":0.17,"ay":0.69,"yawRate":-0.004,"rpm":1216,"trqCmd":18,"trqEst":16,"vdc":370,"idc":7,"thr":15,"pot1":498,"pot2":1084,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":67.22,"vx":8.19,"ax":-0.01,"ay":0.89,"yawRate":-0.007,"rpm":1218,"trqCmd":15,"trqEst":15,"vdc":368,"idc":5,"thr":14,"pot1":477,"pot2":1045,"brkF":3,"brkR":0,"invT":30,"motT":36},{"s":68.2,"vx":8.21,"ax":-0.02,"ay":1.23,"yawRate":-0.012,"rpm":1236,"trqCmd":14,"trqEst":10,"vdc":367,"idc":5,"thr":14,"pot1":480,"pot2":1047,"brkF":3,"brkR":0,"invT":30,"motT":36},{"s":69.18,"vx":8.13,"ax":-0.39,"ay":0.74,"yawRate":-0.011,"rpm":1219,"trqCmd":11,"trqEst":12,"vdc":369,"idc":3,"thr":13,"pot1":463,"pot2":1026,"brkF":3,"brkR":0,"invT":30,"motT":36},{"s":70.15,"vx":8.09,"ax":-0.58,"ay":1.1,"yawRate":-0.012,"rpm":1198,"trqCmd":2,"trqEst":3,"vdc":370,"idc":0,"thr":10,"pot1":427,"pot2":958,"brkF":3,"brkR":0,"invT":30,"motT":37},{"s":71.11,"vx":8.08,"ax":-0.73,"ay":0.84,"yawRate":-0.008,"rpm":1199,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":7,"pot1":395,"pot2":886,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":72.07,"vx":7.98,"ax":-0.66,"ay":0.65,"yawRate":-0.005,"rpm":1191,"trqCmd":0,"trqEst":2,"vdc":371,"idc":0,"thr":5,"pot1":333,"pot2":771,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":73.01,"vx":7.9,"ax":-0.64,"ay":1.6,"yawRate":0.019,"rpm":1183,"trqCmd":0,"trqEst":-2,"vdc":370,"idc":0,"thr":1,"pot1":325,"pot2":741,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":73.94,"vx":7.89,"ax":-0.57,"ay":1.67,"yawRate":0.066,"rpm":1174,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":1,"pot1":324,"pot2":748,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":74.86,"vx":7.81,"ax":-0.45,"ay":1.74,"yawRate":0.084,"rpm":1165,"trqCmd":0,"trqEst":1,"vdc":371,"idc":0,"thr":1,"pot1":329,"pot2":754,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":75.76,"vx":7.7,"ax":-0.58,"ay":1.95,"yawRate":0.151,"rpm":1157,"trqCmd":0,"trqEst":3,"vdc":371,"idc":0,"thr":1,"pot1":313,"pot2":734,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":76.64,"vx":7.63,"ax":-0.36,"ay":1.99,"yawRate":0.152,"rpm":1147,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":1,"pot1":311,"pot2":734,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":77.51,"vx":7.59,"ax":-0.34,"ay":0.97,"yawRate":0.19,"rpm":1129,"trqCmd":0,"trqEst":-3,"vdc":371,"idc":0,"thr":0,"pot1":316,"pot2":732,"brkF":3,"brkR":0,"invT":30,"motT":37},{"s":78.36,"vx":7.51,"ax":-0.51,"ay":0.94,"yawRate":0.179,"rpm":1120,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":320,"pot2":738,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":79.2,"vx":7.45,"ax":-0.51,"ay":1.03,"yawRate":0.156,"rpm":1106,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":1,"pot1":325,"pot2":743,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":80.03,"vx":7.37,"ax":-0.5,"ay":1.58,"yawRate":0.121,"rpm":1094,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":1,"pot1":323,"pot2":742,"brkF":3,"brkR":0,"invT":30,"motT":36},{"s":80.86,"vx":7.34,"ax":-0.68,"ay":1.54,"yawRate":0.107,"rpm":1098,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":1,"pot1":314,"pot2":743,"brkF":3,"brkR":0,"invT":30,"motT":36},{"s":81.68,"vx":7.27,"ax":-0.73,"ay":1.72,"yawRate":0.105,"rpm":1081,"trqCmd":0,"trqEst":-2,"vdc":369,"idc":0,"thr":1,"pot1":325,"pot2":751,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":82.51,"vx":7.16,"ax":-0.71,"ay":1.49,"yawRate":0.091,"rpm":1073,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":1,"pot1":327,"pot2":753,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":83.34,"vx":7.1,"ax":-0.67,"ay":0.95,"yawRate":0.072,"rpm":1059,"trqCmd":0,"trqEst":3,"vdc":369,"idc":0,"thr":1,"pot1":324,"pot2":751,"brkF":3,"brkR":0,"invT":30,"motT":35},{"s":84.19,"vx":7.05,"ax":-0.53,"ay":0.63,"yawRate":0.014,"rpm":1043,"trqCmd":0,"trqEst":1,"vdc":370,"idc":0,"thr":1,"pot1":325,"pot2":749,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":85.04,"vx":6.94,"ax":-0.7,"ay":0.27,"yawRate":-0.038,"rpm":1051,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":1,"pot1":324,"pot2":751,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":85.91,"vx":6.83,"ax":-0.52,"ay":0.63,"yawRate":-0.066,"rpm":1019,"trqCmd":0,"trqEst":-2,"vdc":370,"idc":0,"thr":1,"pot1":323,"pot2":747,"brkF":3,"brkR":0,"invT":29,"motT":34},{"s":86.79,"vx":6.79,"ax":-0.58,"ay":0.29,"yawRate":-0.068,"rpm":1014,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":1,"pot1":328,"pot2":754,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":87.69,"vx":6.7,"ax":-0.7,"ay":0.4,"yawRate":-0.059,"rpm":1009,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":1,"pot1":325,"pot2":751,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":88.6,"vx":6.59,"ax":-0.44,"ay":0.42,"yawRate":-0.051,"rpm":981,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":1,"pot1":328,"pot2":752,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":89.52,"vx":6.54,"ax":-0.73,"ay":0.86,"yawRate":-0.037,"rpm":977,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":1,"pot1":324,"pot2":749,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":90.44,"vx":6.43,"ax":-0.56,"ay":1,"yawRate":-0.028,"rpm":962,"trqCmd":0,"trqEst":3,"vdc":372,"idc":0,"thr":1,"pot1":320,"pot2":745,"brkF":3,"brkR":0,"invT":29,"motT":36},{"s":91.36,"vx":6.32,"ax":-0.56,"ay":1.34,"yawRate":0.057,"rpm":943,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":1,"pot1":327,"pot2":751,"brkF":3,"brkR":0,"invT":29,"motT":37},{"s":92.27,"vx":6.28,"ax":-0.74,"ay":1.99,"yawRate":0.113,"rpm":932,"trqCmd":0,"trqEst":-1,"vdc":370,"idc":0,"thr":1,"pot1":323,"pot2":747,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":93.17,"vx":6.2,"ax":-0.74,"ay":2.37,"yawRate":0.216,"rpm":911,"trqCmd":0,"trqEst":1,"vdc":369,"idc":0,"thr":0,"pot1":310,"pot2":727,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":94.06,"vx":6.12,"ax":-0.34,"ay":2.63,"yawRate":0.259,"rpm":906,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":314,"pot2":723,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":94.93,"vx":6.07,"ax":-0.38,"ay":2.81,"yawRate":0.296,"rpm":901,"trqCmd":0,"trqEst":2,"vdc":369,"idc":0,"thr":0,"pot1":309,"pot2":722,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":95.79,"vx":5.98,"ax":-0.6,"ay":2.17,"yawRate":0.328,"rpm":885,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":0,"pot1":311,"pot2":719,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":96.63,"vx":5.86,"ax":-0.55,"ay":2.79,"yawRate":0.336,"rpm":870,"trqCmd":0,"trqEst":3,"vdc":371,"idc":0,"thr":0,"pot1":307,"pot2":710,"brkF":3,"brkR":0,"invT":29,"motT":34},{"s":97.47,"vx":5.76,"ax":-0.43,"ay":3.23,"yawRate":0.371,"rpm":870,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":307,"pot2":716,"brkF":3,"brkR":0,"invT":29,"motT":34},{"s":98.29,"vx":5.69,"ax":-0.6,"ay":3.37,"yawRate":0.393,"rpm":846,"trqCmd":0,"trqEst":3,"vdc":372,"idc":0,"thr":0,"pot1":311,"pot2":721,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":99.11,"vx":5.56,"ax":-0.65,"ay":2.91,"yawRate":0.407,"rpm":818,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":305,"pot2":708,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":99.94,"vx":5.46,"ax":-0.58,"ay":2.83,"yawRate":0.399,"rpm":806,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":306,"pot2":712,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":100.78,"vx":5.32,"ax":-0.56,"ay":2.99,"yawRate":0.402,"rpm":803,"trqCmd":0,"trqEst":3,"vdc":371,"idc":0,"thr":0,"pot1":306,"pot2":708,"brkF":3,"brkR":0,"invT":29,"motT":34},{"s":101.62,"vx":5.34,"ax":-0.44,"ay":2.85,"yawRate":0.412,"rpm":785,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":0,"pot1":305,"pot2":708,"brkF":3,"brkR":0,"invT":29,"motT":34},{"s":102.47,"vx":5.18,"ax":-0.61,"ay":3.49,"yawRate":0.523,"rpm":764,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":309,"pot2":716,"brkF":3,"brkR":0,"invT":29,"motT":37},{"s":103.34,"vx":5.06,"ax":-0.53,"ay":3.53,"yawRate":0.55,"rpm":744,"trqCmd":0,"trqEst":2,"vdc":370,"idc":0,"thr":0,"pot1":305,"pot2":710,"brkF":3,"brkR":0,"invT":29,"motT":36},{"s":104.2,"vx":4.96,"ax":-0.65,"ay":4.15,"yawRate":0.713,"rpm":727,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":309,"pot2":718,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":105.07,"vx":4.93,"ax":-0.56,"ay":3.66,"yawRate":0.699,"rpm":714,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":306,"pot2":716,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":105.94,"vx":4.77,"ax":-0.52,"ay":4.26,"yawRate":0.728,"rpm":687,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":0,"pot1":314,"pot2":722,"brkF":3,"brkR":0,"invT":29,"motT":34},{"s":106.79,"vx":4.66,"ax":-0.9,"ay":4.28,"yawRate":0.884,"rpm":667,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":313,"pot2":721,"brkF":3,"brkR":0,"invT":29,"motT":37},{"s":107.63,"vx":4.51,"ax":-0.94,"ay":4.19,"yawRate":0.897,"rpm":653,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":316,"pot2":720,"brkF":3,"brkR":0,"invT":29,"motT":35},{"s":108.45,"vx":4.38,"ax":-0.85,"ay":3.61,"yawRate":0.895,"rpm":613,"trqCmd":0,"trqEst":-2,"vdc":371,"idc":0,"thr":0,"pot1":306,"pot2":713,"brkF":3,"brkR":0,"invT":29,"motT":37},{"s":109.25,"vx":4.24,"ax":-0.96,"ay":3.9,"yawRate":0.905,"rpm":589,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":307,"pot2":711,"brkF":3,"brkR":0,"invT":29,"motT":36},{"s":110.01,"vx":3.99,"ax":-1.31,"ay":3.6,"yawRate":0.952,"rpm":558,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":0,"pot1":304,"pot2":713,"brkF":3,"brkR":0,"invT":29,"motT":37},{"s":110.75,"vx":3.79,"ax":-1.21,"ay":2.8,"yawRate":0.918,"rpm":527,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":306,"pot2":713,"brkF":3,"brkR":0,"invT":29,"motT":36},{"s":111.46,"vx":3.54,"ax":-1.17,"ay":2.86,"yawRate":0.87,"rpm":499,"trqCmd":0,"trqEst":-1,"vdc":371,"idc":0,"thr":0,"pot1":305,"pot2":711,"brkF":3,"brkR":0,"invT":29,"motT":34},{"s":112.15,"vx":3.14,"ax":-2.26,"ay":1.93,"yawRate":0.799,"rpm":433,"trqCmd":0,"trqEst":1,"vdc":372,"idc":0,"thr":0,"pot1":308,"pot2":709,"brkF":48,"brkR":0,"invT":29,"motT":35},{"s":112.84,"vx":3.61,"ax":7.56,"ay":-0.41,"yawRate":0.043,"rpm":689,"trqCmd":206,"trqEst":221,"vdc":356,"idc":50,"thr":64,"pot1":1132,"pot2":2310,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":113.53,"vx":5.41,"ax":7.51,"ay":-0.31,"yawRate":0.091,"rpm":1819,"trqCmd":278,"trqEst":310,"vdc":323,"idc":195,"thr":100,"pot1":1491,"pot2":3023,"brkF":4,"brkR":0,"invT":31,"motT":35},{"s":114.23,"vx":6.36,"ax":6.94,"ay":-0.39,"yawRate":0.104,"rpm":2815,"trqCmd":218,"trqEst":200,"vdc":310,"idc":224,"thr":100,"pot1":1465,"pot2":2974,"brkF":3,"brkR":0,"invT":32,"motT":34},{"s":114.97,"vx":7.46,"ax":6.85,"ay":-0.2,"yawRate":0.052,"rpm":3248,"trqCmd":192,"trqEst":151,"vdc":306,"idc":247,"thr":100,"pot1":1484,"pot2":3013,"brkF":3,"brkR":0,"invT":32,"motT":34},{"s":115.73,"vx":8.22,"ax":7.02,"ay":-1.14,"yawRate":-0.01,"rpm":3313,"trqCmd":187,"trqEst":145,"vdc":303,"idc":251,"thr":100,"pot1":1479,"pot2":3000,"brkF":3,"brkR":0,"invT":33,"motT":35},{"s":116.53,"vx":9.04,"ax":7.43,"ay":-1.03,"yawRate":-0.046,"rpm":3310,"trqCmd":186,"trqEst":145,"vdc":301,"idc":251,"thr":100,"pot1":1466,"pot2":2986,"brkF":3,"brkR":0,"invT":33,"motT":37},{"s":117.36,"vx":9.71,"ax":7.99,"ay":-1.1,"yawRate":-0.048,"rpm":3339,"trqCmd":185,"trqEst":183,"vdc":306,"idc":250,"thr":100,"pot1":1475,"pot2":2996,"brkF":3,"brkR":0,"invT":33,"motT":37},{"s":118.23,"vx":10.63,"ax":8.71,"ay":-0.36,"yawRate":-0.02,"rpm":3176,"trqCmd":193,"trqEst":191,"vdc":294,"idc":251,"thr":100,"pot1":1488,"pot2":3020,"brkF":3,"brkR":0,"invT":34,"motT":35},{"s":119.12,"vx":11.4,"ax":8.71,"ay":-0.09,"yawRate":0.024,"rpm":3179,"trqCmd":194,"trqEst":154,"vdc":298,"idc":259,"thr":100,"pot1":1472,"pot2":2985,"brkF":3,"brkR":0,"invT":34,"motT":35},{"s":120.04,"vx":12.06,"ax":8.96,"ay":-0.68,"yawRate":0.065,"rpm":3033,"trqCmd":203,"trqEst":192,"vdc":303,"idc":254,"thr":100,"pot1":1466,"pot2":2982,"brkF":3,"brkR":0,"invT":34,"motT":35},{"s":120.97,"vx":12.55,"ax":8.85,"ay":-0.48,"yawRate":0.077,"rpm":2943,"trqCmd":206,"trqEst":186,"vdc":306,"idc":243,"thr":100,"pot1":1472,"pot2":2993,"brkF":3,"brkR":0,"invT":34,"motT":36},{"s":121.91,"vx":13.47,"ax":8.95,"ay":-0.22,"yawRate":0.146,"rpm":2804,"trqCmd":216,"trqEst":222,"vdc":302,"idc":240,"thr":100,"pot1":1475,"pot2":2994,"brkF":3,"brkR":0,"invT":34,"motT":36},{"s":122.86,"vx":13.86,"ax":8.78,"ay":0.12,"yawRate":0.2,"rpm":2700,"trqCmd":225,"trqEst":227,"vdc":304,"idc":240,"thr":100,"pot1":1486,"pot2":3005,"brkF":3,"brkR":0,"invT":35,"motT":35},{"s":123.82,"vx":14.75,"ax":8.8,"ay":0.38,"yawRate":0.21,"rpm":2781,"trqCmd":219,"trqEst":206,"vdc":299,"idc":237,"thr":100,"pot1":1472,"pot2":2989,"brkF":3,"brkR":0,"invT":35,"motT":34},{"s":124.78,"vx":15.17,"ax":9.02,"ay":0.74,"yawRate":0.194,"rpm":2812,"trqCmd":217,"trqEst":208,"vdc":304,"idc":235,"thr":100,"pot1":1472,"pot2":2988,"brkF":3,"brkR":0,"invT":35,"motT":34},{"s":125.74,"vx":15.92,"ax":9.29,"ay":0.88,"yawRate":0.158,"rpm":2697,"trqCmd":222,"trqEst":236,"vdc":303,"idc":236,"thr":100,"pot1":1472,"pot2":2997,"brkF":3,"brkR":0,"invT":35,"motT":35},{"s":126.71,"vx":16.33,"ax":9.14,"ay":-0.28,"yawRate":-0.061,"rpm":2687,"trqCmd":228,"trqEst":207,"vdc":299,"idc":244,"thr":100,"pot1":1479,"pot2":3003,"brkF":3,"brkR":0,"invT":35,"motT":35},{"s":127.67,"vx":16.72,"ax":8.94,"ay":-0.84,"yawRate":-0.181,"rpm":2714,"trqCmd":222,"trqEst":231,"vdc":294,"idc":238,"thr":100,"pot1":1470,"pot2":2981,"brkF":3,"brkR":0,"invT":35,"motT":34},{"s":128.64,"vx":17.14,"ax":8.53,"ay":-1.43,"yawRate":-0.267,"rpm":2730,"trqCmd":222,"trqEst":228,"vdc":297,"idc":238,"thr":100,"pot1":1477,"pot2":2997,"brkF":3,"brkR":0,"invT":35,"motT":34},{"s":129.6,"vx":17.59,"ax":7.36,"ay":-3.19,"yawRate":-0.276,"rpm":2815,"trqCmd":217,"trqEst":212,"vdc":301,"idc":239,"thr":100,"pot1":1476,"pot2":2989,"brkF":3,"brkR":0,"invT":35,"motT":37},{"s":130.56,"vx":17.89,"ax":7.36,"ay":-2.35,"yawRate":-0.266,"rpm":2927,"trqCmd":209,"trqEst":187,"vdc":299,"idc":239,"thr":100,"pot1":1469,"pot2":2990,"brkF":3,"brkR":0,"invT":35,"motT":37},{"s":131.53,"vx":18.46,"ax":7.47,"ay":-2.76,"yawRate":-0.193,"rpm":2991,"trqCmd":205,"trqEst":208,"vdc":298,"idc":249,"thr":100,"pot1":1483,"pot2":3007,"brkF":3,"brkR":0,"invT":36,"motT":34},{"s":132.49,"vx":18.66,"ax":7.02,"ay":-2.93,"yawRate":-0.143,"rpm":2966,"trqCmd":205,"trqEst":200,"vdc":297,"idc":245,"thr":100,"pot1":1238,"pot2":2523,"brkF":5,"brkR":0,"invT":36,"motT":34},{"s":133.46,"vx":18.91,"ax":6.08,"ay":-1.18,"yawRate":-0.063,"rpm":2930,"trqCmd":145,"trqEst":164,"vdc":317,"idc":225,"thr":76,"pot1":840,"pot2":1765,"brkF":5,"brkR":0,"invT":36,"motT":35},{"s":134.43,"vx":19.05,"ax":-0.95,"ay":-0.51,"yawRate":0.071,"rpm":2800,"trqCmd":32,"trqEst":31,"vdc":353,"idc":29,"thr":20,"pot1":537,"pot2":1163,"brkF":42,"brkR":0,"invT":36,"motT":35},{"s":135.4,"vx":19.03,"ax":-3.72,"ay":0.37,"yawRate":0.114,"rpm":2921,"trqCmd":25,"trqEst":30,"vdc":356,"idc":24,"thr":18,"pot1":501,"pot2":1082,"brkF":42,"brkR":0,"invT":36,"motT":35}],"20_09_Logs/20_09_2026-23.50.21.csv":[{"s":0,"vx":14.82,"ax":9.54,"ay":1.06,"yawRate":0.099,"rpm":2551,"trqCmd":237,"trqEst":226,"vdc":302,"idc":242,"thr":100,"pot1":1483,"pot2":3012,"brkF":4,"brkR":0,"invT":38,"motT":39},{"s":0.97,"vx":15.53,"ax":9.62,"ay":0.24,"yawRate":-0.025,"rpm":2557,"trqCmd":238,"trqEst":242,"vdc":303,"idc":249,"thr":100,"pot1":1476,"pot2":2997,"brkF":4,"brkR":0,"invT":38,"motT":38},{"s":1.94,"vx":16.29,"ax":8.98,"ay":0.29,"yawRate":-0.052,"rpm":2634,"trqCmd":232,"trqEst":227,"vdc":300,"idc":244,"thr":100,"pot1":1476,"pot2":2997,"brkF":4,"brkR":0,"invT":38,"motT":38},{"s":2.92,"vx":16.82,"ax":8.46,"ay":0.73,"yawRate":-0.062,"rpm":2678,"trqCmd":227,"trqEst":226,"vdc":301,"idc":243,"thr":100,"pot1":1485,"pot2":3000,"brkF":4,"brkR":0,"invT":39,"motT":38},{"s":3.89,"vx":17.11,"ax":8.11,"ay":1.8,"yawRate":0.033,"rpm":2783,"trqCmd":219,"trqEst":197,"vdc":299,"idc":242,"thr":100,"pot1":1483,"pot2":3010,"brkF":4,"brkR":0,"invT":39,"motT":39},{"s":4.86,"vx":17.85,"ax":8.06,"ay":0.95,"yawRate":0.048,"rpm":2935,"trqCmd":208,"trqEst":194,"vdc":300,"idc":247,"thr":100,"pot1":1493,"pot2":3028,"brkF":4,"brkR":0,"invT":39,"motT":39},{"s":5.84,"vx":18.12,"ax":7.91,"ay":0.85,"yawRate":0.033,"rpm":2905,"trqCmd":207,"trqEst":198,"vdc":299,"idc":247,"thr":100,"pot1":1487,"pot2":3016,"brkF":4,"brkR":0,"invT":39,"motT":39},{"s":6.81,"vx":18.67,"ax":8.14,"ay":0.39,"yawRate":-0.022,"rpm":2905,"trqCmd":209,"trqEst":200,"vdc":297,"idc":242,"thr":100,"pot1":1476,"pot2":2988,"brkF":4,"brkR":0,"invT":39,"motT":39},{"s":7.79,"vx":18.98,"ax":8.04,"ay":0.38,"yawRate":-0.076,"rpm":3012,"trqCmd":205,"trqEst":189,"vdc":297,"idc":255,"thr":100,"pot1":1472,"pot2":2988,"brkF":4,"brkR":0,"invT":39,"motT":39},{"s":8.76,"vx":19.16,"ax":7.85,"ay":-0.07,"yawRate":-0.084,"rpm":3033,"trqCmd":203,"trqEst":187,"vdc":289,"idc":257,"thr":100,"pot1":1479,"pot2":2995,"brkF":4,"brkR":0,"invT":39,"motT":39},{"s":9.74,"vx":19.94,"ax":7.56,"ay":-0.64,"yawRate":0.021,"rpm":3094,"trqCmd":200,"trqEst":206,"vdc":285,"idc":264,"thr":100,"pot1":1481,"pot2":3008,"brkF":4,"brkR":0,"invT":40,"motT":39},{"s":10.71,"vx":20.19,"ax":7.77,"ay":0.1,"yawRate":0.049,"rpm":3184,"trqCmd":195,"trqEst":180,"vdc":295,"idc":266,"thr":100,"pot1":1492,"pot2":3026,"brkF":4,"brkR":0,"invT":40,"motT":39},{"s":11.69,"vx":20.42,"ax":8.1,"ay":2.44,"yawRate":0.089,"rpm":3220,"trqCmd":191,"trqEst":184,"vdc":290,"idc":259,"thr":100,"pot1":1492,"pot2":3023,"brkF":4,"brkR":0,"invT":40,"motT":39},{"s":12.66,"vx":20.98,"ax":5.85,"ay":1.4,"yawRate":0.102,"rpm":3240,"trqCmd":191,"trqEst":150,"vdc":291,"idc":261,"thr":100,"pot1":1483,"pot2":3003,"brkF":6,"brkR":0,"invT":40,"motT":39},{"s":13.64,"vx":21.23,"ax":5.97,"ay":1.23,"yawRate":0.098,"rpm":3285,"trqCmd":189,"trqEst":165,"vdc":296,"idc":256,"thr":100,"pot1":1472,"pot2":2982,"brkF":6,"brkR":0,"invT":40,"motT":39},{"s":14.61,"vx":21.54,"ax":5.9,"ay":1.18,"yawRate":0.091,"rpm":3330,"trqCmd":185,"trqEst":161,"vdc":296,"idc":248,"thr":100,"pot1":1470,"pot2":2990,"brkF":22,"brkR":0,"invT":40,"motT":39},{"s":15.59,"vx":21.6,"ax":5.52,"ay":1.28,"yawRate":0.071,"rpm":3337,"trqCmd":185,"trqEst":201,"vdc":296,"idc":251,"thr":100,"pot1":1481,"pot2":3003,"brkF":22,"brkR":0,"invT":40,"motT":39},{"s":16.57,"vx":21.77,"ax":4.82,"ay":1.64,"yawRate":0.033,"rpm":3372,"trqCmd":184,"trqEst":138,"vdc":295,"idc":246,"thr":100,"pot1":1488,"pot2":3022,"brkF":75,"brkR":0,"invT":40,"motT":39},{"s":17.54,"vx":21.97,"ax":3.68,"ay":0.79,"yawRate":0.022,"rpm":3406,"trqCmd":181,"trqEst":169,"vdc":292,"idc":249,"thr":100,"pot1":1493,"pot2":3019,"brkF":75,"brkR":0,"invT":40,"motT":39},{"s":18.52,"vx":21.98,"ax":2.2,"ay":0.34,"yawRate":0.01,"rpm":3403,"trqCmd":181,"trqEst":144,"vdc":289,"idc":247,"thr":86,"pot1":1078,"pot2":2207,"brkF":107,"brkR":0,"invT":40,"motT":38},{"s":19.5,"vx":21.79,"ax":-0.31,"ay":-0.21,"yawRate":0,"rpm":3172,"trqCmd":5,"trqEst":34,"vdc":347,"idc":53,"thr":28,"pot1":375,"pot2":836,"brkF":107,"brkR":0,"invT":40,"motT":38},{"s":20.48,"vx":21.42,"ax":-11.23,"ay":-0.11,"yawRate":0,"rpm":3134,"trqCmd":0,"trqEst":-2,"vdc":355,"idc":0,"thr":0,"pot1":316,"pot2":726,"brkF":110,"brkR":0,"invT":40,"motT":38},{"s":21.45,"vx":21.09,"ax":-11.84,"ay":0.13,"yawRate":0.005,"rpm":3124,"trqCmd":0,"trqEst":4,"vdc":359,"idc":0,"thr":0,"pot1":321,"pot2":735,"brkF":110,"brkR":0,"invT":40,"motT":38},{"s":22.43,"vx":20.67,"ax":-11.33,"ay":-0.29,"yawRate":0.004,"rpm":2801,"trqCmd":0,"trqEst":1,"vdc":357,"idc":0,"thr":0,"pot1":310,"pot2":711,"brkF":110,"brkR":0,"invT":40,"motT":39},{"s":23.4,"vx":19.89,"ax":-11.47,"ay":-0.68,"yawRate":-0.005,"rpm":2405,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":0,"pot1":311,"pot2":719,"brkF":110,"brkR":0,"invT":40,"motT":39},{"s":24.38,"vx":18.92,"ax":-11.07,"ay":-1.3,"yawRate":-0.017,"rpm":2152,"trqCmd":0,"trqEst":0,"vdc":359,"idc":0,"thr":0,"pot1":316,"pot2":724,"brkF":110,"brkR":0,"invT":40,"motT":40},{"s":25.35,"vx":18.53,"ax":-10.32,"ay":-1.38,"yawRate":-0.052,"rpm":1899,"trqCmd":0,"trqEst":1,"vdc":358,"idc":0,"thr":0,"pot1":311,"pot2":722,"brkF":110,"brkR":0,"invT":40,"motT":40},{"s":26.32,"vx":18.01,"ax":-9.82,"ay":-0.8,"yawRate":-0.248,"rpm":1352,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":308,"pot2":712,"brkF":110,"brkR":0,"invT":40,"motT":38},{"s":27.29,"vx":17.54,"ax":-11.06,"ay":-1.75,"yawRate":-0.302,"rpm":1069,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":0,"pot1":306,"pot2":711,"brkF":110,"brkR":0,"invT":40,"motT":38},{"s":28.24,"vx":16.56,"ax":-12.59,"ay":-4.31,"yawRate":-0.326,"rpm":855,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":302,"pot2":711,"brkF":110,"brkR":0,"invT":40,"motT":40},{"s":29.19,"vx":15.74,"ax":-12.56,"ay":-1.25,"yawRate":-0.35,"rpm":702,"trqCmd":0,"trqEst":-2,"vdc":360,"idc":0,"thr":0,"pot1":314,"pot2":724,"brkF":110,"brkR":0,"invT":40,"motT":40},{"s":30.12,"vx":15.41,"ax":-9.77,"ay":-0.41,"yawRate":-0.322,"rpm":440,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":309,"pot2":719,"brkF":110,"brkR":0,"invT":39,"motT":40},{"s":31.03,"vx":15.01,"ax":-8.74,"ay":-1.42,"yawRate":-0.226,"rpm":76,"trqCmd":0,"trqEst":-1,"vdc":362,"idc":0,"thr":0,"pot1":304,"pot2":712,"brkF":110,"brkR":0,"invT":39,"motT":40},{"s":31.92,"vx":14.09,"ax":-8.9,"ay":-3.74,"yawRate":-0.174,"rpm":19,"trqCmd":0,"trqEst":2,"vdc":361,"idc":0,"thr":0,"pot1":311,"pot2":718,"brkF":110,"brkR":0,"invT":39,"motT":39},{"s":32.78,"vx":13.39,"ax":-9.7,"ay":-3.45,"yawRate":-0.257,"rpm":59,"trqCmd":0,"trqEst":-3,"vdc":362,"idc":0,"thr":0,"pot1":313,"pot2":721,"brkF":110,"brkR":0,"invT":38,"motT":38},{"s":33.61,"vx":12.64,"ax":-8.92,"ay":-2.21,"yawRate":-0.354,"rpm":17,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":0,"pot1":308,"pot2":714,"brkF":110,"brkR":0,"invT":38,"motT":38},{"s":34.41,"vx":12.03,"ax":-8.56,"ay":-0.62,"yawRate":-0.325,"rpm":26,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":0,"pot1":305,"pot2":711,"brkF":110,"brkR":0,"invT":38,"motT":38},{"s":35.18,"vx":11.29,"ax":-7.19,"ay":-2.56,"yawRate":-0.304,"rpm":30,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":311,"pot2":718,"brkF":110,"brkR":0,"invT":37,"motT":39},{"s":35.93,"vx":10.67,"ax":-6.61,"ay":-2.4,"yawRate":-0.334,"rpm":261,"trqCmd":0,"trqEst":-3,"vdc":362,"idc":0,"thr":0,"pot1":315,"pot2":725,"brkF":110,"brkR":0,"invT":37,"motT":39},{"s":36.66,"vx":10.01,"ax":-6.26,"ay":-3.94,"yawRate":-0.316,"rpm":527,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":0,"pot1":320,"pot2":720,"brkF":110,"brkR":0,"invT":37,"motT":39},{"s":37.4,"vx":9.22,"ax":-5.98,"ay":-5.05,"yawRate":-0.321,"rpm":769,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":312,"pot2":719,"brkF":110,"brkR":0,"invT":37,"motT":38},{"s":38.14,"vx":8.45,"ax":-6.11,"ay":-5.77,"yawRate":-0.317,"rpm":881,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":0,"pot1":308,"pot2":710,"brkF":110,"brkR":0,"invT":36,"motT":39},{"s":38.9,"vx":7.54,"ax":-5.64,"ay":-4.68,"yawRate":0.024,"rpm":780,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":0,"pot1":306,"pot2":711,"brkF":110,"brkR":0,"invT":36,"motT":39},{"s":39.7,"vx":6.72,"ax":-7.18,"ay":-1.18,"yawRate":0.494,"rpm":794,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":318,"pot2":722,"brkF":110,"brkR":0,"invT":36,"motT":38},{"s":40.53,"vx":5.9,"ax":-6.07,"ay":2.04,"yawRate":0.433,"rpm":816,"trqCmd":0,"trqEst":-2,"vdc":365,"idc":0,"thr":0,"pot1":314,"pot2":723,"brkF":110,"brkR":0,"invT":36,"motT":39},{"s":41.39,"vx":4.56,"ax":-5.58,"ay":1.4,"yawRate":0.391,"rpm":631,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":310,"pot2":720,"brkF":110,"brkR":0,"invT":35,"motT":40},{"s":42.3,"vx":3.67,"ax":-2.7,"ay":1.34,"yawRate":0.453,"rpm":542,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":308,"pot2":714,"brkF":110,"brkR":0,"invT":35,"motT":39},{"s":43.23,"vx":3.35,"ax":-0.89,"ay":2.12,"yawRate":0.575,"rpm":486,"trqCmd":0,"trqEst":1,"vdc":365,"idc":0,"thr":0,"pot1":304,"pot2":705,"brkF":28,"brkR":0,"invT":35,"motT":39},{"s":44.2,"vx":3.14,"ax":-0.72,"ay":1.62,"yawRate":0.599,"rpm":444,"trqCmd":0,"trqEst":-2,"vdc":364,"idc":0,"thr":5,"pot1":370,"pot2":836,"brkF":8,"brkR":0,"invT":34,"motT":40},{"s":45.19,"vx":2.97,"ax":-0.72,"ay":1.47,"yawRate":0.62,"rpm":420,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":9,"pot1":432,"pot2":962,"brkF":5,"brkR":0,"invT":34,"motT":40},{"s":46.19,"vx":2.91,"ax":-0.18,"ay":1.36,"yawRate":0.595,"rpm":429,"trqCmd":17,"trqEst":20,"vdc":364,"idc":2,"thr":15,"pot1":492,"pot2":1080,"brkF":4,"brkR":0,"invT":34,"motT":39},{"s":47.2,"vx":3,"ax":0.18,"ay":1.61,"yawRate":0.632,"rpm":428,"trqCmd":20,"trqEst":19,"vdc":364,"idc":2,"thr":15,"pot1":498,"pot2":1086,"brkF":4,"brkR":0,"invT":34,"motT":39},{"s":48.22,"vx":3.07,"ax":0.39,"ay":1.19,"yawRate":0.667,"rpm":435,"trqCmd":24,"trqEst":24,"vdc":363,"idc":3,"thr":16,"pot1":508,"pot2":1109,"brkF":3,"brkR":0,"invT":34,"motT":39},{"s":49.23,"vx":3.14,"ax":0.2,"ay":1.16,"yawRate":0.711,"rpm":443,"trqCmd":25,"trqEst":23,"vdc":365,"idc":3,"thr":16,"pot1":503,"pot2":1103,"brkF":3,"brkR":0,"invT":34,"motT":39},{"s":50.25,"vx":3.2,"ax":0.18,"ay":1.11,"yawRate":0.701,"rpm":458,"trqCmd":20,"trqEst":20,"vdc":365,"idc":2,"thr":16,"pot1":499,"pot2":1097,"brkF":3,"brkR":0,"invT":34,"motT":40},{"s":51.27,"vx":3.29,"ax":0.07,"ay":1.19,"yawRate":0.737,"rpm":466,"trqCmd":17,"trqEst":22,"vdc":365,"idc":2,"thr":15,"pot1":488,"pot2":1069,"brkF":3,"brkR":0,"invT":34,"motT":39},{"s":52.28,"vx":3.26,"ax":-0.58,"ay":0.98,"yawRate":0.747,"rpm":459,"trqCmd":14,"trqEst":14,"vdc":366,"idc":1,"thr":13,"pot1":471,"pot2":1049,"brkF":4,"brkR":0,"invT":34,"motT":40},{"s":53.29,"vx":3.15,"ax":-0.8,"ay":0.68,"yawRate":0.717,"rpm":446,"trqCmd":15,"trqEst":17,"vdc":366,"idc":2,"thr":13,"pot1":482,"pot2":1062,"brkF":4,"brkR":0,"invT":34,"motT":39},{"s":54.3,"vx":3.1,"ax":-0.72,"ay":0.85,"yawRate":0.704,"rpm":436,"trqCmd":15,"trqEst":18,"vdc":366,"idc":1,"thr":14,"pot1":480,"pot2":1055,"brkF":3,"brkR":0,"invT":34,"motT":42},{"s":55.3,"vx":3.08,"ax":-0.58,"ay":0.6,"yawRate":0.713,"rpm":432,"trqCmd":25,"trqEst":25,"vdc":366,"idc":3,"thr":16,"pot1":512,"pot2":1116,"brkF":4,"brkR":0,"invT":34,"motT":41},{"s":56.3,"vx":3.15,"ax":-0.48,"ay":0.82,"yawRate":0.719,"rpm":448,"trqCmd":27,"trqEst":22,"vdc":365,"idc":3,"thr":17,"pot1":517,"pot2":1125,"brkF":3,"brkR":0,"invT":34,"motT":40},{"s":57.31,"vx":3.2,"ax":-0.54,"ay":0.93,"yawRate":0.727,"rpm":451,"trqCmd":26,"trqEst":25,"vdc":364,"idc":3,"thr":17,"pot1":517,"pot2":1119,"brkF":3,"brkR":0,"invT":34,"motT":39},{"s":58.31,"vx":3.29,"ax":-0.14,"ay":0.35,"yawRate":0.661,"rpm":470,"trqCmd":26,"trqEst":26,"vdc":366,"idc":3,"thr":17,"pot1":508,"pot2":1113,"brkF":3,"brkR":0,"invT":34,"motT":41},{"s":59.3,"vx":3.3,"ax":-1.07,"ay":0.03,"yawRate":0.447,"rpm":486,"trqCmd":0,"trqEst":1,"vdc":366,"idc":0,"thr":9,"pot1":422,"pot2":942,"brkF":3,"brkR":0,"invT":34,"motT":41},{"s":60.3,"vx":3.17,"ax":-1.02,"ay":-0.66,"yawRate":0.317,"rpm":446,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":10,"pot1":429,"pot2":964,"brkF":3,"brkR":0,"invT":34,"motT":40},{"s":61.29,"vx":3.03,"ax":-0.68,"ay":-0.49,"yawRate":0.147,"rpm":461,"trqCmd":3,"trqEst":3,"vdc":368,"idc":0,"thr":11,"pot1":439,"pot2":983,"brkF":3,"brkR":0,"invT":34,"motT":42},{"s":62.28,"vx":2.98,"ax":-0.91,"ay":-0.25,"yawRate":0.125,"rpm":444,"trqCmd":6,"trqEst":6,"vdc":365,"idc":0,"thr":11,"pot1":451,"pot2":994,"brkF":3,"brkR":0,"invT":34,"motT":40},{"s":63.27,"vx":2.93,"ax":-0.72,"ay":-0.57,"yawRate":0.076,"rpm":459,"trqCmd":14,"trqEst":12,"vdc":368,"idc":2,"thr":13,"pot1":472,"pot2":1050,"brkF":3,"brkR":0,"invT":34,"motT":41},{"s":64.26,"vx":3.06,"ax":-0.28,"ay":-0.66,"yawRate":0.072,"rpm":460,"trqCmd":15,"trqEst":18,"vdc":368,"idc":2,"thr":14,"pot1":478,"pot2":1053,"brkF":3,"brkR":0,"invT":34,"motT":39},{"s":65.25,"vx":3.06,"ax":-0.97,"ay":-0.93,"yawRate":0.02,"rpm":469,"trqCmd":0,"trqEst":-2,"vdc":368,"idc":0,"thr":8,"pot1":404,"pot2":906,"brkF":3,"brkR":0,"invT":34,"motT":40},{"s":66.24,"vx":2.92,"ax":-1.02,"ay":-0.83,"yawRate":0.012,"rpm":451,"trqCmd":5,"trqEst":4,"vdc":366,"idc":1,"thr":11,"pot1":448,"pot2":988,"brkF":3,"brkR":0,"invT":34,"motT":40},{"s":67.22,"vx":2.86,"ax":-0.87,"ay":-0.71,"yawRate":0.013,"rpm":417,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":10,"pot1":432,"pot2":959,"brkF":3,"brkR":0,"invT":33,"motT":38},{"s":68.2,"vx":2.68,"ax":-0.84,"ay":-0.3,"yawRate":0.025,"rpm":396,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":6,"pot1":384,"pot2":871,"brkF":3,"brkR":0,"invT":33,"motT":40},{"s":69.18,"vx":2.54,"ax":-0.72,"ay":-0.32,"yawRate":0.049,"rpm":382,"trqCmd":0,"trqEst":2,"vdc":367,"idc":0,"thr":0,"pot1":313,"pot2":732,"brkF":3,"brkR":0,"invT":33,"motT":41},{"s":70.15,"vx":2.37,"ax":-0.69,"ay":-0.35,"yawRate":0.045,"rpm":353,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":1,"pot1":320,"pot2":742,"brkF":3,"brkR":0,"invT":33,"motT":39},{"s":71.11,"vx":2.22,"ax":-0.54,"ay":-0.45,"yawRate":0.021,"rpm":328,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":307,"pot2":713,"brkF":3,"brkR":0,"invT":33,"motT":39},{"s":72.07,"vx":2.03,"ax":-0.32,"ay":-0.12,"yawRate":0.018,"rpm":305,"trqCmd":0,"trqEst":1,"vdc":367,"idc":0,"thr":0,"pot1":310,"pot2":719,"brkF":3,"brkR":0,"invT":33,"motT":40},{"s":73.01,"vx":1.82,"ax":-0.31,"ay":-0.2,"yawRate":0.017,"rpm":272,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":320,"pot2":748,"brkF":3,"brkR":0,"invT":33,"motT":39},{"s":73.94,"vx":1.88,"ax":0.06,"ay":-0.15,"yawRate":0.019,"rpm":304,"trqCmd":14,"trqEst":14,"vdc":366,"idc":1,"thr":14,"pot1":481,"pot2":1051,"brkF":3,"brkR":0,"invT":33,"motT":40},{"s":74.86,"vx":1.81,"ax":-0.17,"ay":-0.29,"yawRate":-0.02,"rpm":255,"trqCmd":3,"trqEst":3,"vdc":368,"idc":0,"thr":11,"pot1":437,"pot2":976,"brkF":3,"brkR":0,"invT":33,"motT":41},{"s":75.76,"vx":2,"ax":1.59,"ay":-0.26,"yawRate":-0.067,"rpm":327,"trqCmd":53,"trqEst":56,"vdc":366,"idc":5,"thr":24,"pot1":615,"pot2":1315,"brkF":3,"brkR":0,"invT":33,"motT":39},{"s":76.64,"vx":2.53,"ax":-0.3,"ay":-0.45,"yawRate":-0.123,"rpm":390,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":9,"pot1":424,"pot2":944,"brkF":3,"brkR":0,"invT":33,"motT":40},{"s":77.51,"vx":2.36,"ax":-0.14,"ay":-0.43,"yawRate":-0.109,"rpm":356,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":9,"pot1":426,"pot2":952,"brkF":3,"brkR":0,"invT":33,"motT":39},{"s":78.36,"vx":2.47,"ax":1.39,"ay":-0.15,"yawRate":-0.117,"rpm":344,"trqCmd":38,"trqEst":38,"vdc":366,"idc":4,"thr":21,"pot1":558,"pot2":1208,"brkF":3,"brkR":0,"invT":33,"motT":41},{"s":79.2,"vx":2.96,"ax":1.49,"ay":-0.58,"yawRate":-0.143,"rpm":426,"trqCmd":29,"trqEst":27,"vdc":367,"idc":3,"thr":18,"pot1":510,"pot2":1115,"brkF":3,"brkR":0,"invT":33,"motT":39},{"s":80.03,"vx":3.14,"ax":1.6,"ay":-0.36,"yawRate":-0.141,"rpm":482,"trqCmd":47,"trqEst":46,"vdc":364,"idc":6,"thr":20,"pot1":581,"pot2":1256,"brkF":3,"brkR":0,"invT":34,"motT":41},{"s":80.86,"vx":3.85,"ax":3.62,"ay":-0.12,"yawRate":-0.139,"rpm":593,"trqCmd":103,"trqEst":107,"vdc":363,"idc":21,"thr":37,"pot1":787,"pot2":1656,"brkF":3,"brkR":0,"invT":34,"motT":38},{"s":81.68,"vx":4.75,"ax":5.22,"ay":0.07,"yawRate":-0.07,"rpm":743,"trqCmd":148,"trqEst":154,"vdc":356,"idc":38,"thr":50,"pot1":923,"pot2":1918,"brkF":3,"brkR":0,"invT":34,"motT":40},{"s":82.51,"vx":5.86,"ax":5.36,"ay":-0.31,"yawRate":-0.081,"rpm":918,"trqCmd":147,"trqEst":162,"vdc":353,"idc":46,"thr":50,"pot1":917,"pot2":1909,"brkF":3,"brkR":0,"invT":35,"motT":39},{"s":83.34,"vx":6.86,"ax":5.38,"ay":-0.12,"yawRate":-0.089,"rpm":1079,"trqCmd":146,"trqEst":152,"vdc":353,"idc":53,"thr":50,"pot1":923,"pot2":1916,"brkF":3,"brkR":0,"invT":35,"motT":39},{"s":84.19,"vx":7.43,"ax":4.6,"ay":-0.78,"yawRate":-0.105,"rpm":1148,"trqCmd":117,"trqEst":124,"vdc":355,"idc":44,"thr":42,"pot1":800,"pot2":1679,"brkF":4,"brkR":0,"invT":35,"motT":40},{"s":85.04,"vx":7.9,"ax":1.98,"ay":-0.67,"yawRate":-0.104,"rpm":1186,"trqCmd":68,"trqEst":72,"vdc":359,"idc":24,"thr":28,"pot1":657,"pot2":1402,"brkF":3,"brkR":0,"invT":36,"motT":39},{"s":85.91,"vx":8.06,"ax":1.21,"ay":-0.74,"yawRate":-0.106,"rpm":1200,"trqCmd":30,"trqEst":31,"vdc":363,"idc":10,"thr":19,"pot1":523,"pot2":1144,"brkF":3,"brkR":0,"invT":36,"motT":40},{"s":86.79,"vx":8.07,"ax":0.57,"ay":-0.75,"yawRate":-0.105,"rpm":1229,"trqCmd":22,"trqEst":24,"vdc":365,"idc":8,"thr":16,"pot1":505,"pot2":1109,"brkF":3,"brkR":0,"invT":36,"motT":40},{"s":87.69,"vx":8.21,"ax":0.51,"ay":-0.92,"yawRate":-0.102,"rpm":1229,"trqCmd":24,"trqEst":26,"vdc":364,"idc":9,"thr":16,"pot1":504,"pot2":1107,"brkF":3,"brkR":0,"invT":36,"motT":39},{"s":88.6,"vx":8.21,"ax":-0.45,"ay":-0.92,"yawRate":-0.114,"rpm":1230,"trqCmd":13,"trqEst":12,"vdc":366,"idc":5,"thr":13,"pot1":475,"pot2":1042,"brkF":3,"brkR":0,"invT":35,"motT":40},{"s":89.52,"vx":8.19,"ax":-0.09,"ay":-1.15,"yawRate":-0.108,"rpm":1229,"trqCmd":8,"trqEst":9,"vdc":367,"idc":2,"thr":13,"pot1":452,"pot2":1004,"brkF":3,"brkR":0,"invT":35,"motT":39},{"s":90.44,"vx":8.2,"ax":-0.2,"ay":-1.12,"yawRate":-0.094,"rpm":1227,"trqCmd":10,"trqEst":8,"vdc":365,"idc":3,"thr":12,"pot1":459,"pot2":1014,"brkF":3,"brkR":0,"invT":35,"motT":39},{"s":91.36,"vx":8.13,"ax":-0.25,"ay":-0.36,"yawRate":-0.081,"rpm":1214,"trqCmd":6,"trqEst":6,"vdc":366,"idc":2,"thr":11,"pot1":454,"pot2":1001,"brkF":3,"brkR":0,"invT":35,"motT":39},{"s":92.27,"vx":8.12,"ax":-0.26,"ay":-0.67,"yawRate":-0.048,"rpm":1219,"trqCmd":10,"trqEst":6,"vdc":366,"idc":3,"thr":12,"pot1":466,"pot2":1020,"brkF":3,"brkR":0,"invT":35,"motT":39},{"s":93.17,"vx":8.05,"ax":-0.29,"ay":-0.22,"yawRate":-0.036,"rpm":1220,"trqCmd":10,"trqEst":7,"vdc":365,"idc":3,"thr":13,"pot1":465,"pot2":1021,"brkF":3,"brkR":0,"invT":35,"motT":40},{"s":94.06,"vx":8.08,"ax":-0.18,"ay":-0.62,"yawRate":-0.026,"rpm":1220,"trqCmd":11,"trqEst":11,"vdc":366,"idc":3,"thr":12,"pot1":461,"pot2":1016,"brkF":3,"brkR":0,"invT":35,"motT":41},{"s":94.93,"vx":8.02,"ax":-0.21,"ay":-0.26,"yawRate":-0.039,"rpm":1203,"trqCmd":9,"trqEst":6,"vdc":367,"idc":2,"thr":12,"pot1":452,"pot2":1007,"brkF":3,"brkR":0,"invT":34,"motT":39},{"s":95.79,"vx":8,"ax":-0.4,"ay":-0.59,"yawRate":-0.055,"rpm":1196,"trqCmd":8,"trqEst":5,"vdc":366,"idc":2,"thr":12,"pot1":453,"pot2":1002,"brkF":3,"brkR":0,"invT":34,"motT":39},{"s":96.63,"vx":7.93,"ax":-0.31,"ay":-1.22,"yawRate":-0.116,"rpm":1189,"trqCmd":8,"trqEst":7,"vdc":367,"idc":2,"thr":12,"pot1":457,"pot2":1008,"brkF":3,"brkR":0,"invT":34,"motT":39},{"s":97.47,"vx":7.9,"ax":-0.3,"ay":-0.89,"yawRate":-0.111,"rpm":1177,"trqCmd":6,"trqEst":7,"vdc":369,"idc":2,"thr":12,"pot1":450,"pot2":999,"brkF":3,"brkR":0,"invT":34,"motT":40},{"s":98.29,"vx":7.87,"ax":-0.3,"ay":-0.58,"yawRate":-0.104,"rpm":1181,"trqCmd":8,"trqEst":8,"vdc":367,"idc":3,"thr":12,"pot1":459,"pot2":1011,"brkF":3,"brkR":0,"invT":34,"motT":39},{"s":99.11,"vx":7.79,"ax":-0.43,"ay":-0.57,"yawRate":-0.064,"rpm":1164,"trqCmd":8,"trqEst":4,"vdc":367,"idc":2,"thr":12,"pot1":453,"pot2":1003,"brkF":3,"brkR":0,"invT":34,"motT":42},{"s":99.94,"vx":7.79,"ax":-0.39,"ay":-0.73,"yawRate":-0.055,"rpm":1166,"trqCmd":5,"trqEst":4,"vdc":366,"idc":1,"thr":11,"pot1":448,"pot2":991,"brkF":3,"brkR":0,"invT":34,"motT":40},{"s":100.78,"vx":7.73,"ax":-0.47,"ay":-0.68,"yawRate":-0.05,"rpm":1158,"trqCmd":8,"trqEst":7,"vdc":366,"idc":2,"thr":12,"pot1":455,"pot2":1004,"brkF":3,"brkR":0,"invT":34,"motT":39},{"s":101.62,"vx":7.69,"ax":-0.72,"ay":-0.27,"yawRate":-0.045,"rpm":1140,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":8,"pot1":395,"pot2":892,"brkF":4,"brkR":0,"invT":34,"motT":38},{"s":102.47,"vx":7.58,"ax":-1.2,"ay":-0.34,"yawRate":-0.046,"rpm":1140,"trqCmd":0,"trqEst":1,"vdc":368,"idc":0,"thr":3,"pot1":337,"pot2":773,"brkF":15,"brkR":0,"invT":34,"motT":40},{"s":103.34,"vx":7.31,"ax":-2.33,"ay":-0.51,"yawRate":-0.053,"rpm":1083,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":310,"pot2":717,"brkF":44,"brkR":0,"invT":34,"motT":39},{"s":104.2,"vx":6.96,"ax":-3.25,"ay":-0.88,"yawRate":-0.065,"rpm":1037,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":311,"pot2":722,"brkF":88,"brkR":0,"invT":33,"motT":38},{"s":105.07,"vx":6.53,"ax":-2.95,"ay":-0.88,"yawRate":-0.066,"rpm":962,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":309,"pot2":716,"brkF":110,"brkR":0,"invT":33,"motT":41},{"s":105.94,"vx":6.06,"ax":-1.89,"ay":-0.34,"yawRate":-0.068,"rpm":903,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":308,"pot2":722,"brkF":81,"brkR":0,"invT":33,"motT":39},{"s":106.79,"vx":5.94,"ax":-1.23,"ay":-0.43,"yawRate":-0.063,"rpm":876,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":311,"pot2":715,"brkF":52,"brkR":0,"invT":33,"motT":38},{"s":107.63,"vx":5.75,"ax":-0.75,"ay":-0.26,"yawRate":-0.064,"rpm":856,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":310,"pot2":718,"brkF":23,"brkR":0,"invT":33,"motT":41},{"s":108.45,"vx":5.55,"ax":-0.72,"ay":-0.53,"yawRate":-0.06,"rpm":846,"trqCmd":0,"trqEst":1,"vdc":368,"idc":0,"thr":0,"pot1":313,"pot2":719,"brkF":17,"brkR":0,"invT":33,"motT":39},{"s":109.25,"vx":5.46,"ax":-0.51,"ay":-0.39,"yawRate":-0.061,"rpm":809,"trqCmd":0,"trqEst":1,"vdc":368,"idc":0,"thr":0,"pot1":316,"pot2":725,"brkF":15,"brkR":0,"invT":33,"motT":40},{"s":110.01,"vx":5.36,"ax":-0.47,"ay":-0.7,"yawRate":-0.085,"rpm":795,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":308,"pot2":712,"brkF":12,"brkR":0,"invT":33,"motT":40},{"s":110.75,"vx":5.22,"ax":-0.45,"ay":-0.94,"yawRate":-0.134,"rpm":775,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":1,"pot1":334,"pot2":768,"brkF":9,"brkR":0,"invT":33,"motT":39},{"s":111.46,"vx":5.07,"ax":-0.54,"ay":-1.52,"yawRate":-0.248,"rpm":760,"trqCmd":0,"trqEst":2,"vdc":368,"idc":0,"thr":3,"pot1":344,"pot2":789,"brkF":7,"brkR":0,"invT":33,"motT":39},{"s":112.15,"vx":4.93,"ax":-0.69,"ay":-1.74,"yawRate":-0.334,"rpm":735,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":5,"pot1":365,"pot2":833,"brkF":5,"brkR":0,"invT":33,"motT":39},{"s":112.84,"vx":4.85,"ax":-0.59,"ay":-2.31,"yawRate":-0.45,"rpm":710,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":6,"pot1":389,"pot2":875,"brkF":5,"brkR":0,"invT":33,"motT":39},{"s":113.53,"vx":4.73,"ax":-0.9,"ay":-2.55,"yawRate":-0.593,"rpm":694,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":9,"pot1":423,"pot2":943,"brkF":4,"brkR":0,"invT":33,"motT":40},{"s":114.23,"vx":4.68,"ax":-0.53,"ay":-2.75,"yawRate":-0.622,"rpm":672,"trqCmd":10,"trqEst":8,"vdc":367,"idc":2,"thr":12,"pot1":454,"pot2":1010,"brkF":4,"brkR":0,"invT":33,"motT":39},{"s":114.97,"vx":4.63,"ax":-0.68,"ay":-3.19,"yawRate":-0.722,"rpm":667,"trqCmd":15,"trqEst":15,"vdc":367,"idc":3,"thr":14,"pot1":475,"pot2":1048,"brkF":3,"brkR":0,"invT":33,"motT":39},{"s":115.73,"vx":4.64,"ax":-0.73,"ay":-3.76,"yawRate":-0.828,"rpm":678,"trqCmd":17,"trqEst":16,"vdc":366,"idc":3,"thr":14,"pot1":485,"pot2":1064,"brkF":3,"brkR":0,"invT":33,"motT":39},{"s":116.53,"vx":4.6,"ax":-1.16,"ay":-3.84,"yawRate":-0.947,"rpm":655,"trqCmd":17,"trqEst":18,"vdc":366,"idc":3,"thr":14,"pot1":487,"pot2":1073,"brkF":3,"brkR":0,"invT":33,"motT":40},{"s":117.36,"vx":4.57,"ax":-1.41,"ay":-4.72,"yawRate":-1.067,"rpm":652,"trqCmd":22,"trqEst":20,"vdc":367,"idc":4,"thr":16,"pot1":506,"pot2":1108,"brkF":3,"brkR":0,"invT":33,"motT":39},{"s":118.23,"vx":4.53,"ax":-1.45,"ay":-4.65,"yawRate":-1.119,"rpm":654,"trqCmd":25,"trqEst":27,"vdc":366,"idc":4,"thr":16,"pot1":512,"pot2":1115,"brkF":3,"brkR":0,"invT":33,"motT":40},{"s":119.12,"vx":4.46,"ax":-1.5,"ay":-4.63,"yawRate":-1.148,"rpm":631,"trqCmd":21,"trqEst":18,"vdc":366,"idc":4,"thr":16,"pot1":505,"pot2":1100,"brkF":3,"brkR":0,"invT":33,"motT":40},{"s":120.04,"vx":4.42,"ax":-2.37,"ay":-4.27,"yawRate":-1.134,"rpm":596,"trqCmd":5,"trqEst":5,"vdc":368,"idc":0,"thr":13,"pot1":446,"pot2":985,"brkF":4,"brkR":0,"invT":33,"motT":40},{"s":120.97,"vx":4.07,"ax":-2.71,"ay":-3.67,"yawRate":-1.065,"rpm":573,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":5,"pot1":366,"pot2":827,"brkF":16,"brkR":0,"invT":33,"motT":40},{"s":121.91,"vx":3.67,"ax":-2.71,"ay":-3.54,"yawRate":-0.953,"rpm":506,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":310,"pot2":718,"brkF":33,"brkR":0,"invT":33,"motT":39},{"s":122.86,"vx":3.2,"ax":-2.49,"ay":-2.89,"yawRate":-0.84,"rpm":445,"trqCmd":0,"trqEst":2,"vdc":368,"idc":0,"thr":0,"pot1":304,"pot2":716,"brkF":31,"brkR":0,"invT":33,"motT":40},{"s":123.82,"vx":2.68,"ax":-2.89,"ay":-1.88,"yawRate":-0.695,"rpm":387,"trqCmd":0,"trqEst":3,"vdc":369,"idc":0,"thr":0,"pot1":312,"pot2":721,"brkF":60,"brkR":0,"invT":33,"motT":40},{"s":124.78,"vx":1.63,"ax":-1.24,"ay":-0.19,"yawRate":-0.161,"rpm":239,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":312,"pot2":716,"brkF":107,"brkR":0,"invT":33,"motT":39},{"s":125.74,"vx":1.15,"ax":8.88,"ay":0.78,"yawRate":-0.051,"rpm":1670,"trqCmd":310,"trqEst":310,"vdc":308,"idc":226,"thr":100,"pot1":1481,"pot2":2998,"brkF":15,"brkR":0,"invT":33,"motT":37},{"s":126.71,"vx":4.39,"ax":9.61,"ay":0.27,"yawRate":-0.029,"rpm":2713,"trqCmd":224,"trqEst":228,"vdc":306,"idc":232,"thr":100,"pot1":1490,"pot2":3014,"brkF":4,"brkR":0,"invT":34,"motT":38},{"s":127.67,"vx":6.44,"ax":10.25,"ay":0.78,"yawRate":-0.064,"rpm":2635,"trqCmd":231,"trqEst":252,"vdc":304,"idc":239,"thr":100,"pot1":1481,"pot2":3003,"brkF":4,"brkR":0,"invT":35,"motT":38},{"s":128.64,"vx":7.84,"ax":10.02,"ay":0.49,"yawRate":-0.15,"rpm":2605,"trqCmd":234,"trqEst":229,"vdc":306,"idc":237,"thr":100,"pot1":1484,"pot2":3014,"brkF":4,"brkR":0,"invT":36,"motT":38},{"s":129.6,"vx":8.85,"ax":10.42,"ay":-0.59,"yawRate":-0.195,"rpm":2531,"trqCmd":241,"trqEst":233,"vdc":303,"idc":239,"thr":100,"pot1":1479,"pot2":3002,"brkF":4,"brkR":0,"invT":36,"motT":39},{"s":130.56,"vx":10.28,"ax":10.32,"ay":-0.47,"yawRate":-0.174,"rpm":2588,"trqCmd":236,"trqEst":227,"vdc":300,"idc":239,"thr":100,"pot1":1480,"pot2":3001,"brkF":4,"brkR":0,"invT":37,"motT":38},{"s":131.53,"vx":10.88,"ax":10.31,"ay":-0.51,"yawRate":-0.084,"rpm":2589,"trqCmd":233,"trqEst":223,"vdc":301,"idc":234,"thr":100,"pot1":1473,"pot2":3006,"brkF":4,"brkR":0,"invT":37,"motT":38},{"s":132.49,"vx":12.07,"ax":11,"ay":0.11,"yawRate":-0.006,"rpm":2431,"trqCmd":249,"trqEst":270,"vdc":306,"idc":232,"thr":100,"pot1":1485,"pot2":3020,"brkF":4,"brkR":0,"invT":37,"motT":39},{"s":133.46,"vx":12.83,"ax":10.42,"ay":-0.32,"yawRate":0.009,"rpm":2406,"trqCmd":250,"trqEst":281,"vdc":301,"idc":234,"thr":100,"pot1":1477,"pot2":2996,"brkF":4,"brkR":0,"invT":38,"motT":39},{"s":134.43,"vx":13.57,"ax":9.71,"ay":-0.16,"yawRate":0.034,"rpm":2468,"trqCmd":246,"trqEst":227,"vdc":303,"idc":235,"thr":100,"pot1":1480,"pot2":2998,"brkF":4,"brkR":0,"invT":38,"motT":38},{"s":135.4,"vx":14.3,"ax":9.46,"ay":1.1,"yawRate":0.101,"rpm":2526,"trqCmd":242,"trqEst":255,"vdc":299,"idc":241,"thr":100,"pot1":1485,"pot2":3008,"brkF":4,"brkR":0,"invT":38,"motT":38}],"21_09_Logs/21_09_2026-00.47.36.csv":[{"s":0,"vx":12.44,"ax":2.64,"ay":-1.69,"yawRate":-0.263,"rpm":1891,"trqCmd":76,"trqEst":73,"vdc":352,"idc":45,"thr":36,"pot1":736,"pot2":1565,"brkF":3,"brkR":0,"invT":32,"motT":33},{"s":0.97,"vx":13.54,"ax":2.25,"ay":-5.49,"yawRate":-0.485,"rpm":2076,"trqCmd":79,"trqEst":87,"vdc":347,"idc":53,"thr":36,"pot1":745,"pot2":1573,"brkF":3,"brkR":0,"invT":32,"motT":32},{"s":1.94,"vx":13.39,"ax":-3.98,"ay":-4.09,"yawRate":-0.483,"rpm":2000,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":309,"pot2":718,"brkF":81,"brkR":0,"invT":32,"motT":33},{"s":2.92,"vx":10.27,"ax":-5.71,"ay":-3.22,"yawRate":-0.512,"rpm":1518,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":317,"pot2":722,"brkF":110,"brkR":0,"invT":31,"motT":33},{"s":3.89,"vx":8.49,"ax":-2.67,"ay":-6.33,"yawRate":-0.855,"rpm":1248,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":316,"pot2":726,"brkF":59,"brkR":0,"invT":30,"motT":35},{"s":4.86,"vx":6.4,"ax":-3.44,"ay":-4.12,"yawRate":-0.78,"rpm":937,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":308,"pot2":725,"brkF":80,"brkR":0,"invT":29,"motT":32},{"s":5.84,"vx":4.25,"ax":0.46,"ay":-1.15,"yawRate":-0.259,"rpm":576,"trqCmd":50,"trqEst":53,"vdc":362,"idc":9,"thr":27,"pot1":623,"pot2":1337,"brkF":3,"brkR":0,"invT":29,"motT":33},{"s":6.81,"vx":6.02,"ax":-0.38,"ay":-6.22,"yawRate":-1.177,"rpm":893,"trqCmd":54,"trqEst":54,"vdc":361,"idc":14,"thr":28,"pot1":645,"pot2":1374,"brkF":3,"brkR":0,"invT":30,"motT":33},{"s":7.79,"vx":6.71,"ax":1.32,"ay":-6.56,"yawRate":-1.207,"rpm":1075,"trqCmd":73,"trqEst":82,"vdc":360,"idc":25,"thr":34,"pot1":728,"pot2":1532,"brkF":3,"brkR":0,"invT":30,"motT":33},{"s":8.76,"vx":9.05,"ax":3.17,"ay":0.31,"yawRate":-0.053,"rpm":1390,"trqCmd":80,"trqEst":86,"vdc":355,"idc":36,"thr":38,"pot1":752,"pot2":1597,"brkF":3,"brkR":0,"invT":31,"motT":35},{"s":9.74,"vx":10.34,"ax":1.58,"ay":4.61,"yawRate":0.385,"rpm":1554,"trqCmd":38,"trqEst":36,"vdc":359,"idc":19,"thr":23,"pot1":591,"pot2":1273,"brkF":3,"brkR":0,"invT":32,"motT":34},{"s":10.71,"vx":10.56,"ax":-0.01,"ay":11.58,"yawRate":1.158,"rpm":1685,"trqCmd":34,"trqEst":41,"vdc":358,"idc":19,"thr":21,"pot1":568,"pot2":1238,"brkF":3,"brkR":0,"invT":32,"motT":33},{"s":11.69,"vx":10.91,"ax":2.95,"ay":10.45,"yawRate":1.295,"rpm":1865,"trqCmd":104,"trqEst":106,"vdc":345,"idc":60,"thr":43,"pot1":837,"pot2":1758,"brkF":3,"brkR":0,"invT":32,"motT":33},{"s":12.66,"vx":12.95,"ax":3.71,"ay":2.95,"yawRate":0.292,"rpm":1992,"trqCmd":108,"trqEst":114,"vdc":343,"idc":71,"thr":47,"pot1":860,"pot2":1798,"brkF":3,"brkR":0,"invT":32,"motT":31},{"s":13.64,"vx":14.28,"ax":-0.88,"ay":1.43,"yawRate":0.108,"rpm":2142,"trqCmd":34,"trqEst":36,"vdc":356,"idc":23,"thr":22,"pot1":573,"pot2":1225,"brkF":50,"brkR":0,"invT":33,"motT":33},{"s":14.61,"vx":10.38,"ax":-8.25,"ay":2.05,"yawRate":0.211,"rpm":1478,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":316,"pot2":729,"brkF":110,"brkR":0,"invT":32,"motT":33},{"s":15.59,"vx":7.83,"ax":-1.08,"ay":8.94,"yawRate":1.092,"rpm":1165,"trqCmd":16,"trqEst":15,"vdc":364,"idc":7,"thr":15,"pot1":498,"pot2":1088,"brkF":4,"brkR":0,"invT":31,"motT":33},{"s":16.57,"vx":7.71,"ax":0.29,"ay":10.27,"yawRate":1.398,"rpm":1314,"trqCmd":72,"trqEst":78,"vdc":358,"idc":30,"thr":34,"pot1":720,"pot2":1520,"brkF":3,"brkR":0,"invT":31,"motT":34},{"s":17.54,"vx":9.33,"ax":3.26,"ay":9.72,"yawRate":0.83,"rpm":1584,"trqCmd":104,"trqEst":109,"vdc":348,"idc":53,"thr":45,"pot1":843,"pot2":1765,"brkF":3,"brkR":0,"invT":32,"motT":33},{"s":18.52,"vx":11.22,"ax":3.02,"ay":9.14,"yawRate":1.018,"rpm":1846,"trqCmd":89,"trqEst":95,"vdc":347,"idc":53,"thr":39,"pot1":786,"pot2":1655,"brkF":3,"brkR":0,"invT":33,"motT":33},{"s":19.5,"vx":12.19,"ax":3.99,"ay":7.65,"yawRate":0.655,"rpm":1989,"trqCmd":90,"trqEst":86,"vdc":347,"idc":56,"thr":39,"pot1":803,"pot2":1675,"brkF":3,"brkR":0,"invT":33,"motT":33},{"s":20.48,"vx":13.63,"ax":2.33,"ay":-5.47,"yawRate":-0.299,"rpm":2063,"trqCmd":80,"trqEst":82,"vdc":350,"idc":52,"thr":37,"pot1":754,"pot2":1593,"brkF":3,"brkR":0,"invT":33,"motT":35},{"s":21.45,"vx":14.65,"ax":3.09,"ay":-5.17,"yawRate":-0.434,"rpm":2239,"trqCmd":80,"trqEst":85,"vdc":347,"idc":57,"thr":38,"pot1":756,"pot2":1594,"brkF":3,"brkR":0,"invT":34,"motT":33},{"s":22.43,"vx":13.85,"ax":-5.66,"ay":-3.7,"yawRate":-0.347,"rpm":2040,"trqCmd":0,"trqEst":-2,"vdc":366,"idc":0,"thr":0,"pot1":317,"pot2":724,"brkF":110,"brkR":0,"invT":33,"motT":31},{"s":23.4,"vx":10.45,"ax":-3.52,"ay":-6.97,"yawRate":-0.764,"rpm":1539,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":1,"pot1":331,"pot2":762,"brkF":109,"brkR":0,"invT":32,"motT":33},{"s":24.38,"vx":9.17,"ax":-0.42,"ay":-9.46,"yawRate":-1.295,"rpm":1491,"trqCmd":48,"trqEst":48,"vdc":360,"idc":22,"thr":25,"pot1":623,"pot2":1332,"brkF":12,"brkR":0,"invT":31,"motT":34},{"s":25.35,"vx":9.92,"ax":-0.25,"ay":-6.26,"yawRate":-0.856,"rpm":1505,"trqCmd":35,"trqEst":35,"vdc":358,"idc":16,"thr":24,"pot1":576,"pot2":1245,"brkF":3,"brkR":0,"invT":31,"motT":33},{"s":26.32,"vx":6.76,"ax":-7.12,"ay":-9.38,"yawRate":-1.423,"rpm":817,"trqCmd":14,"trqEst":13,"vdc":364,"idc":1,"thr":7,"pot1":492,"pot2":1079,"brkF":110,"brkR":0,"invT":31,"motT":34},{"s":27.29,"vx":6.97,"ax":0.87,"ay":-8.63,"yawRate":-1.508,"rpm":1184,"trqCmd":88,"trqEst":95,"vdc":355,"idc":32,"thr":38,"pot1":770,"pot2":1628,"brkF":2,"brkR":0,"invT":31,"motT":34},{"s":28.24,"vx":9.39,"ax":3.74,"ay":-1.52,"yawRate":-0.253,"rpm":1445,"trqCmd":100,"trqEst":106,"vdc":349,"idc":48,"thr":44,"pot1":822,"pot2":1728,"brkF":3,"brkR":0,"invT":32,"motT":34},{"s":29.19,"vx":11,"ax":2.12,"ay":2.41,"yawRate":0.171,"rpm":1652,"trqCmd":54,"trqEst":58,"vdc":356,"idc":29,"thr":29,"pot1":643,"pot2":1383,"brkF":3,"brkR":0,"invT":33,"motT":34},{"s":30.12,"vx":11.29,"ax":-0.15,"ay":10.37,"yawRate":1.083,"rpm":1701,"trqCmd":4,"trqEst":4,"vdc":362,"idc":5,"thr":13,"pot1":422,"pot2":953,"brkF":3,"brkR":0,"invT":33,"motT":33},{"s":31.03,"vx":10.45,"ax":0.58,"ay":10.92,"yawRate":0.973,"rpm":1675,"trqCmd":63,"trqEst":62,"vdc":354,"idc":31,"thr":29,"pot1":690,"pot2":1456,"brkF":3,"brkR":0,"invT":33,"motT":33},{"s":31.92,"vx":11.73,"ax":2,"ay":5.71,"yawRate":0.466,"rpm":1790,"trqCmd":72,"trqEst":75,"vdc":351,"idc":42,"thr":35,"pot1":726,"pot2":1527,"brkF":3,"brkR":0,"invT":33,"motT":33},{"s":32.78,"vx":12.94,"ax":1.97,"ay":1.5,"yawRate":0.109,"rpm":1968,"trqCmd":75,"trqEst":81,"vdc":349,"idc":47,"thr":35,"pot1":745,"pot2":1565,"brkF":3,"brkR":0,"invT":33,"motT":33},{"s":33.61,"vx":13.49,"ax":-2.42,"ay":0.76,"yawRate":-0.046,"rpm":2016,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":11,"pot1":427,"pot2":949,"brkF":5,"brkR":0,"invT":33,"motT":33},{"s":34.41,"vx":10.03,"ax":-6.79,"ay":9.82,"yawRate":0.821,"rpm":1437,"trqCmd":0,"trqEst":-1,"vdc":365,"idc":0,"thr":0,"pot1":319,"pot2":722,"brkF":110,"brkR":0,"invT":33,"motT":35},{"s":35.18,"vx":7.38,"ax":-1.94,"ay":12.69,"yawRate":1.308,"rpm":1148,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":2,"pot1":334,"pot2":768,"brkF":2,"brkR":0,"invT":32,"motT":33},{"s":35.93,"vx":8.56,"ax":4.22,"ay":9.06,"yawRate":1.202,"rpm":1419,"trqCmd":113,"trqEst":118,"vdc":349,"idc":54,"thr":46,"pot1":888,"pot2":1854,"brkF":3,"brkR":0,"invT":32,"motT":36},{"s":36.66,"vx":10.55,"ax":2.71,"ay":7.63,"yawRate":0.642,"rpm":1642,"trqCmd":74,"trqEst":80,"vdc":355,"idc":38,"thr":35,"pot1":733,"pot2":1542,"brkF":3,"brkR":0,"invT":33,"motT":31},{"s":37.4,"vx":11.28,"ax":1.55,"ay":11.41,"yawRate":1.186,"rpm":1881,"trqCmd":72,"trqEst":74,"vdc":352,"idc":43,"thr":33,"pot1":728,"pot2":1539,"brkF":3,"brkR":0,"invT":33,"motT":33},{"s":38.14,"vx":12.87,"ax":3.85,"ay":-5.38,"yawRate":-0.552,"rpm":2023,"trqCmd":123,"trqEst":124,"vdc":338,"idc":85,"thr":50,"pot1":930,"pot2":1925,"brkF":4,"brkR":0,"invT":34,"motT":34},{"s":38.9,"vx":14.5,"ax":2.76,"ay":-4.88,"yawRate":-0.406,"rpm":2243,"trqCmd":107,"trqEst":109,"vdc":339,"idc":77,"thr":44,"pot1":862,"pot2":1806,"brkF":3,"brkR":0,"invT":35,"motT":33},{"s":39.7,"vx":14.46,"ax":-6.13,"ay":-4.16,"yawRate":-0.414,"rpm":2165,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":314,"pot2":729,"brkF":110,"brkR":0,"invT":34,"motT":34},{"s":40.53,"vx":10.8,"ax":-4.51,"ay":-5.24,"yawRate":-0.72,"rpm":1579,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":326,"pot2":745,"brkF":110,"brkR":0,"invT":33,"motT":33},{"s":41.39,"vx":9.88,"ax":-0.01,"ay":-11.07,"yawRate":-1.295,"rpm":1639,"trqCmd":69,"trqEst":74,"vdc":352,"idc":36,"thr":33,"pot1":711,"pot2":1500,"brkF":9,"brkR":0,"invT":32,"motT":37},{"s":42.3,"vx":10.56,"ax":1.02,"ay":-8.26,"yawRate":-0.852,"rpm":1660,"trqCmd":64,"trqEst":61,"vdc":353,"idc":34,"thr":31,"pot1":694,"pot2":1468,"brkF":3,"brkR":0,"invT":32,"motT":34},{"s":43.23,"vx":7.85,"ax":-7.26,"ay":-9.36,"yawRate":-1.567,"rpm":903,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":1,"pot1":356,"pot2":808,"brkF":110,"brkR":0,"invT":32,"motT":35},{"s":44.2,"vx":7.16,"ax":4.8,"ay":-10.7,"yawRate":-1.045,"rpm":1407,"trqCmd":145,"trqEst":151,"vdc":343,"idc":70,"thr":59,"pot1":1011,"pot2":2093,"brkF":4,"brkR":0,"invT":33,"motT":34},{"s":45.19,"vx":10.82,"ax":3.77,"ay":-6.2,"yawRate":-0.665,"rpm":1689,"trqCmd":104,"trqEst":111,"vdc":346,"idc":57,"thr":46,"pot1":839,"pot2":1764,"brkF":4,"brkR":0,"invT":34,"motT":36},{"s":46.19,"vx":11.51,"ax":-0.29,"ay":2.41,"yawRate":0.098,"rpm":1746,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":4,"pot1":361,"pot2":829,"brkF":3,"brkR":0,"invT":34,"motT":33},{"s":47.2,"vx":11.22,"ax":-0.08,"ay":6.73,"yawRate":0.396,"rpm":1663,"trqCmd":3,"trqEst":4,"vdc":362,"idc":1,"thr":11,"pot1":448,"pot2":993,"brkF":3,"brkR":0,"invT":34,"motT":33},{"s":48.22,"vx":10.98,"ax":1.88,"ay":10.54,"yawRate":1.042,"rpm":1789,"trqCmd":83,"trqEst":85,"vdc":350,"idc":45,"thr":32,"pot1":783,"pot2":1652,"brkF":3,"brkR":0,"invT":34,"motT":30},{"s":49.23,"vx":12.68,"ax":5.63,"ay":8.32,"yawRate":0.536,"rpm":2156,"trqCmd":159,"trqEst":165,"vdc":330,"idc":122,"thr":61,"pot1":1087,"pot2":2237,"brkF":3,"brkR":0,"invT":34,"motT":35},{"s":50.25,"vx":15.09,"ax":4.15,"ay":0.19,"yawRate":0.047,"rpm":2302,"trqCmd":129,"trqEst":131,"vdc":330,"idc":102,"thr":53,"pot1":953,"pot2":1982,"brkF":3,"brkR":0,"invT":36,"motT":35},{"s":51.27,"vx":14.65,"ax":-6.7,"ay":2.48,"yawRate":0.059,"rpm":2147,"trqCmd":0,"trqEst":-1,"vdc":362,"idc":0,"thr":0,"pot1":318,"pot2":729,"brkF":110,"brkR":0,"invT":36,"motT":33},{"s":52.28,"vx":10.42,"ax":-6.85,"ay":9.89,"yawRate":0.784,"rpm":1277,"trqCmd":0,"trqEst":-1,"vdc":364,"idc":0,"thr":0,"pot1":319,"pot2":726,"brkF":110,"brkR":0,"invT":35,"motT":33},{"s":53.29,"vx":7.3,"ax":0.29,"ay":12.47,"yawRate":0.688,"rpm":1176,"trqCmd":20,"trqEst":21,"vdc":360,"idc":6,"thr":16,"pot1":512,"pot2":1120,"brkF":3,"brkR":0,"invT":34,"motT":33},{"s":54.3,"vx":8.52,"ax":4.75,"ay":9.16,"yawRate":1.691,"rpm":1520,"trqCmd":144,"trqEst":155,"vdc":342,"idc":70,"thr":59,"pot1":1013,"pot2":2096,"brkF":3,"brkR":0,"invT":34,"motT":33},{"s":55.3,"vx":11.81,"ax":5.73,"ay":7.87,"yawRate":0.838,"rpm":1954,"trqCmd":151,"trqEst":138,"vdc":337,"idc":79,"thr":60,"pot1":1035,"pot2":2142,"brkF":3,"brkR":0,"invT":35,"motT":35},{"s":56.3,"vx":12.87,"ax":1.3,"ay":12.87,"yawRate":1.138,"rpm":2137,"trqCmd":75,"trqEst":76,"vdc":344,"idc":51,"thr":34,"pot1":741,"pot2":1569,"brkF":3,"brkR":0,"invT":36,"motT":34},{"s":57.31,"vx":14.63,"ax":-1.04,"ay":5.03,"yawRate":-0.778,"rpm":2065,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":0,"pot1":310,"pot2":723,"brkF":5,"brkR":0,"invT":37,"motT":32},{"s":58.31,"vx":13.29,"ax":1.28,"ay":-10.88,"yawRate":-0.23,"rpm":2128,"trqCmd":82,"trqEst":82,"vdc":344,"idc":50,"thr":27,"pot1":765,"pot2":1603,"brkF":6,"brkR":0,"invT":36,"motT":33},{"s":59.3,"vx":14.44,"ax":-0.12,"ay":-0.03,"yawRate":-0.055,"rpm":2122,"trqCmd":0,"trqEst":0,"vdc":360,"idc":4,"thr":12,"pot1":353,"pot2":805,"brkF":3,"brkR":0,"invT":36,"motT":34},{"s":60.3,"vx":11.35,"ax":-5.93,"ay":-8.2,"yawRate":-0.974,"rpm":1461,"trqCmd":0,"trqEst":1,"vdc":361,"idc":0,"thr":6,"pot1":392,"pot2":880,"brkF":110,"brkR":0,"invT":35,"motT":35},{"s":61.29,"vx":10.49,"ax":-2.44,"ay":-10.84,"yawRate":-1.087,"rpm":1570,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":10,"pot1":382,"pot2":862,"brkF":3,"brkR":0,"invT":35,"motT":36},{"s":62.28,"vx":10.31,"ax":1.05,"ay":-9.58,"yawRate":-0.946,"rpm":1632,"trqCmd":68,"trqEst":66,"vdc":353,"idc":36,"thr":33,"pot1":696,"pot2":1478,"brkF":3,"brkR":0,"invT":34,"motT":34},{"s":63.27,"vx":8.33,"ax":-7.43,"ay":-8.28,"yawRate":-1.362,"rpm":887,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":307,"pot2":717,"brkF":110,"brkR":0,"invT":34,"motT":34},{"s":64.26,"vx":7.07,"ax":0.75,"ay":-8.29,"yawRate":-1.245,"rpm":1197,"trqCmd":79,"trqEst":86,"vdc":355,"idc":30,"thr":35,"pot1":748,"pot2":1578,"brkF":3,"brkR":0,"invT":34,"motT":34},{"s":65.25,"vx":9.68,"ax":5.06,"ay":-6.46,"yawRate":-0.952,"rpm":1605,"trqCmd":129,"trqEst":137,"vdc":341,"idc":70,"thr":53,"pot1":959,"pot2":1985,"brkF":3,"brkR":0,"invT":36,"motT":36},{"s":66.24,"vx":11.97,"ax":1.63,"ay":2.45,"yawRate":0.184,"rpm":1811,"trqCmd":48,"trqEst":52,"vdc":353,"idc":27,"thr":27,"pot1":625,"pot2":1336,"brkF":3,"brkR":0,"invT":36,"motT":36},{"s":67.22,"vx":11.53,"ax":-1.59,"ay":9.32,"yawRate":0.947,"rpm":1697,"trqCmd":0,"trqEst":0,"vdc":313,"idc":0,"thr":18,"pot1":532,"pot2":1152,"brkF":42,"brkR":0,"invT":36,"motT":36},{"s":68.2,"vx":10.63,"ax":-0.89,"ay":11.01,"yawRate":1.329,"rpm":1588,"trqCmd":0,"trqEst":0,"vdc":164,"idc":0,"thr":50,"pot1":934,"pot2":1942,"brkF":3,"brkR":0,"invT":35,"motT":35},{"s":69.18,"vx":10.01,"ax":-0.6,"ay":5.29,"yawRate":0.528,"rpm":1501,"trqCmd":0,"trqEst":-1,"vdc":96,"idc":0,"thr":9,"pot1":311,"pot2":723,"brkF":3,"brkR":0,"invT":35,"motT":35},{"s":70.15,"vx":9.51,"ax":-1.78,"ay":1.69,"yawRate":0.143,"rpm":1430,"trqCmd":0,"trqEst":0,"vdc":92,"idc":0,"thr":0,"pot1":323,"pot2":730,"brkF":4,"brkR":0,"invT":34,"motT":35},{"s":71.11,"vx":5.74,"ax":-4.79,"ay":0.1,"yawRate":0.026,"rpm":839,"trqCmd":0,"trqEst":0,"vdc":54,"idc":0,"thr":0,"pot1":318,"pot2":729,"brkF":110,"brkR":0,"invT":34,"motT":35},{"s":72.07,"vx":1.98,"ax":0.17,"ay":0.09,"yawRate":-0.049,"rpm":299,"trqCmd":26,"trqEst":25,"vdc":369,"idc":2,"thr":19,"pot1":536,"pot2":1159,"brkF":3,"brkR":0,"invT":25,"motT":32},{"s":73.01,"vx":2.9,"ax":-0.64,"ay":0.19,"yawRate":0.025,"rpm":438,"trqCmd":9,"trqEst":9,"vdc":368,"idc":1,"thr":12,"pot1":459,"pot2":1019,"brkF":3,"brkR":0,"invT":24,"motT":33},{"s":73.94,"vx":3.2,"ax":-0.52,"ay":0.06,"yawRate":0.016,"rpm":478,"trqCmd":10,"trqEst":10,"vdc":369,"idc":1,"thr":13,"pot1":472,"pot2":1038,"brkF":3,"brkR":0,"invT":24,"motT":32},{"s":74.86,"vx":3.93,"ax":-0.37,"ay":-1.31,"yawRate":-0.259,"rpm":593,"trqCmd":14,"trqEst":13,"vdc":368,"idc":2,"thr":14,"pot1":484,"pot2":1058,"brkF":3,"brkR":0,"invT":25,"motT":32},{"s":75.76,"vx":3.97,"ax":-0.39,"ay":-0.6,"yawRate":-0.153,"rpm":594,"trqCmd":8,"trqEst":5,"vdc":369,"idc":1,"thr":12,"pot1":461,"pot2":1018,"brkF":3,"brkR":0,"invT":25,"motT":32},{"s":76.64,"vx":3.47,"ax":-0.49,"ay":-0.38,"yawRate":0.246,"rpm":516,"trqCmd":8,"trqEst":5,"vdc":368,"idc":1,"thr":13,"pot1":463,"pot2":1016,"brkF":3,"brkR":0,"invT":24,"motT":33},{"s":77.51,"vx":4.24,"ax":-0.69,"ay":-0.74,"yawRate":-0.159,"rpm":642,"trqCmd":10,"trqEst":9,"vdc":370,"idc":1,"thr":13,"pot1":470,"pot2":1032,"brkF":3,"brkR":0,"invT":25,"motT":33},{"s":78.36,"vx":4.35,"ax":-0.66,"ay":-0.01,"yawRate":0.058,"rpm":640,"trqCmd":6,"trqEst":7,"vdc":369,"idc":1,"thr":12,"pot1":463,"pot2":1017,"brkF":3,"brkR":0,"invT":25,"motT":33},{"s":79.2,"vx":4.15,"ax":-1.07,"ay":2.93,"yawRate":0.643,"rpm":595,"trqCmd":13,"trqEst":11,"vdc":369,"idc":2,"thr":14,"pot1":480,"pot2":1056,"brkF":3,"brkR":0,"invT":25,"motT":32},{"s":80.03,"vx":4.37,"ax":-0.78,"ay":3.79,"yawRate":0.788,"rpm":639,"trqCmd":28,"trqEst":32,"vdc":368,"idc":5,"thr":19,"pot1":541,"pot2":1174,"brkF":3,"brkR":0,"invT":25,"motT":32},{"s":80.86,"vx":5.27,"ax":0.16,"ay":2.61,"yawRate":0.352,"rpm":801,"trqCmd":24,"trqEst":24,"vdc":368,"idc":5,"thr":18,"pot1":531,"pot2":1157,"brkF":3,"brkR":0,"invT":25,"motT":31},{"s":81.68,"vx":5.67,"ax":-0.02,"ay":3.57,"yawRate":0.546,"rpm":845,"trqCmd":15,"trqEst":15,"vdc":367,"idc":4,"thr":15,"pot1":488,"pot2":1081,"brkF":3,"brkR":0,"invT":25,"motT":33},{"s":82.51,"vx":6.13,"ax":0.97,"ay":3.22,"yawRate":0.444,"rpm":907,"trqCmd":20,"trqEst":21,"vdc":367,"idc":5,"thr":17,"pot1":517,"pot2":1128,"brkF":3,"brkR":0,"invT":25,"motT":32},{"s":83.34,"vx":6.63,"ax":1.15,"ay":-0.15,"yawRate":-0.213,"rpm":977,"trqCmd":20,"trqEst":28,"vdc":366,"idc":6,"thr":17,"pot1":515,"pot2":1114,"brkF":3,"brkR":0,"invT":26,"motT":31},{"s":84.19,"vx":6.39,"ax":-0.01,"ay":0.12,"yawRate":-0.202,"rpm":957,"trqCmd":4,"trqEst":5,"vdc":368,"idc":1,"thr":11,"pot1":450,"pot2":985,"brkF":3,"brkR":0,"invT":25,"motT":33},{"s":85.04,"vx":5.91,"ax":-0.01,"ay":0.79,"yawRate":0.011,"rpm":896,"trqCmd":10,"trqEst":10,"vdc":368,"idc":2,"thr":13,"pot1":468,"pot2":1023,"brkF":3,"brkR":0,"invT":25,"motT":31},{"s":85.91,"vx":6.13,"ax":0.11,"ay":-2.56,"yawRate":-0.618,"rpm":917,"trqCmd":24,"trqEst":26,"vdc":367,"idc":6,"thr":18,"pot1":520,"pot2":1133,"brkF":3,"brkR":0,"invT":25,"motT":32},{"s":86.79,"vx":6.59,"ax":-0.59,"ay":-4.25,"yawRate":-0.827,"rpm":981,"trqCmd":28,"trqEst":28,"vdc":366,"idc":8,"thr":19,"pot1":544,"pot2":1174,"brkF":3,"brkR":0,"invT":26,"motT":32},{"s":87.69,"vx":6.98,"ax":-1.8,"ay":-2.52,"yawRate":-0.548,"rpm":1013,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":9,"pot1":433,"pot2":953,"brkF":3,"brkR":0,"invT":26,"motT":31},{"s":88.6,"vx":5.5,"ax":-4.19,"ay":-5.66,"yawRate":-1.021,"rpm":800,"trqCmd":0,"trqEst":-1,"vdc":370,"idc":0,"thr":0,"pot1":316,"pot2":722,"brkF":106,"brkR":0,"invT":25,"motT":35},{"s":89.52,"vx":4.96,"ax":-0.26,"ay":-5.48,"yawRate":-1.137,"rpm":716,"trqCmd":38,"trqEst":42,"vdc":365,"idc":8,"thr":22,"pot1":584,"pot2":1256,"brkF":4,"brkR":0,"invT":26,"motT":33},{"s":90.44,"vx":6.39,"ax":2.19,"ay":-1.32,"yawRate":-0.244,"rpm":955,"trqCmd":41,"trqEst":41,"vdc":365,"idc":12,"thr":24,"pot1":588,"pot2":1265,"brkF":3,"brkR":0,"invT":26,"motT":33},{"s":91.36,"vx":6.96,"ax":0.84,"ay":1.22,"yawRate":0.097,"rpm":1024,"trqCmd":10,"trqEst":8,"vdc":367,"idc":3,"thr":14,"pot1":468,"pot2":1036,"brkF":3,"brkR":0,"invT":26,"motT":33},{"s":92.27,"vx":6.95,"ax":0.62,"ay":4.15,"yawRate":0.591,"rpm":1047,"trqCmd":12,"trqEst":11,"vdc":366,"idc":4,"thr":15,"pot1":484,"pot2":1066,"brkF":3,"brkR":0,"invT":26,"motT":31},{"s":93.17,"vx":7.17,"ax":0.8,"ay":3.52,"yawRate":0.711,"rpm":1065,"trqCmd":22,"trqEst":22,"vdc":367,"idc":7,"thr":17,"pot1":525,"pot2":1146,"brkF":3,"brkR":0,"invT":26,"motT":33},{"s":94.06,"vx":7.44,"ax":0.03,"ay":1.69,"yawRate":0.324,"rpm":1126,"trqCmd":13,"trqEst":12,"vdc":365,"idc":4,"thr":14,"pot1":477,"pot2":1050,"brkF":3,"brkR":0,"invT":26,"motT":31},{"s":94.93,"vx":7.41,"ax":-0.45,"ay":0.14,"yawRate":0.11,"rpm":1120,"trqCmd":9,"trqEst":8,"vdc":367,"idc":2,"thr":13,"pot1":466,"pot2":1026,"brkF":3,"brkR":0,"invT":26,"motT":32},{"s":95.79,"vx":7.31,"ax":-0.76,"ay":-0.61,"yawRate":0.014,"rpm":1094,"trqCmd":0,"trqEst":-1,"vdc":368,"idc":0,"thr":0,"pot1":308,"pot2":715,"brkF":3,"brkR":0,"invT":26,"motT":33},{"s":96.63,"vx":6.72,"ax":-1.68,"ay":1.54,"yawRate":0.248,"rpm":994,"trqCmd":0,"trqEst":-2,"vdc":369,"idc":0,"thr":0,"pot1":312,"pot2":716,"brkF":47,"brkR":0,"invT":26,"motT":31},{"s":97.47,"vx":5.75,"ax":-1.95,"ay":5.87,"yawRate":1.063,"rpm":858,"trqCmd":14,"trqEst":10,"vdc":369,"idc":3,"thr":12,"pot1":490,"pot2":1068,"brkF":2,"brkR":0,"invT":25,"motT":34},{"s":98.29,"vx":6.46,"ax":0.31,"ay":5.59,"yawRate":0.823,"rpm":970,"trqCmd":46,"trqEst":45,"vdc":363,"idc":13,"thr":25,"pot1":605,"pot2":1296,"brkF":3,"brkR":0,"invT":26,"motT":29},{"s":99.11,"vx":7.32,"ax":0.64,"ay":5.72,"yawRate":0.64,"rpm":1095,"trqCmd":31,"trqEst":33,"vdc":364,"idc":10,"thr":21,"pot1":569,"pot2":1221,"brkF":3,"brkR":0,"invT":27,"motT":32},{"s":99.94,"vx":8.25,"ax":1.28,"ay":5.86,"yawRate":0.635,"rpm":1243,"trqCmd":44,"trqEst":46,"vdc":362,"idc":18,"thr":25,"pot1":615,"pot2":1311,"brkF":3,"brkR":0,"invT":27,"motT":33},{"s":100.78,"vx":8.92,"ax":1.25,"ay":0.85,"yawRate":0.039,"rpm":1339,"trqCmd":30,"trqEst":32,"vdc":365,"idc":12,"thr":20,"pot1":548,"pot2":1184,"brkF":3,"brkR":0,"invT":27,"motT":31},{"s":101.62,"vx":9.2,"ax":0.63,"ay":-1.71,"yawRate":-0.353,"rpm":1388,"trqCmd":25,"trqEst":26,"vdc":364,"idc":11,"thr":19,"pot1":525,"pot2":1146,"brkF":3,"brkR":0,"invT":27,"motT":33},{"s":102.47,"vx":9.09,"ax":-0.34,"ay":1.49,"yawRate":-0.069,"rpm":1330,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":8,"pot1":407,"pot2":909,"brkF":4,"brkR":0,"invT":27,"motT":30},{"s":103.34,"vx":8,"ax":-0.74,"ay":-2.47,"yawRate":-0.531,"rpm":1193,"trqCmd":11,"trqEst":15,"vdc":366,"idc":4,"thr":12,"pot1":482,"pot2":1054,"brkF":55,"brkR":0,"invT":26,"motT":32},{"s":104.2,"vx":8.13,"ax":-0.25,"ay":-5.96,"yawRate":-0.882,"rpm":1211,"trqCmd":40,"trqEst":44,"vdc":361,"idc":15,"thr":23,"pot1":590,"pot2":1267,"brkF":4,"brkR":0,"invT":26,"motT":32},{"s":105.07,"vx":8.53,"ax":-0.97,"ay":-5.51,"yawRate":-0.834,"rpm":1278,"trqCmd":33,"trqEst":34,"vdc":362,"idc":13,"thr":21,"pot1":569,"pot2":1221,"brkF":3,"brkR":0,"invT":27,"motT":32},{"s":105.94,"vx":8.14,"ax":-4.78,"ay":-7.03,"yawRate":-0.81,"rpm":1178,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":312,"pot2":730,"brkF":110,"brkR":0,"invT":27,"motT":33},{"s":106.79,"vx":5.78,"ax":-1.95,"ay":-7.52,"yawRate":-1.323,"rpm":861,"trqCmd":30,"trqEst":31,"vdc":365,"idc":8,"thr":18,"pot1":558,"pot2":1200,"brkF":15,"brkR":0,"invT":26,"motT":33},{"s":107.63,"vx":7.05,"ax":3.64,"ay":-4.18,"yawRate":-0.931,"rpm":1071,"trqCmd":63,"trqEst":63,"vdc":361,"idc":23,"thr":34,"pot1":673,"pot2":1437,"brkF":2,"brkR":0,"invT":27,"motT":28},{"s":108.45,"vx":8.49,"ax":1.85,"ay":-0.78,"yawRate":-0.094,"rpm":1286,"trqCmd":40,"trqEst":39,"vdc":364,"idc":16,"thr":23,"pot1":582,"pot2":1271,"brkF":3,"brkR":0,"invT":28,"motT":33},{"s":109.25,"vx":9,"ax":1.54,"ay":2.97,"yawRate":0.357,"rpm":1357,"trqCmd":26,"trqEst":26,"vdc":363,"idc":11,"thr":19,"pot1":537,"pot2":1166,"brkF":3,"brkR":0,"invT":28,"motT":33},{"s":110.01,"vx":9.21,"ax":0.75,"ay":9.01,"yawRate":1.157,"rpm":1417,"trqCmd":31,"trqEst":26,"vdc":362,"idc":13,"thr":20,"pot1":552,"pot2":1202,"brkF":3,"brkR":0,"invT":28,"motT":34},{"s":110.75,"vx":9.58,"ax":0.8,"ay":4.91,"yawRate":0.703,"rpm":1453,"trqCmd":32,"trqEst":34,"vdc":363,"idc":14,"thr":20,"pot1":556,"pot2":1207,"brkF":3,"brkR":0,"invT":28,"motT":31},{"s":111.46,"vx":10.18,"ax":0.84,"ay":1.86,"yawRate":0.301,"rpm":1528,"trqCmd":32,"trqEst":31,"vdc":363,"idc":15,"thr":20,"pot1":554,"pot2":1203,"brkF":3,"brkR":0,"invT":28,"motT":34},{"s":112.15,"vx":10.61,"ax":0.38,"ay":0.24,"yawRate":-0.003,"rpm":1590,"trqCmd":25,"trqEst":24,"vdc":364,"idc":12,"thr":19,"pot1":531,"pot2":1156,"brkF":3,"brkR":0,"invT":28,"motT":32},{"s":112.84,"vx":9.29,"ax":-4.31,"ay":1.06,"yawRate":0.141,"rpm":1367,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":312,"pot2":721,"brkF":110,"brkR":0,"invT":28,"motT":32},{"s":113.53,"vx":6.45,"ax":-2.32,"ay":5.86,"yawRate":0.97,"rpm":951,"trqCmd":0,"trqEst":-2,"vdc":369,"idc":0,"thr":3,"pot1":359,"pot2":809,"brkF":40,"brkR":0,"invT":28,"motT":32},{"s":114.23,"vx":6.34,"ax":-0.88,"ay":5.54,"yawRate":1.058,"rpm":939,"trqCmd":33,"trqEst":33,"vdc":363,"idc":9,"thr":21,"pot1":560,"pot2":1218,"brkF":3,"brkR":0,"invT":28,"motT":33},{"s":114.97,"vx":6.7,"ax":-0.69,"ay":5.93,"yawRate":0.82,"rpm":995,"trqCmd":25,"trqEst":23,"vdc":365,"idc":8,"thr":18,"pot1":529,"pot2":1153,"brkF":3,"brkR":0,"invT":28,"motT":35},{"s":115.73,"vx":7.49,"ax":1,"ay":4.41,"yawRate":0.497,"rpm":1119,"trqCmd":40,"trqEst":43,"vdc":363,"idc":14,"thr":23,"pot1":591,"pot2":1265,"brkF":3,"brkR":0,"invT":28,"motT":33},{"s":116.53,"vx":8.35,"ax":1.66,"ay":4.57,"yawRate":0.539,"rpm":1249,"trqCmd":40,"trqEst":35,"vdc":361,"idc":16,"thr":23,"pot1":588,"pot2":1267,"brkF":3,"brkR":0,"invT":29,"motT":32},{"s":117.36,"vx":9.6,"ax":1.86,"ay":-2.19,"yawRate":-0.279,"rpm":1442,"trqCmd":58,"trqEst":58,"vdc":360,"idc":26,"thr":29,"pot1":662,"pot2":1406,"brkF":3,"brkR":0,"invT":29,"motT":33},{"s":118.23,"vx":10.71,"ax":2.16,"ay":-2.04,"yawRate":-0.337,"rpm":1617,"trqCmd":62,"trqEst":66,"vdc":355,"idc":31,"thr":30,"pot1":682,"pot2":1449,"brkF":3,"brkR":0,"invT":30,"motT":32},{"s":119.12,"vx":10.48,"ax":-2.3,"ay":-1.89,"yawRate":-0.334,"rpm":1587,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":310,"pot2":715,"brkF":91,"brkR":0,"invT":30,"motT":33},{"s":120.04,"vx":8.48,"ax":-2.28,"ay":-4.28,"yawRate":-0.678,"rpm":1255,"trqCmd":1,"trqEst":0,"vdc":366,"idc":0,"thr":10,"pot1":436,"pot2":963,"brkF":104,"brkR":0,"invT":29,"motT":32},{"s":120.97,"vx":8.46,"ax":-1.1,"ay":-7.28,"yawRate":-1.028,"rpm":1276,"trqCmd":35,"trqEst":35,"vdc":364,"idc":13,"thr":20,"pot1":573,"pot2":1237,"brkF":6,"brkR":0,"invT":28,"motT":33},{"s":121.91,"vx":9.05,"ax":-0.21,"ay":-5.58,"yawRate":-0.746,"rpm":1370,"trqCmd":40,"trqEst":38,"vdc":364,"idc":17,"thr":23,"pot1":589,"pot2":1264,"brkF":4,"brkR":0,"invT":29,"motT":32},{"s":122.86,"vx":7.04,"ax":-5.34,"ay":-9.18,"yawRate":-1.249,"rpm":1019,"trqCmd":0,"trqEst":1,"vdc":368,"idc":0,"thr":1,"pot1":350,"pot2":792,"brkF":106,"brkR":0,"invT":28,"motT":34},{"s":123.82,"vx":6.29,"ax":0.04,"ay":-8.57,"yawRate":-1.479,"rpm":1049,"trqCmd":62,"trqEst":63,"vdc":361,"idc":21,"thr":31,"pot1":682,"pot2":1451,"brkF":9,"brkR":0,"invT":28,"motT":34},{"s":124.78,"vx":8.73,"ax":4.1,"ay":-2.71,"yawRate":-0.305,"rpm":1337,"trqCmd":91,"trqEst":97,"vdc":355,"idc":38,"thr":40,"pot1":795,"pot2":1667,"brkF":3,"brkR":0,"invT":30,"motT":32},{"s":125.74,"vx":9.91,"ax":2.08,"ay":1.67,"yawRate":0.158,"rpm":1493,"trqCmd":36,"trqEst":36,"vdc":361,"idc":17,"thr":22,"pot1":570,"pot2":1238,"brkF":3,"brkR":0,"invT":30,"motT":34},{"s":126.71,"vx":10.27,"ax":0.38,"ay":6.97,"yawRate":0.764,"rpm":1539,"trqCmd":24,"trqEst":24,"vdc":365,"idc":11,"thr":18,"pot1":528,"pot2":1152,"brkF":32,"brkR":0,"invT":30,"motT":33},{"s":127.67,"vx":10.17,"ax":1.02,"ay":9.01,"yawRate":1.08,"rpm":1569,"trqCmd":45,"trqEst":52,"vdc":360,"idc":22,"thr":24,"pot1":611,"pot2":1313,"brkF":3,"brkR":0,"invT":30,"motT":33},{"s":128.64,"vx":11.1,"ax":2.11,"ay":4.34,"yawRate":0.515,"rpm":1715,"trqCmd":66,"trqEst":68,"vdc":354,"idc":36,"thr":32,"pot1":698,"pot2":1475,"brkF":3,"brkR":0,"invT":30,"motT":33},{"s":129.6,"vx":12.17,"ax":1.22,"ay":0.08,"yawRate":0.052,"rpm":1850,"trqCmd":60,"trqEst":61,"vdc":355,"idc":35,"thr":29,"pot1":669,"pot2":1416,"brkF":3,"brkR":0,"invT":31,"motT":32},{"s":130.56,"vx":11.84,"ax":-5,"ay":-0.33,"yawRate":-0.033,"rpm":1764,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":320,"pot2":727,"brkF":110,"brkR":0,"invT":31,"motT":31},{"s":131.53,"vx":8.36,"ax":-4.14,"ay":3.68,"yawRate":0.47,"rpm":1226,"trqCmd":0,"trqEst":-2,"vdc":366,"idc":0,"thr":0,"pot1":314,"pot2":719,"brkF":110,"brkR":0,"invT":30,"motT":33},{"s":132.49,"vx":7.14,"ax":-1.23,"ay":8.97,"yawRate":1.306,"rpm":1083,"trqCmd":29,"trqEst":30,"vdc":364,"idc":9,"thr":20,"pot1":544,"pot2":1175,"brkF":3,"brkR":0,"invT":29,"motT":32},{"s":133.46,"vx":8.17,"ax":1.93,"ay":9.09,"yawRate":1.108,"rpm":1356,"trqCmd":82,"trqEst":92,"vdc":357,"idc":37,"thr":38,"pot1":764,"pot2":1609,"brkF":3,"brkR":0,"invT":30,"motT":33},{"s":134.43,"vx":10.03,"ax":2.23,"ay":6.19,"yawRate":0.695,"rpm":1592,"trqCmd":86,"trqEst":86,"vdc":352,"idc":44,"thr":40,"pot1":782,"pot2":1641,"brkF":3,"brkR":0,"invT":31,"motT":33},{"s":135.4,"vx":11.27,"ax":2.19,"ay":10.42,"yawRate":0.928,"rpm":1805,"trqCmd":75,"trqEst":78,"vdc":352,"idc":44,"thr":35,"pot1":734,"pot2":1561,"brkF":3,"brkR":0,"invT":31,"motT":33}],"21_09_Logs/21_09_2026-00.52.20.csv":[{"s":0,"vx":13.83,"ax":3.46,"ay":-1.62,"yawRate":-0.432,"rpm":2146,"trqCmd":119,"trqEst":128,"vdc":329,"idc":87,"thr":49,"pot1":915,"pot2":1901,"brkF":3,"brkR":0,"invT":41,"motT":38},{"s":0.97,"vx":12.13,"ax":3.81,"ay":13.51,"yawRate":1.207,"rpm":2050,"trqCmd":113,"trqEst":114,"vdc":331,"idc":78,"thr":47,"pot1":877,"pot2":1846,"brkF":3,"brkR":0,"invT":41,"motT":40},{"s":1.94,"vx":10.92,"ax":3.28,"ay":9.43,"yawRate":0.838,"rpm":1694,"trqCmd":111,"trqEst":108,"vdc":339,"idc":64,"thr":47,"pot1":884,"pot2":1845,"brkF":3,"brkR":0,"invT":40,"motT":40},{"s":2.92,"vx":9.04,"ax":2.6,"ay":9.29,"yawRate":0.907,"rpm":1510,"trqCmd":112,"trqEst":116,"vdc":343,"idc":57,"thr":46,"pot1":885,"pot2":1842,"brkF":3,"brkR":0,"invT":39,"motT":37},{"s":3.89,"vx":6.8,"ax":-0.22,"ay":8.26,"yawRate":1.432,"rpm":1155,"trqCmd":83,"trqEst":92,"vdc":349,"idc":32,"thr":37,"pot1":777,"pot2":1630,"brkF":4,"brkR":0,"invT":39,"motT":38},{"s":4.86,"vx":8.02,"ax":-2.18,"ay":9.14,"yawRate":1.084,"rpm":1213,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":0,"pot1":309,"pot2":716,"brkF":62,"brkR":0,"invT":40,"motT":40},{"s":5.84,"vx":11.23,"ax":-8.19,"ay":6.27,"yawRate":0.491,"rpm":1355,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":0,"pot1":316,"pot2":723,"brkF":110,"brkR":0,"invT":41,"motT":38},{"s":6.81,"vx":14.79,"ax":-7.23,"ay":3.1,"yawRate":0.276,"rpm":2186,"trqCmd":0,"trqEst":0,"vdc":355,"idc":0,"thr":0,"pot1":316,"pot2":730,"brkF":110,"brkR":0,"invT":42,"motT":39},{"s":7.79,"vx":16.66,"ax":-0.62,"ay":3.63,"yawRate":0.099,"rpm":2502,"trqCmd":37,"trqEst":39,"vdc":343,"idc":27,"thr":23,"pot1":581,"pot2":1246,"brkF":3,"brkR":0,"invT":41,"motT":39},{"s":8.76,"vx":14.51,"ax":8.82,"ay":2.18,"yawRate":0.157,"rpm":2554,"trqCmd":241,"trqEst":235,"vdc":294,"idc":243,"thr":94,"pot1":1480,"pot2":3018,"brkF":3,"brkR":0,"invT":40,"motT":38},{"s":9.74,"vx":11.47,"ax":5.54,"ay":8.35,"yawRate":0.341,"rpm":1873,"trqCmd":138,"trqEst":145,"vdc":338,"idc":88,"thr":56,"pot1":980,"pot2":2037,"brkF":3,"brkR":0,"invT":39,"motT":39},{"s":10.71,"vx":11.42,"ax":0.96,"ay":13.13,"yawRate":1.541,"rpm":1858,"trqCmd":14,"trqEst":12,"vdc":356,"idc":7,"thr":14,"pot1":482,"pot2":1056,"brkF":3,"brkR":0,"invT":39,"motT":38},{"s":11.69,"vx":12.82,"ax":-0.52,"ay":11.7,"yawRate":1.201,"rpm":1950,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":0,"pot1":307,"pot2":730,"brkF":3,"brkR":0,"invT":40,"motT":37},{"s":12.66,"vx":12.99,"ax":3.72,"ay":6.4,"yawRate":0.475,"rpm":2020,"trqCmd":75,"trqEst":78,"vdc":342,"idc":49,"thr":36,"pot1":722,"pot2":1533,"brkF":3,"brkR":0,"invT":40,"motT":39},{"s":13.64,"vx":11.48,"ax":5.59,"ay":-5.2,"yawRate":-0.56,"rpm":1813,"trqCmd":130,"trqEst":143,"vdc":334,"idc":81,"thr":55,"pot1":950,"pot2":1979,"brkF":3,"brkR":0,"invT":40,"motT":38},{"s":14.61,"vx":8.97,"ax":4.88,"ay":-6.12,"yawRate":-0.825,"rpm":1495,"trqCmd":142,"trqEst":158,"vdc":338,"idc":75,"thr":57,"pot1":1020,"pot2":2099,"brkF":4,"brkR":0,"invT":39,"motT":39},{"s":15.59,"vx":6.17,"ax":3.04,"ay":-12.53,"yawRate":-2,"rpm":1300,"trqCmd":97,"trqEst":98,"vdc":346,"idc":41,"thr":40,"pot1":830,"pot2":1739,"brkF":3,"brkR":0,"invT":38,"motT":39},{"s":16.57,"vx":9.87,"ax":-7.08,"ay":-10.33,"yawRate":-1.111,"rpm":1518,"trqCmd":0,"trqEst":1,"vdc":358,"idc":0,"thr":0,"pot1":312,"pot2":724,"brkF":40,"brkR":0,"invT":38,"motT":36},{"s":17.54,"vx":10.17,"ax":-0.67,"ay":-10.97,"yawRate":-1.173,"rpm":1666,"trqCmd":75,"trqEst":80,"vdc":348,"idc":41,"thr":35,"pot1":736,"pot2":1552,"brkF":3,"brkR":0,"invT":37,"motT":40},{"s":18.52,"vx":9.94,"ax":-3.53,"ay":-11.57,"yawRate":-1.471,"rpm":1469,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":3,"pot1":401,"pot2":898,"brkF":16,"brkR":0,"invT":38,"motT":40},{"s":19.5,"vx":10.99,"ax":-3.23,"ay":-9.21,"yawRate":-0.859,"rpm":1658,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":0,"pot1":314,"pot2":725,"brkF":32,"brkR":0,"invT":39,"motT":38},{"s":20.48,"vx":13.09,"ax":-8.27,"ay":-5.73,"yawRate":-0.509,"rpm":1960,"trqCmd":0,"trqEst":-3,"vdc":358,"idc":0,"thr":0,"pot1":310,"pot2":714,"brkF":110,"brkR":0,"invT":40,"motT":39},{"s":21.45,"vx":15.41,"ax":-2.36,"ay":-4.72,"yawRate":-0.481,"rpm":2291,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":9,"pot1":394,"pot2":881,"brkF":20,"brkR":0,"invT":41,"motT":41},{"s":22.43,"vx":15.35,"ax":2.11,"ay":-4.45,"yawRate":-0.253,"rpm":2345,"trqCmd":77,"trqEst":82,"vdc":338,"idc":58,"thr":36,"pot1":743,"pot2":1559,"brkF":3,"brkR":0,"invT":42,"motT":37},{"s":23.4,"vx":14.51,"ax":2.16,"ay":-7.02,"yawRate":-0.878,"rpm":2313,"trqCmd":93,"trqEst":90,"vdc":335,"idc":70,"thr":39,"pot1":814,"pot2":1707,"brkF":4,"brkR":0,"invT":41,"motT":39},{"s":24.38,"vx":13.29,"ax":4.93,"ay":9.77,"yawRate":1.11,"rpm":2283,"trqCmd":116,"trqEst":126,"vdc":329,"idc":90,"thr":49,"pot1":891,"pot2":1864,"brkF":3,"brkR":0,"invT":41,"motT":38},{"s":25.35,"vx":11.91,"ax":2.38,"ay":11.29,"yawRate":0.644,"rpm":1964,"trqCmd":117,"trqEst":125,"vdc":333,"idc":73,"thr":46,"pot1":903,"pot2":1885,"brkF":3,"brkR":0,"invT":40,"motT":39},{"s":26.32,"vx":10.61,"ax":2.58,"ay":11.36,"yawRate":1.137,"rpm":1831,"trqCmd":109,"trqEst":115,"vdc":337,"idc":67,"thr":45,"pot1":864,"pot2":1812,"brkF":3,"brkR":0,"invT":40,"motT":38},{"s":27.29,"vx":8.81,"ax":2.16,"ay":10.98,"yawRate":1.402,"rpm":1566,"trqCmd":110,"trqEst":122,"vdc":343,"idc":53,"thr":42,"pot1":889,"pot2":1856,"brkF":3,"brkR":0,"invT":39,"motT":38},{"s":28.24,"vx":7.71,"ax":-0.33,"ay":10.13,"yawRate":1.304,"rpm":1315,"trqCmd":58,"trqEst":54,"vdc":352,"idc":24,"thr":29,"pot1":659,"pot2":1402,"brkF":3,"brkR":0,"invT":38,"motT":38},{"s":29.19,"vx":9.06,"ax":-5.48,"ay":8.97,"yawRate":0.904,"rpm":1215,"trqCmd":0,"trqEst":1,"vdc":359,"idc":0,"thr":0,"pot1":313,"pot2":722,"brkF":110,"brkR":0,"invT":39,"motT":37},{"s":30.12,"vx":12.57,"ax":-5.84,"ay":-0.04,"yawRate":0.028,"rpm":1846,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":0,"pot1":317,"pot2":723,"brkF":110,"brkR":0,"invT":40,"motT":38},{"s":31.03,"vx":14.71,"ax":-1.98,"ay":-2.86,"yawRate":0.081,"rpm":2198,"trqCmd":0,"trqEst":2,"vdc":357,"idc":0,"thr":0,"pot1":311,"pot2":720,"brkF":49,"brkR":0,"invT":40,"motT":37},{"s":31.92,"vx":14.85,"ax":6.21,"ay":4.43,"yawRate":-0.103,"rpm":2464,"trqCmd":111,"trqEst":117,"vdc":335,"idc":92,"thr":49,"pot1":838,"pot2":1761,"brkF":3,"brkR":0,"invT":40,"motT":38},{"s":32.78,"vx":12.17,"ax":7.89,"ay":6.26,"yawRate":0.794,"rpm":2595,"trqCmd":227,"trqEst":224,"vdc":302,"idc":223,"thr":84,"pot1":1331,"pot2":2715,"brkF":3,"brkR":0,"invT":39,"motT":39},{"s":33.61,"vx":10.88,"ax":2.01,"ay":10.42,"yawRate":1.433,"rpm":1838,"trqCmd":69,"trqEst":69,"vdc":347,"idc":43,"thr":34,"pot1":718,"pot2":1517,"brkF":3,"brkR":0,"invT":39,"motT":37},{"s":34.41,"vx":11.39,"ax":0.23,"ay":10.33,"yawRate":0.801,"rpm":1773,"trqCmd":18,"trqEst":20,"vdc":356,"idc":11,"thr":17,"pot1":498,"pot2":1095,"brkF":62,"brkR":0,"invT":39,"motT":37},{"s":35.18,"vx":13.12,"ax":-0.65,"ay":6.28,"yawRate":0.309,"rpm":1995,"trqCmd":0,"trqEst":0,"vdc":359,"idc":0,"thr":0,"pot1":314,"pot2":725,"brkF":22,"brkR":0,"invT":40,"motT":36},{"s":35.93,"vx":12.8,"ax":5.03,"ay":3.43,"yawRate":1.08,"rpm":1963,"trqCmd":108,"trqEst":121,"vdc":338,"idc":67,"thr":43,"pot1":902,"pot2":1878,"brkF":3,"brkR":0,"invT":40,"motT":38},{"s":36.66,"vx":9.86,"ax":9.03,"ay":-3.86,"yawRate":-1.146,"rpm":2775,"trqCmd":190,"trqEst":188,"vdc":305,"idc":212,"thr":78,"pot1":1178,"pot2":2428,"brkF":3,"brkR":0,"invT":39,"motT":37},{"s":37.4,"vx":6.51,"ax":6.26,"ay":-7.99,"yawRate":-1.87,"rpm":1559,"trqCmd":142,"trqEst":145,"vdc":338,"idc":74,"thr":57,"pot1":999,"pot2":2065,"brkF":3,"brkR":0,"invT":36,"motT":38},{"s":38.14,"vx":7.79,"ax":-8.08,"ay":-10.09,"yawRate":-1.626,"rpm":977,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":0,"pot1":307,"pot2":716,"brkF":110,"brkR":0,"invT":36,"motT":37},{"s":38.9,"vx":10.39,"ax":0.86,"ay":-9.08,"yawRate":-0.855,"rpm":1659,"trqCmd":67,"trqEst":68,"vdc":349,"idc":36,"thr":32,"pot1":702,"pot2":1487,"brkF":3,"brkR":0,"invT":36,"motT":37},{"s":39.7,"vx":10.02,"ax":-3.16,"ay":-10.55,"yawRate":-1.183,"rpm":1513,"trqCmd":6,"trqEst":2,"vdc":359,"idc":3,"thr":13,"pot1":455,"pot2":1000,"brkF":3,"brkR":0,"invT":36,"motT":37},{"s":40.53,"vx":10.34,"ax":-1.79,"ay":-9.07,"yawRate":-1.501,"rpm":1551,"trqCmd":0,"trqEst":1,"vdc":360,"idc":0,"thr":10,"pot1":429,"pot2":956,"brkF":21,"brkR":0,"invT":37,"motT":37},{"s":41.39,"vx":12.56,"ax":-6.92,"ay":-5.61,"yawRate":-0.533,"rpm":1868,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":0,"pot1":310,"pot2":715,"brkF":110,"brkR":0,"invT":39,"motT":37},{"s":42.3,"vx":14.75,"ax":-1.3,"ay":-1.17,"yawRate":-0.161,"rpm":2169,"trqCmd":0,"trqEst":0,"vdc":359,"idc":0,"thr":11,"pot1":426,"pot2":946,"brkF":9,"brkR":0,"invT":40,"motT":38},{"s":43.23,"vx":13.96,"ax":2.48,"ay":-6.62,"yawRate":-0.644,"rpm":2243,"trqCmd":98,"trqEst":103,"vdc":339,"idc":71,"thr":42,"pot1":825,"pot2":1719,"brkF":3,"brkR":0,"invT":40,"motT":37},{"s":44.2,"vx":13.01,"ax":2.3,"ay":-4.07,"yawRate":-0.443,"rpm":2016,"trqCmd":90,"trqEst":97,"vdc":345,"idc":58,"thr":39,"pot1":788,"pot2":1662,"brkF":4,"brkR":0,"invT":40,"motT":37},{"s":45.19,"vx":11.69,"ax":3.78,"ay":7.4,"yawRate":0.574,"rpm":1810,"trqCmd":104,"trqEst":107,"vdc":341,"idc":61,"thr":44,"pot1":847,"pot2":1771,"brkF":3,"brkR":0,"invT":39,"motT":38},{"s":46.19,"vx":10.28,"ax":2.82,"ay":8.39,"yawRate":0.668,"rpm":1590,"trqCmd":85,"trqEst":92,"vdc":348,"idc":44,"thr":38,"pot1":764,"pot2":1617,"brkF":3,"brkR":0,"invT":38,"motT":37},{"s":47.2,"vx":8.46,"ax":2.69,"ay":7.01,"yawRate":0.612,"rpm":1367,"trqCmd":95,"trqEst":99,"vdc":350,"idc":43,"thr":40,"pot1":827,"pot2":1733,"brkF":3,"brkR":0,"invT":38,"motT":37},{"s":48.22,"vx":6.56,"ax":0.98,"ay":4.77,"yawRate":0.698,"rpm":995,"trqCmd":67,"trqEst":72,"vdc":355,"idc":21,"thr":32,"pot1":706,"pot2":1494,"brkF":3,"brkR":0,"invT":37,"motT":38},{"s":49.23,"vx":4.65,"ax":-0.51,"ay":3.48,"yawRate":0.887,"rpm":690,"trqCmd":45,"trqEst":47,"vdc":360,"idc":9,"thr":24,"pot1":608,"pot2":1309,"brkF":3,"brkR":0,"invT":36,"motT":37},{"s":50.25,"vx":2.96,"ax":0.04,"ay":1.04,"yawRate":0.402,"rpm":429,"trqCmd":15,"trqEst":16,"vdc":361,"idc":2,"thr":15,"pot1":498,"pot2":1089,"brkF":3,"brkR":0,"invT":35,"motT":37},{"s":51.27,"vx":3.29,"ax":-0.35,"ay":-0.14,"yawRate":0.08,"rpm":489,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":315,"pot2":723,"brkF":2,"brkR":0,"invT":35,"motT":36},{"s":52.28,"vx":3.88,"ax":-0.6,"ay":-0.48,"yawRate":-0.015,"rpm":575,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":0,"pot1":314,"pot2":723,"brkF":3,"brkR":0,"invT":35,"motT":40},{"s":53.29,"vx":4.13,"ax":-0.77,"ay":-0.1,"yawRate":0.068,"rpm":614,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":10,"pot1":441,"pot2":970,"brkF":3,"brkR":0,"invT":35,"motT":37},{"s":54.3,"vx":4.25,"ax":-0.46,"ay":-0.13,"yawRate":0.103,"rpm":639,"trqCmd":6,"trqEst":6,"vdc":360,"idc":1,"thr":12,"pot1":457,"pot2":1012,"brkF":3,"brkR":0,"invT":36,"motT":37},{"s":55.3,"vx":4.08,"ax":0.23,"ay":0.82,"yawRate":0.422,"rpm":617,"trqCmd":12,"trqEst":12,"vdc":361,"idc":2,"thr":14,"pot1":474,"pot2":1044,"brkF":3,"brkR":0,"invT":36,"motT":37},{"s":56.3,"vx":4.15,"ax":-0.07,"ay":2.05,"yawRate":0.475,"rpm":615,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":9,"pot1":416,"pot2":934,"brkF":3,"brkR":0,"invT":36,"motT":38},{"s":57.31,"vx":4.5,"ax":0.14,"ay":1.6,"yawRate":0.13,"rpm":677,"trqCmd":5,"trqEst":5,"vdc":362,"idc":1,"thr":11,"pot1":454,"pot2":999,"brkF":3,"brkR":0,"invT":36,"motT":37},{"s":58.31,"vx":4.68,"ax":0.17,"ay":1.32,"yawRate":0.094,"rpm":699,"trqCmd":5,"trqEst":2,"vdc":363,"idc":1,"thr":11,"pot1":449,"pot2":992,"brkF":3,"brkR":0,"invT":36,"motT":37},{"s":59.3,"vx":4.91,"ax":-0.02,"ay":1.37,"yawRate":-0.064,"rpm":719,"trqCmd":0,"trqEst":0,"vdc":359,"idc":0,"thr":9,"pot1":417,"pot2":932,"brkF":3,"brkR":0,"invT":36,"motT":38},{"s":60.3,"vx":5.1,"ax":-1.27,"ay":-4.55,"yawRate":-1.072,"rpm":738,"trqCmd":0,"trqEst":-1,"vdc":361,"idc":0,"thr":6,"pot1":382,"pot2":853,"brkF":3,"brkR":0,"invT":36,"motT":37},{"s":61.29,"vx":6.37,"ax":-3.28,"ay":-7.71,"yawRate":-1.33,"rpm":926,"trqCmd":0,"trqEst":2,"vdc":360,"idc":0,"thr":0,"pot1":314,"pot2":721,"brkF":53,"brkR":0,"invT":36,"motT":39},{"s":62.28,"vx":8.31,"ax":-3.18,"ay":-8.39,"yawRate":-0.998,"rpm":1225,"trqCmd":0,"trqEst":3,"vdc":360,"idc":0,"thr":0,"pot1":316,"pot2":721,"brkF":81,"brkR":0,"invT":37,"motT":37},{"s":63.27,"vx":9.32,"ax":-0.19,"ay":-6.68,"yawRate":-0.766,"rpm":1408,"trqCmd":15,"trqEst":17,"vdc":357,"idc":8,"thr":16,"pot1":487,"pot2":1074,"brkF":3,"brkR":0,"invT":37,"motT":39},{"s":64.26,"vx":8.98,"ax":-0.36,"ay":-7.25,"yawRate":-0.955,"rpm":1361,"trqCmd":35,"trqEst":39,"vdc":356,"idc":15,"thr":22,"pot1":579,"pot2":1238,"brkF":2,"brkR":0,"invT":38,"motT":37},{"s":65.25,"vx":9.13,"ax":-2.41,"ay":-8.79,"yawRate":-1.125,"rpm":1345,"trqCmd":0,"trqEst":1,"vdc":359,"idc":0,"thr":8,"pot1":425,"pot2":941,"brkF":25,"brkR":0,"invT":38,"motT":37},{"s":66.24,"vx":10.47,"ax":-3.59,"ay":-3.76,"yawRate":-0.383,"rpm":1539,"trqCmd":0,"trqEst":0,"vdc":359,"idc":0,"thr":0,"pot1":311,"pot2":717,"brkF":106,"brkR":0,"invT":39,"motT":37},{"s":67.22,"vx":11.33,"ax":1.12,"ay":-1.27,"yawRate":-0.2,"rpm":1688,"trqCmd":33,"trqEst":38,"vdc":353,"idc":20,"thr":26,"pot1":561,"pot2":1217,"brkF":3,"brkR":0,"invT":39,"motT":38},{"s":68.2,"vx":10.69,"ax":0.85,"ay":-4.23,"yawRate":-0.538,"rpm":1626,"trqCmd":50,"trqEst":52,"vdc":350,"idc":26,"thr":27,"pot1":632,"pot2":1346,"brkF":3,"brkR":0,"invT":39,"motT":38},{"s":69.18,"vx":9.99,"ax":1.42,"ay":-2.1,"yawRate":-0.166,"rpm":1505,"trqCmd":49,"trqEst":52,"vdc":352,"idc":24,"thr":26,"pot1":625,"pot2":1333,"brkF":3,"brkR":0,"invT":39,"motT":38},{"s":70.15,"vx":9.12,"ax":1.59,"ay":4.09,"yawRate":0.46,"rpm":1389,"trqCmd":49,"trqEst":46,"vdc":353,"idc":22,"thr":26,"pot1":631,"pot2":1347,"brkF":3,"brkR":0,"invT":39,"motT":38},{"s":71.11,"vx":8.41,"ax":0.69,"ay":6.22,"yawRate":0.869,"rpm":1280,"trqCmd":36,"trqEst":37,"vdc":353,"idc":15,"thr":22,"pot1":580,"pot2":1244,"brkF":3,"brkR":0,"invT":39,"motT":37},{"s":72.07,"vx":8.31,"ax":2.44,"ay":5.4,"yawRate":0.619,"rpm":1295,"trqCmd":59,"trqEst":58,"vdc":352,"idc":28,"thr":33,"pot1":648,"pot2":1385,"brkF":3,"brkR":0,"invT":40,"motT":36},{"s":73.01,"vx":6.15,"ax":3.39,"ay":0.1,"yawRate":-0.154,"rpm":956,"trqCmd":97,"trqEst":100,"vdc":351,"idc":30,"thr":42,"pot1":824,"pot2":1726,"brkF":3,"brkR":0,"invT":40,"motT":38},{"s":73.94,"vx":0.61,"ax":-0.49,"ay":0.21,"yawRate":-0.001,"rpm":40,"trqCmd":0,"trqEst":0,"vdc":10,"idc":0,"thr":0,"pot1":311,"pot2":721,"brkF":101,"brkR":0,"invT":39,"motT":42},{"s":74.86,"vx":4.4,"ax":-2.62,"ay":2.5,"yawRate":0.259,"rpm":650,"trqCmd":0,"trqEst":0,"vdc":42,"idc":0,"thr":0,"pot1":312,"pot2":725,"brkF":75,"brkR":0,"invT":39,"motT":42},{"s":75.76,"vx":6.15,"ax":-1.58,"ay":4.31,"yawRate":0.575,"rpm":905,"trqCmd":0,"trqEst":0,"vdc":58,"idc":0,"thr":0,"pot1":310,"pot2":721,"brkF":3,"brkR":0,"invT":40,"motT":43},{"s":76.64,"vx":6.62,"ax":-1.83,"ay":5.34,"yawRate":0.725,"rpm":980,"trqCmd":0,"trqEst":0,"vdc":63,"idc":0,"thr":89,"pot1":1447,"pot2":2937,"brkF":3,"brkR":0,"invT":41,"motT":42},{"s":77.51,"vx":7.18,"ax":-2.98,"ay":11.18,"yawRate":1.861,"rpm":1159,"trqCmd":63,"trqEst":69,"vdc":347,"idc":25,"thr":21,"pot1":689,"pot2":1469,"brkF":31,"brkR":0,"invT":42,"motT":41},{"s":78.36,"vx":11,"ax":-6.67,"ay":6.69,"yawRate":0.571,"rpm":771,"trqCmd":0,"trqEst":1,"vdc":354,"idc":0,"thr":0,"pot1":316,"pot2":722,"brkF":110,"brkR":0,"invT":44,"motT":42},{"s":79.2,"vx":14.66,"ax":-7.24,"ay":1.52,"yawRate":0.088,"rpm":2089,"trqCmd":0,"trqEst":0,"vdc":350,"idc":0,"thr":0,"pot1":317,"pot2":726,"brkF":110,"brkR":0,"invT":45,"motT":41},{"s":80.03,"vx":16.86,"ax":0.24,"ay":1.46,"yawRate":0.2,"rpm":2538,"trqCmd":29,"trqEst":33,"vdc":343,"idc":22,"thr":20,"pot1":546,"pot2":1176,"brkF":8,"brkR":0,"invT":45,"motT":42},{"s":80.86,"vx":14.79,"ax":9.33,"ay":1.39,"yawRate":-0.429,"rpm":2865,"trqCmd":212,"trqEst":240,"vdc":291,"idc":247,"thr":85,"pot1":1346,"pot2":2739,"brkF":3,"brkR":0,"invT":44,"motT":42},{"s":81.68,"vx":12.04,"ax":6.18,"ay":5.74,"yawRate":0.635,"rpm":2447,"trqCmd":205,"trqEst":214,"vdc":301,"idc":192,"thr":66,"pot1":1256,"pot2":2576,"brkF":3,"brkR":0,"invT":43,"motT":41},{"s":82.51,"vx":11.48,"ax":1.83,"ay":13.02,"yawRate":1.657,"rpm":1963,"trqCmd":37,"trqEst":41,"vdc":347,"idc":23,"thr":22,"pot1":582,"pot2":1268,"brkF":5,"brkR":0,"invT":43,"motT":41},{"s":83.34,"vx":12.73,"ax":-0.21,"ay":12.22,"yawRate":1.237,"rpm":1939,"trqCmd":19,"trqEst":22,"vdc":350,"idc":12,"thr":17,"pot1":505,"pot2":1112,"brkF":37,"brkR":0,"invT":43,"motT":41},{"s":84.19,"vx":12.7,"ax":3.72,"ay":4.62,"yawRate":0.379,"rpm":1940,"trqCmd":70,"trqEst":74,"vdc":341,"idc":45,"thr":35,"pot1":695,"pot2":1494,"brkF":3,"brkR":0,"invT":43,"motT":41},{"s":85.04,"vx":11.39,"ax":5.03,"ay":-0.22,"yawRate":-0.089,"rpm":1768,"trqCmd":122,"trqEst":136,"vdc":331,"idc":73,"thr":50,"pot1":918,"pot2":1920,"brkF":3,"brkR":0,"invT":43,"motT":43},{"s":85.91,"vx":9,"ax":5.63,"ay":-6.63,"yawRate":-1.166,"rpm":1529,"trqCmd":123,"trqEst":133,"vdc":338,"idc":65,"thr":51,"pot1":928,"pot2":1934,"brkF":3,"brkR":0,"invT":42,"motT":42},{"s":86.79,"vx":6.04,"ax":1.99,"ay":-11.89,"yawRate":-2,"rpm":1218,"trqCmd":84,"trqEst":83,"vdc":344,"idc":34,"thr":38,"pot1":776,"pot2":1631,"brkF":3,"brkR":0,"invT":40,"motT":41},{"s":87.69,"vx":8.75,"ax":-6.16,"ay":-10.67,"yawRate":-1.156,"rpm":1255,"trqCmd":0,"trqEst":1,"vdc":354,"idc":0,"thr":0,"pot1":313,"pot2":721,"brkF":110,"brkR":0,"invT":40,"motT":41},{"s":88.6,"vx":10.91,"ax":0.33,"ay":-8.61,"yawRate":-0.524,"rpm":1715,"trqCmd":73,"trqEst":79,"vdc":341,"idc":43,"thr":35,"pot1":722,"pot2":1531,"brkF":3,"brkR":0,"invT":41,"motT":43},{"s":89.52,"vx":9.93,"ax":-3.56,"ay":-12.26,"yawRate":-1.491,"rpm":1586,"trqCmd":53,"trqEst":57,"vdc":345,"idc":27,"thr":22,"pot1":675,"pot2":1435,"brkF":4,"brkR":0,"invT":41,"motT":41},{"s":90.44,"vx":10.7,"ax":-0.64,"ay":-9.23,"yawRate":-0.815,"rpm":1658,"trqCmd":24,"trqEst":20,"vdc":351,"idc":12,"thr":18,"pot1":525,"pot2":1140,"brkF":11,"brkR":0,"invT":42,"motT":41},{"s":91.36,"vx":12.42,"ax":-6.76,"ay":-6.37,"yawRate":-0.622,"rpm":1838,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":0,"pot1":318,"pot2":722,"brkF":110,"brkR":0,"invT":44,"motT":43},{"s":92.27,"vx":13.5,"ax":1.34,"ay":-3.15,"yawRate":-0.632,"rpm":2079,"trqCmd":62,"trqEst":70,"vdc":340,"idc":41,"thr":32,"pot1":676,"pot2":1436,"brkF":4,"brkR":0,"invT":44,"motT":41},{"s":93.17,"vx":12.9,"ax":1.12,"ay":-6.32,"yawRate":-0.2,"rpm":2009,"trqCmd":50,"trqEst":57,"vdc":341,"idc":31,"thr":24,"pot1":632,"pot2":1354,"brkF":2,"brkR":0,"invT":45,"motT":42},{"s":94.06,"vx":13.28,"ax":-0.73,"ay":-1.04,"yawRate":-1.557,"rpm":1973,"trqCmd":45,"trqEst":46,"vdc":343,"idc":28,"thr":19,"pot1":634,"pot2":1347,"brkF":4,"brkR":0,"invT":45,"motT":41},{"s":94.93,"vx":12.65,"ax":2.18,"ay":12.67,"yawRate":1.565,"rpm":2283,"trqCmd":76,"trqEst":76,"vdc":332,"idc":56,"thr":35,"pot1":736,"pot2":1554,"brkF":3,"brkR":0,"invT":45,"motT":41},{"s":95.79,"vx":12.71,"ax":1.56,"ay":12.48,"yawRate":0.746,"rpm":2125,"trqCmd":79,"trqEst":94,"vdc":335,"idc":55,"thr":36,"pot1":758,"pot2":1606,"brkF":4,"brkR":0,"invT":45,"motT":40},{"s":96.63,"vx":11.99,"ax":5.89,"ay":7.64,"yawRate":0.556,"rpm":2186,"trqCmd":122,"trqEst":129,"vdc":325,"idc":93,"thr":51,"pot1":919,"pot2":1931,"brkF":4,"brkR":0,"invT":45,"motT":40},{"s":97.47,"vx":8.06,"ax":7.09,"ay":2.68,"yawRate":0.172,"rpm":3141,"trqCmd":184,"trqEst":155,"vdc":294,"idc":234,"thr":70,"pot1":1132,"pot2":2337,"brkF":3,"brkR":0,"invT":42,"motT":41},{"s":98.29,"vx":5.1,"ax":1.99,"ay":9.01,"yawRate":1.848,"rpm":931,"trqCmd":12,"trqEst":9,"vdc":354,"idc":2,"thr":14,"pot1":489,"pot2":1080,"brkF":2,"brkR":0,"invT":41,"motT":41},{"s":99.11,"vx":10.33,"ax":-6.66,"ay":9,"yawRate":1.339,"rpm":790,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":0,"pot1":312,"pot2":721,"brkF":110,"brkR":0,"invT":43,"motT":40},{"s":99.94,"vx":14.52,"ax":-7.87,"ay":4.73,"yawRate":0.254,"rpm":1822,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":0,"pot1":320,"pot2":729,"brkF":110,"brkR":0,"invT":46,"motT":40},{"s":100.78,"vx":17.09,"ax":-2.34,"ay":-5.02,"yawRate":-0.331,"rpm":2468,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":10,"pot1":422,"pot2":940,"brkF":102,"brkR":0,"invT":46,"motT":40},{"s":101.62,"vx":15.72,"ax":8.77,"ay":0.46,"yawRate":-0.572,"rpm":3070,"trqCmd":200,"trqEst":168,"vdc":286,"idc":276,"thr":93,"pot1":1428,"pot2":2901,"brkF":4,"brkR":0,"invT":44,"motT":39},{"s":102.47,"vx":12.87,"ax":9.05,"ay":5.38,"yawRate":0.864,"rpm":2972,"trqCmd":205,"trqEst":205,"vdc":289,"idc":245,"thr":100,"pot1":1478,"pot2":3017,"brkF":3,"brkR":0,"invT":43,"motT":40},{"s":103.34,"vx":11.24,"ax":4.21,"ay":11.76,"yawRate":1.428,"rpm":2062,"trqCmd":103,"trqEst":108,"vdc":333,"idc":73,"thr":44,"pot1":851,"pot2":1778,"brkF":2,"brkR":0,"invT":43,"motT":40},{"s":104.2,"vx":11.96,"ax":-0.79,"ay":15.08,"yawRate":1.248,"rpm":1798,"trqCmd":0,"trqEst":0,"vdc":355,"idc":0,"thr":9,"pot1":431,"pot2":956,"brkF":40,"brkR":0,"invT":43,"motT":40},{"s":105.07,"vx":13.1,"ax":0.65,"ay":8.6,"yawRate":0.73,"rpm":1981,"trqCmd":15,"trqEst":13,"vdc":353,"idc":9,"thr":15,"pot1":493,"pot2":1086,"brkF":5,"brkR":0,"invT":44,"motT":40},{"s":105.94,"vx":12.29,"ax":5.13,"ay":3.5,"yawRate":0.233,"rpm":1890,"trqCmd":115,"trqEst":123,"vdc":331,"idc":74,"thr":48,"pot1":892,"pot2":1865,"brkF":3,"brkR":0,"invT":44,"motT":40},{"s":106.79,"vx":10.01,"ax":7.08,"ay":-5.78,"yawRate":-0.975,"rpm":1860,"trqCmd":99,"trqEst":119,"vdc":333,"idc":105,"thr":60,"pot1":1014,"pot2":2097,"brkF":3,"brkR":0,"invT":43,"motT":40},{"s":107.63,"vx":7.37,"ax":3.48,"ay":-10.37,"yawRate":-1.362,"rpm":1309,"trqCmd":124,"trqEst":131,"vdc":341,"idc":56,"thr":51,"pot1":931,"pot2":1930,"brkF":3,"brkR":0,"invT":41,"motT":40},{"s":108.45,"vx":6.92,"ax":-7.9,"ay":-11.05,"yawRate":-1.72,"rpm":564,"trqCmd":0,"trqEst":0,"vdc":355,"idc":0,"thr":0,"pot1":346,"pot2":784,"brkF":110,"brkR":0,"invT":41,"motT":40},{"s":109.25,"vx":10.33,"ax":-0.46,"ay":-6.75,"yawRate":-0.592,"rpm":1566,"trqCmd":33,"trqEst":37,"vdc":350,"idc":22,"thr":28,"pot1":550,"pot2":1180,"brkF":3,"brkR":0,"invT":41,"motT":39},{"s":110.01,"vx":9.55,"ax":-2.22,"ay":-8.23,"yawRate":-0.296,"rpm":1430,"trqCmd":18,"trqEst":15,"vdc":353,"idc":8,"thr":16,"pot1":513,"pot2":1109,"brkF":3,"brkR":0,"invT":40,"motT":40},{"s":110.75,"vx":10.06,"ax":-1.22,"ay":-12.08,"yawRate":-1.271,"rpm":1668,"trqCmd":32,"trqEst":38,"vdc":349,"idc":18,"thr":20,"pot1":561,"pot2":1212,"brkF":13,"brkR":0,"invT":41,"motT":39},{"s":111.46,"vx":12.27,"ax":-7.75,"ay":-9.31,"yawRate":-1.199,"rpm":1264,"trqCmd":0,"trqEst":0,"vdc":355,"idc":0,"thr":0,"pot1":313,"pot2":724,"brkF":110,"brkR":0,"invT":42,"motT":40},{"s":112.15,"vx":15.57,"ax":-5.5,"ay":-4.29,"yawRate":-0.454,"rpm":2306,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":0,"pot1":318,"pot2":729,"brkF":55,"brkR":0,"invT":43,"motT":40},{"s":112.84,"vx":15.57,"ax":2.71,"ay":-2.73,"yawRate":-0.383,"rpm":2431,"trqCmd":110,"trqEst":115,"vdc":327,"idc":91,"thr":46,"pot1":873,"pot2":1821,"brkF":3,"brkR":0,"invT":43,"motT":40},{"s":113.53,"vx":14.33,"ax":4.05,"ay":-7.86,"yawRate":-0.689,"rpm":2269,"trqCmd":112,"trqEst":131,"vdc":329,"idc":85,"thr":46,"pot1":872,"pot2":1817,"brkF":3,"brkR":0,"invT":43,"motT":38},{"s":114.23,"vx":13.35,"ax":4.24,"ay":5.8,"yawRate":0.302,"rpm":2147,"trqCmd":70,"trqEst":73,"vdc":337,"idc":48,"thr":37,"pot1":721,"pot2":1515,"brkF":3,"brkR":0,"invT":43,"motT":40},{"s":114.97,"vx":12.3,"ax":3.63,"ay":13.43,"yawRate":1.547,"rpm":2214,"trqCmd":110,"trqEst":117,"vdc":329,"idc":88,"thr":49,"pot1":864,"pot2":1798,"brkF":3,"brkR":0,"invT":43,"motT":40},{"s":115.73,"vx":11.28,"ax":3.6,"ay":3.95,"yawRate":0.086,"rpm":1732,"trqCmd":116,"trqEst":128,"vdc":334,"idc":69,"thr":49,"pot1":893,"pot2":1872,"brkF":3,"brkR":0,"invT":42,"motT":39},{"s":116.53,"vx":9.02,"ax":3.26,"ay":9.96,"yawRate":1.381,"rpm":1598,"trqCmd":126,"trqEst":124,"vdc":336,"idc":68,"thr":52,"pot1":933,"pot2":1940,"brkF":3,"brkR":0,"invT":41,"motT":40},{"s":117.36,"vx":7.95,"ax":-1.66,"ay":9.9,"yawRate":0.724,"rpm":1186,"trqCmd":0,"trqEst":0,"vdc":355,"idc":0,"thr":6,"pot1":311,"pot2":722,"brkF":3,"brkR":0,"invT":41,"motT":39},{"s":118.23,"vx":8.66,"ax":-5.71,"ay":10.76,"yawRate":1.458,"rpm":678,"trqCmd":0,"trqEst":0,"vdc":355,"idc":0,"thr":2,"pot1":412,"pot2":915,"brkF":110,"brkR":0,"invT":41,"motT":40},{"s":119.12,"vx":12.5,"ax":-7.39,"ay":3.14,"yawRate":0.148,"rpm":1830,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":0,"pot1":315,"pot2":722,"brkF":110,"brkR":0,"invT":42,"motT":39},{"s":120.04,"vx":15.73,"ax":-6.69,"ay":0.88,"yawRate":-0.019,"rpm":2268,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":0,"pot1":317,"pot2":730,"brkF":110,"brkR":0,"invT":42,"motT":38},{"s":120.97,"vx":16.52,"ax":9.74,"ay":2.69,"yawRate":-0.201,"rpm":2751,"trqCmd":218,"trqEst":207,"vdc":286,"idc":240,"thr":100,"pot1":1431,"pot2":2906,"brkF":4,"brkR":0,"invT":41,"motT":39},{"s":121.91,"vx":13.26,"ax":7.83,"ay":6.14,"yawRate":1.077,"rpm":2523,"trqCmd":224,"trqEst":228,"vdc":302,"idc":216,"thr":80,"pot1":1342,"pot2":2726,"brkF":3,"brkR":0,"invT":40,"motT":40},{"s":122.86,"vx":11.84,"ax":2.26,"ay":10.23,"yawRate":1.12,"rpm":1980,"trqCmd":73,"trqEst":65,"vdc":343,"idc":46,"thr":34,"pot1":718,"pot2":1522,"brkF":3,"brkR":0,"invT":40,"motT":40},{"s":123.82,"vx":11.87,"ax":1.96,"ay":11.16,"yawRate":1.042,"rpm":1873,"trqCmd":31,"trqEst":31,"vdc":351,"idc":18,"thr":20,"pot1":549,"pot2":1185,"brkF":3,"brkR":0,"invT":40,"motT":37},{"s":124.78,"vx":12.42,"ax":2.47,"ay":9.28,"yawRate":0.86,"rpm":1934,"trqCmd":52,"trqEst":58,"vdc":346,"idc":35,"thr":29,"pot1":632,"pot2":1356,"brkF":3,"brkR":0,"invT":40,"motT":39},{"s":125.74,"vx":11.49,"ax":4.39,"ay":2.29,"yawRate":0.159,"rpm":1748,"trqCmd":86,"trqEst":98,"vdc":344,"idc":50,"thr":40,"pot1":775,"pot2":1636,"brkF":3,"brkR":0,"invT":40,"motT":39},{"s":126.71,"vx":9.74,"ax":4.35,"ay":-7.85,"yawRate":-1.156,"rpm":1617,"trqCmd":108,"trqEst":114,"vdc":338,"idc":59,"thr":46,"pot1":865,"pot2":1803,"brkF":3,"brkR":0,"invT":40,"motT":40},{"s":127.67,"vx":8.24,"ax":2.37,"ay":-10.5,"yawRate":-1.27,"rpm":1377,"trqCmd":98,"trqEst":106,"vdc":343,"idc":45,"thr":42,"pot1":833,"pot2":1741,"brkF":4,"brkR":0,"invT":39,"motT":38},{"s":128.64,"vx":6.84,"ax":-2.22,"ay":-12.66,"yawRate":-1.903,"rpm":1097,"trqCmd":49,"trqEst":49,"vdc":353,"idc":18,"thr":27,"pot1":632,"pot2":1351,"brkF":85,"brkR":0,"invT":38,"motT":38},{"s":129.6,"vx":10.45,"ax":-3.86,"ay":-12.4,"yawRate":-1.142,"rpm":1539,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":1,"pot1":332,"pot2":761,"brkF":34,"brkR":0,"invT":39,"motT":38},{"s":130.56,"vx":10.27,"ax":-0.73,"ay":-11.17,"yawRate":-1.138,"rpm":1657,"trqCmd":67,"trqEst":70,"vdc":345,"idc":37,"thr":32,"pot1":716,"pot2":1509,"brkF":3,"brkR":0,"invT":39,"motT":39},{"s":131.53,"vx":10.16,"ax":-3.16,"ay":-11.34,"yawRate":-1.183,"rpm":1548,"trqCmd":1,"trqEst":2,"vdc":356,"idc":1,"thr":11,"pot1":439,"pot2":970,"brkF":13,"brkR":0,"invT":39,"motT":38},{"s":132.49,"vx":11.87,"ax":-6.45,"ay":-7.54,"yawRate":-0.812,"rpm":1462,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":0,"pot1":316,"pot2":720,"brkF":110,"brkR":0,"invT":41,"motT":39},{"s":133.46,"vx":15.18,"ax":-8.4,"ay":-2.37,"yawRate":-0.336,"rpm":2207,"trqCmd":0,"trqEst":-1,"vdc":356,"idc":0,"thr":0,"pot1":311,"pot2":720,"brkF":110,"brkR":0,"invT":42,"motT":39},{"s":134.43,"vx":16.59,"ax":3.1,"ay":-6.6,"yawRate":-0.51,"rpm":2574,"trqCmd":112,"trqEst":119,"vdc":327,"idc":99,"thr":47,"pot1":875,"pot2":1822,"brkF":3,"brkR":0,"invT":42,"motT":38},{"s":135.4,"vx":15.24,"ax":2.5,"ay":-6.35,"yawRate":-0.665,"rpm":2422,"trqCmd":131,"trqEst":142,"vdc":326,"idc":109,"thr":53,"pot1":962,"pot2":1998,"brkF":3,"brkR":0,"invT":41,"motT":38}],"21_09_Logs/21_09_2026-00.56.31.csv":[{"s":0,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1105,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":27,"brkR":0,"invT":40,"motT":44},{"s":0.97,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1108,"trqCmd":0,"trqEst":3,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":78,"brkR":0,"invT":40,"motT":44},{"s":1.94,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1122,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":40,"motT":44},{"s":2.92,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1132,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":40,"motT":44},{"s":3.89,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1165,"trqCmd":0,"trqEst":2,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":40,"motT":44},{"s":4.86,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1223,"trqCmd":0,"trqEst":3,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":40,"motT":44},{"s":5.84,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1243,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":40,"motT":44},{"s":6.81,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":-1,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":7.79,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":-3,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":8.76,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":9.74,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":43},{"s":10.71,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":46},{"s":11.69,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":46},{"s":12.66,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":13.64,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":-2,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":45},{"s":14.61,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":45},{"s":15.59,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":1,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":45},{"s":16.57,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":17.54,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":18.52,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":19.5,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":2,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":20.48,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":21.45,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":22.43,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":23.4,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":109,"brkR":0,"invT":38,"motT":44},{"s":24.38,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":2,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":106,"brkR":0,"invT":38,"motT":42},{"s":25.35,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":106,"brkR":0,"invT":38,"motT":42},{"s":26.32,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":106,"brkR":0,"invT":38,"motT":44},{"s":27.29,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":106,"brkR":0,"invT":38,"motT":45},{"s":28.24,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":106,"brkR":0,"invT":38,"motT":46},{"s":29.19,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":107,"brkR":0,"invT":38,"motT":46},{"s":30.12,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":108,"brkR":0,"invT":38,"motT":44},{"s":31.03,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":108,"brkR":0,"invT":38,"motT":44},{"s":31.92,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":108,"brkR":0,"invT":38,"motT":44},{"s":32.78,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":109,"brkR":0,"invT":38,"motT":44},{"s":33.61,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1,"trqCmd":0,"trqEst":-1,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":43},{"s":34.41,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":-1,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":43},{"s":35.18,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":4,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":108,"brkR":0,"invT":38,"motT":44},{"s":35.93,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":0,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":45},{"s":36.66,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":3,"trqCmd":0,"trqEst":1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":43},{"s":37.4,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":7,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":43},{"s":38.14,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":3,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":38.9,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":41,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":39,"motT":44},{"s":39.7,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":65,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":39,"motT":44},{"s":40.53,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":115,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":110,"brkR":0,"invT":38,"motT":44},{"s":41.39,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":143,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":99,"brkR":0,"invT":38,"motT":43},{"s":42.3,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":175,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":96,"brkR":0,"invT":38,"motT":44},{"s":43.23,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":197,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":96,"brkR":0,"invT":38,"motT":44},{"s":44.2,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":223,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":92,"brkR":0,"invT":39,"motT":44},{"s":45.19,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":242,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":91,"brkR":0,"invT":39,"motT":44},{"s":46.19,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":269,"trqCmd":0,"trqEst":2,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":91,"brkR":0,"invT":39,"motT":44},{"s":47.2,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":295,"trqCmd":0,"trqEst":-1,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":94,"brkR":0,"invT":39,"motT":44},{"s":48.22,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":307,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":96,"brkR":0,"invT":39,"motT":44},{"s":49.23,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":338,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":97,"brkR":0,"invT":39,"motT":44},{"s":50.25,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":362,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":97,"brkR":0,"invT":39,"motT":44},{"s":51.27,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":388,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":96,"brkR":0,"invT":39,"motT":44},{"s":52.28,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":421,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":89,"brkR":0,"invT":39,"motT":44},{"s":53.29,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":442,"trqCmd":0,"trqEst":2,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":89,"brkR":0,"invT":39,"motT":44},{"s":54.3,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":465,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":97,"brkR":0,"invT":39,"motT":44},{"s":55.3,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":477,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":103,"brkR":0,"invT":39,"motT":43},{"s":56.3,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":510,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":100,"brkR":0,"invT":39,"motT":44},{"s":57.31,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":538,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":100,"brkR":0,"invT":39,"motT":44},{"s":58.31,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":562,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":86,"brkR":0,"invT":39,"motT":44},{"s":59.3,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":580,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":55,"brkR":0,"invT":39,"motT":44},{"s":60.3,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":604,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":10,"brkR":0,"invT":39,"motT":44},{"s":61.29,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":629,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":10,"brkR":0,"invT":39,"motT":45},{"s":62.28,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":638,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":63.27,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":634,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":64.26,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":641,"trqCmd":0,"trqEst":-4,"vdc":350,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":43},{"s":65.25,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":645,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":66.24,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":652,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":45},{"s":67.22,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":649,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":45},{"s":68.2,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":652,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":69.18,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":668,"trqCmd":0,"trqEst":-1,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":43},{"s":70.15,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":660,"trqCmd":0,"trqEst":-3,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":71.11,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":668,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":72.07,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":663,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":73.01,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":677,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":73.94,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":668,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":74.86,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":671,"trqCmd":0,"trqEst":-1,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":75.76,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":686,"trqCmd":0,"trqEst":-1,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":43},{"s":76.64,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":686,"trqCmd":0,"trqEst":-2,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":43},{"s":77.51,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":683,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":43},{"s":78.36,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":686,"trqCmd":0,"trqEst":-1,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":79.2,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":693,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":80.03,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":705,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":44},{"s":80.86,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":699,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":45},{"s":81.68,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":707,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":45},{"s":82.51,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":711,"trqCmd":0,"trqEst":0,"vdc":350,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":45},{"s":83.34,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":712,"trqCmd":0,"trqEst":-1,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":43},{"s":84.19,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":720,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":39,"motT":45},{"s":85.04,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":726,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":85.91,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":730,"trqCmd":0,"trqEst":1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":86.79,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":727,"trqCmd":0,"trqEst":1,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":43},{"s":87.69,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":730,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":88.6,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":748,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":89.52,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":748,"trqCmd":0,"trqEst":2,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":45},{"s":90.44,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":748,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":43},{"s":91.36,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":747,"trqCmd":0,"trqEst":-1,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":43},{"s":92.27,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":753,"trqCmd":0,"trqEst":-2,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":46},{"s":93.17,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":752,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":94.06,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":759,"trqCmd":0,"trqEst":-2,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":94.93,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":769,"trqCmd":0,"trqEst":-3,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":95.79,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":765,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":46},{"s":96.63,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":768,"trqCmd":0,"trqEst":-4,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":97.47,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":773,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":98.29,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":775,"trqCmd":0,"trqEst":-2,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":99.11,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":790,"trqCmd":0,"trqEst":-2,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":45},{"s":99.94,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":790,"trqCmd":0,"trqEst":-1,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":45},{"s":100.78,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":799,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":45},{"s":101.62,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":794,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":45},{"s":102.47,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":792,"trqCmd":0,"trqEst":1,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":45},{"s":103.34,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":807,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":104.2,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":798,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":105.07,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":811,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":105.94,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":815,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":106.79,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":817,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":107.63,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":820,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":108.45,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":816,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":109.25,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":831,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":110.01,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":830,"trqCmd":0,"trqEst":1,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":45},{"s":110.75,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":835,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":111.46,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":844,"trqCmd":0,"trqEst":1,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":112.15,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":837,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":112.84,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":845,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":45},{"s":113.53,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":844,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":114.23,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":846,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":114.97,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":846,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":115.73,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":852,"trqCmd":0,"trqEst":-1,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":116.53,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":860,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":117.36,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":853,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":118.23,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":866,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":119.12,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":866,"trqCmd":0,"trqEst":2,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":43},{"s":120.04,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":856,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":43},{"s":120.97,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":865,"trqCmd":0,"trqEst":-1,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":44},{"s":121.91,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":868,"trqCmd":0,"trqEst":-6,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":46},{"s":122.86,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":874,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":3,"brkR":0,"invT":40,"motT":46},{"s":123.82,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":883,"trqCmd":0,"trqEst":0,"vdc":350,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":2,"brkR":0,"invT":40,"motT":46},{"s":124.78,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":892,"trqCmd":0,"trqEst":0,"vdc":350,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":2,"brkR":0,"invT":40,"motT":44},{"s":125.74,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":907,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":5,"brkR":0,"invT":40,"motT":45},{"s":126.71,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":924,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":12,"brkR":0,"invT":40,"motT":45},{"s":127.67,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":934,"trqCmd":0,"trqEst":-1,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":25,"brkR":0,"invT":40,"motT":46},{"s":128.64,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":936,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":25,"brkR":0,"invT":40,"motT":44},{"s":129.6,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":967,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":26,"brkR":0,"invT":40,"motT":44},{"s":130.56,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":989,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":25,"brkR":0,"invT":40,"motT":44},{"s":131.53,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":997,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":25,"brkR":0,"invT":40,"motT":44},{"s":132.49,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1019,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":25,"brkR":0,"invT":40,"motT":44},{"s":133.46,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1034,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":21,"brkR":0,"invT":40,"motT":44},{"s":134.43,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1053,"trqCmd":0,"trqEst":0,"vdc":350,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":21,"brkR":0,"invT":40,"motT":44},{"s":135.4,"vx":13.12,"ax":-6.63,"ay":7.37,"yawRate":0.556,"rpm":1072,"trqCmd":0,"trqEst":2,"vdc":352,"idc":0,"thr":6,"pot1":363,"pot2":897,"brkF":21,"brkR":0,"invT":40,"motT":45}],"23_08/23_08_2026-02.25.26.csv":[{"s":0,"vx":7,"ax":-1.28,"ay":0.79,"yawRate":0.11,"rpm":1041,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":4,"pot1":334,"pot2":741,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":0.97,"vx":6.85,"ax":-0.77,"ay":0.65,"yawRate":0.096,"rpm":978,"trqCmd":0,"trqEst":-4,"vdc":392,"idc":0,"thr":0,"pot1":329,"pot2":737,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":1.94,"vx":6.83,"ax":-0.9,"ay":0.67,"yawRate":0.092,"rpm":1004,"trqCmd":0,"trqEst":1,"vdc":393,"idc":0,"thr":0,"pot1":339,"pot2":745,"brkF":0,"brkR":0,"invT":33,"motT":30},{"s":2.92,"vx":6.75,"ax":-0.25,"ay":0.77,"yawRate":0.085,"rpm":1058,"trqCmd":24,"trqEst":19,"vdc":392,"idc":4,"thr":6,"pot1":544,"pot2":1165,"brkF":0,"brkR":0,"invT":33,"motT":30},{"s":3.89,"vx":6.77,"ax":2.05,"ay":0.05,"yawRate":0.085,"rpm":1036,"trqCmd":72,"trqEst":69,"vdc":389,"idc":19,"thr":25,"pot1":696,"pot2":1465,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":4.86,"vx":6.94,"ax":2.45,"ay":-0.03,"yawRate":0.041,"rpm":1068,"trqCmd":69,"trqEst":76,"vdc":386,"idc":22,"thr":36,"pot1":790,"pot2":1638,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":5.84,"vx":7.2,"ax":2.48,"ay":-0.38,"yawRate":0.02,"rpm":1099,"trqCmd":68,"trqEst":68,"vdc":385,"idc":22,"thr":49,"pot1":964,"pot2":1994,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":6.81,"vx":7.41,"ax":2.48,"ay":-0.42,"yawRate":0.011,"rpm":1129,"trqCmd":67,"trqEst":72,"vdc":386,"idc":22,"thr":55,"pot1":997,"pot2":2061,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":7.79,"vx":7.7,"ax":2.09,"ay":0.04,"yawRate":0.013,"rpm":1165,"trqCmd":64,"trqEst":66,"vdc":387,"idc":22,"thr":55,"pot1":782,"pot2":1645,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":8.76,"vx":7.79,"ax":1.39,"ay":-0.04,"yawRate":0.014,"rpm":1052,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":8,"pot1":318,"pot2":727,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":9.74,"vx":7.78,"ax":-0.51,"ay":0.42,"yawRate":0.039,"rpm":1234,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":335,"pot2":750,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":10.71,"vx":7.67,"ax":-0.02,"ay":0.29,"yawRate":0.044,"rpm":1115,"trqCmd":0,"trqEst":1,"vdc":395,"idc":0,"thr":0,"pot1":332,"pot2":745,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":11.69,"vx":7.64,"ax":-1.06,"ay":0.01,"yawRate":0.025,"rpm":1175,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":329,"pot2":738,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":12.66,"vx":7.56,"ax":-0.76,"ay":0,"yawRate":0.028,"rpm":1148,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":327,"pot2":736,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":13.64,"vx":7.55,"ax":-0.82,"ay":0.08,"yawRate":0.033,"rpm":1100,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":326,"pot2":738,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":14.61,"vx":7.49,"ax":-0.94,"ay":0.16,"yawRate":0.024,"rpm":1146,"trqCmd":0,"trqEst":-2,"vdc":395,"idc":0,"thr":0,"pot1":334,"pot2":743,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":15.59,"vx":7.4,"ax":-0.75,"ay":0.43,"yawRate":0.035,"rpm":1114,"trqCmd":0,"trqEst":-2,"vdc":393,"idc":0,"thr":0,"pot1":337,"pot2":750,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":16.57,"vx":7.39,"ax":-0.97,"ay":0.41,"yawRate":0.034,"rpm":1105,"trqCmd":0,"trqEst":-3,"vdc":394,"idc":0,"thr":0,"pot1":334,"pot2":739,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":17.54,"vx":7.34,"ax":-0.94,"ay":0.42,"yawRate":0.028,"rpm":1112,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":325,"pot2":732,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":18.52,"vx":7.28,"ax":-0.96,"ay":0.65,"yawRate":0.026,"rpm":1084,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":325,"pot2":736,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":19.5,"vx":7.23,"ax":-1.04,"ay":0.6,"yawRate":0.023,"rpm":1092,"trqCmd":0,"trqEst":3,"vdc":393,"idc":0,"thr":0,"pot1":333,"pot2":746,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":20.48,"vx":7.21,"ax":-1.1,"ay":0.2,"yawRate":0.032,"rpm":1075,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":330,"pot2":741,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":21.45,"vx":7.13,"ax":-1.32,"ay":0.37,"yawRate":0.028,"rpm":1065,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":333,"pot2":742,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":22.43,"vx":7.05,"ax":-1.14,"ay":0.24,"yawRate":0.027,"rpm":1066,"trqCmd":0,"trqEst":-3,"vdc":396,"idc":0,"thr":0,"pot1":333,"pot2":746,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":23.4,"vx":7.02,"ax":-1.1,"ay":0.46,"yawRate":0.026,"rpm":1058,"trqCmd":0,"trqEst":0,"vdc":392,"idc":0,"thr":0,"pot1":324,"pot2":738,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":24.38,"vx":6.98,"ax":-1.07,"ay":0.52,"yawRate":0.021,"rpm":1049,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":337,"pot2":753,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":25.35,"vx":6.95,"ax":-1.12,"ay":0.15,"yawRate":0.023,"rpm":1042,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":335,"pot2":746,"brkF":0,"brkR":0,"invT":31,"motT":28},{"s":26.32,"vx":6.88,"ax":-0.98,"ay":0.24,"yawRate":0.025,"rpm":1027,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":335,"pot2":746,"brkF":0,"brkR":0,"invT":31,"motT":28},{"s":27.29,"vx":6.86,"ax":-1.08,"ay":0.28,"yawRate":0.025,"rpm":1028,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":332,"pot2":740,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":28.24,"vx":6.78,"ax":-1.07,"ay":0.24,"yawRate":0.03,"rpm":1009,"trqCmd":0,"trqEst":-1,"vdc":396,"idc":0,"thr":0,"pot1":311,"pot2":726,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":29.19,"vx":6.67,"ax":-1.11,"ay":0.47,"yawRate":0.025,"rpm":1000,"trqCmd":0,"trqEst":1,"vdc":394,"idc":0,"thr":0,"pot1":322,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":30.12,"vx":6.61,"ax":-1.48,"ay":0.72,"yawRate":0.027,"rpm":987,"trqCmd":0,"trqEst":0,"vdc":392,"idc":0,"thr":0,"pot1":317,"pot2":721,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":31.03,"vx":6.52,"ax":-1.46,"ay":0.6,"yawRate":0.025,"rpm":976,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":327,"pot2":738,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":31.92,"vx":6.39,"ax":-1.39,"ay":0.87,"yawRate":0.038,"rpm":963,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":315,"pot2":737,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":32.78,"vx":6.38,"ax":-1.32,"ay":1.11,"yawRate":0.062,"rpm":954,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":322,"pot2":731,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":33.61,"vx":6.24,"ax":-1.27,"ay":0.93,"yawRate":0.125,"rpm":938,"trqCmd":0,"trqEst":2,"vdc":394,"idc":0,"thr":0,"pot1":331,"pot2":739,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":34.41,"vx":6.13,"ax":-1.2,"ay":2.57,"yawRate":0.21,"rpm":917,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":334,"pot2":746,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":35.18,"vx":6.07,"ax":-1.37,"ay":2.91,"yawRate":0.316,"rpm":912,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":333,"pot2":744,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":35.93,"vx":6.03,"ax":-1.3,"ay":2.75,"yawRate":0.358,"rpm":902,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":324,"pot2":731,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":36.66,"vx":5.98,"ax":-1.08,"ay":2.42,"yawRate":0.4,"rpm":894,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":322,"pot2":729,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":37.4,"vx":5.92,"ax":-1.22,"ay":2.09,"yawRate":0.375,"rpm":887,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":328,"pot2":743,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":38.14,"vx":5.86,"ax":-1.12,"ay":2.28,"yawRate":0.374,"rpm":882,"trqCmd":0,"trqEst":1,"vdc":393,"idc":0,"thr":0,"pot1":326,"pot2":736,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":38.9,"vx":5.8,"ax":-1.23,"ay":1.35,"yawRate":0.353,"rpm":870,"trqCmd":0,"trqEst":1,"vdc":394,"idc":0,"thr":0,"pot1":334,"pot2":739,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":39.7,"vx":5.74,"ax":-1.16,"ay":1.98,"yawRate":0.339,"rpm":868,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":323,"pot2":725,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":40.53,"vx":5.7,"ax":-1.09,"ay":1.66,"yawRate":0.334,"rpm":849,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":330,"pot2":745,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":41.39,"vx":5.65,"ax":-1.28,"ay":1.86,"yawRate":0.325,"rpm":844,"trqCmd":0,"trqEst":-1,"vdc":392,"idc":0,"thr":1,"pot1":342,"pot2":770,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":42.3,"vx":5.56,"ax":-1.06,"ay":1.87,"yawRate":0.332,"rpm":831,"trqCmd":0,"trqEst":-2,"vdc":395,"idc":0,"thr":1,"pot1":362,"pot2":809,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":43.23,"vx":5.55,"ax":-1.23,"ay":1.79,"yawRate":0.327,"rpm":827,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":2,"pot1":370,"pot2":832,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":44.2,"vx":5.46,"ax":-1.42,"ay":1.6,"yawRate":0.325,"rpm":822,"trqCmd":0,"trqEst":0,"vdc":396,"idc":0,"thr":5,"pot1":390,"pot2":867,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":45.19,"vx":5.41,"ax":-1.27,"ay":1.93,"yawRate":0.323,"rpm":802,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":5,"pot1":395,"pot2":873,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":46.19,"vx":5.33,"ax":-1.36,"ay":2.7,"yawRate":0.318,"rpm":797,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":6,"pot1":400,"pot2":884,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":47.2,"vx":5.29,"ax":-1.42,"ay":2.16,"yawRate":0.321,"rpm":788,"trqCmd":0,"trqEst":0,"vdc":392,"idc":0,"thr":7,"pot1":413,"pot2":920,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":48.22,"vx":5.24,"ax":-1.34,"ay":2.01,"yawRate":0.32,"rpm":780,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":6,"pot1":417,"pot2":915,"brkF":0,"brkR":0,"invT":31,"motT":29},{"s":49.23,"vx":5.2,"ax":-1.22,"ay":1.28,"yawRate":0.311,"rpm":776,"trqCmd":0,"trqEst":5,"vdc":393,"idc":0,"thr":7,"pot1":421,"pot2":923,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":50.25,"vx":5.19,"ax":-1.24,"ay":1.91,"yawRate":0.307,"rpm":767,"trqCmd":0,"trqEst":0,"vdc":396,"idc":0,"thr":7,"pot1":412,"pot2":919,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":51.27,"vx":5.12,"ax":-1.25,"ay":1.96,"yawRate":0.305,"rpm":770,"trqCmd":0,"trqEst":-1,"vdc":394,"idc":0,"thr":8,"pot1":418,"pot2":928,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":52.28,"vx":5.07,"ax":-1.24,"ay":1.42,"yawRate":0.306,"rpm":756,"trqCmd":0,"trqEst":3,"vdc":395,"idc":0,"thr":8,"pot1":425,"pot2":936,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":53.29,"vx":5.02,"ax":-1.25,"ay":1.97,"yawRate":0.31,"rpm":742,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":8,"pot1":421,"pot2":933,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":54.3,"vx":4.95,"ax":-1.24,"ay":1.89,"yawRate":0.331,"rpm":740,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":7,"pot1":433,"pot2":943,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":55.3,"vx":4.9,"ax":-1.25,"ay":1.76,"yawRate":0.354,"rpm":734,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":7,"pot1":426,"pot2":947,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":56.3,"vx":4.83,"ax":-1.42,"ay":2.06,"yawRate":0.35,"rpm":729,"trqCmd":0,"trqEst":1,"vdc":393,"idc":0,"thr":8,"pot1":430,"pot2":939,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":57.31,"vx":4.81,"ax":-1.26,"ay":1.94,"yawRate":0.339,"rpm":715,"trqCmd":0,"trqEst":-1,"vdc":395,"idc":0,"thr":8,"pot1":433,"pot2":949,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":58.31,"vx":4.76,"ax":-1.38,"ay":2.06,"yawRate":0.335,"rpm":710,"trqCmd":0,"trqEst":0,"vdc":396,"idc":0,"thr":8,"pot1":421,"pot2":932,"brkF":0,"brkR":0,"invT":31,"motT":28},{"s":59.3,"vx":4.7,"ax":-1.31,"ay":1.76,"yawRate":0.322,"rpm":702,"trqCmd":0,"trqEst":1,"vdc":394,"idc":0,"thr":8,"pot1":420,"pot2":934,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":60.3,"vx":4.67,"ax":-1.37,"ay":1.74,"yawRate":0.319,"rpm":697,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":8,"pot1":431,"pot2":948,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":61.29,"vx":4.61,"ax":-1.43,"ay":1.63,"yawRate":0.31,"rpm":690,"trqCmd":0,"trqEst":-2,"vdc":393,"idc":0,"thr":8,"pot1":423,"pot2":940,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":62.28,"vx":4.55,"ax":-1.43,"ay":1.43,"yawRate":0.272,"rpm":675,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":8,"pot1":419,"pot2":929,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":63.27,"vx":4.48,"ax":-1.47,"ay":1.35,"yawRate":0.265,"rpm":664,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":8,"pot1":430,"pot2":946,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":64.26,"vx":4.41,"ax":-1.42,"ay":1.24,"yawRate":0.253,"rpm":658,"trqCmd":0,"trqEst":2,"vdc":395,"idc":0,"thr":8,"pot1":430,"pot2":944,"brkF":0,"brkR":0,"invT":31,"motT":28},{"s":65.25,"vx":4.38,"ax":-1.35,"ay":1.14,"yawRate":0.255,"rpm":650,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":8,"pot1":418,"pot2":928,"brkF":0,"brkR":0,"invT":31,"motT":28},{"s":66.24,"vx":4.31,"ax":-1.3,"ay":1.46,"yawRate":0.231,"rpm":644,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":10,"pot1":439,"pot2":969,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":67.22,"vx":4.25,"ax":-1.24,"ay":1.31,"yawRate":0.217,"rpm":638,"trqCmd":5,"trqEst":4,"vdc":393,"idc":0,"thr":10,"pot1":459,"pot2":997,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":68.2,"vx":4.21,"ax":-1.11,"ay":1.09,"yawRate":0.191,"rpm":639,"trqCmd":2,"trqEst":2,"vdc":393,"idc":0,"thr":11,"pot1":468,"pot2":1015,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":69.18,"vx":4.21,"ax":-1.26,"ay":1.01,"yawRate":0.195,"rpm":625,"trqCmd":8,"trqEst":6,"vdc":395,"idc":0,"thr":11,"pot1":470,"pot2":1014,"brkF":0,"brkR":0,"invT":31,"motT":29},{"s":70.15,"vx":4.14,"ax":-1.12,"ay":0.86,"yawRate":0.193,"rpm":623,"trqCmd":5,"trqEst":3,"vdc":394,"idc":0,"thr":11,"pot1":464,"pot2":1009,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":71.11,"vx":4.12,"ax":-1.18,"ay":0.97,"yawRate":0.194,"rpm":611,"trqCmd":5,"trqEst":-2,"vdc":396,"idc":0,"thr":10,"pot1":457,"pot2":997,"brkF":0,"brkR":0,"invT":31,"motT":28},{"s":72.07,"vx":4.07,"ax":-1.36,"ay":0.89,"yawRate":0.19,"rpm":616,"trqCmd":1,"trqEst":5,"vdc":394,"idc":0,"thr":11,"pot1":454,"pot2":993,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":73.01,"vx":4.01,"ax":-1.6,"ay":1.3,"yawRate":0.183,"rpm":604,"trqCmd":0,"trqEst":1,"vdc":395,"idc":0,"thr":10,"pot1":444,"pot2":987,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":73.94,"vx":3.96,"ax":-1.37,"ay":1.14,"yawRate":0.178,"rpm":594,"trqCmd":0,"trqEst":-1,"vdc":394,"idc":0,"thr":8,"pot1":416,"pot2":925,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":74.86,"vx":3.89,"ax":-1.36,"ay":0.93,"yawRate":0.146,"rpm":585,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":7,"pot1":413,"pot2":915,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":75.76,"vx":3.82,"ax":-1.6,"ay":0.22,"yawRate":0.121,"rpm":568,"trqCmd":0,"trqEst":2,"vdc":395,"idc":0,"thr":7,"pot1":414,"pot2":918,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":76.64,"vx":3.73,"ax":-1.48,"ay":1.25,"yawRate":0.112,"rpm":562,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":8,"pot1":422,"pot2":930,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":77.51,"vx":3.65,"ax":-1.3,"ay":1.01,"yawRate":0.094,"rpm":578,"trqCmd":13,"trqEst":10,"vdc":394,"idc":2,"thr":12,"pot1":502,"pot2":1090,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":78.36,"vx":3.69,"ax":0.5,"ay":1.09,"yawRate":0.093,"rpm":585,"trqCmd":41,"trqEst":40,"vdc":392,"idc":6,"thr":21,"pot1":584,"pot2":1250,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":79.2,"vx":3.87,"ax":-0.04,"ay":0.79,"yawRate":0.096,"rpm":610,"trqCmd":33,"trqEst":38,"vdc":393,"idc":6,"thr":20,"pot1":564,"pot2":1209,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":80.03,"vx":4.08,"ax":0.11,"ay":0.61,"yawRate":0.095,"rpm":614,"trqCmd":34,"trqEst":38,"vdc":393,"idc":6,"thr":19,"pot1":568,"pot2":1211,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":80.86,"vx":4.25,"ax":0.33,"ay":0.99,"yawRate":0.094,"rpm":642,"trqCmd":38,"trqEst":38,"vdc":391,"idc":6,"thr":20,"pot1":567,"pot2":1211,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":81.68,"vx":4.37,"ax":-0.59,"ay":0.62,"yawRate":0.087,"rpm":675,"trqCmd":28,"trqEst":29,"vdc":393,"idc":5,"thr":17,"pot1":532,"pot2":1147,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":82.51,"vx":4.46,"ax":-1.48,"ay":0.58,"yawRate":0.073,"rpm":645,"trqCmd":5,"trqEst":7,"vdc":392,"idc":1,"thr":11,"pot1":469,"pot2":1018,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":83.34,"vx":4.4,"ax":-1.05,"ay":0.52,"yawRate":0.047,"rpm":651,"trqCmd":5,"trqEst":7,"vdc":393,"idc":0,"thr":12,"pot1":465,"pot2":1022,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":84.19,"vx":4.36,"ax":-1.33,"ay":0.17,"yawRate":0.025,"rpm":653,"trqCmd":6,"trqEst":9,"vdc":394,"idc":1,"thr":11,"pot1":471,"pot2":1022,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":85.04,"vx":4.32,"ax":-1.35,"ay":-0.75,"yawRate":-0.048,"rpm":647,"trqCmd":8,"trqEst":4,"vdc":393,"idc":0,"thr":11,"pot1":473,"pot2":1024,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":85.91,"vx":4.27,"ax":-1.33,"ay":-0.14,"yawRate":-0.097,"rpm":634,"trqCmd":2,"trqEst":7,"vdc":394,"idc":1,"thr":11,"pot1":465,"pot2":1010,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":86.79,"vx":4.26,"ax":-1.35,"ay":0.21,"yawRate":-0.097,"rpm":635,"trqCmd":5,"trqEst":5,"vdc":393,"idc":0,"thr":11,"pot1":465,"pot2":1014,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":87.69,"vx":4.18,"ax":-1.53,"ay":0.59,"yawRate":-0.065,"rpm":610,"trqCmd":0,"trqEst":1,"vdc":395,"idc":0,"thr":8,"pot1":421,"pot2":919,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":88.6,"vx":4.11,"ax":-1.61,"ay":0.32,"yawRate":-0.01,"rpm":608,"trqCmd":0,"trqEst":-1,"vdc":394,"idc":0,"thr":0,"pot1":327,"pot2":742,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":89.52,"vx":4.04,"ax":-1.61,"ay":0.18,"yawRate":-0.007,"rpm":602,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":331,"pot2":736,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":90.44,"vx":3.89,"ax":-1.55,"ay":0.24,"yawRate":0.027,"rpm":588,"trqCmd":0,"trqEst":-1,"vdc":395,"idc":0,"thr":0,"pot1":325,"pot2":726,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":91.36,"vx":3.83,"ax":-2.05,"ay":0.8,"yawRate":0.028,"rpm":563,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":326,"pot2":739,"brkF":0,"brkR":0,"invT":31,"motT":29},{"s":92.27,"vx":3.68,"ax":-2.44,"ay":0.37,"yawRate":0.021,"rpm":551,"trqCmd":0,"trqEst":1,"vdc":394,"idc":0,"thr":0,"pot1":328,"pot2":741,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":93.17,"vx":3.46,"ax":-2.4,"ay":0.55,"yawRate":0.023,"rpm":512,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":331,"pot2":741,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":94.06,"vx":3.23,"ax":-2.67,"ay":0.74,"yawRate":0.02,"rpm":474,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":324,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":28},{"s":94.93,"vx":2.95,"ax":-2.62,"ay":0.78,"yawRate":0.019,"rpm":435,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":332,"pot2":742,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":95.79,"vx":2.71,"ax":-1.96,"ay":0.6,"yawRate":0.02,"rpm":405,"trqCmd":0,"trqEst":-1,"vdc":395,"idc":0,"thr":0,"pot1":324,"pot2":735,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":96.63,"vx":2.53,"ax":-1.53,"ay":0.54,"yawRate":0.02,"rpm":379,"trqCmd":0,"trqEst":1,"vdc":395,"idc":0,"thr":0,"pot1":328,"pot2":736,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":97.47,"vx":2.44,"ax":-1.32,"ay":0.78,"yawRate":0.032,"rpm":375,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":6,"pot1":408,"pot2":902,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":98.29,"vx":2.35,"ax":-1.47,"ay":1.27,"yawRate":0.09,"rpm":352,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":6,"pot1":410,"pot2":907,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":99.11,"vx":2.24,"ax":-1.48,"ay":0.93,"yawRate":0.158,"rpm":338,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":7,"pot1":429,"pot2":937,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":99.94,"vx":2.15,"ax":-0.89,"ay":0.83,"yawRate":0.216,"rpm":336,"trqCmd":6,"trqEst":6,"vdc":395,"idc":0,"thr":10,"pot1":463,"pot2":1014,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":100.78,"vx":2.11,"ax":-1.06,"ay":0.85,"yawRate":0.233,"rpm":284,"trqCmd":16,"trqEst":17,"vdc":394,"idc":1,"thr":14,"pot1":507,"pot2":1093,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":101.62,"vx":2.19,"ax":-0.01,"ay":1.18,"yawRate":0.277,"rpm":317,"trqCmd":13,"trqEst":13,"vdc":394,"idc":1,"thr":15,"pot1":475,"pot2":1037,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":102.47,"vx":2.18,"ax":-1.2,"ay":1.38,"yawRate":0.335,"rpm":303,"trqCmd":0,"trqEst":2,"vdc":395,"idc":0,"thr":5,"pot1":345,"pot2":787,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":103.34,"vx":2.08,"ax":-1.32,"ay":1.38,"yawRate":0.374,"rpm":304,"trqCmd":0,"trqEst":0,"vdc":396,"idc":0,"thr":0,"pot1":326,"pot2":743,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":104.2,"vx":1.94,"ax":-1.76,"ay":1.42,"yawRate":0.417,"rpm":273,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":2,"pot1":358,"pot2":810,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":105.07,"vx":1.69,"ax":-0.77,"ay":0.8,"yawRate":0.389,"rpm":247,"trqCmd":14,"trqEst":16,"vdc":395,"idc":1,"thr":14,"pot1":496,"pot2":1073,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":105.94,"vx":1.66,"ax":-1.18,"ay":1.23,"yawRate":0.397,"rpm":218,"trqCmd":9,"trqEst":8,"vdc":393,"idc":0,"thr":12,"pot1":482,"pot2":1045,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":106.79,"vx":1.59,"ax":-1.14,"ay":0.89,"yawRate":0.382,"rpm":209,"trqCmd":10,"trqEst":7,"vdc":395,"idc":0,"thr":13,"pot1":473,"pot2":1041,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":107.63,"vx":1.53,"ax":-0.67,"ay":1.17,"yawRate":0.361,"rpm":229,"trqCmd":16,"trqEst":14,"vdc":394,"idc":1,"thr":13,"pot1":506,"pot2":1094,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":108.45,"vx":1.58,"ax":-0.29,"ay":0.58,"yawRate":0.381,"rpm":232,"trqCmd":21,"trqEst":21,"vdc":394,"idc":1,"thr":15,"pot1":519,"pot2":1123,"brkF":0,"brkR":0,"invT":31,"motT":28},{"s":109.25,"vx":1.66,"ax":-0.41,"ay":0.57,"yawRate":0.399,"rpm":246,"trqCmd":20,"trqEst":23,"vdc":392,"idc":1,"thr":16,"pot1":515,"pot2":1112,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":110.01,"vx":1.72,"ax":-1.01,"ay":0.69,"yawRate":0.428,"rpm":240,"trqCmd":11,"trqEst":9,"vdc":394,"idc":0,"thr":12,"pot1":481,"pot2":1036,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":110.75,"vx":1.68,"ax":-0.86,"ay":0.47,"yawRate":0.388,"rpm":234,"trqCmd":10,"trqEst":10,"vdc":395,"idc":0,"thr":12,"pot1":476,"pot2":1038,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":111.46,"vx":1.62,"ax":-0.55,"ay":-0.01,"yawRate":0.281,"rpm":240,"trqCmd":3,"trqEst":1,"vdc":395,"idc":0,"thr":10,"pot1":463,"pot2":1005,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":112.15,"vx":1.55,"ax":-0.41,"ay":0.21,"yawRate":0.142,"rpm":230,"trqCmd":0,"trqEst":2,"vdc":393,"idc":0,"thr":10,"pot1":452,"pot2":979,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":112.84,"vx":1.49,"ax":-0.14,"ay":0.15,"yawRate":0.131,"rpm":221,"trqCmd":3,"trqEst":3,"vdc":394,"idc":0,"thr":10,"pot1":448,"pot2":988,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":113.53,"vx":1.46,"ax":-0.19,"ay":0.31,"yawRate":0.142,"rpm":216,"trqCmd":1,"trqEst":3,"vdc":395,"idc":0,"thr":10,"pot1":466,"pot2":1017,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":114.23,"vx":1.45,"ax":-0.25,"ay":0.4,"yawRate":0.246,"rpm":216,"trqCmd":4,"trqEst":1,"vdc":393,"idc":0,"thr":12,"pot1":483,"pot2":1025,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":114.97,"vx":1.38,"ax":-0.7,"ay":0.17,"yawRate":0.28,"rpm":193,"trqCmd":0,"trqEst":-1,"vdc":393,"idc":0,"thr":0,"pot1":316,"pot2":736,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":115.73,"vx":1.12,"ax":-0.83,"ay":-0.16,"yawRate":0.231,"rpm":146,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":329,"pot2":733,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":116.53,"vx":0.61,"ax":1.33,"ay":-0.03,"yawRate":0.001,"rpm":114,"trqCmd":31,"trqEst":33,"vdc":394,"idc":1,"thr":18,"pot1":550,"pot2":1172,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":117.36,"vx":1.27,"ax":1.31,"ay":-0.13,"yawRate":-0.032,"rpm":223,"trqCmd":37,"trqEst":42,"vdc":393,"idc":2,"thr":20,"pot1":579,"pot2":1235,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":118.23,"vx":1.8,"ax":1.27,"ay":-0.24,"yawRate":-0.055,"rpm":287,"trqCmd":41,"trqEst":42,"vdc":393,"idc":3,"thr":20,"pot1":577,"pot2":1231,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":119.12,"vx":2.22,"ax":0.96,"ay":-0.13,"yawRate":-0.062,"rpm":352,"trqCmd":36,"trqEst":39,"vdc":392,"idc":4,"thr":20,"pot1":568,"pot2":1221,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":120.04,"vx":2.5,"ax":1.15,"ay":-0.18,"yawRate":-0.069,"rpm":405,"trqCmd":36,"trqEst":37,"vdc":393,"idc":4,"thr":21,"pot1":565,"pot2":1224,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":120.97,"vx":2.81,"ax":1.14,"ay":-0.24,"yawRate":-0.08,"rpm":440,"trqCmd":42,"trqEst":43,"vdc":393,"idc":4,"thr":20,"pot1":584,"pot2":1249,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":121.91,"vx":3.06,"ax":0.99,"ay":-0.28,"yawRate":-0.075,"rpm":473,"trqCmd":37,"trqEst":41,"vdc":393,"idc":5,"thr":20,"pot1":582,"pot2":1237,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":122.86,"vx":3.32,"ax":1.16,"ay":-0.04,"yawRate":-0.079,"rpm":512,"trqCmd":46,"trqEst":45,"vdc":390,"idc":6,"thr":22,"pot1":595,"pot2":1273,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":123.82,"vx":3.6,"ax":1.77,"ay":0.06,"yawRate":-0.04,"rpm":595,"trqCmd":59,"trqEst":61,"vdc":391,"idc":10,"thr":24,"pot1":654,"pot2":1378,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":124.78,"vx":3.93,"ax":2.1,"ay":0.12,"yawRate":-0.014,"rpm":589,"trqCmd":63,"trqEst":64,"vdc":389,"idc":10,"thr":28,"pot1":655,"pot2":1385,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":125.74,"vx":4.29,"ax":2.36,"ay":0.24,"yawRate":-0.019,"rpm":679,"trqCmd":68,"trqEst":64,"vdc":390,"idc":13,"thr":29,"pot1":670,"pot2":1420,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":126.71,"vx":4.59,"ax":2.63,"ay":-0.13,"yawRate":-0.019,"rpm":716,"trqCmd":74,"trqEst":77,"vdc":390,"idc":15,"thr":31,"pot1":698,"pot2":1467,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":127.67,"vx":5,"ax":2.7,"ay":-0.45,"yawRate":-0.02,"rpm":757,"trqCmd":76,"trqEst":81,"vdc":387,"idc":17,"thr":30,"pot1":705,"pot2":1479,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":128.64,"vx":5.29,"ax":2.61,"ay":-0.1,"yawRate":-0.027,"rpm":793,"trqCmd":76,"trqEst":82,"vdc":386,"idc":17,"thr":30,"pot1":704,"pot2":1471,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":129.6,"vx":5.61,"ax":2.28,"ay":-0.78,"yawRate":-0.02,"rpm":860,"trqCmd":74,"trqEst":70,"vdc":388,"idc":18,"thr":31,"pot1":695,"pot2":1467,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":130.56,"vx":5.86,"ax":2.65,"ay":-0.8,"yawRate":-0.027,"rpm":883,"trqCmd":75,"trqEst":73,"vdc":388,"idc":19,"thr":30,"pot1":694,"pot2":1463,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":131.53,"vx":6.15,"ax":2.58,"ay":-0.44,"yawRate":-0.03,"rpm":925,"trqCmd":73,"trqEst":76,"vdc":388,"idc":19,"thr":31,"pot1":695,"pot2":1467,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":132.49,"vx":6.37,"ax":2.55,"ay":-0.4,"yawRate":-0.008,"rpm":970,"trqCmd":74,"trqEst":82,"vdc":387,"idc":20,"thr":30,"pot1":686,"pot2":1449,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":133.46,"vx":6.56,"ax":2.58,"ay":-0.18,"yawRate":0.021,"rpm":1014,"trqCmd":69,"trqEst":73,"vdc":387,"idc":21,"thr":30,"pot1":685,"pot2":1439,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":134.43,"vx":6.8,"ax":2.55,"ay":0.49,"yawRate":0.087,"rpm":1030,"trqCmd":65,"trqEst":68,"vdc":387,"idc":21,"thr":29,"pot1":672,"pot2":1411,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":135.4,"vx":7,"ax":-0.29,"ay":0.57,"yawRate":0.109,"rpm":982,"trqCmd":0,"trqEst":-1,"vdc":392,"idc":0,"thr":12,"pot1":371,"pot2":836,"brkF":0,"brkR":0,"invT":33,"motT":33}],"23_08/23_08_2026-02.29.02.csv":[{"s":0,"vx":2.78,"ax":-0.4,"ay":1.24,"yawRate":0.648,"rpm":377,"trqCmd":6,"trqEst":3,"vdc":393,"idc":0,"thr":11,"pot1":465,"pot2":1017,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":0.97,"vx":2.64,"ax":-0.5,"ay":1.16,"yawRate":0.641,"rpm":374,"trqCmd":6,"trqEst":4,"vdc":394,"idc":0,"thr":12,"pot1":470,"pot2":1020,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":1.94,"vx":2.54,"ax":-0.59,"ay":0.57,"yawRate":0.599,"rpm":369,"trqCmd":4,"trqEst":1,"vdc":394,"idc":0,"thr":12,"pot1":464,"pot2":1008,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":2.92,"vx":2.41,"ax":-0.17,"ay":-0.08,"yawRate":0.43,"rpm":352,"trqCmd":3,"trqEst":4,"vdc":395,"idc":0,"thr":12,"pot1":460,"pot2":1006,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":3.89,"vx":2.39,"ax":-0.36,"ay":0.43,"yawRate":0.379,"rpm":340,"trqCmd":4,"trqEst":4,"vdc":394,"idc":0,"thr":11,"pot1":466,"pot2":1016,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":4.86,"vx":2.37,"ax":-0.36,"ay":0.42,"yawRate":0.382,"rpm":353,"trqCmd":3,"trqEst":4,"vdc":393,"idc":0,"thr":11,"pot1":468,"pot2":1022,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":5.84,"vx":2.38,"ax":-0.98,"ay":0.63,"yawRate":0.45,"rpm":338,"trqCmd":0,"trqEst":-2,"vdc":394,"idc":0,"thr":10,"pot1":445,"pot2":971,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":6.81,"vx":2.25,"ax":-1.18,"ay":0.25,"yawRate":0.441,"rpm":314,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":331,"pot2":742,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":7.79,"vx":2.05,"ax":-1.24,"ay":0.11,"yawRate":0.394,"rpm":284,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":338,"pot2":744,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":8.76,"vx":1.78,"ax":-1.22,"ay":-0.03,"yawRate":0.351,"rpm":244,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":327,"pot2":733,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":9.74,"vx":1.23,"ax":-0.8,"ay":-0.33,"yawRate":0.178,"rpm":159,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":335,"pot2":749,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":10.71,"vx":0.91,"ax":1.45,"ay":-0.43,"yawRate":-0.08,"rpm":154,"trqCmd":44,"trqEst":51,"vdc":393,"idc":2,"thr":21,"pot1":590,"pot2":1259,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":11.69,"vx":1.89,"ax":1.16,"ay":-0.64,"yawRate":-0.317,"rpm":281,"trqCmd":49,"trqEst":49,"vdc":394,"idc":4,"thr":23,"pot1":610,"pot2":1303,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":12.66,"vx":2.4,"ax":0.99,"ay":-0.78,"yawRate":-0.421,"rpm":365,"trqCmd":50,"trqEst":52,"vdc":393,"idc":5,"thr":23,"pot1":620,"pot2":1308,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":13.64,"vx":2.85,"ax":1.02,"ay":-1.21,"yawRate":-0.501,"rpm":429,"trqCmd":47,"trqEst":49,"vdc":393,"idc":6,"thr":23,"pot1":615,"pot2":1310,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":14.61,"vx":3.12,"ax":0.59,"ay":-0.11,"yawRate":-0.508,"rpm":462,"trqCmd":27,"trqEst":26,"vdc":394,"idc":3,"thr":20,"pot1":529,"pot2":1142,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":15.59,"vx":3.28,"ax":-0.25,"ay":1.48,"yawRate":-0.069,"rpm":489,"trqCmd":11,"trqEst":13,"vdc":394,"idc":1,"thr":13,"pot1":482,"pot2":1050,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":16.57,"vx":3.32,"ax":-0.59,"ay":2.4,"yawRate":0.259,"rpm":495,"trqCmd":11,"trqEst":10,"vdc":394,"idc":1,"thr":12,"pot1":482,"pot2":1045,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":17.54,"vx":3.35,"ax":-0.59,"ay":2.18,"yawRate":0.465,"rpm":480,"trqCmd":9,"trqEst":8,"vdc":394,"idc":1,"thr":12,"pot1":478,"pot2":1033,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":18.52,"vx":3.31,"ax":-1.18,"ay":2.64,"yawRate":0.592,"rpm":488,"trqCmd":8,"trqEst":7,"vdc":395,"idc":0,"thr":11,"pot1":463,"pot2":1017,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":19.5,"vx":3.32,"ax":-1.35,"ay":2.61,"yawRate":0.683,"rpm":474,"trqCmd":6,"trqEst":4,"vdc":393,"idc":0,"thr":12,"pot1":463,"pot2":1002,"brkF":0,"brkR":0,"invT":31,"motT":29},{"s":20.48,"vx":3.28,"ax":-1.53,"ay":2.16,"yawRate":0.735,"rpm":458,"trqCmd":6,"trqEst":3,"vdc":394,"idc":0,"thr":6,"pot1":466,"pot2":1017,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":21.45,"vx":3.21,"ax":-1.37,"ay":2.53,"yawRate":0.762,"rpm":485,"trqCmd":25,"trqEst":23,"vdc":394,"idc":3,"thr":15,"pot1":537,"pot2":1152,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":22.43,"vx":3.28,"ax":-0.79,"ay":3.23,"yawRate":0.775,"rpm":486,"trqCmd":27,"trqEst":28,"vdc":394,"idc":3,"thr":17,"pot1":535,"pot2":1148,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":23.4,"vx":3.38,"ax":-0.69,"ay":2.9,"yawRate":0.766,"rpm":488,"trqCmd":21,"trqEst":22,"vdc":394,"idc":3,"thr":16,"pot1":520,"pot2":1123,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":24.38,"vx":3.41,"ax":-1.12,"ay":3.25,"yawRate":0.78,"rpm":501,"trqCmd":22,"trqEst":25,"vdc":393,"idc":3,"thr":16,"pot1":516,"pot2":1118,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":25.35,"vx":3.46,"ax":-1.39,"ay":3.35,"yawRate":0.8,"rpm":497,"trqCmd":21,"trqEst":24,"vdc":393,"idc":3,"thr":15,"pot1":516,"pot2":1120,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":26.32,"vx":3.49,"ax":-1.24,"ay":3.51,"yawRate":0.816,"rpm":512,"trqCmd":26,"trqEst":26,"vdc":393,"idc":3,"thr":16,"pot1":531,"pot2":1150,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":27.29,"vx":3.53,"ax":-0.95,"ay":4.22,"yawRate":0.83,"rpm":507,"trqCmd":31,"trqEst":32,"vdc":393,"idc":4,"thr":18,"pot1":556,"pot2":1187,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":28.24,"vx":3.63,"ax":-0.48,"ay":3.66,"yawRate":0.826,"rpm":534,"trqCmd":38,"trqEst":41,"vdc":393,"idc":5,"thr":21,"pot1":575,"pot2":1227,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":29.19,"vx":3.83,"ax":-0.12,"ay":4.56,"yawRate":0.873,"rpm":557,"trqCmd":47,"trqEst":46,"vdc":391,"idc":7,"thr":23,"pot1":594,"pot2":1269,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":30.12,"vx":4.04,"ax":0.22,"ay":4.5,"yawRate":0.902,"rpm":601,"trqCmd":56,"trqEst":59,"vdc":390,"idc":9,"thr":24,"pot1":636,"pot2":1346,"brkF":0,"brkR":0,"invT":31,"motT":28},{"s":31.03,"vx":4.39,"ax":0.96,"ay":4.37,"yawRate":0.932,"rpm":665,"trqCmd":68,"trqEst":74,"vdc":389,"idc":13,"thr":28,"pot1":669,"pot2":1409,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":31.92,"vx":4.62,"ax":1.39,"ay":4.01,"yawRate":0.847,"rpm":708,"trqCmd":76,"trqEst":81,"vdc":388,"idc":15,"thr":30,"pot1":695,"pot2":1465,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":32.78,"vx":5.01,"ax":1.93,"ay":4.53,"yawRate":0.787,"rpm":755,"trqCmd":81,"trqEst":81,"vdc":388,"idc":18,"thr":32,"pot1":717,"pot2":1510,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":33.61,"vx":5.48,"ax":1.87,"ay":5.24,"yawRate":0.752,"rpm":876,"trqCmd":80,"trqEst":85,"vdc":387,"idc":21,"thr":32,"pot1":704,"pot2":1485,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":34.41,"vx":5.69,"ax":1.93,"ay":5.7,"yawRate":0.749,"rpm":939,"trqCmd":81,"trqEst":77,"vdc":387,"idc":22,"thr":31,"pot1":711,"pot2":1500,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":35.18,"vx":6.01,"ax":2.14,"ay":5.29,"yawRate":0.719,"rpm":1001,"trqCmd":77,"trqEst":82,"vdc":385,"idc":23,"thr":31,"pot1":711,"pot2":1501,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":35.93,"vx":6.33,"ax":2.8,"ay":5.13,"yawRate":0.741,"rpm":1000,"trqCmd":75,"trqEst":82,"vdc":386,"idc":22,"thr":30,"pot1":704,"pot2":1478,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":36.66,"vx":6.6,"ax":2.35,"ay":4.63,"yawRate":0.521,"rpm":1011,"trqCmd":76,"trqEst":77,"vdc":387,"idc":22,"thr":31,"pot1":695,"pot2":1472,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":37.4,"vx":6.8,"ax":2.11,"ay":4.17,"yawRate":0.478,"rpm":1045,"trqCmd":72,"trqEst":78,"vdc":387,"idc":22,"thr":31,"pot1":704,"pot2":1476,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":38.14,"vx":7.08,"ax":2.01,"ay":4.89,"yawRate":0.475,"rpm":1094,"trqCmd":69,"trqEst":71,"vdc":386,"idc":22,"thr":32,"pot1":719,"pot2":1520,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":38.9,"vx":7.37,"ax":2.34,"ay":4.93,"yawRate":0.461,"rpm":1129,"trqCmd":66,"trqEst":71,"vdc":386,"idc":22,"thr":35,"pot1":759,"pot2":1590,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":39.7,"vx":7.56,"ax":2.26,"ay":4.7,"yawRate":0.469,"rpm":1137,"trqCmd":66,"trqEst":66,"vdc":386,"idc":22,"thr":36,"pot1":769,"pot2":1605,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":40.53,"vx":7.72,"ax":1.93,"ay":5.03,"yawRate":0.482,"rpm":1176,"trqCmd":64,"trqEst":71,"vdc":388,"idc":22,"thr":37,"pot1":771,"pot2":1623,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":41.39,"vx":7.88,"ax":1.92,"ay":5.35,"yawRate":0.462,"rpm":1213,"trqCmd":63,"trqEst":66,"vdc":387,"idc":22,"thr":37,"pot1":779,"pot2":1629,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":42.3,"vx":8.12,"ax":2.07,"ay":5.32,"yawRate":0.451,"rpm":1238,"trqCmd":62,"trqEst":67,"vdc":385,"idc":22,"thr":36,"pot1":755,"pot2":1586,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":43.23,"vx":8.29,"ax":1.7,"ay":4.34,"yawRate":0.378,"rpm":1257,"trqCmd":61,"trqEst":58,"vdc":385,"idc":22,"thr":36,"pot1":764,"pot2":1608,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":44.2,"vx":8.4,"ax":1.73,"ay":4.3,"yawRate":0.321,"rpm":1281,"trqCmd":60,"trqEst":63,"vdc":386,"idc":22,"thr":38,"pot1":781,"pot2":1634,"brkF":0,"brkR":0,"invT":33,"motT":30},{"s":45.19,"vx":8.53,"ax":2.09,"ay":4.96,"yawRate":0.328,"rpm":1296,"trqCmd":59,"trqEst":63,"vdc":387,"idc":22,"thr":38,"pot1":789,"pot2":1652,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":46.19,"vx":8.71,"ax":2.39,"ay":4.7,"yawRate":0.333,"rpm":1334,"trqCmd":58,"trqEst":61,"vdc":386,"idc":22,"thr":39,"pot1":809,"pot2":1685,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":47.2,"vx":8.88,"ax":2,"ay":4.1,"yawRate":0.312,"rpm":1350,"trqCmd":57,"trqEst":61,"vdc":387,"idc":22,"thr":41,"pot1":814,"pot2":1701,"brkF":0,"brkR":0,"invT":33,"motT":30},{"s":48.22,"vx":9.04,"ax":1.82,"ay":3.87,"yawRate":0.305,"rpm":1350,"trqCmd":38,"trqEst":38,"vdc":388,"idc":16,"thr":34,"pot1":508,"pot2":1107,"brkF":0,"brkR":0,"invT":33,"motT":30},{"s":49.23,"vx":9.02,"ax":-0.89,"ay":4.33,"yawRate":0.299,"rpm":1325,"trqCmd":0,"trqEst":1,"vdc":392,"idc":0,"thr":9,"pot1":434,"pot2":959,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":50.25,"vx":8.89,"ax":-0.69,"ay":3.31,"yawRate":0.238,"rpm":1350,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":9,"pot1":333,"pot2":739,"brkF":0,"brkR":0,"invT":33,"motT":30},{"s":51.27,"vx":8.89,"ax":-0.63,"ay":2.77,"yawRate":0.219,"rpm":1287,"trqCmd":0,"trqEst":1,"vdc":394,"idc":0,"thr":0,"pot1":324,"pot2":728,"brkF":0,"brkR":0,"invT":33,"motT":30},{"s":52.28,"vx":8.85,"ax":-0.6,"ay":2.73,"yawRate":0.2,"rpm":1365,"trqCmd":0,"trqEst":-1,"vdc":392,"idc":0,"thr":0,"pot1":335,"pot2":746,"brkF":0,"brkR":0,"invT":33,"motT":30},{"s":53.29,"vx":8.82,"ax":-0.26,"ay":3.28,"yawRate":0.178,"rpm":1326,"trqCmd":0,"trqEst":-3,"vdc":394,"idc":0,"thr":0,"pot1":328,"pot2":736,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":54.3,"vx":8.78,"ax":-0.97,"ay":3.57,"yawRate":0.164,"rpm":1302,"trqCmd":0,"trqEst":1,"vdc":393,"idc":0,"thr":0,"pot1":321,"pot2":729,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":55.3,"vx":8.75,"ax":-1.08,"ay":3.19,"yawRate":0.148,"rpm":1339,"trqCmd":0,"trqEst":-3,"vdc":395,"idc":0,"thr":0,"pot1":327,"pot2":734,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":56.3,"vx":8.65,"ax":-0.49,"ay":2.75,"yawRate":0.128,"rpm":1270,"trqCmd":0,"trqEst":2,"vdc":394,"idc":0,"thr":0,"pot1":324,"pot2":734,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":57.31,"vx":8.59,"ax":-0.64,"ay":2.54,"yawRate":0.093,"rpm":1301,"trqCmd":0,"trqEst":1,"vdc":394,"idc":0,"thr":0,"pot1":324,"pot2":739,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":58.31,"vx":8.54,"ax":-0.69,"ay":2.02,"yawRate":0.062,"rpm":1279,"trqCmd":0,"trqEst":-3,"vdc":393,"idc":0,"thr":0,"pot1":331,"pot2":739,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":59.3,"vx":8.46,"ax":-0.72,"ay":2.58,"yawRate":0.056,"rpm":1266,"trqCmd":0,"trqEst":0,"vdc":392,"idc":0,"thr":0,"pot1":330,"pot2":731,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":60.3,"vx":8.43,"ax":-0.51,"ay":2.78,"yawRate":0.056,"rpm":1265,"trqCmd":0,"trqEst":-1,"vdc":394,"idc":0,"thr":0,"pot1":326,"pot2":740,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":61.29,"vx":8.34,"ax":-0.6,"ay":3.19,"yawRate":0.061,"rpm":1257,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":332,"pot2":740,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":62.28,"vx":8.34,"ax":-0.7,"ay":2.54,"yawRate":0.065,"rpm":1247,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":324,"pot2":732,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":63.27,"vx":8.25,"ax":-0.83,"ay":2.2,"yawRate":0.062,"rpm":1241,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":324,"pot2":732,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":64.26,"vx":8.19,"ax":-0.72,"ay":2.37,"yawRate":0.062,"rpm":1236,"trqCmd":0,"trqEst":1,"vdc":395,"idc":0,"thr":0,"pot1":327,"pot2":732,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":65.25,"vx":8.06,"ax":-0.84,"ay":2.15,"yawRate":0.071,"rpm":1224,"trqCmd":0,"trqEst":2,"vdc":393,"idc":0,"thr":0,"pot1":327,"pot2":742,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":66.24,"vx":8.06,"ax":-0.98,"ay":2.44,"yawRate":0.069,"rpm":1223,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":322,"pot2":732,"brkF":0,"brkR":0,"invT":31,"motT":29},{"s":67.22,"vx":7.99,"ax":-0.96,"ay":2.48,"yawRate":0.068,"rpm":1195,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":324,"pot2":732,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":68.2,"vx":7.9,"ax":-0.87,"ay":2.48,"yawRate":0.057,"rpm":1187,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":331,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":69.18,"vx":7.87,"ax":-0.91,"ay":2.47,"yawRate":0.059,"rpm":1185,"trqCmd":0,"trqEst":0,"vdc":396,"idc":0,"thr":0,"pot1":324,"pot2":736,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":70.15,"vx":7.76,"ax":-0.88,"ay":2.64,"yawRate":0.062,"rpm":1170,"trqCmd":0,"trqEst":1,"vdc":393,"idc":0,"thr":0,"pot1":321,"pot2":730,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":71.11,"vx":7.72,"ax":-0.91,"ay":2.41,"yawRate":0.06,"rpm":1155,"trqCmd":0,"trqEst":-1,"vdc":396,"idc":0,"thr":0,"pot1":324,"pot2":729,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":72.07,"vx":7.66,"ax":-1.05,"ay":2.33,"yawRate":0.053,"rpm":1147,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":324,"pot2":728,"brkF":0,"brkR":0,"invT":31,"motT":28},{"s":73.01,"vx":7.45,"ax":-0.92,"ay":2.37,"yawRate":0.065,"rpm":1134,"trqCmd":0,"trqEst":2,"vdc":393,"idc":0,"thr":0,"pot1":328,"pot2":735,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":73.94,"vx":7.42,"ax":-1.01,"ay":2.34,"yawRate":0.059,"rpm":1113,"trqCmd":0,"trqEst":0,"vdc":396,"idc":0,"thr":0,"pot1":330,"pot2":735,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":74.86,"vx":7.33,"ax":-1.34,"ay":2.98,"yawRate":0.056,"rpm":1094,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":324,"pot2":730,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":75.76,"vx":7.16,"ax":-1.56,"ay":2.59,"yawRate":0.058,"rpm":1079,"trqCmd":0,"trqEst":0,"vdc":392,"idc":0,"thr":0,"pot1":326,"pot2":733,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":76.64,"vx":7.02,"ax":-1.82,"ay":2.46,"yawRate":0.062,"rpm":1058,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":327,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":77.51,"vx":6.93,"ax":-2.03,"ay":2.68,"yawRate":0.062,"rpm":1037,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":325,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":78.36,"vx":6.73,"ax":-1.69,"ay":2.57,"yawRate":0.058,"rpm":1003,"trqCmd":0,"trqEst":-1,"vdc":393,"idc":0,"thr":0,"pot1":328,"pot2":735,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":79.2,"vx":6.51,"ax":-1.52,"ay":2.67,"yawRate":0.059,"rpm":971,"trqCmd":0,"trqEst":0,"vdc":396,"idc":0,"thr":0,"pot1":332,"pot2":743,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":80.03,"vx":6.38,"ax":-0.79,"ay":2.22,"yawRate":0.054,"rpm":960,"trqCmd":0,"trqEst":-1,"vdc":393,"idc":0,"thr":0,"pot1":324,"pot2":735,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":80.86,"vx":6.31,"ax":-0.6,"ay":3.83,"yawRate":0.128,"rpm":956,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":329,"pot2":740,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":81.68,"vx":6.28,"ax":-0.55,"ay":5.98,"yawRate":0.332,"rpm":942,"trqCmd":0,"trqEst":-2,"vdc":395,"idc":0,"thr":0,"pot1":317,"pot2":727,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":82.51,"vx":6.25,"ax":-0.38,"ay":6.31,"yawRate":0.564,"rpm":936,"trqCmd":8,"trqEst":6,"vdc":394,"idc":0,"thr":11,"pot1":473,"pot2":1023,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":83.34,"vx":6.23,"ax":0,"ay":5.84,"yawRate":0.62,"rpm":939,"trqCmd":15,"trqEst":12,"vdc":394,"idc":2,"thr":12,"pot1":494,"pot2":1076,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":84.19,"vx":6.24,"ax":1.17,"ay":5.63,"yawRate":0.63,"rpm":939,"trqCmd":33,"trqEst":32,"vdc":391,"idc":9,"thr":19,"pot1":549,"pot2":1189,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":85.04,"vx":6.32,"ax":1.37,"ay":5.8,"yawRate":0.625,"rpm":966,"trqCmd":40,"trqEst":44,"vdc":390,"idc":11,"thr":20,"pot1":578,"pot2":1242,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":85.91,"vx":6.46,"ax":1.68,"ay":5.71,"yawRate":0.626,"rpm":976,"trqCmd":40,"trqEst":39,"vdc":391,"idc":11,"thr":21,"pot1":574,"pot2":1225,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":86.79,"vx":6.64,"ax":1.62,"ay":5.6,"yawRate":0.627,"rpm":1006,"trqCmd":38,"trqEst":42,"vdc":392,"idc":11,"thr":20,"pot1":580,"pot2":1239,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":87.69,"vx":6.73,"ax":2.03,"ay":4.02,"yawRate":0.524,"rpm":1024,"trqCmd":43,"trqEst":45,"vdc":389,"idc":12,"thr":21,"pot1":572,"pot2":1232,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":88.6,"vx":6.9,"ax":1.99,"ay":4.22,"yawRate":0.47,"rpm":1048,"trqCmd":43,"trqEst":43,"vdc":390,"idc":12,"thr":22,"pot1":592,"pot2":1261,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":89.52,"vx":7,"ax":1.7,"ay":5.31,"yawRate":0.455,"rpm":1057,"trqCmd":40,"trqEst":44,"vdc":388,"idc":12,"thr":20,"pot1":582,"pot2":1240,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":90.44,"vx":7.09,"ax":1.91,"ay":4.74,"yawRate":0.452,"rpm":1079,"trqCmd":42,"trqEst":36,"vdc":391,"idc":13,"thr":21,"pot1":586,"pot2":1250,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":91.36,"vx":7.25,"ax":2.12,"ay":5.05,"yawRate":0.453,"rpm":1104,"trqCmd":43,"trqEst":43,"vdc":391,"idc":13,"thr":21,"pot1":576,"pot2":1240,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":92.27,"vx":7.39,"ax":2.04,"ay":5.1,"yawRate":0.455,"rpm":1112,"trqCmd":42,"trqEst":44,"vdc":389,"idc":13,"thr":21,"pot1":586,"pot2":1252,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":93.17,"vx":7.5,"ax":1.99,"ay":4.94,"yawRate":0.45,"rpm":1135,"trqCmd":40,"trqEst":39,"vdc":391,"idc":14,"thr":20,"pot1":583,"pot2":1239,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":94.06,"vx":7.55,"ax":2.15,"ay":4.94,"yawRate":0.437,"rpm":1157,"trqCmd":43,"trqEst":49,"vdc":391,"idc":14,"thr":21,"pot1":593,"pot2":1267,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":94.93,"vx":7.7,"ax":2.09,"ay":4.3,"yawRate":0.398,"rpm":1163,"trqCmd":46,"trqEst":51,"vdc":389,"idc":15,"thr":22,"pot1":588,"pot2":1252,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":95.79,"vx":7.81,"ax":2.26,"ay":3.94,"yawRate":0.371,"rpm":1174,"trqCmd":44,"trqEst":50,"vdc":388,"idc":14,"thr":21,"pot1":588,"pot2":1267,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":96.63,"vx":7.96,"ax":2.29,"ay":3.85,"yawRate":0.344,"rpm":1195,"trqCmd":44,"trqEst":45,"vdc":389,"idc":15,"thr":22,"pot1":586,"pot2":1251,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":97.47,"vx":8.04,"ax":2.37,"ay":3.82,"yawRate":0.339,"rpm":1217,"trqCmd":45,"trqEst":47,"vdc":387,"idc":15,"thr":21,"pot1":586,"pot2":1256,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":98.29,"vx":8.22,"ax":2.47,"ay":3.89,"yawRate":0.338,"rpm":1263,"trqCmd":44,"trqEst":46,"vdc":387,"idc":16,"thr":21,"pot1":593,"pot2":1263,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":99.11,"vx":8.33,"ax":2.34,"ay":4.05,"yawRate":0.336,"rpm":1254,"trqCmd":45,"trqEst":44,"vdc":389,"idc":15,"thr":22,"pot1":588,"pot2":1256,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":99.94,"vx":8.42,"ax":1.68,"ay":4.46,"yawRate":0.339,"rpm":1246,"trqCmd":16,"trqEst":19,"vdc":391,"idc":7,"thr":16,"pot1":501,"pot2":1094,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":100.78,"vx":8.46,"ax":1.14,"ay":4.34,"yawRate":0.343,"rpm":1268,"trqCmd":17,"trqEst":18,"vdc":392,"idc":6,"thr":15,"pot1":505,"pot2":1088,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":101.62,"vx":8.42,"ax":0.87,"ay":4.16,"yawRate":0.329,"rpm":1240,"trqCmd":2,"trqEst":5,"vdc":392,"idc":1,"thr":11,"pot1":446,"pot2":986,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":102.47,"vx":8.42,"ax":0.25,"ay":4.54,"yawRate":0.32,"rpm":1260,"trqCmd":0,"trqEst":0,"vdc":392,"idc":0,"thr":5,"pot1":385,"pot2":855,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":103.34,"vx":8.33,"ax":0.31,"ay":2.17,"yawRate":0.306,"rpm":1269,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":3,"pot1":329,"pot2":742,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":104.2,"vx":8.28,"ax":0.4,"ay":3.38,"yawRate":0.272,"rpm":1229,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":316,"pot2":726,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":105.07,"vx":8.26,"ax":0.5,"ay":3.43,"yawRate":0.229,"rpm":1250,"trqCmd":0,"trqEst":-1,"vdc":393,"idc":0,"thr":0,"pot1":325,"pot2":734,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":105.94,"vx":8.25,"ax":0.28,"ay":2.79,"yawRate":0.241,"rpm":1230,"trqCmd":0,"trqEst":-1,"vdc":393,"idc":0,"thr":0,"pot1":327,"pot2":741,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":106.79,"vx":8.21,"ax":0.19,"ay":4.13,"yawRate":0.239,"rpm":1237,"trqCmd":0,"trqEst":0,"vdc":392,"idc":0,"thr":0,"pot1":326,"pot2":735,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":107.63,"vx":8.11,"ax":0.12,"ay":4.37,"yawRate":0.234,"rpm":1205,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":326,"pot2":737,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":108.45,"vx":7.97,"ax":-0.11,"ay":3.57,"yawRate":0.23,"rpm":1195,"trqCmd":0,"trqEst":-1,"vdc":396,"idc":0,"thr":0,"pot1":321,"pot2":734,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":109.25,"vx":7.85,"ax":-0.54,"ay":3.74,"yawRate":0.23,"rpm":1185,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":332,"pot2":740,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":110.01,"vx":7.78,"ax":-0.47,"ay":3.66,"yawRate":0.227,"rpm":1167,"trqCmd":0,"trqEst":-1,"vdc":395,"idc":0,"thr":0,"pot1":322,"pot2":735,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":110.75,"vx":7.57,"ax":-0.65,"ay":3.39,"yawRate":0.211,"rpm":1138,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":315,"pot2":721,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":111.46,"vx":7.49,"ax":-0.66,"ay":3.11,"yawRate":0.211,"rpm":1119,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":322,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":112.15,"vx":7.3,"ax":-0.75,"ay":3.09,"yawRate":0.204,"rpm":1102,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":329,"pot2":735,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":112.84,"vx":7.18,"ax":-0.67,"ay":3.41,"yawRate":0.193,"rpm":1075,"trqCmd":0,"trqEst":1,"vdc":393,"idc":0,"thr":0,"pot1":328,"pot2":732,"brkF":0,"brkR":0,"invT":31,"motT":29},{"s":113.53,"vx":7.02,"ax":-0.52,"ay":3.09,"yawRate":0.192,"rpm":1060,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":319,"pot2":727,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":114.23,"vx":6.83,"ax":-0.83,"ay":2.7,"yawRate":0.186,"rpm":1018,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":320,"pot2":733,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":114.97,"vx":6.66,"ax":-0.52,"ay":2.49,"yawRate":0.175,"rpm":1007,"trqCmd":0,"trqEst":0,"vdc":394,"idc":0,"thr":0,"pot1":328,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":115.73,"vx":6.52,"ax":-0.76,"ay":2.54,"yawRate":0.157,"rpm":974,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":316,"pot2":731,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":116.53,"vx":6.37,"ax":-0.57,"ay":2.34,"yawRate":0.121,"rpm":959,"trqCmd":0,"trqEst":-2,"vdc":396,"idc":0,"thr":0,"pot1":329,"pot2":739,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":117.36,"vx":6.21,"ax":-0.74,"ay":1.95,"yawRate":0.102,"rpm":936,"trqCmd":0,"trqEst":1,"vdc":394,"idc":0,"thr":0,"pot1":324,"pot2":731,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":118.23,"vx":5.98,"ax":-0.8,"ay":1.45,"yawRate":0.095,"rpm":901,"trqCmd":0,"trqEst":-1,"vdc":395,"idc":0,"thr":0,"pot1":324,"pot2":724,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":119.12,"vx":5.82,"ax":-0.76,"ay":1.4,"yawRate":0.069,"rpm":879,"trqCmd":0,"trqEst":0,"vdc":396,"idc":0,"thr":0,"pot1":336,"pot2":736,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":120.04,"vx":5.54,"ax":-1.11,"ay":2.35,"yawRate":0.057,"rpm":833,"trqCmd":0,"trqEst":-3,"vdc":394,"idc":0,"thr":0,"pot1":320,"pot2":727,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":120.97,"vx":5.34,"ax":-1.19,"ay":2.14,"yawRate":0.045,"rpm":798,"trqCmd":0,"trqEst":1,"vdc":394,"idc":0,"thr":0,"pot1":317,"pot2":720,"brkF":0,"brkR":0,"invT":31,"motT":34},{"s":121.91,"vx":5.06,"ax":-1.24,"ay":1.86,"yawRate":0.049,"rpm":766,"trqCmd":0,"trqEst":-2,"vdc":394,"idc":0,"thr":0,"pot1":320,"pot2":727,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":122.86,"vx":4.71,"ax":-1.1,"ay":1.55,"yawRate":0.04,"rpm":703,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":325,"pot2":737,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":123.82,"vx":4.42,"ax":-1.5,"ay":1.43,"yawRate":0.04,"rpm":652,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":0,"pot1":326,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":124.78,"vx":4.07,"ax":-1,"ay":1.47,"yawRate":0.037,"rpm":615,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":0,"pot1":325,"pot2":735,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":125.74,"vx":3.81,"ax":0.04,"ay":1.85,"yawRate":0.121,"rpm":577,"trqCmd":0,"trqEst":1,"vdc":395,"idc":0,"thr":0,"pot1":329,"pot2":736,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":126.71,"vx":3.71,"ax":0.35,"ay":2.15,"yawRate":0.202,"rpm":560,"trqCmd":0,"trqEst":3,"vdc":396,"idc":0,"thr":0,"pot1":327,"pot2":730,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":127.67,"vx":3.63,"ax":0.53,"ay":2.66,"yawRate":0.288,"rpm":549,"trqCmd":0,"trqEst":2,"vdc":394,"idc":0,"thr":2,"pot1":347,"pot2":782,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":128.64,"vx":3.55,"ax":0.52,"ay":1.63,"yawRate":0.327,"rpm":537,"trqCmd":0,"trqEst":-1,"vdc":395,"idc":0,"thr":4,"pot1":382,"pot2":856,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":129.6,"vx":3.45,"ax":0.56,"ay":2.61,"yawRate":0.253,"rpm":518,"trqCmd":0,"trqEst":1,"vdc":394,"idc":0,"thr":4,"pot1":364,"pot2":821,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":130.56,"vx":3.38,"ax":0.33,"ay":3.14,"yawRate":0.47,"rpm":500,"trqCmd":0,"trqEst":0,"vdc":395,"idc":0,"thr":3,"pot1":397,"pot2":870,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":131.53,"vx":3.34,"ax":0.04,"ay":3.25,"yawRate":0.616,"rpm":486,"trqCmd":0,"trqEst":0,"vdc":393,"idc":0,"thr":6,"pot1":425,"pot2":947,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":132.49,"vx":3.22,"ax":-0.05,"ay":2.8,"yawRate":0.737,"rpm":489,"trqCmd":10,"trqEst":7,"vdc":394,"idc":1,"thr":12,"pot1":481,"pot2":1040,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":133.46,"vx":3.14,"ax":-0.06,"ay":2.22,"yawRate":0.75,"rpm":448,"trqCmd":5,"trqEst":6,"vdc":392,"idc":1,"thr":12,"pot1":474,"pot2":1032,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":134.43,"vx":3.02,"ax":-0.06,"ay":1.87,"yawRate":0.71,"rpm":432,"trqCmd":5,"trqEst":5,"vdc":392,"idc":0,"thr":12,"pot1":465,"pot2":1014,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":135.4,"vx":2.9,"ax":-0.08,"ay":1.73,"yawRate":0.675,"rpm":381,"trqCmd":5,"trqEst":5,"vdc":394,"idc":0,"thr":11,"pot1":461,"pot2":1012,"brkF":0,"brkR":0,"invT":31,"motT":30}],"23_08/23_08_2026-02.50.43.csv":[{"s":0,"vx":15.69,"ax":5.58,"ay":0.28,"yawRate":0.043,"rpm":2405,"trqCmd":136,"trqEst":129,"vdc":357,"idc":104,"thr":78,"pot1":1271,"pot2":2582,"brkF":0,"brkR":0,"invT":46,"motT":36},{"s":0.97,"vx":16,"ax":5.37,"ay":-0.18,"yawRate":0.008,"rpm":2518,"trqCmd":135,"trqEst":145,"vdc":352,"idc":107,"thr":77,"pot1":1271,"pot2":2583,"brkF":0,"brkR":0,"invT":46,"motT":33},{"s":1.94,"vx":16.41,"ax":5.51,"ay":-0.58,"yawRate":-0.007,"rpm":2530,"trqCmd":137,"trqEst":140,"vdc":355,"idc":110,"thr":78,"pot1":1274,"pot2":2581,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":2.92,"vx":16.68,"ax":5.4,"ay":-0.65,"yawRate":-0.019,"rpm":2608,"trqCmd":137,"trqEst":139,"vdc":354,"idc":113,"thr":78,"pot1":1268,"pot2":2586,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":3.89,"vx":16.92,"ax":5.59,"ay":-0.96,"yawRate":-0.034,"rpm":2648,"trqCmd":138,"trqEst":139,"vdc":351,"idc":115,"thr":78,"pot1":1283,"pot2":2603,"brkF":0,"brkR":0,"invT":46,"motT":33},{"s":4.86,"vx":17.31,"ax":5.9,"ay":-1.07,"yawRate":-0.045,"rpm":2721,"trqCmd":175,"trqEst":178,"vdc":340,"idc":142,"thr":79,"pot1":1344,"pot2":2719,"brkF":0,"brkR":0,"invT":46,"motT":33},{"s":5.84,"vx":17.53,"ax":6.88,"ay":-1.25,"yawRate":-0.037,"rpm":2798,"trqCmd":177,"trqEst":177,"vdc":339,"idc":165,"thr":85,"pot1":1362,"pot2":2755,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":6.81,"vx":18.11,"ax":6.88,"ay":-1.22,"yawRate":-0.035,"rpm":2914,"trqCmd":176,"trqEst":190,"vdc":337,"idc":171,"thr":85,"pot1":1359,"pot2":2739,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":7.79,"vx":18.56,"ax":6.84,"ay":-1.68,"yawRate":-0.043,"rpm":3000,"trqCmd":173,"trqEst":165,"vdc":339,"idc":170,"thr":84,"pot1":1327,"pot2":2693,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":8.76,"vx":18.92,"ax":6.24,"ay":-1.49,"yawRate":-0.054,"rpm":2986,"trqCmd":167,"trqEst":178,"vdc":335,"idc":167,"thr":81,"pot1":1305,"pot2":2643,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":9.74,"vx":19.25,"ax":6.04,"ay":-1.09,"yawRate":-0.048,"rpm":3027,"trqCmd":137,"trqEst":151,"vdc":345,"idc":117,"thr":80,"pot1":1270,"pot2":2580,"brkF":0,"brkR":0,"invT":46,"motT":36},{"s":10.71,"vx":19.67,"ax":5.87,"ay":-0.83,"yawRate":-0.05,"rpm":3043,"trqCmd":93,"trqEst":98,"vdc":357,"idc":95,"thr":65,"pot1":965,"pot2":1994,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":11.69,"vx":19.67,"ax":2.31,"ay":-0.97,"yawRate":-0.05,"rpm":2891,"trqCmd":0,"trqEst":-1,"vdc":383,"idc":7,"thr":38,"pot1":322,"pot2":735,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":12.66,"vx":19.61,"ax":-0.36,"ay":-1.05,"yawRate":-0.041,"rpm":2883,"trqCmd":0,"trqEst":-1,"vdc":382,"idc":0,"thr":0,"pot1":326,"pot2":737,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":13.64,"vx":19.37,"ax":-4.02,"ay":-0.76,"yawRate":-0.004,"rpm":2950,"trqCmd":0,"trqEst":1,"vdc":386,"idc":0,"thr":0,"pot1":321,"pot2":729,"brkF":0,"brkR":0,"invT":46,"motT":34},{"s":14.61,"vx":19.2,"ax":-4.79,"ay":0.24,"yawRate":0.01,"rpm":2880,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":329,"pot2":730,"brkF":0,"brkR":0,"invT":46,"motT":34},{"s":15.59,"vx":18.81,"ax":-6.69,"ay":0.56,"yawRate":0.035,"rpm":2750,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":323,"pot2":729,"brkF":0,"brkR":0,"invT":46,"motT":34},{"s":16.57,"vx":18.24,"ax":-7.69,"ay":0.96,"yawRate":0.045,"rpm":2690,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":0,"pot1":320,"pot2":730,"brkF":0,"brkR":0,"invT":46,"motT":33},{"s":17.54,"vx":17.73,"ax":-8.25,"ay":-0.13,"yawRate":0.045,"rpm":2563,"trqCmd":0,"trqEst":-4,"vdc":385,"idc":0,"thr":0,"pot1":320,"pot2":725,"brkF":0,"brkR":0,"invT":46,"motT":33},{"s":18.52,"vx":17.29,"ax":-8.31,"ay":-0.21,"yawRate":0.045,"rpm":2372,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":320,"pot2":728,"brkF":0,"brkR":0,"invT":45,"motT":35},{"s":19.5,"vx":16.95,"ax":-8.03,"ay":-0.06,"yawRate":0.049,"rpm":2230,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":321,"pot2":731,"brkF":0,"brkR":0,"invT":45,"motT":35},{"s":20.48,"vx":16.53,"ax":-9.08,"ay":0.09,"yawRate":0.049,"rpm":2070,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":323,"pot2":724,"brkF":0,"brkR":0,"invT":45,"motT":34},{"s":21.45,"vx":15.69,"ax":-10.41,"ay":1.5,"yawRate":0.052,"rpm":2026,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":322,"pot2":726,"brkF":0,"brkR":0,"invT":45,"motT":34},{"s":22.43,"vx":14.89,"ax":-10.18,"ay":1.82,"yawRate":0.03,"rpm":1984,"trqCmd":0,"trqEst":1,"vdc":383,"idc":0,"thr":0,"pot1":320,"pot2":726,"brkF":0,"brkR":0,"invT":45,"motT":34},{"s":23.4,"vx":14.13,"ax":-7.86,"ay":0.72,"yawRate":0.017,"rpm":1592,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":326,"pot2":726,"brkF":0,"brkR":0,"invT":44,"motT":34},{"s":24.38,"vx":13.81,"ax":-7.83,"ay":0.24,"yawRate":0.043,"rpm":1292,"trqCmd":0,"trqEst":1,"vdc":387,"idc":0,"thr":0,"pot1":320,"pot2":727,"brkF":0,"brkR":0,"invT":44,"motT":34},{"s":25.35,"vx":12.96,"ax":-10.65,"ay":0.39,"yawRate":0.028,"rpm":1056,"trqCmd":0,"trqEst":2,"vdc":386,"idc":0,"thr":0,"pot1":320,"pot2":725,"brkF":0,"brkR":0,"invT":44,"motT":34},{"s":26.32,"vx":12.48,"ax":-11.47,"ay":0.32,"yawRate":0.024,"rpm":1130,"trqCmd":0,"trqEst":-1,"vdc":387,"idc":0,"thr":0,"pot1":321,"pot2":727,"brkF":0,"brkR":0,"invT":44,"motT":33},{"s":27.29,"vx":11.43,"ax":-8.48,"ay":0.47,"yawRate":0.028,"rpm":671,"trqCmd":0,"trqEst":-4,"vdc":387,"idc":0,"thr":0,"pot1":321,"pot2":726,"brkF":0,"brkR":0,"invT":44,"motT":33},{"s":28.24,"vx":10.8,"ax":-7.96,"ay":1.77,"yawRate":0.039,"rpm":517,"trqCmd":0,"trqEst":-1,"vdc":387,"idc":0,"thr":0,"pot1":317,"pot2":721,"brkF":0,"brkR":0,"invT":44,"motT":33},{"s":29.19,"vx":9.9,"ax":-10.06,"ay":1.65,"yawRate":0.042,"rpm":341,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":320,"pot2":729,"brkF":0,"brkR":0,"invT":43,"motT":33},{"s":30.12,"vx":8.8,"ax":-10.36,"ay":1.17,"yawRate":0.129,"rpm":215,"trqCmd":0,"trqEst":1,"vdc":387,"idc":0,"thr":0,"pot1":323,"pot2":731,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":31.03,"vx":7.76,"ax":-9.79,"ay":1.57,"yawRate":0.234,"rpm":126,"trqCmd":0,"trqEst":1,"vdc":388,"idc":0,"thr":0,"pot1":316,"pot2":724,"brkF":0,"brkR":0,"invT":43,"motT":33},{"s":31.92,"vx":6.54,"ax":-8.87,"ay":2.71,"yawRate":0.392,"rpm":177,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":320,"pot2":729,"brkF":0,"brkR":0,"invT":43,"motT":37},{"s":32.78,"vx":5.2,"ax":-7.73,"ay":4.71,"yawRate":0.585,"rpm":515,"trqCmd":0,"trqEst":1,"vdc":388,"idc":0,"thr":0,"pot1":320,"pot2":723,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":33.61,"vx":4.85,"ax":-0.98,"ay":3.23,"yawRate":0.438,"rpm":781,"trqCmd":30,"trqEst":31,"vdc":386,"idc":7,"thr":20,"pot1":630,"pot2":1344,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":34.41,"vx":4.91,"ax":-0.8,"ay":4.91,"yawRate":0.752,"rpm":708,"trqCmd":15,"trqEst":15,"vdc":387,"idc":3,"thr":18,"pot1":529,"pot2":1152,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":35.18,"vx":4.96,"ax":-1.07,"ay":4.85,"yawRate":1.007,"rpm":735,"trqCmd":15,"trqEst":12,"vdc":386,"idc":3,"thr":18,"pot1":534,"pot2":1163,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":35.93,"vx":5,"ax":-1.04,"ay":4.91,"yawRate":1.015,"rpm":735,"trqCmd":19,"trqEst":20,"vdc":386,"idc":4,"thr":19,"pot1":571,"pot2":1223,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":36.66,"vx":5.04,"ax":-1.1,"ay":5.18,"yawRate":1.022,"rpm":744,"trqCmd":20,"trqEst":20,"vdc":386,"idc":4,"thr":19,"pot1":570,"pot2":1229,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":37.4,"vx":5.11,"ax":-1.28,"ay":5.75,"yawRate":1.035,"rpm":745,"trqCmd":22,"trqEst":25,"vdc":386,"idc":5,"thr":21,"pot1":585,"pot2":1246,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":38.14,"vx":5.15,"ax":-0.96,"ay":5.39,"yawRate":1.035,"rpm":747,"trqCmd":27,"trqEst":22,"vdc":387,"idc":5,"thr":23,"pot1":609,"pot2":1293,"brkF":0,"brkR":0,"invT":42,"motT":37},{"s":38.9,"vx":5.25,"ax":-1.09,"ay":5.67,"yawRate":1.041,"rpm":760,"trqCmd":28,"trqEst":28,"vdc":385,"idc":6,"thr":23,"pot1":611,"pot2":1297,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":39.7,"vx":5.37,"ax":-1.01,"ay":6.05,"yawRate":1.066,"rpm":789,"trqCmd":29,"trqEst":29,"vdc":386,"idc":6,"thr":24,"pot1":629,"pot2":1328,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":40.53,"vx":5.46,"ax":-0.95,"ay":6.81,"yawRate":1.102,"rpm":804,"trqCmd":35,"trqEst":33,"vdc":385,"idc":8,"thr":26,"pot1":664,"pot2":1403,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":41.39,"vx":5.59,"ax":-0.42,"ay":6.79,"yawRate":1.073,"rpm":825,"trqCmd":36,"trqEst":40,"vdc":384,"idc":8,"thr":28,"pot1":677,"pot2":1424,"brkF":0,"brkR":0,"invT":42,"motT":31},{"s":42.3,"vx":5.74,"ax":-0.05,"ay":6.86,"yawRate":1.064,"rpm":839,"trqCmd":45,"trqEst":47,"vdc":383,"idc":11,"thr":32,"pot1":722,"pot2":1518,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":43.23,"vx":5.94,"ax":0.89,"ay":4.91,"yawRate":0.841,"rpm":885,"trqCmd":45,"trqEst":42,"vdc":384,"idc":11,"thr":32,"pot1":719,"pot2":1510,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":44.2,"vx":6.15,"ax":0.95,"ay":3.47,"yawRate":0.499,"rpm":933,"trqCmd":44,"trqEst":46,"vdc":384,"idc":12,"thr":31,"pot1":713,"pot2":1500,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":45.19,"vx":6.39,"ax":1.07,"ay":2.59,"yawRate":0.356,"rpm":959,"trqCmd":41,"trqEst":48,"vdc":383,"idc":11,"thr":31,"pot1":694,"pot2":1456,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":46.19,"vx":6.61,"ax":0.86,"ay":2.68,"yawRate":0.293,"rpm":1009,"trqCmd":38,"trqEst":39,"vdc":384,"idc":11,"thr":29,"pot1":687,"pot2":1441,"brkF":0,"brkR":0,"invT":43,"motT":33},{"s":47.2,"vx":6.8,"ax":1.04,"ay":3.25,"yawRate":0.237,"rpm":1027,"trqCmd":38,"trqEst":44,"vdc":384,"idc":11,"thr":29,"pot1":683,"pot2":1438,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":48.22,"vx":7,"ax":0.96,"ay":2.12,"yawRate":0.139,"rpm":1056,"trqCmd":38,"trqEst":39,"vdc":384,"idc":12,"thr":29,"pot1":691,"pot2":1447,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":49.23,"vx":7.19,"ax":1.05,"ay":1.79,"yawRate":0.059,"rpm":1097,"trqCmd":38,"trqEst":44,"vdc":382,"idc":12,"thr":29,"pot1":683,"pot2":1427,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":50.25,"vx":7.38,"ax":1.06,"ay":1.78,"yawRate":0.046,"rpm":1122,"trqCmd":40,"trqEst":42,"vdc":384,"idc":12,"thr":29,"pot1":689,"pot2":1441,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":51.27,"vx":7.57,"ax":0.85,"ay":1.44,"yawRate":0.042,"rpm":1142,"trqCmd":36,"trqEst":41,"vdc":385,"idc":12,"thr":28,"pot1":677,"pot2":1420,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":52.28,"vx":7.71,"ax":0.88,"ay":1.36,"yawRate":0.045,"rpm":1179,"trqCmd":36,"trqEst":35,"vdc":384,"idc":12,"thr":28,"pot1":678,"pot2":1422,"brkF":0,"brkR":0,"invT":43,"motT":35},{"s":53.29,"vx":7.86,"ax":0.82,"ay":1.71,"yawRate":0.043,"rpm":1194,"trqCmd":36,"trqEst":37,"vdc":383,"idc":13,"thr":28,"pot1":674,"pot2":1419,"brkF":0,"brkR":0,"invT":43,"motT":33},{"s":54.3,"vx":8.03,"ax":0.82,"ay":1.99,"yawRate":0.04,"rpm":1216,"trqCmd":36,"trqEst":33,"vdc":383,"idc":12,"thr":28,"pot1":667,"pot2":1407,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":55.3,"vx":8.2,"ax":0.66,"ay":2.44,"yawRate":0.04,"rpm":1245,"trqCmd":36,"trqEst":40,"vdc":383,"idc":13,"thr":28,"pot1":669,"pot2":1406,"brkF":0,"brkR":0,"invT":43,"motT":35},{"s":56.3,"vx":8.33,"ax":0.88,"ay":1.34,"yawRate":0.041,"rpm":1261,"trqCmd":35,"trqEst":33,"vdc":384,"idc":13,"thr":28,"pot1":669,"pot2":1404,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":57.31,"vx":8.46,"ax":0.85,"ay":2.28,"yawRate":0.021,"rpm":1277,"trqCmd":34,"trqEst":38,"vdc":385,"idc":13,"thr":27,"pot1":661,"pot2":1390,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":58.31,"vx":8.54,"ax":0.91,"ay":1.51,"yawRate":0.017,"rpm":1294,"trqCmd":34,"trqEst":38,"vdc":385,"idc":13,"thr":28,"pot1":663,"pot2":1398,"brkF":0,"brkR":0,"invT":43,"motT":35},{"s":59.3,"vx":8.75,"ax":0.85,"ay":1.8,"yawRate":0.013,"rpm":1320,"trqCmd":34,"trqEst":39,"vdc":384,"idc":13,"thr":27,"pot1":663,"pot2":1397,"brkF":0,"brkR":0,"invT":43,"motT":37},{"s":60.3,"vx":8.83,"ax":0.74,"ay":1.84,"yawRate":0.014,"rpm":1337,"trqCmd":34,"trqEst":33,"vdc":384,"idc":13,"thr":27,"pot1":663,"pot2":1395,"brkF":0,"brkR":0,"invT":43,"motT":36},{"s":61.29,"vx":8.97,"ax":0.66,"ay":1.8,"yawRate":0.009,"rpm":1360,"trqCmd":35,"trqEst":34,"vdc":383,"idc":14,"thr":28,"pot1":665,"pot2":1405,"brkF":0,"brkR":0,"invT":43,"motT":36},{"s":62.28,"vx":9.07,"ax":0.74,"ay":1.55,"yawRate":0.015,"rpm":1385,"trqCmd":35,"trqEst":34,"vdc":382,"idc":14,"thr":28,"pot1":667,"pot2":1408,"brkF":0,"brkR":0,"invT":43,"motT":35},{"s":63.27,"vx":9.19,"ax":0.87,"ay":1.61,"yawRate":0.009,"rpm":1391,"trqCmd":35,"trqEst":38,"vdc":385,"idc":15,"thr":28,"pot1":666,"pot2":1406,"brkF":0,"brkR":0,"invT":43,"motT":35},{"s":64.26,"vx":9.3,"ax":0.86,"ay":1.49,"yawRate":-0.037,"rpm":1422,"trqCmd":34,"trqEst":42,"vdc":381,"idc":14,"thr":28,"pot1":666,"pot2":1399,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":65.25,"vx":9.46,"ax":0.87,"ay":0.25,"yawRate":-0.085,"rpm":1428,"trqCmd":34,"trqEst":34,"vdc":382,"idc":14,"thr":28,"pot1":662,"pot2":1396,"brkF":0,"brkR":0,"invT":43,"motT":35},{"s":66.24,"vx":9.51,"ax":0.5,"ay":1.31,"yawRate":-0.081,"rpm":1456,"trqCmd":34,"trqEst":36,"vdc":382,"idc":15,"thr":27,"pot1":665,"pot2":1404,"brkF":0,"brkR":0,"invT":43,"motT":35},{"s":67.22,"vx":9.68,"ax":0.71,"ay":0.93,"yawRate":-0.082,"rpm":1465,"trqCmd":34,"trqEst":35,"vdc":382,"idc":15,"thr":28,"pot1":667,"pot2":1412,"brkF":0,"brkR":0,"invT":43,"motT":35},{"s":68.2,"vx":9.82,"ax":0.45,"ay":1.69,"yawRate":-0.077,"rpm":1481,"trqCmd":31,"trqEst":35,"vdc":382,"idc":13,"thr":25,"pot1":636,"pot2":1344,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":69.18,"vx":9.88,"ax":0.43,"ay":1.68,"yawRate":-0.075,"rpm":1499,"trqCmd":31,"trqEst":27,"vdc":385,"idc":14,"thr":25,"pot1":645,"pot2":1357,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":70.15,"vx":9.94,"ax":0.63,"ay":0.85,"yawRate":-0.078,"rpm":1500,"trqCmd":26,"trqEst":27,"vdc":384,"idc":11,"thr":24,"pot1":600,"pot2":1274,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":71.11,"vx":10.03,"ax":-0.94,"ay":1.81,"yawRate":-0.083,"rpm":1460,"trqCmd":0,"trqEst":0,"vdc":389,"idc":0,"thr":4,"pot1":335,"pot2":748,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":72.07,"vx":9.91,"ax":-1.71,"ay":2.24,"yawRate":-0.085,"rpm":1504,"trqCmd":0,"trqEst":-1,"vdc":387,"idc":0,"thr":0,"pot1":336,"pot2":749,"brkF":0,"brkR":0,"invT":43,"motT":37},{"s":73.01,"vx":9.67,"ax":-1.97,"ay":1.75,"yawRate":-0.074,"rpm":1441,"trqCmd":0,"trqEst":1,"vdc":387,"idc":0,"thr":0,"pot1":339,"pot2":748,"brkF":0,"brkR":0,"invT":43,"motT":37},{"s":73.94,"vx":9.56,"ax":-2.1,"ay":1.23,"yawRate":-0.064,"rpm":1423,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":332,"pot2":742,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":74.86,"vx":9.25,"ax":-2.11,"ay":2.26,"yawRate":-0.003,"rpm":1397,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":0,"pot1":337,"pot2":747,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":75.76,"vx":9.19,"ax":-1.71,"ay":2.67,"yawRate":0.075,"rpm":1398,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":0,"pot1":330,"pot2":740,"brkF":0,"brkR":0,"invT":42,"motT":33},{"s":76.64,"vx":9.11,"ax":-2.05,"ay":2.31,"yawRate":0.04,"rpm":1359,"trqCmd":0,"trqEst":-1,"vdc":387,"idc":0,"thr":0,"pot1":334,"pot2":745,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":77.51,"vx":8.92,"ax":-2.17,"ay":1.93,"yawRate":0.04,"rpm":1343,"trqCmd":0,"trqEst":-1,"vdc":388,"idc":0,"thr":0,"pot1":336,"pot2":745,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":78.36,"vx":8.75,"ax":-1.96,"ay":2.15,"yawRate":0.045,"rpm":1311,"trqCmd":0,"trqEst":1,"vdc":387,"idc":0,"thr":0,"pot1":336,"pot2":747,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":79.2,"vx":8.47,"ax":-2.21,"ay":2.26,"yawRate":0.042,"rpm":1277,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":337,"pot2":747,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":80.03,"vx":8.22,"ax":-2.68,"ay":3.83,"yawRate":0.055,"rpm":1233,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":337,"pot2":747,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":80.86,"vx":7.87,"ax":-2.49,"ay":2.4,"yawRate":0.113,"rpm":1178,"trqCmd":0,"trqEst":-1,"vdc":389,"idc":0,"thr":0,"pot1":330,"pot2":740,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":81.68,"vx":7.71,"ax":-2.55,"ay":3.66,"yawRate":0.208,"rpm":1157,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":337,"pot2":745,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":82.51,"vx":7.35,"ax":-2.4,"ay":6.26,"yawRate":0.531,"rpm":1101,"trqCmd":0,"trqEst":-1,"vdc":390,"idc":0,"thr":0,"pot1":331,"pot2":746,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":83.34,"vx":7.21,"ax":-2.12,"ay":5.22,"yawRate":0.574,"rpm":1070,"trqCmd":0,"trqEst":1,"vdc":387,"idc":0,"thr":1,"pot1":334,"pot2":744,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":84.19,"vx":6.87,"ax":-2.27,"ay":5.85,"yawRate":0.543,"rpm":1028,"trqCmd":0,"trqEst":2,"vdc":390,"idc":0,"thr":0,"pot1":337,"pot2":748,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":85.04,"vx":6.61,"ax":-2.08,"ay":5.9,"yawRate":0.524,"rpm":977,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":0,"pot1":333,"pot2":746,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":85.91,"vx":6.28,"ax":-2.2,"ay":4.84,"yawRate":0.498,"rpm":931,"trqCmd":0,"trqEst":0,"vdc":389,"idc":0,"thr":0,"pot1":335,"pot2":750,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":86.79,"vx":5.95,"ax":-1.46,"ay":4.49,"yawRate":0.469,"rpm":891,"trqCmd":0,"trqEst":0,"vdc":389,"idc":0,"thr":0,"pot1":336,"pot2":746,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":87.69,"vx":5.77,"ax":-0.76,"ay":4.18,"yawRate":0.461,"rpm":863,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":0,"pot1":333,"pot2":746,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":88.6,"vx":5.65,"ax":-0.54,"ay":5.05,"yawRate":0.527,"rpm":853,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":0,"pot1":331,"pot2":741,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":89.52,"vx":5.59,"ax":-0.33,"ay":4.64,"yawRate":0.558,"rpm":835,"trqCmd":0,"trqEst":1,"vdc":389,"idc":0,"thr":0,"pot1":338,"pot2":751,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":90.44,"vx":5.53,"ax":-0.23,"ay":4.2,"yawRate":0.545,"rpm":830,"trqCmd":0,"trqEst":-2,"vdc":389,"idc":0,"thr":0,"pot1":342,"pot2":767,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":91.36,"vx":5.46,"ax":-0.12,"ay":4.65,"yawRate":0.522,"rpm":810,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":4,"pot1":387,"pot2":858,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":92.27,"vx":5.35,"ax":-0.23,"ay":3.36,"yawRate":0.489,"rpm":792,"trqCmd":0,"trqEst":1,"vdc":388,"idc":0,"thr":4,"pot1":389,"pot2":866,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":93.17,"vx":5.23,"ax":0.19,"ay":2.98,"yawRate":0.374,"rpm":806,"trqCmd":5,"trqEst":9,"vdc":388,"idc":1,"thr":12,"pot1":484,"pot2":1058,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":94.06,"vx":5.2,"ax":0.47,"ay":2.77,"yawRate":0.302,"rpm":791,"trqCmd":11,"trqEst":10,"vdc":388,"idc":2,"thr":15,"pot1":513,"pot2":1103,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":94.93,"vx":5.21,"ax":0.57,"ay":2.56,"yawRate":0.272,"rpm":769,"trqCmd":13,"trqEst":13,"vdc":387,"idc":2,"thr":16,"pot1":527,"pot2":1137,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":95.79,"vx":5.29,"ax":0.79,"ay":2.61,"yawRate":0.232,"rpm":805,"trqCmd":17,"trqEst":16,"vdc":386,"idc":3,"thr":19,"pot1":552,"pot2":1188,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":96.63,"vx":5.38,"ax":1.26,"ay":2.32,"yawRate":0.201,"rpm":825,"trqCmd":21,"trqEst":22,"vdc":388,"idc":5,"thr":20,"pot1":582,"pot2":1241,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":97.47,"vx":5.49,"ax":1.23,"ay":2.39,"yawRate":0.154,"rpm":832,"trqCmd":22,"trqEst":21,"vdc":386,"idc":5,"thr":21,"pot1":586,"pot2":1247,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":98.29,"vx":5.6,"ax":1.51,"ay":1.88,"yawRate":0.078,"rpm":846,"trqCmd":24,"trqEst":25,"vdc":386,"idc":5,"thr":21,"pot1":593,"pot2":1258,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":99.11,"vx":5.7,"ax":1.34,"ay":2.28,"yawRate":0.077,"rpm":857,"trqCmd":22,"trqEst":26,"vdc":388,"idc":5,"thr":22,"pot1":587,"pot2":1243,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":99.94,"vx":5.79,"ax":1.39,"ay":3.12,"yawRate":0.104,"rpm":881,"trqCmd":22,"trqEst":25,"vdc":386,"idc":5,"thr":21,"pot1":590,"pot2":1248,"brkF":0,"brkR":0,"invT":42,"motT":33},{"s":100.78,"vx":5.88,"ax":0.92,"ay":2.17,"yawRate":0.127,"rpm":877,"trqCmd":14,"trqEst":10,"vdc":389,"idc":3,"thr":17,"pot1":533,"pot2":1146,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":101.62,"vx":5.84,"ax":-0.14,"ay":1.35,"yawRate":0.113,"rpm":856,"trqCmd":0,"trqEst":0,"vdc":389,"idc":0,"thr":7,"pot1":421,"pot2":926,"brkF":0,"brkR":0,"invT":42,"motT":34},{"s":102.47,"vx":5.57,"ax":-0.66,"ay":2.08,"yawRate":0.094,"rpm":824,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":330,"pot2":739,"brkF":0,"brkR":0,"invT":42,"motT":33},{"s":103.34,"vx":5.28,"ax":-0.41,"ay":1.61,"yawRate":0.085,"rpm":777,"trqCmd":0,"trqEst":1,"vdc":390,"idc":0,"thr":0,"pot1":337,"pot2":738,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":104.2,"vx":5.1,"ax":0.16,"ay":1.15,"yawRate":-0.001,"rpm":769,"trqCmd":0,"trqEst":0,"vdc":389,"idc":0,"thr":0,"pot1":331,"pot2":739,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":105.07,"vx":5.02,"ax":0.33,"ay":1.33,"yawRate":-0.013,"rpm":760,"trqCmd":0,"trqEst":-2,"vdc":388,"idc":0,"thr":0,"pot1":337,"pot2":750,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":105.94,"vx":4.95,"ax":0.19,"ay":1.39,"yawRate":0.018,"rpm":747,"trqCmd":0,"trqEst":-1,"vdc":388,"idc":0,"thr":1,"pot1":341,"pot2":770,"brkF":0,"brkR":0,"invT":42,"motT":35},{"s":106.79,"vx":4.83,"ax":-0.24,"ay":1.85,"yawRate":0.027,"rpm":717,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":0,"pot1":339,"pot2":748,"brkF":0,"brkR":0,"invT":42,"motT":31},{"s":107.63,"vx":4.41,"ax":-1.25,"ay":1.75,"yawRate":0.023,"rpm":649,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":0,"pot1":334,"pot2":749,"brkF":0,"brkR":0,"invT":41,"motT":33},{"s":108.45,"vx":3.94,"ax":-0.83,"ay":1.83,"yawRate":0.02,"rpm":580,"trqCmd":0,"trqEst":-1,"vdc":391,"idc":0,"thr":0,"pot1":323,"pot2":727,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":109.25,"vx":3.71,"ax":0.3,"ay":1.66,"yawRate":0.012,"rpm":566,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":2,"pot1":354,"pot2":801,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":110.01,"vx":3.6,"ax":0.33,"ay":1.67,"yawRate":0.02,"rpm":542,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":4,"pot1":379,"pot2":843,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":110.75,"vx":3.49,"ax":0.28,"ay":3.27,"yawRate":0.26,"rpm":527,"trqCmd":0,"trqEst":-2,"vdc":390,"idc":0,"thr":5,"pot1":378,"pot2":842,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":111.46,"vx":3.36,"ax":0.28,"ay":3.3,"yawRate":0.535,"rpm":495,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":5,"pot1":375,"pot2":839,"brkF":0,"brkR":0,"invT":41,"motT":33},{"s":112.15,"vx":3.2,"ax":-0.26,"ay":3.48,"yawRate":0.667,"rpm":454,"trqCmd":0,"trqEst":2,"vdc":389,"idc":0,"thr":4,"pot1":377,"pot2":851,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":112.84,"vx":2.98,"ax":-0.27,"ay":2.24,"yawRate":0.698,"rpm":418,"trqCmd":0,"trqEst":0,"vdc":390,"idc":0,"thr":7,"pot1":413,"pot2":924,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":113.53,"vx":2.65,"ax":-0.12,"ay":1.03,"yawRate":0.62,"rpm":375,"trqCmd":2,"trqEst":3,"vdc":389,"idc":0,"thr":11,"pot1":460,"pot2":1009,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":114.23,"vx":2.42,"ax":-0.04,"ay":-0.09,"yawRate":0.552,"rpm":338,"trqCmd":2,"trqEst":2,"vdc":392,"idc":0,"thr":11,"pot1":462,"pot2":1015,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":114.97,"vx":2.12,"ax":-0.03,"ay":0.15,"yawRate":0.264,"rpm":330,"trqCmd":1,"trqEst":6,"vdc":388,"idc":0,"thr":11,"pot1":463,"pot2":1017,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":115.73,"vx":2.13,"ax":-0.19,"ay":0.08,"yawRate":0.403,"rpm":308,"trqCmd":4,"trqEst":5,"vdc":389,"idc":0,"thr":13,"pot1":480,"pot2":1051,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":116.53,"vx":2.06,"ax":-0.09,"ay":-0.73,"yawRate":0.136,"rpm":327,"trqCmd":5,"trqEst":7,"vdc":390,"idc":0,"thr":13,"pot1":490,"pot2":1064,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":117.36,"vx":2.08,"ax":-0.56,"ay":0.45,"yawRate":0.389,"rpm":301,"trqCmd":0,"trqEst":0,"vdc":389,"idc":0,"thr":4,"pot1":362,"pot2":817,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":118.23,"vx":2.48,"ax":7.73,"ay":-0.32,"yawRate":0.044,"rpm":978,"trqCmd":131,"trqEst":136,"vdc":376,"idc":39,"thr":76,"pot1":1235,"pot2":2512,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":119.12,"vx":4.64,"ax":5.29,"ay":-0.36,"yawRate":0.004,"rpm":765,"trqCmd":130,"trqEst":135,"vdc":379,"idc":30,"thr":75,"pot1":1259,"pot2":2554,"brkF":0,"brkR":0,"invT":43,"motT":33},{"s":120.04,"vx":5.65,"ax":6.08,"ay":-0.3,"yawRate":0.015,"rpm":931,"trqCmd":151,"trqEst":150,"vdc":376,"idc":43,"thr":81,"pot1":1312,"pot2":2663,"brkF":0,"brkR":0,"invT":43,"motT":34},{"s":120.97,"vx":6.89,"ax":8.22,"ay":-0.48,"yawRate":0.045,"rpm":1530,"trqCmd":192,"trqEst":201,"vdc":363,"idc":99,"thr":82,"pot1":1314,"pot2":2662,"brkF":0,"brkR":0,"invT":43,"motT":32},{"s":121.91,"vx":8.12,"ax":7.8,"ay":0.17,"yawRate":0.105,"rpm":1839,"trqCmd":185,"trqEst":207,"vdc":353,"idc":113,"thr":82,"pot1":1315,"pot2":2674,"brkF":0,"brkR":0,"invT":44,"motT":34},{"s":122.86,"vx":9.02,"ax":8.23,"ay":-0.19,"yawRate":0.133,"rpm":1917,"trqCmd":181,"trqEst":205,"vdc":354,"idc":113,"thr":81,"pot1":1295,"pot2":2623,"brkF":0,"brkR":0,"invT":44,"motT":37},{"s":123.82,"vx":9.8,"ax":8.01,"ay":-0.57,"yawRate":0.034,"rpm":1622,"trqCmd":135,"trqEst":139,"vdc":371,"idc":67,"thr":79,"pot1":1271,"pot2":2579,"brkF":0,"brkR":0,"invT":45,"motT":36},{"s":124.78,"vx":10.46,"ax":5.62,"ay":0.1,"yawRate":-0.075,"rpm":1628,"trqCmd":139,"trqEst":155,"vdc":368,"idc":68,"thr":78,"pot1":1303,"pot2":2640,"brkF":0,"brkR":0,"invT":45,"motT":33},{"s":125.74,"vx":10.99,"ax":6.36,"ay":-0.92,"yawRate":-0.07,"rpm":1823,"trqCmd":137,"trqEst":143,"vdc":367,"idc":72,"thr":80,"pot1":1280,"pot2":2593,"brkF":0,"brkR":0,"invT":45,"motT":33},{"s":126.71,"vx":11.69,"ax":6.04,"ay":-0.34,"yawRate":-0.058,"rpm":1849,"trqCmd":145,"trqEst":153,"vdc":362,"idc":85,"thr":80,"pot1":1310,"pot2":2643,"brkF":0,"brkR":0,"invT":45,"motT":34},{"s":127.67,"vx":12.12,"ax":5.8,"ay":-0.24,"yawRate":-0.052,"rpm":1864,"trqCmd":136,"trqEst":139,"vdc":368,"idc":79,"thr":78,"pot1":1272,"pot2":2587,"brkF":0,"brkR":0,"invT":45,"motT":34},{"s":128.64,"vx":12.51,"ax":5.48,"ay":0.52,"yawRate":0.042,"rpm":1947,"trqCmd":137,"trqEst":151,"vdc":363,"idc":82,"thr":78,"pot1":1280,"pot2":2593,"brkF":0,"brkR":0,"invT":45,"motT":34},{"s":129.6,"vx":13.05,"ax":5.42,"ay":1.32,"yawRate":0.158,"rpm":2009,"trqCmd":136,"trqEst":140,"vdc":365,"idc":86,"thr":78,"pot1":1272,"pot2":2581,"brkF":0,"brkR":0,"invT":45,"motT":34},{"s":130.56,"vx":13.4,"ax":5.29,"ay":0.52,"yawRate":0.106,"rpm":2094,"trqCmd":136,"trqEst":144,"vdc":360,"idc":88,"thr":78,"pot1":1272,"pot2":2588,"brkF":0,"brkR":0,"invT":45,"motT":37},{"s":131.53,"vx":13.77,"ax":5.66,"ay":0.19,"yawRate":0.038,"rpm":2131,"trqCmd":137,"trqEst":145,"vdc":355,"idc":92,"thr":77,"pot1":1277,"pot2":2594,"brkF":0,"brkR":0,"invT":45,"motT":37},{"s":132.49,"vx":14.2,"ax":5.25,"ay":-0.02,"yawRate":0.007,"rpm":2199,"trqCmd":135,"trqEst":136,"vdc":365,"idc":93,"thr":78,"pot1":1274,"pot2":2593,"brkF":0,"brkR":0,"invT":46,"motT":37},{"s":133.46,"vx":14.56,"ax":5.37,"ay":-0.53,"yawRate":0.019,"rpm":2285,"trqCmd":136,"trqEst":142,"vdc":353,"idc":99,"thr":78,"pot1":1276,"pot2":2589,"brkF":0,"brkR":0,"invT":46,"motT":37},{"s":134.43,"vx":14.84,"ax":5.32,"ay":-0.15,"yawRate":0.056,"rpm":2327,"trqCmd":137,"trqEst":142,"vdc":357,"idc":101,"thr":77,"pot1":1267,"pot2":2579,"brkF":0,"brkR":0,"invT":46,"motT":34},{"s":135.4,"vx":15.26,"ax":5.05,"ay":0.2,"yawRate":0.066,"rpm":2415,"trqCmd":135,"trqEst":139,"vdc":356,"idc":102,"thr":78,"pot1":1269,"pot2":2570,"brkF":0,"brkR":0,"invT":46,"motT":36}],"23_08/23_08_2026-06.07.33.csv":[{"s":0,"vx":6.97,"ax":-1.76,"ay":0.66,"yawRate":-0.053,"rpm":1038,"trqCmd":0,"trqEst":-1,"vdc":385,"idc":0,"thr":0,"pot1":331,"pot2":737,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":0.97,"vx":6.6,"ax":-1.47,"ay":0.84,"yawRate":-0.05,"rpm":988,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":329,"pot2":738,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":1.94,"vx":6.28,"ax":-1.5,"ay":0.6,"yawRate":-0.039,"rpm":939,"trqCmd":0,"trqEst":2,"vdc":385,"idc":0,"thr":0,"pot1":322,"pot2":730,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":2.92,"vx":5.89,"ax":-1.34,"ay":0.93,"yawRate":-0.025,"rpm":887,"trqCmd":0,"trqEst":-3,"vdc":384,"idc":0,"thr":0,"pot1":331,"pot2":743,"brkF":0,"brkR":0,"invT":25,"motT":26},{"s":3.89,"vx":5.61,"ax":-1.54,"ay":0.84,"yawRate":-0.026,"rpm":842,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":329,"pot2":729,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":4.86,"vx":5.27,"ax":-0.92,"ay":1.78,"yawRate":0.14,"rpm":811,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":427,"pot2":926,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":5.84,"vx":5.55,"ax":1.79,"ay":1.48,"yawRate":0.146,"rpm":872,"trqCmd":57,"trqEst":57,"vdc":383,"idc":13,"thr":35,"pot1":797,"pot2":1668,"brkF":0,"brkR":0,"invT":25,"motT":32},{"s":6.81,"vx":6.7,"ax":2.7,"ay":1.01,"yawRate":0.112,"rpm":1042,"trqCmd":79,"trqEst":81,"vdc":378,"idc":25,"thr":49,"pot1":926,"pot2":1920,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":7.79,"vx":7.07,"ax":-0.84,"ay":0.92,"yawRate":0.047,"rpm":1034,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":332,"pot2":741,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":8.76,"vx":6.73,"ax":-1.84,"ay":0.84,"yawRate":0.003,"rpm":1009,"trqCmd":0,"trqEst":1,"vdc":385,"idc":0,"thr":0,"pot1":328,"pot2":738,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":9.74,"vx":5.96,"ax":-4.77,"ay":1.35,"yawRate":-0.041,"rpm":882,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":335,"pot2":742,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":10.71,"vx":3.31,"ax":-5.19,"ay":0.95,"yawRate":-0.021,"rpm":476,"trqCmd":0,"trqEst":1,"vdc":387,"idc":0,"thr":0,"pot1":329,"pot2":737,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":11.69,"vx":2.7,"ax":1.09,"ay":0.55,"yawRate":-0.013,"rpm":416,"trqCmd":32,"trqEst":33,"vdc":385,"idc":3,"thr":26,"pot1":646,"pot2":1374,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":12.66,"vx":3.74,"ax":1.23,"ay":0.72,"yawRate":-0.015,"rpm":599,"trqCmd":38,"trqEst":40,"vdc":385,"idc":6,"thr":29,"pot1":685,"pot2":1446,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":13.64,"vx":4.44,"ax":-1.13,"ay":-1.49,"yawRate":-0.191,"rpm":682,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":334,"pot2":741,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":14.61,"vx":4.24,"ax":-1.56,"ay":-2.74,"yawRate":-0.745,"rpm":612,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":327,"pot2":739,"brkF":0,"brkR":0,"invT":26,"motT":27},{"s":15.59,"vx":3.8,"ax":-1.82,"ay":-2.29,"yawRate":-0.855,"rpm":536,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":334,"pot2":747,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":16.57,"vx":3.24,"ax":-1,"ay":-1.87,"yawRate":-0.753,"rpm":468,"trqCmd":8,"trqEst":4,"vdc":388,"idc":0,"thr":12,"pot1":491,"pot2":1061,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":17.54,"vx":3.03,"ax":-0.2,"ay":-1.16,"yawRate":-0.7,"rpm":436,"trqCmd":16,"trqEst":10,"vdc":386,"idc":2,"thr":17,"pot1":550,"pot2":1177,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":18.52,"vx":3.4,"ax":1.71,"ay":-1.45,"yawRate":-0.748,"rpm":510,"trqCmd":66,"trqEst":67,"vdc":385,"idc":10,"thr":42,"pot1":855,"pot2":1770,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":19.5,"vx":5.23,"ax":3.52,"ay":-4.46,"yawRate":-1.253,"rpm":941,"trqCmd":116,"trqEst":121,"vdc":374,"idc":34,"thr":69,"pot1":1125,"pot2":2300,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":20.48,"vx":6.78,"ax":4.15,"ay":-4.81,"yawRate":-1.323,"rpm":1245,"trqCmd":110,"trqEst":119,"vdc":371,"idc":42,"thr":65,"pot1":1098,"pot2":2301,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":21.45,"vx":8.18,"ax":4.71,"ay":-4.18,"yawRate":-0.579,"rpm":1330,"trqCmd":82,"trqEst":86,"vdc":373,"idc":35,"thr":58,"pot1":947,"pot2":1960,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":22.43,"vx":8.37,"ax":-0.2,"ay":1.55,"yawRate":-0.133,"rpm":1254,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":334,"pot2":741,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":23.4,"vx":8.12,"ax":-0.63,"ay":0.54,"yawRate":-0.122,"rpm":1223,"trqCmd":0,"trqEst":1,"vdc":384,"idc":0,"thr":0,"pot1":331,"pot2":739,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":24.38,"vx":7.91,"ax":-0.42,"ay":0.38,"yawRate":-0.115,"rpm":1193,"trqCmd":0,"trqEst":-1,"vdc":386,"idc":0,"thr":0,"pot1":338,"pot2":753,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":25.35,"vx":7.71,"ax":-0.47,"ay":0.7,"yawRate":-0.101,"rpm":1153,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":332,"pot2":738,"brkF":0,"brkR":0,"invT":27,"motT":31},{"s":26.32,"vx":7.51,"ax":-0.32,"ay":1,"yawRate":-0.101,"rpm":1129,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":5,"pot1":392,"pot2":877,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":27.29,"vx":7.39,"ax":-0.5,"ay":1.96,"yawRate":0.007,"rpm":1111,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":10,"pot1":458,"pot2":1002,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":28.24,"vx":7.24,"ax":-0.39,"ay":1.48,"yawRate":0.072,"rpm":1093,"trqCmd":5,"trqEst":6,"vdc":384,"idc":1,"thr":13,"pot1":483,"pot2":1050,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":29.19,"vx":7.17,"ax":-0.16,"ay":2.6,"yawRate":0.074,"rpm":1082,"trqCmd":5,"trqEst":6,"vdc":385,"idc":1,"thr":13,"pot1":488,"pot2":1054,"brkF":0,"brkR":0,"invT":26,"motT":27},{"s":30.12,"vx":7.05,"ax":-0.25,"ay":1.98,"yawRate":0.063,"rpm":1052,"trqCmd":3,"trqEst":3,"vdc":386,"idc":1,"thr":12,"pot1":471,"pot2":1024,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":31.03,"vx":6.88,"ax":-0.36,"ay":1.05,"yawRate":0.058,"rpm":1029,"trqCmd":0,"trqEst":1,"vdc":386,"idc":0,"thr":0,"pot1":330,"pot2":738,"brkF":0,"brkR":0,"invT":26,"motT":27},{"s":31.92,"vx":6.44,"ax":-1.23,"ay":1.83,"yawRate":0.058,"rpm":962,"trqCmd":0,"trqEst":-4,"vdc":386,"idc":0,"thr":0,"pot1":339,"pot2":745,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":32.78,"vx":5.78,"ax":-1.31,"ay":2.23,"yawRate":0.057,"rpm":867,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":334,"pot2":743,"brkF":0,"brkR":0,"invT":26,"motT":31},{"s":33.61,"vx":5.22,"ax":-0.29,"ay":1.65,"yawRate":0.044,"rpm":791,"trqCmd":0,"trqEst":1,"vdc":385,"idc":0,"thr":0,"pot1":335,"pot2":745,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":34.41,"vx":5.01,"ax":-0.43,"ay":1.91,"yawRate":0.044,"rpm":757,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":332,"pot2":743,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":35.18,"vx":4.7,"ax":-0.35,"ay":1.44,"yawRate":0.039,"rpm":700,"trqCmd":0,"trqEst":1,"vdc":387,"idc":0,"thr":0,"pot1":321,"pot2":728,"brkF":0,"brkR":0,"invT":26,"motT":27},{"s":35.93,"vx":4.45,"ax":-0.39,"ay":1.41,"yawRate":0.038,"rpm":671,"trqCmd":0,"trqEst":-1,"vdc":385,"idc":0,"thr":0,"pot1":327,"pot2":741,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":36.66,"vx":3.5,"ax":-0.82,"ay":1.42,"yawRate":0.034,"rpm":530,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":334,"pot2":745,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":37.4,"vx":3.11,"ax":-0.14,"ay":1.93,"yawRate":0.264,"rpm":468,"trqCmd":0,"trqEst":1,"vdc":385,"idc":0,"thr":0,"pot1":327,"pot2":735,"brkF":0,"brkR":0,"invT":26,"motT":27},{"s":38.14,"vx":2.93,"ax":1.19,"ay":1.53,"yawRate":0.25,"rpm":473,"trqCmd":21,"trqEst":24,"vdc":385,"idc":3,"thr":21,"pot1":592,"pot2":1264,"brkF":0,"brkR":0,"invT":26,"motT":31},{"s":38.9,"vx":3.64,"ax":1.09,"ay":1.88,"yawRate":0.31,"rpm":554,"trqCmd":27,"trqEst":29,"vdc":385,"idc":4,"thr":23,"pot1":610,"pot2":1297,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":39.7,"vx":4.17,"ax":1.1,"ay":2.14,"yawRate":0.35,"rpm":623,"trqCmd":26,"trqEst":28,"vdc":384,"idc":4,"thr":23,"pot1":611,"pot2":1298,"brkF":0,"brkR":0,"invT":26,"motT":27},{"s":40.53,"vx":4.61,"ax":0.53,"ay":2.12,"yawRate":0.338,"rpm":683,"trqCmd":18,"trqEst":17,"vdc":386,"idc":3,"thr":20,"pot1":560,"pot2":1200,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":41.39,"vx":4.67,"ax":-0.41,"ay":1.87,"yawRate":0.289,"rpm":686,"trqCmd":0,"trqEst":-1,"vdc":386,"idc":0,"thr":0,"pot1":333,"pot2":738,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":42.3,"vx":4.45,"ax":-0.27,"ay":1.34,"yawRate":0.241,"rpm":662,"trqCmd":0,"trqEst":2,"vdc":385,"idc":0,"thr":0,"pot1":332,"pot2":743,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":43.23,"vx":4.23,"ax":-0.29,"ay":0.83,"yawRate":0.081,"rpm":637,"trqCmd":0,"trqEst":1,"vdc":386,"idc":0,"thr":2,"pot1":352,"pot2":792,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":44.2,"vx":3.94,"ax":-0.4,"ay":0.96,"yawRate":0.08,"rpm":585,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":327,"pot2":734,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":45.19,"vx":3.6,"ax":-0.49,"ay":0.9,"yawRate":0.08,"rpm":544,"trqCmd":0,"trqEst":-1,"vdc":387,"idc":0,"thr":0,"pot1":335,"pot2":743,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":46.19,"vx":3.16,"ax":-0.28,"ay":0.48,"yawRate":0.073,"rpm":475,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":320,"pot2":726,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":47.2,"vx":2.79,"ax":-0.64,"ay":0.65,"yawRate":0.06,"rpm":414,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":329,"pot2":738,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":48.22,"vx":2.37,"ax":-0.31,"ay":0.11,"yawRate":0.047,"rpm":352,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":338,"pot2":748,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":49.23,"vx":1.93,"ax":-0.2,"ay":0.24,"yawRate":0.037,"rpm":286,"trqCmd":0,"trqEst":-1,"vdc":388,"idc":0,"thr":7,"pot1":420,"pot2":922,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":50.25,"vx":2.05,"ax":0.96,"ay":0.19,"yawRate":0.04,"rpm":302,"trqCmd":15,"trqEst":13,"vdc":387,"idc":1,"thr":19,"pot1":514,"pot2":1121,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":51.27,"vx":2.07,"ax":-0.05,"ay":0.38,"yawRate":0.228,"rpm":303,"trqCmd":4,"trqEst":3,"vdc":385,"idc":0,"thr":14,"pot1":470,"pot2":1278,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":52.28,"vx":1.6,"ax":-0.3,"ay":0.28,"yawRate":0.31,"rpm":243,"trqCmd":5,"trqEst":7,"vdc":385,"idc":0,"thr":12,"pot1":494,"pot2":1071,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":53.29,"vx":1.73,"ax":-0.71,"ay":0.31,"yawRate":0.426,"rpm":244,"trqCmd":12,"trqEst":7,"vdc":387,"idc":0,"thr":16,"pot1":521,"pot2":1124,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":54.3,"vx":1.48,"ax":-0.8,"ay":0.25,"yawRate":0.289,"rpm":212,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":9,"pot1":429,"pot2":932,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":55.3,"vx":0.84,"ax":-0.3,"ay":-0.3,"yawRate":0.18,"rpm":135,"trqCmd":10,"trqEst":10,"vdc":384,"idc":0,"thr":13,"pot1":516,"pot2":1103,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":56.3,"vx":3.41,"ax":2.52,"ay":2.24,"yawRate":0.547,"rpm":526,"trqCmd":78,"trqEst":79,"vdc":384,"idc":12,"thr":50,"pot1":888,"pot2":1843,"brkF":0,"brkR":0,"invT":25,"motT":28},{"s":57.31,"vx":3.88,"ax":-0.85,"ay":3.46,"yawRate":0.729,"rpm":564,"trqCmd":21,"trqEst":21,"vdc":384,"idc":3,"thr":21,"pot1":589,"pot2":1261,"brkF":0,"brkR":0,"invT":25,"motT":28},{"s":58.31,"vx":4.09,"ax":-1.79,"ay":3.83,"yawRate":0.788,"rpm":589,"trqCmd":16,"trqEst":17,"vdc":386,"idc":2,"thr":20,"pot1":540,"pot2":1169,"brkF":0,"brkR":0,"invT":24,"motT":29},{"s":59.3,"vx":3.98,"ax":-1.28,"ay":4.23,"yawRate":0.759,"rpm":579,"trqCmd":29,"trqEst":30,"vdc":385,"idc":4,"thr":24,"pot1":636,"pot2":1349,"brkF":0,"brkR":0,"invT":24,"motT":29},{"s":60.3,"vx":4.7,"ax":0.44,"ay":4.55,"yawRate":0.71,"rpm":714,"trqCmd":49,"trqEst":57,"vdc":383,"idc":11,"thr":36,"pot1":764,"pot2":1595,"brkF":0,"brkR":0,"invT":24,"motT":27},{"s":61.29,"vx":5.52,"ax":0.78,"ay":3.85,"yawRate":0.452,"rpm":831,"trqCmd":50,"trqEst":51,"vdc":384,"idc":12,"thr":35,"pot1":750,"pot2":1587,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":62.28,"vx":6.25,"ax":0.97,"ay":4.42,"yawRate":0.454,"rpm":944,"trqCmd":50,"trqEst":55,"vdc":380,"idc":14,"thr":36,"pot1":760,"pot2":1595,"brkF":0,"brkR":0,"invT":25,"motT":28},{"s":63.27,"vx":6.85,"ax":0.68,"ay":4.1,"yawRate":0.347,"rpm":1036,"trqCmd":34,"trqEst":37,"vdc":382,"idc":10,"thr":27,"pot1":653,"pot2":1392,"brkF":0,"brkR":0,"invT":25,"motT":32},{"s":64.26,"vx":7.13,"ax":0.28,"ay":3.11,"yawRate":0.173,"rpm":1079,"trqCmd":31,"trqEst":37,"vdc":382,"idc":10,"thr":26,"pot1":647,"pot2":1368,"brkF":0,"brkR":0,"invT":25,"motT":26},{"s":65.25,"vx":7.42,"ax":0.56,"ay":3.36,"yawRate":0.186,"rpm":1120,"trqCmd":35,"trqEst":38,"vdc":382,"idc":11,"thr":28,"pot1":661,"pot2":1405,"brkF":0,"brkR":0,"invT":25,"motT":27},{"s":66.24,"vx":7.72,"ax":0.5,"ay":3.12,"yawRate":0.159,"rpm":1161,"trqCmd":30,"trqEst":30,"vdc":381,"idc":11,"thr":27,"pot1":624,"pot2":1330,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":67.22,"vx":7.61,"ax":-1.07,"ay":3.28,"yawRate":0.121,"rpm":1155,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":335,"pot2":741,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":68.2,"vx":7.43,"ax":-0.94,"ay":2.46,"yawRate":0.042,"rpm":1110,"trqCmd":0,"trqEst":1,"vdc":387,"idc":0,"thr":0,"pot1":330,"pot2":740,"brkF":0,"brkR":0,"invT":24,"motT":30},{"s":69.18,"vx":7.08,"ax":-1.14,"ay":2.36,"yawRate":0.04,"rpm":1063,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":333,"pot2":742,"brkF":0,"brkR":0,"invT":24,"motT":28},{"s":70.15,"vx":6.5,"ax":-2.23,"ay":2.07,"yawRate":0.039,"rpm":978,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":335,"pot2":737,"brkF":0,"brkR":0,"invT":24,"motT":29},{"s":71.11,"vx":5.57,"ax":-2.47,"ay":2.26,"yawRate":0.036,"rpm":834,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":334,"pot2":732,"brkF":0,"brkR":0,"invT":24,"motT":27},{"s":72.07,"vx":4.51,"ax":-2.26,"ay":2.82,"yawRate":0.033,"rpm":676,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":333,"pot2":742,"brkF":0,"brkR":0,"invT":24,"motT":29},{"s":73.01,"vx":4.07,"ax":-0.7,"ay":3.3,"yawRate":0.277,"rpm":618,"trqCmd":0,"trqEst":1,"vdc":386,"idc":0,"thr":2,"pot1":362,"pot2":810,"brkF":0,"brkR":0,"invT":24,"motT":28},{"s":73.94,"vx":3.94,"ax":0.18,"ay":3.02,"yawRate":0.317,"rpm":589,"trqCmd":15,"trqEst":14,"vdc":384,"idc":2,"thr":18,"pot1":542,"pot2":1161,"brkF":0,"brkR":0,"invT":24,"motT":30},{"s":74.86,"vx":3.85,"ax":-0.36,"ay":4.66,"yawRate":0.473,"rpm":570,"trqCmd":0,"trqEst":-2,"vdc":387,"idc":0,"thr":0,"pot1":323,"pot2":732,"brkF":0,"brkR":0,"invT":24,"motT":29},{"s":75.76,"vx":3.47,"ax":-0.57,"ay":3.35,"yawRate":0.723,"rpm":489,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":329,"pot2":735,"brkF":0,"brkR":0,"invT":24,"motT":29},{"s":76.64,"vx":3.09,"ax":-0.04,"ay":2.96,"yawRate":0.663,"rpm":458,"trqCmd":15,"trqEst":14,"vdc":386,"idc":2,"thr":16,"pot1":540,"pot2":1161,"brkF":0,"brkR":0,"invT":24,"motT":29},{"s":77.51,"vx":3.39,"ax":0.64,"ay":3.09,"yawRate":0.748,"rpm":491,"trqCmd":27,"trqEst":29,"vdc":385,"idc":4,"thr":24,"pot1":612,"pot2":1304,"brkF":0,"brkR":0,"invT":24,"motT":30},{"s":78.36,"vx":4.21,"ax":1.86,"ay":3.95,"yawRate":0.876,"rpm":632,"trqCmd":60,"trqEst":57,"vdc":382,"idc":11,"thr":39,"pot1":818,"pot2":1700,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":79.2,"vx":5.16,"ax":1.3,"ay":5.64,"yawRate":1.059,"rpm":756,"trqCmd":59,"trqEst":62,"vdc":381,"idc":13,"thr":39,"pot1":802,"pot2":1682,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":80.03,"vx":5.94,"ax":0.91,"ay":6.28,"yawRate":1.133,"rpm":881,"trqCmd":57,"trqEst":59,"vdc":380,"idc":15,"thr":39,"pot1":794,"pot2":1666,"brkF":0,"brkR":0,"invT":25,"motT":27},{"s":80.86,"vx":6.55,"ax":0.64,"ay":-4.84,"yawRate":-0.326,"rpm":991,"trqCmd":47,"trqEst":49,"vdc":383,"idc":13,"thr":33,"pot1":736,"pot2":1544,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":81.68,"vx":7,"ax":-0.33,"ay":-7.59,"yawRate":-1.154,"rpm":1040,"trqCmd":42,"trqEst":42,"vdc":382,"idc":12,"thr":30,"pot1":694,"pot2":1469,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":82.51,"vx":6.94,"ax":1,"ay":1.28,"yawRate":-0.35,"rpm":1082,"trqCmd":31,"trqEst":30,"vdc":383,"idc":9,"thr":26,"pot1":622,"pot2":1330,"brkF":0,"brkR":0,"invT":25,"motT":28},{"s":83.34,"vx":7.29,"ax":-0.05,"ay":10.17,"yawRate":0.94,"rpm":1102,"trqCmd":28,"trqEst":36,"vdc":385,"idc":8,"thr":28,"pot1":605,"pot2":1293,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":84.19,"vx":7.57,"ax":-0.23,"ay":8.98,"yawRate":1.303,"rpm":1135,"trqCmd":34,"trqEst":38,"vdc":383,"idc":11,"thr":27,"pot1":658,"pot2":1390,"brkF":0,"brkR":0,"invT":25,"motT":28},{"s":85.04,"vx":7.61,"ax":-0.88,"ay":-4.71,"yawRate":-0.457,"rpm":1137,"trqCmd":16,"trqEst":15,"vdc":383,"idc":5,"thr":18,"pot1":556,"pot2":1192,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":85.91,"vx":7.72,"ax":-0.76,"ay":-6.39,"yawRate":-0.95,"rpm":1143,"trqCmd":19,"trqEst":20,"vdc":384,"idc":6,"thr":20,"pot1":568,"pot2":1223,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":86.79,"vx":7.76,"ax":-0.41,"ay":-4.74,"yawRate":-0.955,"rpm":1153,"trqCmd":20,"trqEst":19,"vdc":385,"idc":7,"thr":20,"pot1":583,"pot2":1244,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":87.69,"vx":7.86,"ax":0.45,"ay":5.22,"yawRate":0.275,"rpm":1176,"trqCmd":24,"trqEst":25,"vdc":383,"idc":8,"thr":22,"pot1":620,"pot2":1284,"brkF":0,"brkR":0,"invT":25,"motT":32},{"s":88.6,"vx":8.02,"ax":0.11,"ay":9,"yawRate":1.141,"rpm":1207,"trqCmd":36,"trqEst":38,"vdc":380,"idc":13,"thr":29,"pot1":681,"pot2":1434,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":89.52,"vx":8.24,"ax":1.19,"ay":6.21,"yawRate":1.006,"rpm":1251,"trqCmd":47,"trqEst":46,"vdc":380,"idc":17,"thr":34,"pot1":729,"pot2":1531,"brkF":0,"brkR":0,"invT":25,"motT":28},{"s":90.44,"vx":8.43,"ax":-1.54,"ay":-1.44,"yawRate":-0.242,"rpm":1262,"trqCmd":0,"trqEst":-2,"vdc":386,"idc":0,"thr":0,"pot1":330,"pot2":744,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":91.36,"vx":8.05,"ax":-1.04,"ay":0.83,"yawRate":-0.108,"rpm":1201,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":332,"pot2":743,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":92.27,"vx":7.69,"ax":-2.98,"ay":0.84,"yawRate":0.011,"rpm":1156,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":331,"pot2":742,"brkF":0,"brkR":0,"invT":25,"motT":28},{"s":93.17,"vx":6.08,"ax":-4.47,"ay":0.91,"yawRate":0.014,"rpm":890,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":333,"pot2":737,"brkF":0,"brkR":0,"invT":24,"motT":31},{"s":94.06,"vx":4.55,"ax":-4.45,"ay":0.77,"yawRate":0.022,"rpm":671,"trqCmd":0,"trqEst":-2,"vdc":384,"idc":0,"thr":0,"pot1":331,"pot2":740,"brkF":0,"brkR":0,"invT":24,"motT":31},{"s":94.93,"vx":1.76,"ax":-0.59,"ay":0.76,"yawRate":0.008,"rpm":263,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":331,"pot2":738,"brkF":0,"brkR":0,"invT":24,"motT":30},{"s":95.79,"vx":1.71,"ax":1.26,"ay":-0.34,"yawRate":-0.168,"rpm":278,"trqCmd":30,"trqEst":30,"vdc":385,"idc":2,"thr":25,"pot1":626,"pot2":1328,"brkF":0,"brkR":0,"invT":24,"motT":28},{"s":96.63,"vx":2.86,"ax":0.63,"ay":-0.83,"yawRate":-0.432,"rpm":442,"trqCmd":30,"trqEst":32,"vdc":385,"idc":3,"thr":25,"pot1":625,"pot2":1335,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":97.47,"vx":3.49,"ax":0.06,"ay":-2.02,"yawRate":-0.633,"rpm":517,"trqCmd":18,"trqEst":19,"vdc":386,"idc":2,"thr":20,"pot1":565,"pot2":1209,"brkF":0,"brkR":0,"invT":25,"motT":26},{"s":98.29,"vx":3.54,"ax":-0.71,"ay":-1.41,"yawRate":-0.744,"rpm":476,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":10,"pot1":432,"pot2":944,"brkF":0,"brkR":0,"invT":25,"motT":32},{"s":99.11,"vx":2.95,"ax":-0.47,"ay":-0.21,"yawRate":-0.685,"rpm":415,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":332,"pot2":740,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":99.94,"vx":2.23,"ax":-0.11,"ay":0.51,"yawRate":-0.517,"rpm":313,"trqCmd":0,"trqEst":-2,"vdc":384,"idc":0,"thr":7,"pot1":405,"pot2":903,"brkF":0,"brkR":0,"invT":24,"motT":28},{"s":100.78,"vx":2.32,"ax":1.35,"ay":0.02,"yawRate":-0.534,"rpm":351,"trqCmd":37,"trqEst":40,"vdc":384,"idc":3,"thr":29,"pot1":662,"pot2":1408,"brkF":0,"brkR":0,"invT":25,"motT":32},{"s":101.62,"vx":3.22,"ax":0.79,"ay":-0.49,"yawRate":-0.717,"rpm":469,"trqCmd":38,"trqEst":41,"vdc":383,"idc":5,"thr":28,"pot1":674,"pot2":1425,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":102.47,"vx":4.12,"ax":0.98,"ay":-2.15,"yawRate":-0.905,"rpm":616,"trqCmd":62,"trqEst":63,"vdc":382,"idc":11,"thr":41,"pot1":818,"pot2":1712,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":103.34,"vx":5.17,"ax":2.66,"ay":0.73,"yawRate":-0.857,"rpm":813,"trqCmd":69,"trqEst":65,"vdc":380,"idc":17,"thr":45,"pot1":869,"pot2":1808,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":104.2,"vx":6.26,"ax":1.66,"ay":6.39,"yawRate":0.747,"rpm":941,"trqCmd":63,"trqEst":64,"vdc":380,"idc":17,"thr":42,"pot1":819,"pot2":1703,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":105.07,"vx":7,"ax":2,"ay":6.49,"yawRate":0.846,"rpm":1126,"trqCmd":73,"trqEst":77,"vdc":376,"idc":24,"thr":45,"pot1":901,"pot2":1866,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":105.94,"vx":8.11,"ax":3.99,"ay":-0.09,"yawRate":0.277,"rpm":1252,"trqCmd":94,"trqEst":104,"vdc":374,"idc":35,"thr":56,"pot1":1010,"pot2":2070,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":106.79,"vx":8.7,"ax":1.09,"ay":-5.95,"yawRate":-0.715,"rpm":1432,"trqCmd":77,"trqEst":86,"vdc":374,"idc":33,"thr":48,"pot1":918,"pot2":1911,"brkF":0,"brkR":0,"invT":26,"motT":31},{"s":107.63,"vx":9.16,"ax":1.57,"ay":-7.53,"yawRate":-1.203,"rpm":1547,"trqCmd":73,"trqEst":77,"vdc":375,"idc":34,"thr":46,"pot1":879,"pot2":1830,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":108.45,"vx":9.84,"ax":1.62,"ay":7.18,"yawRate":0.536,"rpm":1515,"trqCmd":64,"trqEst":63,"vdc":376,"idc":29,"thr":42,"pot1":839,"pot2":1751,"brkF":0,"brkR":0,"invT":27,"motT":31},{"s":109.25,"vx":10.14,"ax":1.29,"ay":10.81,"yawRate":0.95,"rpm":1692,"trqCmd":73,"trqEst":77,"vdc":373,"idc":37,"thr":46,"pot1":889,"pot2":1851,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":110.01,"vx":10.46,"ax":2.53,"ay":11.54,"yawRate":1.19,"rpm":1822,"trqCmd":80,"trqEst":87,"vdc":369,"idc":44,"thr":50,"pot1":940,"pot2":1950,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":110.75,"vx":11.28,"ax":1.73,"ay":2.52,"yawRate":-0.333,"rpm":1679,"trqCmd":49,"trqEst":53,"vdc":377,"idc":24,"thr":40,"pot1":755,"pot2":1583,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":111.46,"vx":11.27,"ax":0.47,"ay":-8.45,"yawRate":-1.277,"rpm":1883,"trqCmd":58,"trqEst":60,"vdc":374,"idc":33,"thr":39,"pot1":802,"pot2":1678,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":112.15,"vx":11.11,"ax":-1.59,"ay":-9.97,"yawRate":-1.294,"rpm":1674,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":331,"pot2":739,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":112.84,"vx":10.91,"ax":-1.02,"ay":-2.6,"yawRate":0.141,"rpm":1613,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":333,"pot2":741,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":113.53,"vx":10.49,"ax":-2.88,"ay":5.34,"yawRate":0.293,"rpm":1582,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":331,"pot2":735,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":114.23,"vx":9.68,"ax":-4.34,"ay":2.49,"yawRate":0.094,"rpm":1440,"trqCmd":0,"trqEst":1,"vdc":387,"idc":0,"thr":0,"pot1":331,"pot2":737,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":114.97,"vx":8.37,"ax":-4.17,"ay":2.91,"yawRate":0.08,"rpm":1260,"trqCmd":0,"trqEst":-3,"vdc":385,"idc":0,"thr":0,"pot1":333,"pot2":740,"brkF":0,"brkR":0,"invT":25,"motT":31},{"s":115.73,"vx":7.28,"ax":-4.31,"ay":2.38,"yawRate":0.058,"rpm":1075,"trqCmd":0,"trqEst":1,"vdc":384,"idc":0,"thr":0,"pot1":334,"pot2":742,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":116.53,"vx":5.59,"ax":-5.27,"ay":1.8,"yawRate":0.046,"rpm":824,"trqCmd":0,"trqEst":-1,"vdc":384,"idc":0,"thr":0,"pot1":327,"pot2":739,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":117.36,"vx":2.96,"ax":-3.25,"ay":1.52,"yawRate":0.027,"rpm":433,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":328,"pot2":743,"brkF":0,"brkR":0,"invT":25,"motT":28},{"s":118.23,"vx":3.02,"ax":0.75,"ay":2.07,"yawRate":0.309,"rpm":468,"trqCmd":29,"trqEst":32,"vdc":383,"idc":4,"thr":25,"pot1":629,"pot2":1329,"brkF":0,"brkR":0,"invT":25,"motT":28},{"s":119.12,"vx":4.06,"ax":1.61,"ay":2.88,"yawRate":0.491,"rpm":616,"trqCmd":43,"trqEst":44,"vdc":381,"idc":7,"thr":32,"pot1":704,"pot2":1481,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":120.04,"vx":4.85,"ax":1.27,"ay":3.35,"yawRate":0.585,"rpm":714,"trqCmd":38,"trqEst":40,"vdc":382,"idc":8,"thr":29,"pot1":683,"pot2":1442,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":120.97,"vx":5.3,"ax":-0.6,"ay":5.27,"yawRate":0.894,"rpm":771,"trqCmd":11,"trqEst":8,"vdc":385,"idc":2,"thr":16,"pot1":516,"pot2":1113,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":121.91,"vx":5.16,"ax":-0.82,"ay":5.11,"yawRate":0.871,"rpm":720,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":9,"pot1":423,"pot2":933,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":122.86,"vx":4.76,"ax":-1.03,"ay":1.98,"yawRate":0.319,"rpm":705,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":336,"pot2":746,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":123.82,"vx":4.22,"ax":-0.88,"ay":1.54,"yawRate":0.18,"rpm":632,"trqCmd":0,"trqEst":0,"vdc":388,"idc":0,"thr":0,"pot1":322,"pot2":728,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":124.78,"vx":3.69,"ax":-0.53,"ay":2.24,"yawRate":0.251,"rpm":559,"trqCmd":0,"trqEst":-1,"vdc":386,"idc":0,"thr":0,"pot1":331,"pot2":740,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":125.74,"vx":3.42,"ax":-0.53,"ay":2.16,"yawRate":0.433,"rpm":507,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":9,"pot1":438,"pot2":959,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":126.71,"vx":3.62,"ax":1.4,"ay":2.32,"yawRate":0.584,"rpm":561,"trqCmd":50,"trqEst":54,"vdc":382,"idc":8,"thr":34,"pot1":764,"pot2":1599,"brkF":0,"brkR":0,"invT":25,"motT":28},{"s":127.67,"vx":4.83,"ax":0.83,"ay":4.09,"yawRate":0.773,"rpm":697,"trqCmd":47,"trqEst":49,"vdc":382,"idc":10,"thr":34,"pot1":739,"pot2":1550,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":128.64,"vx":5.56,"ax":1,"ay":4.98,"yawRate":0.875,"rpm":834,"trqCmd":47,"trqEst":47,"vdc":382,"idc":11,"thr":33,"pot1":726,"pot2":1528,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":129.6,"vx":6.18,"ax":0.93,"ay":4.35,"yawRate":0.813,"rpm":926,"trqCmd":42,"trqEst":50,"vdc":383,"idc":11,"thr":32,"pot1":704,"pot2":1471,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":130.56,"vx":6.67,"ax":0.56,"ay":2.08,"yawRate":0.344,"rpm":1003,"trqCmd":32,"trqEst":33,"vdc":381,"idc":9,"thr":26,"pot1":642,"pot2":1362,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":131.53,"vx":6.92,"ax":0.23,"ay":1.85,"yawRate":0.18,"rpm":1038,"trqCmd":21,"trqEst":19,"vdc":384,"idc":6,"thr":21,"pot1":585,"pot2":1249,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":132.49,"vx":7.23,"ax":0.66,"ay":0.19,"yawRate":0.003,"rpm":1094,"trqCmd":31,"trqEst":32,"vdc":382,"idc":9,"thr":25,"pot1":640,"pot2":1357,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":133.46,"vx":7.59,"ax":0.53,"ay":0.15,"yawRate":-0.049,"rpm":1160,"trqCmd":37,"trqEst":40,"vdc":381,"idc":12,"thr":29,"pot1":678,"pot2":1431,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":134.43,"vx":7.67,"ax":-1.02,"ay":0.41,"yawRate":-0.056,"rpm":1138,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":330,"pot2":743,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":135.4,"vx":7.32,"ax":-1.57,"ay":-0.93,"yawRate":-0.053,"rpm":1097,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":330,"pot2":736,"brkF":0,"brkR":0,"invT":26,"motT":28}],"23_08/23_08_2026-06.41.14.csv":[{"s":0,"vx":1.25,"ax":0.5,"ay":-0.08,"yawRate":0.016,"rpm":191,"trqCmd":19,"trqEst":19,"vdc":386,"idc":0,"thr":20,"pot1":565,"pot2":1227,"brkF":0,"brkR":0,"invT":25,"motT":29},{"s":0.97,"vx":1.85,"ax":0.28,"ay":0.19,"yawRate":0.042,"rpm":277,"trqCmd":21,"trqEst":22,"vdc":386,"idc":1,"thr":21,"pot1":570,"pot2":1246,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":1.94,"vx":2.37,"ax":0.49,"ay":-0.22,"yawRate":0.044,"rpm":368,"trqCmd":25,"trqEst":25,"vdc":385,"idc":2,"thr":23,"pot1":578,"pot2":1268,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":2.92,"vx":2.59,"ax":-0.41,"ay":-1.38,"yawRate":-0.306,"rpm":394,"trqCmd":9,"trqEst":8,"vdc":386,"idc":1,"thr":14,"pot1":512,"pot2":1128,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":3.89,"vx":2.62,"ax":-1.23,"ay":-1.15,"yawRate":-0.589,"rpm":366,"trqCmd":0,"trqEst":-1,"vdc":385,"idc":0,"thr":9,"pot1":416,"pot2":946,"brkF":0,"brkR":0,"invT":26,"motT":32},{"s":4.86,"vx":2.83,"ax":0.64,"ay":-1.97,"yawRate":-0.615,"rpm":405,"trqCmd":35,"trqEst":35,"vdc":385,"idc":4,"thr":28,"pot1":650,"pot2":1407,"brkF":0,"brkR":0,"invT":26,"motT":31},{"s":5.84,"vx":3.22,"ax":0.78,"ay":-2.17,"yawRate":-0.701,"rpm":467,"trqCmd":34,"trqEst":37,"vdc":385,"idc":4,"thr":28,"pot1":670,"pot2":1434,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":6.81,"vx":3.46,"ax":0.5,"ay":-2.2,"yawRate":-0.773,"rpm":507,"trqCmd":32,"trqEst":34,"vdc":384,"idc":4,"thr":27,"pot1":638,"pot2":1387,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":7.79,"vx":3.72,"ax":0.57,"ay":-1.98,"yawRate":-0.835,"rpm":541,"trqCmd":32,"trqEst":33,"vdc":384,"idc":5,"thr":26,"pot1":647,"pot2":1392,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":8.76,"vx":4.02,"ax":0.62,"ay":-2.7,"yawRate":-0.876,"rpm":584,"trqCmd":33,"trqEst":32,"vdc":382,"idc":5,"thr":27,"pot1":655,"pot2":1407,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":9.74,"vx":4.26,"ax":0.52,"ay":-2.5,"yawRate":-0.935,"rpm":600,"trqCmd":35,"trqEst":33,"vdc":385,"idc":6,"thr":27,"pot1":649,"pot2":1404,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":10.71,"vx":4.43,"ax":0.42,"ay":-2.97,"yawRate":-0.976,"rpm":647,"trqCmd":34,"trqEst":33,"vdc":384,"idc":6,"thr":27,"pot1":654,"pot2":1409,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":11.69,"vx":4.63,"ax":1.25,"ay":-2.32,"yawRate":-0.817,"rpm":685,"trqCmd":34,"trqEst":36,"vdc":383,"idc":7,"thr":27,"pot1":654,"pot2":1410,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":12.66,"vx":4.81,"ax":0.67,"ay":-2.49,"yawRate":-0.825,"rpm":705,"trqCmd":33,"trqEst":36,"vdc":383,"idc":7,"thr":27,"pot1":645,"pot2":1407,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":13.64,"vx":5.04,"ax":0.73,"ay":-2.79,"yawRate":-0.845,"rpm":739,"trqCmd":34,"trqEst":36,"vdc":382,"idc":7,"thr":28,"pot1":652,"pot2":1409,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":14.61,"vx":5.26,"ax":0.51,"ay":-2.69,"yawRate":-0.898,"rpm":775,"trqCmd":34,"trqEst":34,"vdc":382,"idc":8,"thr":27,"pot1":641,"pot2":1400,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":15.59,"vx":5.43,"ax":0.57,"ay":-2.6,"yawRate":-0.912,"rpm":802,"trqCmd":33,"trqEst":34,"vdc":382,"idc":8,"thr":27,"pot1":654,"pot2":1407,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":16.57,"vx":5.64,"ax":0.7,"ay":-1.88,"yawRate":-0.844,"rpm":831,"trqCmd":32,"trqEst":36,"vdc":384,"idc":8,"thr":27,"pot1":643,"pot2":1390,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":17.54,"vx":5.76,"ax":0.92,"ay":1.44,"yawRate":-0.289,"rpm":867,"trqCmd":30,"trqEst":29,"vdc":384,"idc":7,"thr":23,"pot1":620,"pot2":1344,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":18.52,"vx":5.92,"ax":0.43,"ay":0.78,"yawRate":-0.126,"rpm":865,"trqCmd":3,"trqEst":4,"vdc":385,"idc":1,"thr":18,"pot1":463,"pot2":1026,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":19.5,"vx":5.87,"ax":-0.25,"ay":1.72,"yawRate":0.026,"rpm":869,"trqCmd":0,"trqEst":2,"vdc":385,"idc":0,"thr":0,"pot1":312,"pot2":731,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":20.48,"vx":5.72,"ax":-0.36,"ay":1.89,"yawRate":0.035,"rpm":857,"trqCmd":0,"trqEst":-1,"vdc":385,"idc":0,"thr":0,"pot1":312,"pot2":727,"brkF":0,"brkR":0,"invT":27,"motT":31},{"s":21.45,"vx":5.61,"ax":-0.53,"ay":1.76,"yawRate":0.031,"rpm":847,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":318,"pot2":733,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":22.43,"vx":5.49,"ax":-0.55,"ay":1.52,"yawRate":0.029,"rpm":833,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":315,"pot2":732,"brkF":0,"brkR":0,"invT":27,"motT":32},{"s":23.4,"vx":5.38,"ax":-0.26,"ay":1.65,"yawRate":0.024,"rpm":806,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":308,"pot2":726,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":24.38,"vx":5.28,"ax":-0.37,"ay":2.05,"yawRate":0.023,"rpm":789,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":1,"pot1":400,"pot2":913,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":25.35,"vx":5.19,"ax":0.24,"ay":1.49,"yawRate":0.026,"rpm":795,"trqCmd":14,"trqEst":14,"vdc":384,"idc":3,"thr":16,"pot1":522,"pot2":1151,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":26.32,"vx":5.22,"ax":-0.34,"ay":1.99,"yawRate":0.025,"rpm":749,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":7,"pot1":352,"pot2":822,"brkF":0,"brkR":0,"invT":27,"motT":27},{"s":27.29,"vx":5.1,"ax":-0.41,"ay":1.35,"yawRate":0.025,"rpm":766,"trqCmd":0,"trqEst":-3,"vdc":385,"idc":0,"thr":0,"pot1":295,"pot2":713,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":28.24,"vx":4.76,"ax":-1.87,"ay":1.38,"yawRate":0.03,"rpm":701,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":316,"pot2":732,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":29.19,"vx":4.13,"ax":-2.23,"ay":1.48,"yawRate":0.021,"rpm":601,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":318,"pot2":733,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":30.12,"vx":3.42,"ax":-1.95,"ay":1.13,"yawRate":0.018,"rpm":503,"trqCmd":0,"trqEst":1,"vdc":386,"idc":0,"thr":0,"pot1":302,"pot2":721,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":31.03,"vx":2.82,"ax":-1.23,"ay":1.36,"yawRate":0.017,"rpm":424,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":310,"pot2":724,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":31.92,"vx":2.3,"ax":-0.83,"ay":1.39,"yawRate":0.015,"rpm":345,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":308,"pot2":724,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":32.78,"vx":1.78,"ax":0.02,"ay":0.8,"yawRate":0.015,"rpm":272,"trqCmd":0,"trqEst":-1,"vdc":385,"idc":0,"thr":0,"pot1":302,"pot2":715,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":33.61,"vx":1.48,"ax":-0.01,"ay":0.31,"yawRate":0.011,"rpm":222,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":313,"pot2":728,"brkF":0,"brkR":0,"invT":27,"motT":32},{"s":34.41,"vx":1.12,"ax":-0.04,"ay":0.17,"yawRate":0.008,"rpm":170,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":310,"pot2":727,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":35.18,"vx":1.49,"ax":1.43,"ay":0.06,"yawRate":0.01,"rpm":251,"trqCmd":31,"trqEst":32,"vdc":385,"idc":2,"thr":25,"pot1":632,"pot2":1364,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":35.93,"vx":2.42,"ax":1.65,"ay":0.02,"yawRate":0.011,"rpm":386,"trqCmd":46,"trqEst":46,"vdc":383,"idc":5,"thr":31,"pot1":719,"pot2":1538,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":36.66,"vx":3.23,"ax":1.77,"ay":0,"yawRate":0.014,"rpm":521,"trqCmd":52,"trqEst":60,"vdc":381,"idc":8,"thr":36,"pot1":762,"pot2":1625,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":37.4,"vx":4.01,"ax":1.69,"ay":0.23,"yawRate":0.022,"rpm":620,"trqCmd":52,"trqEst":54,"vdc":381,"idc":9,"thr":36,"pot1":761,"pot2":1626,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":38.14,"vx":4.58,"ax":1.27,"ay":1.68,"yawRate":0.147,"rpm":688,"trqCmd":47,"trqEst":47,"vdc":384,"idc":9,"thr":35,"pot1":739,"pot2":1580,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":38.9,"vx":5.03,"ax":0.74,"ay":1.95,"yawRate":0.34,"rpm":758,"trqCmd":34,"trqEst":35,"vdc":382,"idc":7,"thr":28,"pot1":653,"pot2":1407,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":39.7,"vx":5.17,"ax":-0.47,"ay":2.49,"yawRate":0.453,"rpm":786,"trqCmd":15,"trqEst":15,"vdc":384,"idc":3,"thr":18,"pot1":535,"pot2":1176,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":40.53,"vx":5.15,"ax":-1.14,"ay":2.92,"yawRate":0.501,"rpm":750,"trqCmd":1,"trqEst":1,"vdc":385,"idc":0,"thr":12,"pot1":450,"pot2":1010,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":41.39,"vx":5.04,"ax":-1.69,"ay":3.88,"yawRate":0.64,"rpm":736,"trqCmd":0,"trqEst":-3,"vdc":386,"idc":0,"thr":5,"pot1":363,"pot2":845,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":42.3,"vx":4.92,"ax":-1.89,"ay":4.65,"yawRate":0.81,"rpm":714,"trqCmd":0,"trqEst":-2,"vdc":384,"idc":0,"thr":1,"pot1":342,"pot2":800,"brkF":0,"brkR":0,"invT":28,"motT":31},{"s":43.23,"vx":4.79,"ax":-1.82,"ay":5.12,"yawRate":0.947,"rpm":674,"trqCmd":15,"trqEst":15,"vdc":384,"idc":3,"thr":17,"pot1":529,"pot2":1170,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":44.2,"vx":4.78,"ax":-1.76,"ay":4.96,"yawRate":0.967,"rpm":692,"trqCmd":14,"trqEst":13,"vdc":385,"idc":3,"thr":16,"pot1":528,"pot2":1158,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":45.19,"vx":4.78,"ax":-1.79,"ay":5.78,"yawRate":0.97,"rpm":694,"trqCmd":14,"trqEst":14,"vdc":384,"idc":2,"thr":16,"pot1":538,"pot2":1171,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":46.19,"vx":4.78,"ax":-1,"ay":5.56,"yawRate":0.982,"rpm":692,"trqCmd":26,"trqEst":27,"vdc":383,"idc":5,"thr":22,"pot1":605,"pot2":1309,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":47.2,"vx":4.9,"ax":-0.64,"ay":6.25,"yawRate":0.991,"rpm":722,"trqCmd":32,"trqEst":35,"vdc":385,"idc":6,"thr":25,"pot1":641,"pot2":1376,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":48.22,"vx":5.13,"ax":-0.52,"ay":6.66,"yawRate":1.027,"rpm":752,"trqCmd":35,"trqEst":41,"vdc":382,"idc":8,"thr":27,"pot1":650,"pot2":1403,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":49.23,"vx":5.34,"ax":-0.33,"ay":7.38,"yawRate":1.088,"rpm":786,"trqCmd":35,"trqEst":38,"vdc":382,"idc":8,"thr":28,"pot1":649,"pot2":1403,"brkF":0,"brkR":0,"invT":28,"motT":27},{"s":50.25,"vx":5.5,"ax":0.2,"ay":7.34,"yawRate":1.069,"rpm":804,"trqCmd":36,"trqEst":37,"vdc":383,"idc":8,"thr":29,"pot1":669,"pot2":1430,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":51.27,"vx":5.73,"ax":1.04,"ay":6.19,"yawRate":0.985,"rpm":842,"trqCmd":37,"trqEst":35,"vdc":382,"idc":9,"thr":28,"pot1":682,"pot2":1458,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":52.28,"vx":5.95,"ax":1.48,"ay":4.73,"yawRate":0.687,"rpm":889,"trqCmd":38,"trqEst":39,"vdc":382,"idc":10,"thr":29,"pot1":669,"pot2":1439,"brkF":0,"brkR":0,"invT":28,"motT":31},{"s":53.29,"vx":6.18,"ax":1.6,"ay":4.37,"yawRate":0.553,"rpm":935,"trqCmd":37,"trqEst":41,"vdc":382,"idc":10,"thr":29,"pot1":666,"pot2":1441,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":54.3,"vx":6.42,"ax":1.74,"ay":5.09,"yawRate":0.418,"rpm":966,"trqCmd":37,"trqEst":35,"vdc":381,"idc":10,"thr":28,"pot1":657,"pot2":1419,"brkF":0,"brkR":0,"invT":29,"motT":28},{"s":55.3,"vx":6.63,"ax":2.01,"ay":4.63,"yawRate":0.414,"rpm":1006,"trqCmd":38,"trqEst":38,"vdc":380,"idc":11,"thr":28,"pot1":680,"pot2":1448,"brkF":0,"brkR":0,"invT":29,"motT":28},{"s":56.3,"vx":6.92,"ax":1.87,"ay":4.57,"yawRate":0.423,"rpm":1032,"trqCmd":37,"trqEst":38,"vdc":381,"idc":11,"thr":29,"pot1":688,"pot2":1454,"brkF":0,"brkR":0,"invT":29,"motT":31},{"s":57.31,"vx":7.06,"ax":0.79,"ay":2.62,"yawRate":0.313,"rpm":1041,"trqCmd":6,"trqEst":7,"vdc":384,"idc":1,"thr":15,"pot1":482,"pot2":1077,"brkF":0,"brkR":0,"invT":29,"motT":29},{"s":58.31,"vx":7.02,"ax":-0.02,"ay":2.53,"yawRate":0.15,"rpm":1033,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":4,"pot1":368,"pot2":851,"brkF":0,"brkR":0,"invT":29,"motT":29},{"s":59.3,"vx":6.93,"ax":0.22,"ay":2.23,"yawRate":0.117,"rpm":1046,"trqCmd":0,"trqEst":-3,"vdc":386,"idc":0,"thr":0,"pot1":310,"pot2":736,"brkF":0,"brkR":0,"invT":29,"motT":31},{"s":60.3,"vx":6.82,"ax":-0.11,"ay":1.98,"yawRate":0.055,"rpm":1024,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":317,"pot2":751,"brkF":0,"brkR":0,"invT":29,"motT":28},{"s":61.29,"vx":6.73,"ax":-0.04,"ay":2.64,"yawRate":0.074,"rpm":1019,"trqCmd":0,"trqEst":-1,"vdc":387,"idc":0,"thr":0,"pot1":328,"pot2":763,"brkF":0,"brkR":0,"invT":29,"motT":32},{"s":62.28,"vx":6.59,"ax":-0.27,"ay":2.72,"yawRate":0.087,"rpm":997,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":312,"pot2":728,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":63.27,"vx":6.47,"ax":-0.49,"ay":2.6,"yawRate":0.104,"rpm":970,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":311,"pot2":727,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":64.26,"vx":6.24,"ax":-0.47,"ay":4.01,"yawRate":0.194,"rpm":938,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":315,"pot2":733,"brkF":0,"brkR":0,"invT":28,"motT":31},{"s":65.25,"vx":6.1,"ax":-0.41,"ay":3.52,"yawRate":0.333,"rpm":909,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":317,"pot2":734,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":66.24,"vx":5.97,"ax":0.35,"ay":3.26,"yawRate":0.317,"rpm":892,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":6,"pot1":439,"pot2":986,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":67.22,"vx":5.92,"ax":0.94,"ay":3.22,"yawRate":0.342,"rpm":905,"trqCmd":15,"trqEst":12,"vdc":385,"idc":3,"thr":17,"pot1":533,"pot2":1166,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":68.2,"vx":6.04,"ax":1.1,"ay":2.5,"yawRate":0.365,"rpm":931,"trqCmd":17,"trqEst":22,"vdc":383,"idc":5,"thr":20,"pot1":563,"pot2":1229,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":69.18,"vx":6.2,"ax":1.6,"ay":3.4,"yawRate":0.371,"rpm":940,"trqCmd":21,"trqEst":23,"vdc":383,"idc":5,"thr":20,"pot1":569,"pot2":1242,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":70.15,"vx":6.31,"ax":1.46,"ay":4.14,"yawRate":0.369,"rpm":939,"trqCmd":21,"trqEst":21,"vdc":383,"idc":5,"thr":20,"pot1":575,"pot2":1244,"brkF":0,"brkR":0,"invT":28,"motT":27},{"s":71.11,"vx":6.42,"ax":1.28,"ay":2.21,"yawRate":0.318,"rpm":952,"trqCmd":19,"trqEst":19,"vdc":383,"idc":5,"thr":20,"pot1":562,"pot2":1234,"brkF":0,"brkR":0,"invT":28,"motT":31},{"s":72.07,"vx":6.49,"ax":0.3,"ay":0.17,"yawRate":0.002,"rpm":960,"trqCmd":2,"trqEst":3,"vdc":383,"idc":0,"thr":12,"pot1":467,"pot2":1039,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":73.01,"vx":6.42,"ax":0.15,"ay":0.08,"yawRate":-0.195,"rpm":958,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":8,"pot1":416,"pot2":943,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":73.94,"vx":6.33,"ax":-0.09,"ay":-1.44,"yawRate":-0.43,"rpm":945,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":6,"pot1":385,"pot2":877,"brkF":0,"brkR":0,"invT":28,"motT":27},{"s":74.86,"vx":6.22,"ax":0.16,"ay":-1.04,"yawRate":-0.459,"rpm":928,"trqCmd":0,"trqEst":-1,"vdc":384,"idc":0,"thr":0,"pot1":310,"pot2":733,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":75.76,"vx":6.15,"ax":0.24,"ay":-0.85,"yawRate":-0.447,"rpm":918,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":309,"pot2":735,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":76.64,"vx":6.08,"ax":-0.15,"ay":-1.46,"yawRate":-0.555,"rpm":908,"trqCmd":0,"trqEst":0,"vdc":387,"idc":0,"thr":0,"pot1":306,"pot2":725,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":77.51,"vx":5.97,"ax":-0.13,"ay":-1.16,"yawRate":-0.543,"rpm":886,"trqCmd":0,"trqEst":-2,"vdc":385,"idc":0,"thr":0,"pot1":314,"pot2":736,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":78.36,"vx":5.89,"ax":-0.05,"ay":-1.21,"yawRate":-0.543,"rpm":884,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":320,"pot2":754,"brkF":0,"brkR":0,"invT":28,"motT":31},{"s":79.2,"vx":5.8,"ax":-0.38,"ay":-1.09,"yawRate":-0.536,"rpm":863,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":3,"pot1":382,"pot2":875,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":80.03,"vx":5.74,"ax":-0.57,"ay":-0.68,"yawRate":-0.526,"rpm":855,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":10,"pot1":439,"pot2":990,"brkF":0,"brkR":0,"invT":28,"motT":32},{"s":80.86,"vx":5.65,"ax":-0.39,"ay":-0.3,"yawRate":-0.482,"rpm":840,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":9,"pot1":416,"pot2":951,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":81.68,"vx":5.52,"ax":-0.25,"ay":3.77,"yawRate":-0.083,"rpm":830,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":6,"pot1":402,"pot2":915,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":82.51,"vx":5.45,"ax":-0.5,"ay":5.9,"yawRate":0.525,"rpm":794,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":6,"pot1":403,"pot2":916,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":83.34,"vx":5.42,"ax":-0.4,"ay":6.11,"yawRate":0.723,"rpm":789,"trqCmd":0,"trqEst":1,"vdc":387,"idc":0,"thr":5,"pot1":384,"pot2":876,"brkF":0,"brkR":0,"invT":28,"motT":32},{"s":84.19,"vx":5.32,"ax":-0.46,"ay":7.1,"yawRate":0.882,"rpm":772,"trqCmd":0,"trqEst":-1,"vdc":385,"idc":0,"thr":0,"pot1":305,"pot2":717,"brkF":0,"brkR":0,"invT":28,"motT":27},{"s":85.04,"vx":5.21,"ax":-0.62,"ay":6.25,"yawRate":0.989,"rpm":749,"trqCmd":0,"trqEst":3,"vdc":385,"idc":0,"thr":0,"pot1":305,"pot2":717,"brkF":0,"brkR":0,"invT":28,"motT":32},{"s":85.91,"vx":5.04,"ax":-0.64,"ay":6.35,"yawRate":0.99,"rpm":727,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":321,"pot2":735,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":86.79,"vx":4.89,"ax":-0.34,"ay":5.64,"yawRate":0.954,"rpm":697,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":322,"pot2":758,"brkF":0,"brkR":0,"invT":28,"motT":27},{"s":87.69,"vx":4.7,"ax":-0.25,"ay":4.81,"yawRate":0.926,"rpm":684,"trqCmd":8,"trqEst":7,"vdc":384,"idc":1,"thr":12,"pot1":489,"pot2":1083,"brkF":0,"brkR":0,"invT":28,"motT":27},{"s":88.6,"vx":4.63,"ax":0.51,"ay":5.11,"yawRate":0.929,"rpm":662,"trqCmd":13,"trqEst":12,"vdc":383,"idc":2,"thr":16,"pot1":528,"pot2":1149,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":89.52,"vx":4.65,"ax":0.61,"ay":4.78,"yawRate":0.916,"rpm":670,"trqCmd":18,"trqEst":24,"vdc":385,"idc":4,"thr":19,"pot1":548,"pot2":1206,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":90.44,"vx":4.67,"ax":0.35,"ay":4.54,"yawRate":0.915,"rpm":686,"trqCmd":18,"trqEst":16,"vdc":383,"idc":3,"thr":19,"pot1":555,"pot2":1217,"brkF":0,"brkR":0,"invT":28,"motT":31},{"s":91.36,"vx":4.71,"ax":0.33,"ay":4.14,"yawRate":0.924,"rpm":674,"trqCmd":18,"trqEst":14,"vdc":383,"idc":3,"thr":19,"pot1":554,"pot2":1218,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":92.27,"vx":4.74,"ax":0.49,"ay":4.31,"yawRate":0.943,"rpm":691,"trqCmd":26,"trqEst":26,"vdc":383,"idc":5,"thr":21,"pot1":606,"pot2":1319,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":93.17,"vx":4.91,"ax":1.04,"ay":4.24,"yawRate":0.976,"rpm":732,"trqCmd":47,"trqEst":54,"vdc":383,"idc":10,"thr":32,"pot1":734,"pot2":1567,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":94.06,"vx":5.3,"ax":1.46,"ay":4.98,"yawRate":1.043,"rpm":798,"trqCmd":61,"trqEst":66,"vdc":379,"idc":14,"thr":40,"pot1":797,"pot2":1700,"brkF":0,"brkR":0,"invT":28,"motT":27},{"s":94.93,"vx":5.7,"ax":1.47,"ay":5.35,"yawRate":1.096,"rpm":894,"trqCmd":66,"trqEst":71,"vdc":378,"idc":18,"thr":43,"pot1":853,"pot2":1796,"brkF":0,"brkR":0,"invT":28,"motT":32},{"s":95.79,"vx":6.16,"ax":1.25,"ay":6.3,"yawRate":1.182,"rpm":1025,"trqCmd":72,"trqEst":72,"vdc":378,"idc":21,"thr":46,"pot1":881,"pot2":1854,"brkF":0,"brkR":0,"invT":29,"motT":29},{"s":96.63,"vx":6.54,"ax":2.99,"ay":4.21,"yawRate":0.95,"rpm":1017,"trqCmd":70,"trqEst":77,"vdc":378,"idc":21,"thr":46,"pot1":878,"pot2":1848,"brkF":0,"brkR":0,"invT":29,"motT":31},{"s":97.47,"vx":7.07,"ax":2.22,"ay":0.79,"yawRate":0.388,"rpm":1068,"trqCmd":72,"trqEst":75,"vdc":378,"idc":23,"thr":46,"pot1":885,"pot2":1866,"brkF":0,"brkR":0,"invT":29,"motT":28},{"s":98.29,"vx":7.46,"ax":3.16,"ay":0.85,"yawRate":0.22,"rpm":1158,"trqCmd":96,"trqEst":98,"vdc":373,"idc":35,"thr":57,"pot1":1025,"pot2":2138,"brkF":0,"brkR":0,"invT":29,"motT":31},{"s":99.11,"vx":8.09,"ax":4.82,"ay":1.03,"yawRate":0.232,"rpm":1289,"trqCmd":110,"trqEst":113,"vdc":374,"idc":44,"thr":65,"pot1":1103,"pot2":2295,"brkF":0,"brkR":0,"invT":30,"motT":32},{"s":99.94,"vx":8.86,"ax":3.81,"ay":0.98,"yawRate":0.184,"rpm":1367,"trqCmd":101,"trqEst":116,"vdc":369,"idc":45,"thr":63,"pot1":1039,"pot2":2168,"brkF":0,"brkR":0,"invT":30,"motT":29},{"s":100.78,"vx":9.29,"ax":3.29,"ay":4.09,"yawRate":0.347,"rpm":1504,"trqCmd":94,"trqEst":99,"vdc":370,"idc":42,"thr":57,"pot1":1005,"pot2":2101,"brkF":0,"brkR":0,"invT":30,"motT":28},{"s":101.62,"vx":9.74,"ax":2.25,"ay":6.84,"yawRate":0.669,"rpm":1582,"trqCmd":88,"trqEst":92,"vdc":370,"idc":43,"thr":54,"pot1":981,"pot2":2046,"brkF":0,"brkR":0,"invT":30,"motT":28},{"s":102.47,"vx":10.08,"ax":2.67,"ay":7.37,"yawRate":0.812,"rpm":1641,"trqCmd":85,"trqEst":98,"vdc":371,"idc":43,"thr":53,"pot1":953,"pot2":1992,"brkF":0,"brkR":0,"invT":30,"motT":30},{"s":103.34,"vx":10.32,"ax":1.66,"ay":6.55,"yawRate":0.87,"rpm":1666,"trqCmd":66,"trqEst":68,"vdc":373,"idc":35,"thr":47,"pot1":838,"pot2":1773,"brkF":0,"brkR":0,"invT":30,"motT":29},{"s":104.2,"vx":10.52,"ax":-0.9,"ay":4.87,"yawRate":0.549,"rpm":1539,"trqCmd":3,"trqEst":7,"vdc":382,"idc":1,"thr":13,"pot1":482,"pot2":1066,"brkF":0,"brkR":0,"invT":30,"motT":29},{"s":105.07,"vx":10.43,"ax":-1.73,"ay":-1.26,"yawRate":-0.004,"rpm":1584,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":11,"pot1":372,"pot2":853,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":105.94,"vx":10.3,"ax":-2.57,"ay":-3,"yawRate":-0.211,"rpm":1568,"trqCmd":0,"trqEst":-2,"vdc":385,"idc":0,"thr":0,"pot1":310,"pot2":729,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":106.79,"vx":10.07,"ax":-2.79,"ay":-6.31,"yawRate":-0.623,"rpm":1496,"trqCmd":0,"trqEst":2,"vdc":386,"idc":0,"thr":2,"pot1":413,"pot2":935,"brkF":0,"brkR":0,"invT":30,"motT":27},{"s":107.63,"vx":9.98,"ax":-2.56,"ay":-7.65,"yawRate":-0.806,"rpm":1503,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":10,"pot1":441,"pot2":993,"brkF":0,"brkR":0,"invT":30,"motT":29},{"s":108.45,"vx":9.72,"ax":-2.79,"ay":-7.4,"yawRate":-0.788,"rpm":1465,"trqCmd":1,"trqEst":2,"vdc":383,"idc":0,"thr":11,"pot1":446,"pot2":1011,"brkF":0,"brkR":0,"invT":30,"motT":29},{"s":109.25,"vx":9.58,"ax":-2.25,"ay":-6.62,"yawRate":-0.749,"rpm":1426,"trqCmd":2,"trqEst":4,"vdc":385,"idc":1,"thr":12,"pot1":470,"pot2":1050,"brkF":0,"brkR":0,"invT":30,"motT":29},{"s":110.01,"vx":9.44,"ax":-1.93,"ay":-6.36,"yawRate":-0.747,"rpm":1416,"trqCmd":4,"trqEst":2,"vdc":383,"idc":2,"thr":13,"pot1":473,"pot2":1061,"brkF":0,"brkR":0,"invT":30,"motT":30},{"s":110.75,"vx":9.31,"ax":-1.94,"ay":-5.5,"yawRate":-0.713,"rpm":1399,"trqCmd":5,"trqEst":5,"vdc":382,"idc":3,"thr":13,"pot1":476,"pot2":1074,"brkF":0,"brkR":0,"invT":30,"motT":28},{"s":111.46,"vx":8.93,"ax":-1.44,"ay":-4.6,"yawRate":-0.64,"rpm":1381,"trqCmd":8,"trqEst":6,"vdc":382,"idc":2,"thr":14,"pot1":484,"pot2":1083,"brkF":0,"brkR":0,"invT":30,"motT":27},{"s":112.15,"vx":9,"ax":-1.06,"ay":2.13,"yawRate":-0.096,"rpm":1362,"trqCmd":10,"trqEst":8,"vdc":385,"idc":3,"thr":15,"pot1":505,"pot2":1121,"brkF":0,"brkR":0,"invT":30,"motT":31},{"s":112.84,"vx":8.98,"ax":-0.9,"ay":7.19,"yawRate":0.479,"rpm":1335,"trqCmd":11,"trqEst":8,"vdc":383,"idc":3,"thr":14,"pot1":509,"pot2":1125,"brkF":0,"brkR":0,"invT":30,"motT":27},{"s":113.53,"vx":8.95,"ax":-1.06,"ay":6.67,"yawRate":0.832,"rpm":1322,"trqCmd":14,"trqEst":12,"vdc":382,"idc":5,"thr":17,"pot1":527,"pot2":1151,"brkF":0,"brkR":0,"invT":30,"motT":29},{"s":114.23,"vx":8.9,"ax":-1.37,"ay":6.27,"yawRate":0.836,"rpm":1350,"trqCmd":13,"trqEst":12,"vdc":383,"idc":4,"thr":15,"pot1":504,"pot2":1125,"brkF":0,"brkR":0,"invT":30,"motT":30},{"s":114.97,"vx":8.81,"ax":-1.45,"ay":6.44,"yawRate":0.823,"rpm":1340,"trqCmd":11,"trqEst":11,"vdc":383,"idc":5,"thr":17,"pot1":519,"pot2":1148,"brkF":0,"brkR":0,"invT":30,"motT":31},{"s":115.73,"vx":8.72,"ax":-1.37,"ay":6.82,"yawRate":0.842,"rpm":1322,"trqCmd":11,"trqEst":11,"vdc":383,"idc":5,"thr":16,"pot1":521,"pot2":1150,"brkF":0,"brkR":0,"invT":30,"motT":29},{"s":116.53,"vx":8.67,"ax":-1.31,"ay":5.33,"yawRate":0.766,"rpm":1291,"trqCmd":13,"trqEst":16,"vdc":382,"idc":4,"thr":16,"pot1":526,"pot2":1150,"brkF":0,"brkR":0,"invT":30,"motT":28},{"s":117.36,"vx":8.64,"ax":-1.38,"ay":2.04,"yawRate":0.463,"rpm":1268,"trqCmd":1,"trqEst":2,"vdc":384,"idc":1,"thr":12,"pot1":423,"pot2":960,"brkF":0,"brkR":0,"invT":29,"motT":29},{"s":118.23,"vx":8.45,"ax":-2.21,"ay":-0.42,"yawRate":0.062,"rpm":1278,"trqCmd":0,"trqEst":-5,"vdc":384,"idc":0,"thr":1,"pot1":321,"pot2":736,"brkF":0,"brkR":0,"invT":30,"motT":30},{"s":119.12,"vx":8.19,"ax":-2.68,"ay":-2.46,"yawRate":-0.224,"rpm":1250,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":306,"pot2":718,"brkF":0,"brkR":0,"invT":29,"motT":29},{"s":120.04,"vx":7.96,"ax":-2.89,"ay":-2.57,"yawRate":-0.247,"rpm":1177,"trqCmd":0,"trqEst":1,"vdc":385,"idc":0,"thr":0,"pot1":303,"pot2":711,"brkF":0,"brkR":0,"invT":29,"motT":31},{"s":120.97,"vx":7.49,"ax":-4.43,"ay":-0.79,"yawRate":-0.24,"rpm":1102,"trqCmd":0,"trqEst":-1,"vdc":385,"idc":0,"thr":0,"pot1":313,"pot2":724,"brkF":0,"brkR":0,"invT":29,"motT":32},{"s":121.91,"vx":6.55,"ax":-6.09,"ay":-1.31,"yawRate":-0.194,"rpm":982,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":313,"pot2":731,"brkF":0,"brkR":0,"invT":29,"motT":29},{"s":122.86,"vx":5.48,"ax":-6.53,"ay":-0.28,"yawRate":-0.167,"rpm":812,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":320,"pot2":731,"brkF":0,"brkR":0,"invT":29,"motT":30},{"s":123.82,"vx":4.08,"ax":-6.34,"ay":0.2,"yawRate":-0.111,"rpm":589,"trqCmd":0,"trqEst":-2,"vdc":383,"idc":0,"thr":0,"pot1":296,"pot2":713,"brkF":0,"brkR":0,"invT":29,"motT":30},{"s":124.78,"vx":2.56,"ax":-3.86,"ay":1.26,"yawRate":0.045,"rpm":378,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":320,"pot2":732,"brkF":0,"brkR":0,"invT":29,"motT":29},{"s":125.74,"vx":2.4,"ax":-0.96,"ay":1.54,"yawRate":0.42,"rpm":392,"trqCmd":15,"trqEst":16,"vdc":384,"idc":1,"thr":17,"pot1":549,"pot2":1186,"brkF":0,"brkR":0,"invT":29,"motT":29},{"s":126.71,"vx":2.24,"ax":-1.36,"ay":1.42,"yawRate":0.446,"rpm":386,"trqCmd":15,"trqEst":17,"vdc":383,"idc":2,"thr":17,"pot1":553,"pot2":1216,"brkF":0,"brkR":0,"invT":29,"motT":28},{"s":127.67,"vx":2.37,"ax":-1.25,"ay":2.13,"yawRate":0.522,"rpm":367,"trqCmd":18,"trqEst":20,"vdc":384,"idc":1,"thr":20,"pot1":549,"pot2":1206,"brkF":0,"brkR":0,"invT":29,"motT":30},{"s":128.64,"vx":2.67,"ax":-0.56,"ay":2.67,"yawRate":0.597,"rpm":408,"trqCmd":38,"trqEst":39,"vdc":384,"idc":4,"thr":28,"pot1":661,"pot2":1430,"brkF":0,"brkR":0,"invT":29,"motT":29},{"s":129.6,"vx":2.91,"ax":-0.75,"ay":3.27,"yawRate":0.633,"rpm":432,"trqCmd":31,"trqEst":35,"vdc":383,"idc":4,"thr":25,"pot1":641,"pot2":1375,"brkF":0,"brkR":0,"invT":30,"motT":28},{"s":130.56,"vx":2.98,"ax":-1.76,"ay":3.41,"yawRate":0.649,"rpm":439,"trqCmd":28,"trqEst":29,"vdc":382,"idc":3,"thr":23,"pot1":608,"pot2":1313,"brkF":0,"brkR":0,"invT":30,"motT":28},{"s":131.53,"vx":2.98,"ax":0.17,"ay":3.72,"yawRate":0.712,"rpm":463,"trqCmd":53,"trqEst":56,"vdc":382,"idc":7,"thr":37,"pot1":765,"pot2":1631,"brkF":0,"brkR":0,"invT":30,"motT":32},{"s":132.49,"vx":3.34,"ax":0.19,"ay":4.15,"yawRate":0.785,"rpm":501,"trqCmd":49,"trqEst":53,"vdc":380,"idc":8,"thr":36,"pot1":754,"pot2":1607,"brkF":0,"brkR":0,"invT":30,"motT":29},{"s":133.46,"vx":3.71,"ax":0.19,"ay":5.23,"yawRate":0.871,"rpm":545,"trqCmd":54,"trqEst":53,"vdc":382,"idc":9,"thr":38,"pot1":778,"pot2":1661,"brkF":0,"brkR":0,"invT":30,"motT":30},{"s":134.43,"vx":4.1,"ax":0.82,"ay":5.64,"yawRate":0.953,"rpm":608,"trqCmd":63,"trqEst":61,"vdc":381,"idc":11,"thr":41,"pot1":818,"pot2":1730,"brkF":0,"brkR":0,"invT":30,"motT":28},{"s":135.4,"vx":0.56,"ax":0.04,"ay":-0.09,"yawRate":-0.084,"rpm":74,"trqCmd":14,"trqEst":13,"vdc":387,"idc":0,"thr":16,"pot1":532,"pot2":1146,"brkF":0,"brkR":0,"invT":25,"motT":29}],"23_08/23_08_2026-06.57.59.csv":[{"s":0,"vx":5.58,"ax":0.54,"ay":3.79,"yawRate":0.378,"rpm":837,"trqCmd":38,"trqEst":37,"vdc":380,"idc":10,"thr":29,"pot1":684,"pot2":1450,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":0.97,"vx":5.79,"ax":0.44,"ay":2.03,"yawRate":0.449,"rpm":870,"trqCmd":38,"trqEst":40,"vdc":381,"idc":10,"thr":30,"pot1":687,"pot2":1450,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":1.94,"vx":5.96,"ax":0.53,"ay":2.59,"yawRate":0.448,"rpm":906,"trqCmd":38,"trqEst":41,"vdc":379,"idc":10,"thr":30,"pot1":685,"pot2":1449,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":2.92,"vx":6.15,"ax":0.51,"ay":1.22,"yawRate":0.373,"rpm":928,"trqCmd":41,"trqEst":44,"vdc":378,"idc":11,"thr":30,"pot1":688,"pot2":1455,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":3.89,"vx":6.31,"ax":0.24,"ay":-0.14,"yawRate":0.148,"rpm":953,"trqCmd":38,"trqEst":39,"vdc":380,"idc":11,"thr":29,"pot1":685,"pot2":1442,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":4.86,"vx":6.45,"ax":0.13,"ay":-2.11,"yawRate":-0.108,"rpm":967,"trqCmd":38,"trqEst":36,"vdc":380,"idc":11,"thr":29,"pot1":686,"pot2":1443,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":5.84,"vx":6.56,"ax":0.03,"ay":-1.79,"yawRate":-0.222,"rpm":988,"trqCmd":38,"trqEst":41,"vdc":379,"idc":11,"thr":29,"pot1":693,"pot2":1457,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":6.81,"vx":6.76,"ax":0.15,"ay":-1.45,"yawRate":-0.247,"rpm":1029,"trqCmd":40,"trqEst":41,"vdc":379,"idc":12,"thr":30,"pot1":694,"pot2":1460,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":7.79,"vx":6.86,"ax":0.35,"ay":-1.49,"yawRate":-0.237,"rpm":1049,"trqCmd":40,"trqEst":42,"vdc":380,"idc":12,"thr":30,"pot1":686,"pot2":1455,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":8.76,"vx":7.04,"ax":0.54,"ay":-0.08,"yawRate":-0.193,"rpm":1062,"trqCmd":40,"trqEst":40,"vdc":380,"idc":12,"thr":30,"pot1":687,"pot2":1453,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":9.74,"vx":7.18,"ax":0.05,"ay":1.79,"yawRate":0.057,"rpm":1082,"trqCmd":37,"trqEst":37,"vdc":379,"idc":12,"thr":29,"pot1":674,"pot2":1438,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":10.71,"vx":7.33,"ax":-0.09,"ay":2.85,"yawRate":0.329,"rpm":1094,"trqCmd":37,"trqEst":40,"vdc":379,"idc":12,"thr":29,"pot1":678,"pot2":1430,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":11.69,"vx":7.4,"ax":-0.05,"ay":2.51,"yawRate":0.35,"rpm":1122,"trqCmd":31,"trqEst":30,"vdc":381,"idc":10,"thr":26,"pot1":637,"pot2":1352,"brkF":0,"brkR":0,"invT":27,"motT":31},{"s":12.66,"vx":7.48,"ax":-0.05,"ay":2.25,"yawRate":0.323,"rpm":1132,"trqCmd":31,"trqEst":33,"vdc":380,"idc":10,"thr":25,"pot1":641,"pot2":1365,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":13.64,"vx":7.6,"ax":-0.11,"ay":-0.41,"yawRate":0.141,"rpm":1137,"trqCmd":31,"trqEst":34,"vdc":379,"idc":10,"thr":26,"pot1":640,"pot2":1354,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":14.61,"vx":7.68,"ax":-0.32,"ay":-1.38,"yawRate":-0.039,"rpm":1163,"trqCmd":30,"trqEst":31,"vdc":382,"idc":10,"thr":25,"pot1":625,"pot2":1327,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":15.59,"vx":7.68,"ax":-0.97,"ay":-0.74,"yawRate":-0.11,"rpm":1133,"trqCmd":3,"trqEst":3,"vdc":385,"idc":1,"thr":18,"pot1":458,"pot2":995,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":16.57,"vx":7.63,"ax":-2.61,"ay":0.4,"yawRate":-0.09,"rpm":1164,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":3,"pot1":328,"pot2":736,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":17.54,"vx":7.39,"ax":-3.17,"ay":0.56,"yawRate":0.026,"rpm":1091,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":0,"pot1":328,"pot2":742,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":18.52,"vx":7.11,"ax":-4.2,"ay":-0.05,"yawRate":-0.006,"rpm":1047,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":331,"pot2":744,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":19.5,"vx":6.67,"ax":-4.52,"ay":0.58,"yawRate":-0.001,"rpm":1012,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":0,"pot1":329,"pot2":737,"brkF":0,"brkR":0,"invT":27,"motT":32},{"s":20.48,"vx":6.1,"ax":-5.33,"ay":0.32,"yawRate":0.008,"rpm":905,"trqCmd":0,"trqEst":-1,"vdc":384,"idc":0,"thr":0,"pot1":329,"pot2":741,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":21.45,"vx":5.44,"ax":-5.75,"ay":0.5,"yawRate":0.009,"rpm":812,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":0,"pot1":329,"pot2":746,"brkF":0,"brkR":0,"invT":27,"motT":31},{"s":22.43,"vx":4.79,"ax":-5.07,"ay":0.53,"yawRate":-0.001,"rpm":705,"trqCmd":0,"trqEst":-1,"vdc":385,"idc":0,"thr":0,"pot1":329,"pot2":741,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":23.4,"vx":4.25,"ax":-1.7,"ay":0.06,"yawRate":-0.004,"rpm":647,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":325,"pot2":739,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":24.38,"vx":4.12,"ax":-1.21,"ay":0.23,"yawRate":-0.009,"rpm":641,"trqCmd":4,"trqEst":7,"vdc":385,"idc":0,"thr":12,"pot1":477,"pot2":1047,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":25.35,"vx":4.15,"ax":-0.72,"ay":0.11,"yawRate":-0.006,"rpm":660,"trqCmd":13,"trqEst":13,"vdc":382,"idc":2,"thr":16,"pot1":526,"pot2":1133,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":26.32,"vx":4.23,"ax":-0.62,"ay":0.14,"yawRate":-0.008,"rpm":650,"trqCmd":13,"trqEst":11,"vdc":381,"idc":2,"thr":16,"pot1":531,"pot2":1140,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":27.29,"vx":4.25,"ax":-0.67,"ay":-0.14,"yawRate":-0.011,"rpm":647,"trqCmd":18,"trqEst":19,"vdc":384,"idc":3,"thr":17,"pot1":568,"pot2":1214,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":28.24,"vx":4.36,"ax":-0.56,"ay":-0.27,"yawRate":-0.009,"rpm":629,"trqCmd":0,"trqEst":1,"vdc":385,"idc":0,"thr":13,"pot1":416,"pot2":923,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":29.19,"vx":4.25,"ax":-1.21,"ay":0.72,"yawRate":-0.001,"rpm":633,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":0,"pot1":330,"pot2":738,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":30.12,"vx":4.08,"ax":-1.93,"ay":2.42,"yawRate":0.277,"rpm":600,"trqCmd":0,"trqEst":0,"vdc":382,"idc":0,"thr":0,"pot1":329,"pot2":748,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":31.03,"vx":3.96,"ax":-1.81,"ay":2.6,"yawRate":0.511,"rpm":580,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":331,"pot2":743,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":31.92,"vx":3.78,"ax":-2.1,"ay":2.97,"yawRate":0.631,"rpm":551,"trqCmd":0,"trqEst":0,"vdc":386,"idc":0,"thr":0,"pot1":329,"pot2":742,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":32.78,"vx":3.64,"ax":-2.91,"ay":3.58,"yawRate":0.859,"rpm":503,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":0,"pot1":323,"pot2":732,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":33.61,"vx":3.38,"ax":-2.63,"ay":3.13,"yawRate":0.775,"rpm":472,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":327,"pot2":737,"brkF":0,"brkR":0,"invT":26,"motT":31},{"s":34.41,"vx":3.08,"ax":-2.27,"ay":2.61,"yawRate":0.723,"rpm":454,"trqCmd":5,"trqEst":5,"vdc":384,"idc":1,"thr":13,"pot1":480,"pot2":1046,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":35.18,"vx":2.88,"ax":-1.72,"ay":2.73,"yawRate":0.683,"rpm":396,"trqCmd":12,"trqEst":11,"vdc":383,"idc":1,"thr":16,"pot1":517,"pot2":1126,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":35.93,"vx":2.83,"ax":-1.19,"ay":2.99,"yawRate":0.676,"rpm":412,"trqCmd":24,"trqEst":25,"vdc":384,"idc":2,"thr":21,"pot1":589,"pot2":1266,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":36.66,"vx":2.9,"ax":-0.58,"ay":2.72,"yawRate":0.702,"rpm":415,"trqCmd":28,"trqEst":28,"vdc":383,"idc":3,"thr":23,"pot1":617,"pot2":1319,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":37.4,"vx":3.02,"ax":-0.58,"ay":3.72,"yawRate":0.728,"rpm":437,"trqCmd":31,"trqEst":32,"vdc":382,"idc":4,"thr":26,"pot1":634,"pot2":1348,"brkF":0,"brkR":0,"invT":26,"motT":33},{"s":38.14,"vx":3.15,"ax":-0.42,"ay":3.84,"yawRate":0.764,"rpm":469,"trqCmd":38,"trqEst":36,"vdc":381,"idc":5,"thr":29,"pot1":687,"pot2":1458,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":38.9,"vx":3.38,"ax":-0.45,"ay":4.09,"yawRate":0.812,"rpm":494,"trqCmd":41,"trqEst":44,"vdc":381,"idc":6,"thr":31,"pot1":700,"pot2":1480,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":39.7,"vx":3.61,"ax":0.05,"ay":4.67,"yawRate":0.855,"rpm":524,"trqCmd":43,"trqEst":44,"vdc":383,"idc":6,"thr":31,"pot1":707,"pot2":1494,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":40.53,"vx":3.82,"ax":0.12,"ay":5.07,"yawRate":0.9,"rpm":560,"trqCmd":43,"trqEst":46,"vdc":380,"idc":7,"thr":31,"pot1":708,"pot2":1496,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":41.39,"vx":4.04,"ax":-0.09,"ay":5.49,"yawRate":0.956,"rpm":594,"trqCmd":44,"trqEst":46,"vdc":381,"idc":7,"thr":32,"pot1":713,"pot2":1510,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":42.3,"vx":4.21,"ax":0.29,"ay":5.55,"yawRate":0.977,"rpm":611,"trqCmd":45,"trqEst":46,"vdc":382,"idc":8,"thr":33,"pot1":723,"pot2":1529,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":43.23,"vx":4.39,"ax":0.59,"ay":5.44,"yawRate":1.013,"rpm":642,"trqCmd":51,"trqEst":51,"vdc":380,"idc":10,"thr":36,"pot1":759,"pot2":1602,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":44.2,"vx":4.67,"ax":1.32,"ay":5.69,"yawRate":1.01,"rpm":687,"trqCmd":56,"trqEst":57,"vdc":380,"idc":11,"thr":38,"pot1":787,"pot2":1659,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":45.19,"vx":4.96,"ax":1.38,"ay":5.9,"yawRate":0.992,"rpm":743,"trqCmd":61,"trqEst":62,"vdc":379,"idc":13,"thr":41,"pot1":815,"pot2":1714,"brkF":0,"brkR":0,"invT":27,"motT":31},{"s":46.19,"vx":5.22,"ax":2.02,"ay":5.66,"yawRate":0.967,"rpm":777,"trqCmd":65,"trqEst":70,"vdc":380,"idc":15,"thr":42,"pot1":846,"pot2":1769,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":47.2,"vx":5.57,"ax":2.61,"ay":5.25,"yawRate":0.88,"rpm":844,"trqCmd":74,"trqEst":80,"vdc":378,"idc":18,"thr":45,"pot1":894,"pot2":1860,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":48.22,"vx":5.92,"ax":3.1,"ay":4.21,"yawRate":0.712,"rpm":909,"trqCmd":75,"trqEst":80,"vdc":378,"idc":20,"thr":47,"pot1":896,"pot2":1865,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":49.23,"vx":6.24,"ax":3.4,"ay":1.51,"yawRate":0.4,"rpm":950,"trqCmd":74,"trqEst":77,"vdc":377,"idc":21,"thr":47,"pot1":889,"pot2":1858,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":50.25,"vx":6.6,"ax":3.13,"ay":-0.8,"yawRate":0.026,"rpm":996,"trqCmd":74,"trqEst":74,"vdc":375,"idc":22,"thr":46,"pot1":892,"pot2":1850,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":51.27,"vx":6.86,"ax":3.19,"ay":-2.8,"yawRate":-0.287,"rpm":1067,"trqCmd":72,"trqEst":72,"vdc":375,"idc":23,"thr":46,"pot1":888,"pot2":1845,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":52.28,"vx":7.27,"ax":3.13,"ay":-2.49,"yawRate":-0.436,"rpm":1141,"trqCmd":82,"trqEst":90,"vdc":374,"idc":29,"thr":50,"pot1":945,"pot2":1960,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":53.29,"vx":7.55,"ax":3.26,"ay":-2.27,"yawRate":-0.512,"rpm":1165,"trqCmd":82,"trqEst":83,"vdc":372,"idc":29,"thr":52,"pot1":944,"pot2":1966,"brkF":0,"brkR":0,"invT":28,"motT":32},{"s":54.3,"vx":7.84,"ax":3.4,"ay":-2.99,"yawRate":-0.569,"rpm":1232,"trqCmd":82,"trqEst":88,"vdc":373,"idc":31,"thr":51,"pot1":947,"pot2":1967,"brkF":0,"brkR":0,"invT":28,"motT":32},{"s":55.3,"vx":8.12,"ax":2.73,"ay":-4.4,"yawRate":-0.64,"rpm":1317,"trqCmd":83,"trqEst":89,"vdc":371,"idc":33,"thr":51,"pot1":954,"pot2":1980,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":56.3,"vx":8.45,"ax":2.9,"ay":-4.63,"yawRate":-0.818,"rpm":1379,"trqCmd":81,"trqEst":88,"vdc":371,"idc":35,"thr":51,"pot1":945,"pot2":1958,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":57.31,"vx":8.66,"ax":2.95,"ay":-5.84,"yawRate":-0.883,"rpm":1395,"trqCmd":76,"trqEst":80,"vdc":371,"idc":31,"thr":48,"pot1":900,"pot2":1880,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":58.31,"vx":8.9,"ax":2.88,"ay":-4.26,"yawRate":-0.81,"rpm":1414,"trqCmd":75,"trqEst":80,"vdc":371,"idc":32,"thr":48,"pot1":896,"pot2":1867,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":59.3,"vx":8.99,"ax":3.09,"ay":-0.43,"yawRate":-0.556,"rpm":1417,"trqCmd":66,"trqEst":70,"vdc":374,"idc":28,"thr":45,"pot1":849,"pot2":1783,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":60.3,"vx":9.34,"ax":2.74,"ay":3.45,"yawRate":-0.023,"rpm":1413,"trqCmd":54,"trqEst":59,"vdc":374,"idc":23,"thr":38,"pot1":783,"pot2":1651,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":61.29,"vx":9.61,"ax":2.38,"ay":4.98,"yawRate":0.153,"rpm":1440,"trqCmd":54,"trqEst":58,"vdc":375,"idc":23,"thr":37,"pot1":775,"pot2":1640,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":62.28,"vx":9.76,"ax":1.71,"ay":7.36,"yawRate":0.513,"rpm":1468,"trqCmd":56,"trqEst":62,"vdc":375,"idc":25,"thr":37,"pot1":782,"pot2":1648,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":63.27,"vx":9.78,"ax":1.71,"ay":7.14,"yawRate":0.62,"rpm":1505,"trqCmd":56,"trqEst":54,"vdc":373,"idc":25,"thr":38,"pot1":782,"pot2":1650,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":64.26,"vx":9.97,"ax":2.17,"ay":7.74,"yawRate":0.629,"rpm":1518,"trqCmd":56,"trqEst":60,"vdc":374,"idc":25,"thr":37,"pot1":780,"pot2":1642,"brkF":0,"brkR":0,"invT":28,"motT":32},{"s":65.25,"vx":10.15,"ax":2.57,"ay":7.06,"yawRate":0.628,"rpm":1568,"trqCmd":59,"trqEst":59,"vdc":374,"idc":28,"thr":40,"pot1":811,"pot2":1695,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":66.24,"vx":10.28,"ax":2.6,"ay":7.53,"yawRate":0.606,"rpm":1564,"trqCmd":62,"trqEst":67,"vdc":376,"idc":29,"thr":40,"pot1":824,"pot2":1725,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":67.22,"vx":10.5,"ax":2.7,"ay":5.69,"yawRate":0.558,"rpm":1609,"trqCmd":63,"trqEst":68,"vdc":372,"idc":31,"thr":42,"pot1":827,"pot2":1738,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":68.2,"vx":10.59,"ax":2.52,"ay":1.38,"yawRate":0.327,"rpm":1620,"trqCmd":63,"trqEst":66,"vdc":372,"idc":31,"thr":42,"pot1":818,"pot2":1725,"brkF":0,"brkR":0,"invT":28,"motT":33},{"s":69.18,"vx":10.78,"ax":2.24,"ay":-1.17,"yawRate":-0.128,"rpm":1631,"trqCmd":54,"trqEst":54,"vdc":374,"idc":27,"thr":38,"pot1":759,"pot2":1596,"brkF":0,"brkR":0,"invT":28,"motT":33},{"s":70.15,"vx":10.76,"ax":-0.47,"ay":-3.2,"yawRate":-0.304,"rpm":1572,"trqCmd":0,"trqEst":-2,"vdc":381,"idc":0,"thr":11,"pot1":442,"pot2":981,"brkF":0,"brkR":0,"invT":28,"motT":32},{"s":71.11,"vx":10.72,"ax":-1.64,"ay":-3.58,"yawRate":-0.385,"rpm":1607,"trqCmd":0,"trqEst":-1,"vdc":382,"idc":0,"thr":10,"pot1":446,"pot2":990,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":72.07,"vx":10.62,"ax":-0.56,"ay":-1.68,"yawRate":-0.4,"rpm":1587,"trqCmd":0,"trqEst":-2,"vdc":381,"idc":0,"thr":10,"pot1":389,"pot2":881,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":73.01,"vx":10.45,"ax":-1.79,"ay":-1.62,"yawRate":-0.403,"rpm":1558,"trqCmd":0,"trqEst":-1,"vdc":381,"idc":0,"thr":2,"pot1":344,"pot2":787,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":73.94,"vx":10.24,"ax":-1.93,"ay":-1.63,"yawRate":-0.371,"rpm":1564,"trqCmd":0,"trqEst":1,"vdc":383,"idc":0,"thr":0,"pot1":323,"pot2":735,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":74.86,"vx":10.03,"ax":-1.94,"ay":-1.41,"yawRate":-0.361,"rpm":1494,"trqCmd":0,"trqEst":1,"vdc":382,"idc":0,"thr":0,"pot1":323,"pot2":736,"brkF":0,"brkR":0,"invT":28,"motT":31},{"s":75.76,"vx":9.8,"ax":-2.26,"ay":1.98,"yawRate":-0.255,"rpm":1485,"trqCmd":0,"trqEst":-1,"vdc":382,"idc":0,"thr":0,"pot1":321,"pot2":732,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":76.64,"vx":9.49,"ax":-2.48,"ay":3.8,"yawRate":0.043,"rpm":1425,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":0,"pot1":326,"pot2":735,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":77.51,"vx":9.3,"ax":-2.95,"ay":2.8,"yawRate":0.108,"rpm":1382,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":0,"pot1":324,"pot2":736,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":78.36,"vx":9.02,"ax":-2.95,"ay":2.46,"yawRate":0.063,"rpm":1340,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":320,"pot2":732,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":79.2,"vx":8.66,"ax":-2.97,"ay":1.87,"yawRate":0.053,"rpm":1299,"trqCmd":0,"trqEst":-1,"vdc":381,"idc":0,"thr":0,"pot1":323,"pot2":734,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":80.03,"vx":8.27,"ax":-2.99,"ay":2.64,"yawRate":0.041,"rpm":1249,"trqCmd":0,"trqEst":-1,"vdc":383,"idc":0,"thr":0,"pot1":326,"pot2":737,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":80.86,"vx":7.95,"ax":-2.91,"ay":2.06,"yawRate":0.035,"rpm":1198,"trqCmd":0,"trqEst":2,"vdc":383,"idc":0,"thr":0,"pot1":322,"pot2":732,"brkF":0,"brkR":0,"invT":27,"motT":33},{"s":81.68,"vx":7.72,"ax":-1.8,"ay":1.84,"yawRate":0.038,"rpm":1160,"trqCmd":0,"trqEst":0,"vdc":382,"idc":0,"thr":0,"pot1":326,"pot2":734,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":82.51,"vx":7.58,"ax":-0.51,"ay":2.73,"yawRate":0.032,"rpm":1144,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":0,"pot1":325,"pot2":735,"brkF":0,"brkR":0,"invT":27,"motT":31},{"s":83.34,"vx":7.49,"ax":-0.18,"ay":1.81,"yawRate":0.036,"rpm":1127,"trqCmd":0,"trqEst":3,"vdc":381,"idc":0,"thr":0,"pot1":324,"pot2":732,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":84.19,"vx":7.44,"ax":-0.39,"ay":1.86,"yawRate":0.026,"rpm":1116,"trqCmd":0,"trqEst":-2,"vdc":382,"idc":0,"thr":0,"pot1":327,"pot2":735,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":85.04,"vx":7.29,"ax":-2,"ay":1.95,"yawRate":0.03,"rpm":1091,"trqCmd":0,"trqEst":0,"vdc":382,"idc":0,"thr":0,"pot1":315,"pot2":735,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":85.91,"vx":6.95,"ax":-3.6,"ay":1.95,"yawRate":0.028,"rpm":1039,"trqCmd":0,"trqEst":1,"vdc":384,"idc":0,"thr":0,"pot1":321,"pot2":724,"brkF":0,"brkR":0,"invT":27,"motT":31},{"s":86.79,"vx":6.38,"ax":-3.84,"ay":2.11,"yawRate":0.03,"rpm":949,"trqCmd":0,"trqEst":-2,"vdc":382,"idc":0,"thr":0,"pot1":320,"pot2":726,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":87.69,"vx":5.88,"ax":-4.25,"ay":1.95,"yawRate":0.025,"rpm":859,"trqCmd":0,"trqEst":1,"vdc":385,"idc":0,"thr":0,"pot1":323,"pot2":729,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":88.6,"vx":5.12,"ax":-3.91,"ay":0.57,"yawRate":-0.121,"rpm":774,"trqCmd":0,"trqEst":-1,"vdc":382,"idc":0,"thr":0,"pot1":322,"pot2":731,"brkF":0,"brkR":0,"invT":27,"motT":25},{"s":89.52,"vx":4.68,"ax":-0.87,"ay":1.15,"yawRate":-0.162,"rpm":738,"trqCmd":0,"trqEst":1,"vdc":383,"idc":0,"thr":0,"pot1":318,"pot2":726,"brkF":0,"brkR":0,"invT":26,"motT":31},{"s":90.44,"vx":4.63,"ax":-0.43,"ay":0.8,"yawRate":-0.166,"rpm":705,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":321,"pot2":730,"brkF":0,"brkR":0,"invT":26,"motT":28},{"s":91.36,"vx":4.52,"ax":-0.22,"ay":0.95,"yawRate":-0.167,"rpm":686,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":325,"pot2":737,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":92.27,"vx":4.48,"ax":-0.22,"ay":1.41,"yawRate":-0.165,"rpm":676,"trqCmd":0,"trqEst":0,"vdc":383,"idc":0,"thr":0,"pot1":325,"pot2":740,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":93.17,"vx":4.39,"ax":-0.24,"ay":1.04,"yawRate":-0.156,"rpm":663,"trqCmd":0,"trqEst":0,"vdc":384,"idc":0,"thr":0,"pot1":324,"pot2":734,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":94.06,"vx":4.32,"ax":-0.4,"ay":0.95,"yawRate":-0.155,"rpm":651,"trqCmd":0,"trqEst":-3,"vdc":383,"idc":0,"thr":0,"pot1":321,"pot2":737,"brkF":0,"brkR":0,"invT":26,"motT":32},{"s":94.93,"vx":4.08,"ax":-1.95,"ay":1.53,"yawRate":-0.144,"rpm":596,"trqCmd":0,"trqEst":1,"vdc":383,"idc":0,"thr":0,"pot1":314,"pot2":720,"brkF":0,"brkR":0,"invT":26,"motT":32},{"s":95.79,"vx":3.58,"ax":-0.56,"ay":3.64,"yawRate":0.091,"rpm":522,"trqCmd":0,"trqEst":0,"vdc":382,"idc":0,"thr":0,"pot1":321,"pot2":730,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":96.63,"vx":3.44,"ax":-0.21,"ay":4.11,"yawRate":0.466,"rpm":520,"trqCmd":0,"trqEst":-1,"vdc":383,"idc":0,"thr":0,"pot1":315,"pot2":726,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":97.47,"vx":3.4,"ax":-0.62,"ay":4.02,"yawRate":0.761,"rpm":489,"trqCmd":0,"trqEst":2,"vdc":385,"idc":0,"thr":0,"pot1":326,"pot2":736,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":98.29,"vx":3.26,"ax":-0.68,"ay":3.54,"yawRate":0.764,"rpm":462,"trqCmd":0,"trqEst":-1,"vdc":383,"idc":0,"thr":0,"pot1":325,"pot2":736,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":99.11,"vx":3.05,"ax":-0.7,"ay":3.11,"yawRate":0.724,"rpm":423,"trqCmd":0,"trqEst":0,"vdc":382,"idc":0,"thr":9,"pot1":453,"pot2":993,"brkF":0,"brkR":0,"invT":26,"motT":31},{"s":99.94,"vx":2.89,"ax":0.13,"ay":2.73,"yawRate":0.705,"rpm":415,"trqCmd":17,"trqEst":19,"vdc":383,"idc":2,"thr":19,"pot1":554,"pot2":1194,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":100.78,"vx":2.9,"ax":0.04,"ay":2.82,"yawRate":0.692,"rpm":418,"trqCmd":18,"trqEst":20,"vdc":383,"idc":2,"thr":18,"pot1":558,"pot2":1204,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":101.62,"vx":2.9,"ax":0.4,"ay":2.24,"yawRate":0.696,"rpm":424,"trqCmd":18,"trqEst":20,"vdc":382,"idc":2,"thr":19,"pot1":550,"pot2":1201,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":102.47,"vx":2.92,"ax":0.23,"ay":2.18,"yawRate":0.699,"rpm":415,"trqCmd":18,"trqEst":20,"vdc":383,"idc":2,"thr":19,"pot1":559,"pot2":1211,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":103.34,"vx":2.97,"ax":0.14,"ay":2.3,"yawRate":0.718,"rpm":427,"trqCmd":18,"trqEst":20,"vdc":382,"idc":2,"thr":19,"pot1":572,"pot2":1221,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":104.2,"vx":3.01,"ax":0.02,"ay":1.78,"yawRate":0.724,"rpm":434,"trqCmd":24,"trqEst":21,"vdc":383,"idc":2,"thr":21,"pot1":593,"pot2":1266,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":105.07,"vx":3.1,"ax":0.23,"ay":1.84,"yawRate":0.733,"rpm":455,"trqCmd":32,"trqEst":32,"vdc":381,"idc":4,"thr":26,"pot1":644,"pot2":1366,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":105.94,"vx":3.33,"ax":0.12,"ay":2.34,"yawRate":0.796,"rpm":486,"trqCmd":34,"trqEst":31,"vdc":381,"idc":5,"thr":27,"pot1":662,"pot2":1400,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":106.79,"vx":3.51,"ax":-0.25,"ay":2.7,"yawRate":0.83,"rpm":504,"trqCmd":34,"trqEst":37,"vdc":381,"idc":5,"thr":27,"pot1":661,"pot2":1403,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":107.63,"vx":3.64,"ax":-0.4,"ay":2.1,"yawRate":0.854,"rpm":530,"trqCmd":34,"trqEst":32,"vdc":384,"idc":5,"thr":27,"pot1":652,"pot2":1382,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":108.45,"vx":3.82,"ax":-0.15,"ay":3.58,"yawRate":0.889,"rpm":557,"trqCmd":33,"trqEst":30,"vdc":383,"idc":5,"thr":27,"pot1":656,"pot2":1389,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":109.25,"vx":3.99,"ax":-0.6,"ay":3.69,"yawRate":0.94,"rpm":574,"trqCmd":34,"trqEst":33,"vdc":382,"idc":5,"thr":27,"pot1":653,"pot2":1389,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":110.01,"vx":4.1,"ax":-0.56,"ay":3.77,"yawRate":0.937,"rpm":591,"trqCmd":35,"trqEst":40,"vdc":382,"idc":6,"thr":27,"pot1":659,"pot2":1394,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":110.75,"vx":4.26,"ax":-0.31,"ay":3.83,"yawRate":0.879,"rpm":615,"trqCmd":35,"trqEst":35,"vdc":382,"idc":6,"thr":28,"pot1":655,"pot2":1391,"brkF":0,"brkR":0,"invT":27,"motT":32},{"s":111.46,"vx":4.41,"ax":0.13,"ay":2.48,"yawRate":0.71,"rpm":650,"trqCmd":34,"trqEst":34,"vdc":380,"idc":6,"thr":28,"pot1":667,"pot2":1406,"brkF":0,"brkR":0,"invT":27,"motT":32},{"s":112.15,"vx":4.58,"ax":0.46,"ay":0.98,"yawRate":0.346,"rpm":681,"trqCmd":38,"trqEst":43,"vdc":381,"idc":7,"thr":29,"pot1":689,"pot2":1448,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":112.84,"vx":4.86,"ax":0.3,"ay":1.54,"yawRate":0.19,"rpm":739,"trqCmd":45,"trqEst":50,"vdc":379,"idc":10,"thr":32,"pot1":724,"pot2":1525,"brkF":0,"brkR":0,"invT":27,"motT":28},{"s":113.53,"vx":5.13,"ax":0.55,"ay":1.45,"yawRate":0.166,"rpm":781,"trqCmd":44,"trqEst":46,"vdc":378,"idc":10,"thr":32,"pot1":715,"pot2":1509,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":114.23,"vx":5.37,"ax":0.56,"ay":1.85,"yawRate":0.172,"rpm":805,"trqCmd":48,"trqEst":49,"vdc":381,"idc":11,"thr":34,"pot1":748,"pot2":1566,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":114.97,"vx":5.63,"ax":0.58,"ay":1.29,"yawRate":0.158,"rpm":851,"trqCmd":47,"trqEst":46,"vdc":379,"idc":11,"thr":34,"pot1":726,"pot2":1534,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":115.73,"vx":5.93,"ax":0.69,"ay":1.24,"yawRate":0.088,"rpm":891,"trqCmd":47,"trqEst":50,"vdc":378,"idc":12,"thr":33,"pot1":728,"pot2":1533,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":116.53,"vx":6.11,"ax":0.51,"ay":0.67,"yawRate":0.068,"rpm":928,"trqCmd":45,"trqEst":48,"vdc":378,"idc":12,"thr":32,"pot1":723,"pot2":1518,"brkF":0,"brkR":0,"invT":28,"motT":33},{"s":117.36,"vx":6.32,"ax":0.59,"ay":1.06,"yawRate":0.055,"rpm":960,"trqCmd":45,"trqEst":46,"vdc":378,"idc":12,"thr":32,"pot1":713,"pot2":1505,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":118.23,"vx":6.48,"ax":0.27,"ay":1.39,"yawRate":0.058,"rpm":981,"trqCmd":44,"trqEst":45,"vdc":379,"idc":13,"thr":32,"pot1":715,"pot2":1507,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":119.12,"vx":6.68,"ax":0.38,"ay":1.08,"yawRate":0.06,"rpm":1015,"trqCmd":43,"trqEst":40,"vdc":379,"idc":13,"thr":32,"pot1":704,"pot2":1485,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":120.04,"vx":6.89,"ax":0.34,"ay":1.32,"yawRate":0.061,"rpm":1053,"trqCmd":43,"trqEst":38,"vdc":379,"idc":13,"thr":31,"pot1":708,"pot2":1495,"brkF":0,"brkR":0,"invT":28,"motT":28},{"s":120.97,"vx":7.05,"ax":0.55,"ay":1.28,"yawRate":0.065,"rpm":1066,"trqCmd":43,"trqEst":45,"vdc":378,"idc":13,"thr":31,"pot1":706,"pot2":1491,"brkF":0,"brkR":0,"invT":28,"motT":33},{"s":121.91,"vx":7.28,"ax":0.4,"ay":1.24,"yawRate":0.061,"rpm":1098,"trqCmd":43,"trqEst":42,"vdc":379,"idc":14,"thr":31,"pot1":705,"pot2":1484,"brkF":0,"brkR":0,"invT":28,"motT":30},{"s":122.86,"vx":7.33,"ax":0.55,"ay":1.74,"yawRate":0.06,"rpm":1127,"trqCmd":43,"trqEst":44,"vdc":378,"idc":14,"thr":31,"pot1":707,"pot2":1495,"brkF":0,"brkR":0,"invT":28,"motT":29},{"s":123.82,"vx":0.92,"ax":0.08,"ay":0.21,"yawRate":-0.032,"rpm":144,"trqCmd":0,"trqEst":0,"vdc":385,"idc":0,"thr":0,"pot1":324,"pot2":731,"brkF":0,"brkR":0,"invT":25,"motT":30},{"s":124.78,"vx":0.77,"ax":0.7,"ay":0.17,"yawRate":-0.02,"rpm":141,"trqCmd":19,"trqEst":19,"vdc":383,"idc":0,"thr":20,"pot1":568,"pot2":1217,"brkF":0,"brkR":0,"invT":26,"motT":33},{"s":125.74,"vx":1.49,"ax":0.74,"ay":0.1,"yawRate":-0.021,"rpm":236,"trqCmd":29,"trqEst":30,"vdc":384,"idc":1,"thr":24,"pot1":621,"pot2":1325,"brkF":0,"brkR":0,"invT":26,"motT":31},{"s":126.71,"vx":2,"ax":0.69,"ay":0.39,"yawRate":0.028,"rpm":309,"trqCmd":29,"trqEst":28,"vdc":384,"idc":2,"thr":24,"pot1":623,"pot2":1320,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":127.67,"vx":2.37,"ax":0.66,"ay":0.22,"yawRate":0.061,"rpm":374,"trqCmd":32,"trqEst":32,"vdc":385,"idc":3,"thr":26,"pot1":646,"pot2":1363,"brkF":0,"brkR":0,"invT":26,"motT":29},{"s":128.64,"vx":2.81,"ax":1.04,"ay":0.09,"yawRate":0.064,"rpm":434,"trqCmd":44,"trqEst":46,"vdc":382,"idc":5,"thr":32,"pot1":709,"pot2":1494,"brkF":0,"brkR":0,"invT":26,"motT":31},{"s":129.6,"vx":3.31,"ax":1,"ay":0.28,"yawRate":0.081,"rpm":507,"trqCmd":43,"trqEst":42,"vdc":381,"idc":6,"thr":31,"pot1":710,"pot2":1493,"brkF":0,"brkR":0,"invT":26,"motT":30},{"s":130.56,"vx":3.66,"ax":1.22,"ay":0.44,"yawRate":0.086,"rpm":577,"trqCmd":57,"trqEst":60,"vdc":383,"idc":9,"thr":35,"pot1":790,"pot2":1661,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":131.53,"vx":4.14,"ax":1.42,"ay":-0.15,"yawRate":0.082,"rpm":636,"trqCmd":58,"trqEst":60,"vdc":381,"idc":11,"thr":39,"pot1":797,"pot2":1666,"brkF":0,"brkR":0,"invT":27,"motT":29},{"s":132.49,"vx":4.48,"ax":1.06,"ay":-1.52,"yawRate":-0.138,"rpm":691,"trqCmd":50,"trqEst":54,"vdc":380,"idc":10,"thr":35,"pot1":756,"pot2":1581,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":133.46,"vx":4.85,"ax":1.07,"ay":-0.44,"yawRate":-0.171,"rpm":745,"trqCmd":47,"trqEst":47,"vdc":380,"idc":10,"thr":34,"pot1":736,"pot2":1545,"brkF":0,"brkR":0,"invT":27,"motT":30},{"s":134.43,"vx":5.15,"ax":0.83,"ay":0.38,"yawRate":-0.045,"rpm":777,"trqCmd":44,"trqEst":43,"vdc":380,"idc":10,"thr":33,"pot1":709,"pot2":1498,"brkF":0,"brkR":0,"invT":27,"motT":31},{"s":135.4,"vx":5.35,"ax":1.03,"ay":2.25,"yawRate":0.139,"rpm":804,"trqCmd":41,"trqEst":39,"vdc":379,"idc":10,"thr":31,"pot1":692,"pot2":1470,"brkF":0,"brkR":0,"invT":27,"motT":30}],"23_08/23_08_2026-07.01.11.csv":[{"s":0,"vx":5.95,"ax":-1.2,"ay":0.55,"yawRate":0.015,"rpm":907,"trqCmd":13,"trqEst":13,"vdc":379,"idc":3,"thr":16,"pot1":524,"pot2":1138,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":0.97,"vx":6.02,"ax":-1.18,"ay":0.12,"yawRate":0.012,"rpm":906,"trqCmd":14,"trqEst":15,"vdc":380,"idc":3,"thr":16,"pot1":526,"pot2":1142,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":1.94,"vx":6.04,"ax":-1.33,"ay":0.32,"yawRate":0.007,"rpm":906,"trqCmd":12,"trqEst":12,"vdc":379,"idc":3,"thr":17,"pot1":525,"pot2":1144,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":2.92,"vx":6.08,"ax":-1.12,"ay":0.15,"yawRate":0.011,"rpm":917,"trqCmd":13,"trqEst":12,"vdc":381,"idc":3,"thr":16,"pot1":521,"pot2":1134,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":3.89,"vx":6.15,"ax":-1.12,"ay":0.21,"yawRate":0.034,"rpm":927,"trqCmd":13,"trqEst":11,"vdc":380,"idc":3,"thr":16,"pot1":529,"pot2":1150,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":4.86,"vx":6.13,"ax":-1.19,"ay":1.03,"yawRate":0.071,"rpm":925,"trqCmd":14,"trqEst":14,"vdc":379,"idc":3,"thr":16,"pot1":520,"pot2":1133,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":5.84,"vx":6.19,"ax":-1.21,"ay":0.55,"yawRate":0.075,"rpm":943,"trqCmd":13,"trqEst":12,"vdc":380,"idc":3,"thr":17,"pot1":528,"pot2":1151,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":6.81,"vx":6.23,"ax":-1.13,"ay":0.62,"yawRate":0.054,"rpm":935,"trqCmd":13,"trqEst":12,"vdc":380,"idc":3,"thr":16,"pot1":524,"pot2":1138,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":7.79,"vx":6.28,"ax":-1.32,"ay":0.82,"yawRate":0.049,"rpm":950,"trqCmd":13,"trqEst":13,"vdc":379,"idc":3,"thr":16,"pot1":525,"pot2":1138,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":8.76,"vx":6.36,"ax":-1.14,"ay":0.77,"yawRate":0.043,"rpm":963,"trqCmd":13,"trqEst":11,"vdc":378,"idc":3,"thr":16,"pot1":525,"pot2":1143,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":9.74,"vx":6.35,"ax":-1.31,"ay":0.33,"yawRate":0.028,"rpm":951,"trqCmd":12,"trqEst":12,"vdc":379,"idc":3,"thr":17,"pot1":525,"pot2":1141,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":10.71,"vx":6.42,"ax":-1.26,"ay":0.09,"yawRate":0.002,"rpm":977,"trqCmd":13,"trqEst":12,"vdc":379,"idc":3,"thr":17,"pot1":525,"pot2":1144,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":11.69,"vx":6.49,"ax":-1.05,"ay":0.28,"yawRate":0,"rpm":976,"trqCmd":14,"trqEst":12,"vdc":379,"idc":3,"thr":16,"pot1":530,"pot2":1142,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":12.66,"vx":6.47,"ax":-1.2,"ay":0.18,"yawRate":0.002,"rpm":970,"trqCmd":13,"trqEst":11,"vdc":379,"idc":3,"thr":16,"pot1":526,"pot2":1134,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":13.64,"vx":6.53,"ax":-1.13,"ay":0.16,"yawRate":-0.002,"rpm":985,"trqCmd":13,"trqEst":9,"vdc":380,"idc":4,"thr":17,"pot1":523,"pot2":1139,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":14.61,"vx":6.58,"ax":-1.05,"ay":-0.34,"yawRate":-0.06,"rpm":996,"trqCmd":13,"trqEst":10,"vdc":380,"idc":3,"thr":16,"pot1":523,"pot2":1138,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":15.59,"vx":6.61,"ax":-1.23,"ay":-0.12,"yawRate":-0.054,"rpm":1003,"trqCmd":13,"trqEst":13,"vdc":380,"idc":4,"thr":17,"pot1":524,"pot2":1135,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":16.57,"vx":6.63,"ax":-0.95,"ay":0.25,"yawRate":-0.036,"rpm":1002,"trqCmd":12,"trqEst":10,"vdc":379,"idc":3,"thr":16,"pot1":515,"pot2":1121,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":17.54,"vx":6.68,"ax":-1.25,"ay":0.45,"yawRate":-0.011,"rpm":1005,"trqCmd":11,"trqEst":12,"vdc":378,"idc":3,"thr":15,"pot1":512,"pot2":1108,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":18.52,"vx":6.7,"ax":-1.2,"ay":0.81,"yawRate":0.027,"rpm":1008,"trqCmd":9,"trqEst":10,"vdc":379,"idc":2,"thr":14,"pot1":500,"pot2":1091,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":19.5,"vx":6.73,"ax":-1.54,"ay":0.97,"yawRate":0.053,"rpm":998,"trqCmd":5,"trqEst":9,"vdc":380,"idc":1,"thr":13,"pot1":483,"pot2":1064,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":20.48,"vx":1.57,"ax":0.65,"ay":0.4,"yawRate":0.305,"rpm":239,"trqCmd":47,"trqEst":49,"vdc":379,"idc":3,"thr":32,"pot1":725,"pot2":1530,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":21.45,"vx":2.26,"ax":0.06,"ay":0.85,"yawRate":0.493,"rpm":334,"trqCmd":46,"trqEst":47,"vdc":377,"idc":4,"thr":33,"pot1":724,"pot2":1528,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":22.43,"vx":2.76,"ax":-0.33,"ay":1.42,"yawRate":0.609,"rpm":408,"trqCmd":45,"trqEst":45,"vdc":378,"idc":5,"thr":33,"pot1":722,"pot2":1529,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":23.4,"vx":3.07,"ax":-0.54,"ay":1.83,"yawRate":0.692,"rpm":463,"trqCmd":46,"trqEst":45,"vdc":377,"idc":6,"thr":33,"pot1":722,"pot2":1528,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":24.38,"vx":3.49,"ax":-0.96,"ay":2.49,"yawRate":0.76,"rpm":509,"trqCmd":45,"trqEst":48,"vdc":376,"idc":6,"thr":33,"pot1":726,"pot2":1525,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":25.35,"vx":3.77,"ax":-0.91,"ay":2.96,"yawRate":0.857,"rpm":572,"trqCmd":45,"trqEst":46,"vdc":377,"idc":8,"thr":32,"pot1":718,"pot2":1518,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":26.32,"vx":4.07,"ax":-1.21,"ay":4,"yawRate":0.901,"rpm":599,"trqCmd":46,"trqEst":45,"vdc":375,"idc":8,"thr":32,"pot1":725,"pot2":1530,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":27.29,"vx":4.32,"ax":-1.32,"ay":4.47,"yawRate":0.947,"rpm":634,"trqCmd":46,"trqEst":44,"vdc":375,"idc":8,"thr":32,"pot1":724,"pot2":1533,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":28.24,"vx":4.54,"ax":-1.26,"ay":5.43,"yawRate":0.985,"rpm":664,"trqCmd":46,"trqEst":43,"vdc":377,"idc":9,"thr":32,"pot1":717,"pot2":1518,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":29.19,"vx":4.8,"ax":-1.42,"ay":5.84,"yawRate":0.989,"rpm":701,"trqCmd":46,"trqEst":53,"vdc":374,"idc":9,"thr":33,"pot1":725,"pot2":1530,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":30.12,"vx":4.99,"ax":-0.89,"ay":5.66,"yawRate":0.958,"rpm":735,"trqCmd":46,"trqEst":49,"vdc":375,"idc":10,"thr":33,"pot1":719,"pot2":1519,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":31.03,"vx":5.21,"ax":-0.39,"ay":5.44,"yawRate":0.823,"rpm":773,"trqCmd":44,"trqEst":48,"vdc":377,"idc":10,"thr":31,"pot1":711,"pot2":1504,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":31.92,"vx":5.36,"ax":-0.12,"ay":4.13,"yawRate":0.635,"rpm":805,"trqCmd":43,"trqEst":44,"vdc":376,"idc":10,"thr":31,"pot1":703,"pot2":1485,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":32.78,"vx":5.64,"ax":0.08,"ay":4.49,"yawRate":0.529,"rpm":845,"trqCmd":43,"trqEst":47,"vdc":375,"idc":10,"thr":31,"pot1":699,"pot2":1481,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":33.61,"vx":5.82,"ax":-0.03,"ay":4.73,"yawRate":0.479,"rpm":885,"trqCmd":40,"trqEst":36,"vdc":374,"idc":10,"thr":31,"pot1":690,"pot2":1467,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":34.41,"vx":6.03,"ax":0.53,"ay":4.94,"yawRate":0.455,"rpm":910,"trqCmd":41,"trqEst":40,"vdc":375,"idc":10,"thr":30,"pot1":698,"pot2":1467,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":35.18,"vx":6.23,"ax":0.2,"ay":5.11,"yawRate":0.44,"rpm":943,"trqCmd":37,"trqEst":39,"vdc":375,"idc":10,"thr":29,"pot1":672,"pot2":1418,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":35.93,"vx":6.43,"ax":-0.07,"ay":5.26,"yawRate":0.38,"rpm":958,"trqCmd":37,"trqEst":38,"vdc":376,"idc":10,"thr":29,"pot1":674,"pot2":1426,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":36.66,"vx":6.54,"ax":0.22,"ay":4.96,"yawRate":0.392,"rpm":985,"trqCmd":32,"trqEst":29,"vdc":375,"idc":9,"thr":27,"pot1":645,"pot2":1374,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":37.4,"vx":6.7,"ax":0.27,"ay":4.79,"yawRate":0.356,"rpm":1009,"trqCmd":32,"trqEst":33,"vdc":375,"idc":9,"thr":26,"pot1":636,"pot2":1363,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":38.14,"vx":6.79,"ax":-0.07,"ay":5.16,"yawRate":0.34,"rpm":1023,"trqCmd":29,"trqEst":33,"vdc":377,"idc":9,"thr":25,"pot1":627,"pot2":1343,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":38.9,"vx":6.91,"ax":0.14,"ay":4.77,"yawRate":0.316,"rpm":1035,"trqCmd":29,"trqEst":30,"vdc":377,"idc":9,"thr":24,"pot1":619,"pot2":1328,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":39.7,"vx":6.96,"ax":0.37,"ay":4.11,"yawRate":0.228,"rpm":1049,"trqCmd":22,"trqEst":20,"vdc":375,"idc":7,"thr":23,"pot1":577,"pot2":1243,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":40.53,"vx":7.02,"ax":-0.36,"ay":4.02,"yawRate":0.224,"rpm":1055,"trqCmd":18,"trqEst":17,"vdc":376,"idc":6,"thr":19,"pot1":558,"pot2":1208,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":41.39,"vx":7.12,"ax":-0.47,"ay":3.05,"yawRate":0.063,"rpm":1048,"trqCmd":6,"trqEst":5,"vdc":377,"idc":1,"thr":16,"pot1":475,"pot2":1042,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":42.3,"vx":7.03,"ax":-1.29,"ay":3.01,"yawRate":0.034,"rpm":1046,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":2,"pot1":335,"pot2":770,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":43.23,"vx":6.97,"ax":-1.48,"ay":3.12,"yawRate":0.032,"rpm":1045,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":0,"pot1":322,"pot2":736,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":44.2,"vx":6.79,"ax":-1.94,"ay":3.23,"yawRate":0.031,"rpm":1025,"trqCmd":0,"trqEst":3,"vdc":377,"idc":0,"thr":0,"pot1":321,"pot2":730,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":45.19,"vx":6.57,"ax":-2.78,"ay":3.88,"yawRate":0.042,"rpm":979,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":0,"pot1":322,"pot2":728,"brkF":0,"brkR":0,"invT":32,"motT":29},{"s":46.19,"vx":6.18,"ax":-3.03,"ay":3.14,"yawRate":0.032,"rpm":920,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":0,"pot1":320,"pot2":731,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":47.2,"vx":5.83,"ax":-3.28,"ay":2.95,"yawRate":0.024,"rpm":873,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":0,"pot1":324,"pot2":732,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":48.22,"vx":5.39,"ax":-3.31,"ay":3,"yawRate":0.029,"rpm":808,"trqCmd":0,"trqEst":0,"vdc":379,"idc":0,"thr":0,"pot1":323,"pot2":736,"brkF":0,"brkR":0,"invT":32,"motT":29},{"s":49.23,"vx":4.85,"ax":-3.43,"ay":3.11,"yawRate":0.023,"rpm":737,"trqCmd":0,"trqEst":-1,"vdc":377,"idc":0,"thr":0,"pot1":321,"pot2":730,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":50.25,"vx":4.47,"ax":-3.43,"ay":3.12,"yawRate":0.023,"rpm":669,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":0,"pot1":320,"pot2":730,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":51.27,"vx":3.83,"ax":-3.58,"ay":3.41,"yawRate":0.019,"rpm":560,"trqCmd":0,"trqEst":3,"vdc":379,"idc":0,"thr":0,"pot1":320,"pot2":730,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":52.28,"vx":3.24,"ax":-3.41,"ay":3.53,"yawRate":0.014,"rpm":483,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":0,"pot1":320,"pot2":727,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":53.29,"vx":2.47,"ax":-2.82,"ay":3.03,"yawRate":0.009,"rpm":349,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":0,"pot1":318,"pot2":726,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":54.3,"vx":2.04,"ax":-0.65,"ay":2.65,"yawRate":0.008,"rpm":319,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":0,"pot1":320,"pot2":730,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":55.3,"vx":1.91,"ax":-0.66,"ay":2.43,"yawRate":0.007,"rpm":298,"trqCmd":0,"trqEst":0,"vdc":381,"idc":0,"thr":0,"pot1":324,"pot2":736,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":56.3,"vx":1.76,"ax":-0.38,"ay":1.24,"yawRate":0.011,"rpm":269,"trqCmd":0,"trqEst":-4,"vdc":380,"idc":0,"thr":0,"pot1":321,"pot2":737,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":57.31,"vx":1.62,"ax":-0.22,"ay":0.66,"yawRate":0.009,"rpm":248,"trqCmd":0,"trqEst":3,"vdc":379,"idc":0,"thr":0,"pot1":325,"pot2":735,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":58.31,"vx":1.44,"ax":-0.12,"ay":0.45,"yawRate":0.008,"rpm":219,"trqCmd":0,"trqEst":-1,"vdc":380,"idc":0,"thr":0,"pot1":317,"pot2":733,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":59.3,"vx":1.24,"ax":-0.11,"ay":0.27,"yawRate":0.006,"rpm":191,"trqCmd":0,"trqEst":0,"vdc":381,"idc":0,"thr":0,"pot1":322,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":60.3,"vx":1.03,"ax":-0.07,"ay":0.14,"yawRate":0.006,"rpm":153,"trqCmd":0,"trqEst":0,"vdc":379,"idc":0,"thr":0,"pot1":325,"pot2":738,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":61.29,"vx":0.72,"ax":-0.1,"ay":0.07,"yawRate":0.002,"rpm":104,"trqCmd":0,"trqEst":-2,"vdc":381,"idc":0,"thr":9,"pot1":430,"pot2":965,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":62.28,"vx":1.07,"ax":1.05,"ay":-0.03,"yawRate":0.006,"rpm":181,"trqCmd":31,"trqEst":33,"vdc":379,"idc":1,"thr":26,"pot1":632,"pot2":1356,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":63.27,"vx":1.77,"ax":0.61,"ay":0.08,"yawRate":0.007,"rpm":287,"trqCmd":32,"trqEst":32,"vdc":379,"idc":2,"thr":26,"pot1":633,"pot2":1360,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":64.26,"vx":2.24,"ax":0.59,"ay":-0.02,"yawRate":0.007,"rpm":358,"trqCmd":31,"trqEst":31,"vdc":377,"idc":3,"thr":25,"pot1":634,"pot2":1361,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":65.25,"vx":2.63,"ax":0.47,"ay":0.13,"yawRate":0.011,"rpm":409,"trqCmd":29,"trqEst":30,"vdc":378,"idc":3,"thr":25,"pot1":627,"pot2":1345,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":66.24,"vx":2.94,"ax":0.61,"ay":0.01,"yawRate":0.011,"rpm":463,"trqCmd":31,"trqEst":28,"vdc":379,"idc":4,"thr":25,"pot1":637,"pot2":1360,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":67.22,"vx":3.26,"ax":0.42,"ay":0.18,"yawRate":0.016,"rpm":507,"trqCmd":29,"trqEst":29,"vdc":379,"idc":4,"thr":25,"pot1":625,"pot2":1346,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":68.2,"vx":3.57,"ax":0.35,"ay":0.08,"yawRate":0.015,"rpm":551,"trqCmd":29,"trqEst":30,"vdc":378,"idc":4,"thr":24,"pot1":625,"pot2":1342,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":69.18,"vx":3.82,"ax":0.4,"ay":-0.16,"yawRate":0.012,"rpm":588,"trqCmd":31,"trqEst":30,"vdc":377,"idc":4,"thr":25,"pot1":630,"pot2":1347,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":70.15,"vx":4.05,"ax":0.01,"ay":0.49,"yawRate":0.029,"rpm":617,"trqCmd":25,"trqEst":27,"vdc":378,"idc":4,"thr":23,"pot1":601,"pot2":1300,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":71.11,"vx":4.22,"ax":0.18,"ay":0.97,"yawRate":0.128,"rpm":641,"trqCmd":22,"trqEst":23,"vdc":379,"idc":4,"thr":21,"pot1":585,"pot2":1264,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":72.07,"vx":4.35,"ax":-0.13,"ay":1.35,"yawRate":0.241,"rpm":653,"trqCmd":21,"trqEst":24,"vdc":379,"idc":4,"thr":21,"pot1":582,"pot2":1246,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":73.01,"vx":4.52,"ax":-0.26,"ay":0.94,"yawRate":0.254,"rpm":668,"trqCmd":21,"trqEst":24,"vdc":379,"idc":4,"thr":21,"pot1":583,"pot2":1247,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":73.94,"vx":4.6,"ax":-0.03,"ay":1.24,"yawRate":0.257,"rpm":688,"trqCmd":21,"trqEst":22,"vdc":379,"idc":4,"thr":21,"pot1":581,"pot2":1251,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":74.86,"vx":4.71,"ax":-0.25,"ay":1.42,"yawRate":0.27,"rpm":706,"trqCmd":22,"trqEst":21,"vdc":379,"idc":4,"thr":21,"pot1":584,"pot2":1255,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":75.76,"vx":4.84,"ax":-0.39,"ay":1.19,"yawRate":0.263,"rpm":723,"trqCmd":15,"trqEst":18,"vdc":379,"idc":3,"thr":19,"pot1":544,"pot2":1169,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":76.64,"vx":4.9,"ax":-1.14,"ay":1.32,"yawRate":0.273,"rpm":702,"trqCmd":2,"trqEst":2,"vdc":381,"idc":0,"thr":11,"pot1":465,"pot2":1019,"brkF":0,"brkR":0,"invT":32,"motT":35},{"s":77.51,"vx":4.81,"ax":-1.38,"ay":1.72,"yawRate":0.272,"rpm":710,"trqCmd":0,"trqEst":0,"vdc":379,"idc":0,"thr":0,"pot1":330,"pot2":742,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":78.36,"vx":4.71,"ax":-1.41,"ay":1.43,"yawRate":0.256,"rpm":700,"trqCmd":0,"trqEst":0,"vdc":381,"idc":0,"thr":0,"pot1":334,"pot2":748,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":79.2,"vx":4.63,"ax":-1.24,"ay":1.6,"yawRate":0.256,"rpm":695,"trqCmd":0,"trqEst":0,"vdc":381,"idc":0,"thr":0,"pot1":332,"pot2":741,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":80.03,"vx":4.54,"ax":-1.21,"ay":1.29,"yawRate":0.272,"rpm":676,"trqCmd":0,"trqEst":-2,"vdc":381,"idc":0,"thr":0,"pot1":329,"pot2":739,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":80.86,"vx":4.47,"ax":-1.38,"ay":0.81,"yawRate":0.262,"rpm":665,"trqCmd":0,"trqEst":1,"vdc":379,"idc":0,"thr":0,"pot1":333,"pot2":748,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":81.68,"vx":4.4,"ax":-1.14,"ay":1.14,"yawRate":0.248,"rpm":659,"trqCmd":0,"trqEst":0,"vdc":379,"idc":0,"thr":0,"pot1":330,"pot2":740,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":82.51,"vx":4.32,"ax":-1.39,"ay":1.11,"yawRate":0.252,"rpm":647,"trqCmd":0,"trqEst":3,"vdc":380,"idc":0,"thr":0,"pot1":330,"pot2":745,"brkF":0,"brkR":0,"invT":31,"motT":34},{"s":83.34,"vx":4.28,"ax":-1.41,"ay":1.98,"yawRate":0.287,"rpm":642,"trqCmd":0,"trqEst":-2,"vdc":380,"idc":0,"thr":0,"pot1":329,"pot2":738,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":84.19,"vx":4.18,"ax":-1.34,"ay":1.51,"yawRate":0.285,"rpm":623,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":0,"pot1":334,"pot2":745,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":85.04,"vx":4.1,"ax":-1.47,"ay":1.6,"yawRate":0.279,"rpm":609,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":0,"pot1":331,"pot2":741,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":85.91,"vx":4.04,"ax":-1.32,"ay":1.58,"yawRate":0.27,"rpm":602,"trqCmd":0,"trqEst":-1,"vdc":381,"idc":0,"thr":0,"pot1":330,"pot2":742,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":86.79,"vx":3.96,"ax":-1.24,"ay":1.61,"yawRate":0.263,"rpm":592,"trqCmd":0,"trqEst":0,"vdc":381,"idc":0,"thr":0,"pot1":334,"pot2":745,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":87.69,"vx":3.91,"ax":-1.48,"ay":1.52,"yawRate":0.256,"rpm":577,"trqCmd":0,"trqEst":-2,"vdc":380,"idc":0,"thr":0,"pot1":332,"pot2":740,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":88.6,"vx":3.82,"ax":-1.42,"ay":1.17,"yawRate":0.236,"rpm":571,"trqCmd":0,"trqEst":0,"vdc":381,"idc":0,"thr":0,"pot1":328,"pot2":732,"brkF":0,"brkR":0,"invT":31,"motT":34},{"s":89.52,"vx":3.71,"ax":-1.39,"ay":1.38,"yawRate":0.226,"rpm":554,"trqCmd":0,"trqEst":-1,"vdc":379,"idc":0,"thr":0,"pot1":332,"pot2":747,"brkF":0,"brkR":0,"invT":31,"motT":29},{"s":90.44,"vx":3.64,"ax":-1.48,"ay":1.37,"yawRate":0.223,"rpm":544,"trqCmd":0,"trqEst":-1,"vdc":380,"idc":0,"thr":0,"pot1":332,"pot2":745,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":91.36,"vx":3.56,"ax":-1.47,"ay":1.37,"yawRate":0.218,"rpm":530,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":0,"pot1":328,"pot2":741,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":92.27,"vx":3.46,"ax":-1.4,"ay":0.92,"yawRate":0.191,"rpm":521,"trqCmd":0,"trqEst":0,"vdc":379,"idc":0,"thr":0,"pot1":326,"pot2":737,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":93.17,"vx":3.39,"ax":-1.43,"ay":0.47,"yawRate":0.061,"rpm":505,"trqCmd":0,"trqEst":-1,"vdc":379,"idc":0,"thr":0,"pot1":328,"pot2":743,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":94.06,"vx":3.27,"ax":-1.43,"ay":0.88,"yawRate":0.029,"rpm":486,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":0,"pot1":330,"pot2":742,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":94.93,"vx":3.16,"ax":-1.06,"ay":0.81,"yawRate":0.035,"rpm":469,"trqCmd":0,"trqEst":1,"vdc":381,"idc":0,"thr":0,"pot1":334,"pot2":746,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":95.79,"vx":3.03,"ax":-1.07,"ay":0.58,"yawRate":0.03,"rpm":458,"trqCmd":0,"trqEst":0,"vdc":381,"idc":0,"thr":0,"pot1":336,"pot2":766,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":96.63,"vx":2.9,"ax":-0.93,"ay":0.74,"yawRate":0.035,"rpm":430,"trqCmd":0,"trqEst":1,"vdc":380,"idc":0,"thr":3,"pot1":370,"pot2":833,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":97.47,"vx":2.76,"ax":-0.9,"ay":0.47,"yawRate":0.061,"rpm":413,"trqCmd":0,"trqEst":-3,"vdc":379,"idc":0,"thr":6,"pot1":405,"pot2":898,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":98.29,"vx":2.62,"ax":-0.68,"ay":0.5,"yawRate":0.059,"rpm":387,"trqCmd":0,"trqEst":-1,"vdc":379,"idc":0,"thr":10,"pot1":451,"pot2":991,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":99.11,"vx":2.48,"ax":-0.64,"ay":0.61,"yawRate":0.072,"rpm":374,"trqCmd":3,"trqEst":4,"vdc":379,"idc":0,"thr":12,"pot1":467,"pot2":1024,"brkF":0,"brkR":0,"invT":31,"motT":34},{"s":99.94,"vx":2.4,"ax":-0.32,"ay":0.4,"yawRate":0.073,"rpm":356,"trqCmd":8,"trqEst":8,"vdc":382,"idc":0,"thr":14,"pot1":492,"pot2":1081,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":100.78,"vx":2.39,"ax":-0.23,"ay":0.52,"yawRate":0.071,"rpm":364,"trqCmd":8,"trqEst":6,"vdc":380,"idc":0,"thr":13,"pot1":490,"pot2":1072,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":101.62,"vx":2.39,"ax":-0.35,"ay":0.35,"yawRate":0.07,"rpm":360,"trqCmd":8,"trqEst":5,"vdc":381,"idc":0,"thr":14,"pot1":491,"pot2":1071,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":102.47,"vx":2.39,"ax":-0.27,"ay":0.21,"yawRate":0.055,"rpm":368,"trqCmd":9,"trqEst":10,"vdc":379,"idc":1,"thr":14,"pot1":494,"pot2":1083,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":103.34,"vx":2.41,"ax":-0.21,"ay":0.23,"yawRate":-0.007,"rpm":359,"trqCmd":9,"trqEst":7,"vdc":380,"idc":1,"thr":14,"pot1":497,"pot2":1088,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":104.2,"vx":2.41,"ax":-0.14,"ay":0.25,"yawRate":-0.007,"rpm":365,"trqCmd":8,"trqEst":8,"vdc":381,"idc":1,"thr":14,"pot1":498,"pot2":1090,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":105.07,"vx":2.44,"ax":-0.02,"ay":-0.04,"yawRate":-0.004,"rpm":369,"trqCmd":9,"trqEst":10,"vdc":381,"idc":1,"thr":14,"pot1":503,"pot2":1092,"brkF":0,"brkR":0,"invT":31,"motT":34},{"s":105.94,"vx":2.45,"ax":-0.04,"ay":0.01,"yawRate":-0.004,"rpm":377,"trqCmd":10,"trqEst":10,"vdc":381,"idc":1,"thr":14,"pot1":506,"pot2":1097,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":106.79,"vx":2.45,"ax":-0.07,"ay":0.34,"yawRate":0.011,"rpm":377,"trqCmd":9,"trqEst":10,"vdc":380,"idc":1,"thr":14,"pot1":505,"pot2":1102,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":107.63,"vx":2.48,"ax":-0.08,"ay":0.33,"yawRate":0.019,"rpm":385,"trqCmd":10,"trqEst":12,"vdc":380,"idc":1,"thr":14,"pot1":508,"pot2":1104,"brkF":0,"brkR":0,"invT":31,"motT":34},{"s":108.45,"vx":2.5,"ax":-0.22,"ay":0.65,"yawRate":0.06,"rpm":379,"trqCmd":9,"trqEst":8,"vdc":380,"idc":1,"thr":14,"pot1":502,"pot2":1102,"brkF":0,"brkR":0,"invT":31,"motT":34},{"s":109.25,"vx":2.5,"ax":-0.14,"ay":0.34,"yawRate":0.073,"rpm":368,"trqCmd":10,"trqEst":9,"vdc":379,"idc":1,"thr":14,"pot1":503,"pot2":1097,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":110.01,"vx":2.5,"ax":-0.07,"ay":0.3,"yawRate":0.065,"rpm":385,"trqCmd":10,"trqEst":9,"vdc":381,"idc":1,"thr":15,"pot1":509,"pot2":1110,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":110.75,"vx":2.51,"ax":-0.61,"ay":0.32,"yawRate":0.069,"rpm":371,"trqCmd":0,"trqEst":1,"vdc":381,"idc":0,"thr":10,"pot1":451,"pot2":997,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":111.46,"vx":2.38,"ax":-0.59,"ay":0.36,"yawRate":0.063,"rpm":354,"trqCmd":0,"trqEst":0,"vdc":381,"idc":0,"thr":6,"pot1":337,"pot2":770,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":112.15,"vx":2.23,"ax":-0.71,"ay":1.08,"yawRate":0.216,"rpm":326,"trqCmd":0,"trqEst":0,"vdc":381,"idc":0,"thr":0,"pot1":323,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":112.84,"vx":2.09,"ax":-0.73,"ay":0.96,"yawRate":0.355,"rpm":301,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":0,"pot1":321,"pot2":734,"brkF":0,"brkR":0,"invT":31,"motT":30},{"s":113.53,"vx":1.88,"ax":-0.76,"ay":-0.01,"yawRate":0.426,"rpm":258,"trqCmd":0,"trqEst":0,"vdc":382,"idc":0,"thr":0,"pot1":324,"pot2":735,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":114.23,"vx":1.48,"ax":-0.46,"ay":-0.26,"yawRate":0.348,"rpm":204,"trqCmd":0,"trqEst":1,"vdc":380,"idc":0,"thr":11,"pot1":453,"pot2":1004,"brkF":0,"brkR":0,"invT":31,"motT":33},{"s":114.97,"vx":1.1,"ax":-0.16,"ay":-0.24,"yawRate":0.254,"rpm":150,"trqCmd":12,"trqEst":11,"vdc":380,"idc":0,"thr":15,"pot1":522,"pot2":1134,"brkF":0,"brkR":0,"invT":31,"motT":31},{"s":115.73,"vx":1.21,"ax":0.46,"ay":-0.19,"yawRate":0.297,"rpm":198,"trqCmd":29,"trqEst":30,"vdc":380,"idc":1,"thr":24,"pot1":622,"pot2":1330,"brkF":0,"brkR":0,"invT":31,"motT":32},{"s":116.53,"vx":1.63,"ax":0.26,"ay":0.28,"yawRate":0.396,"rpm":237,"trqCmd":28,"trqEst":33,"vdc":380,"idc":1,"thr":24,"pot1":621,"pot2":1326,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":117.36,"vx":1.96,"ax":0.04,"ay":0.48,"yawRate":0.473,"rpm":293,"trqCmd":33,"trqEst":35,"vdc":380,"idc":3,"thr":26,"pot1":651,"pot2":1385,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":118.23,"vx":2.31,"ax":0.05,"ay":0.6,"yawRate":0.537,"rpm":341,"trqCmd":35,"trqEst":35,"vdc":379,"idc":3,"thr":28,"pot1":667,"pot2":1411,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":119.12,"vx":2.74,"ax":0.12,"ay":0.92,"yawRate":0.528,"rpm":405,"trqCmd":37,"trqEst":40,"vdc":379,"idc":4,"thr":28,"pot1":674,"pot2":1421,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":120.04,"vx":3.13,"ax":0.21,"ay":0.9,"yawRate":0.466,"rpm":480,"trqCmd":36,"trqEst":35,"vdc":377,"idc":5,"thr":29,"pot1":670,"pot2":1423,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":120.97,"vx":3.49,"ax":0.08,"ay":0.86,"yawRate":0.366,"rpm":523,"trqCmd":35,"trqEst":34,"vdc":379,"idc":5,"thr":28,"pot1":670,"pot2":1417,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":121.91,"vx":3.85,"ax":-0.11,"ay":1.01,"yawRate":0.326,"rpm":574,"trqCmd":33,"trqEst":36,"vdc":379,"idc":5,"thr":27,"pot1":648,"pot2":1377,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":122.86,"vx":4.14,"ax":-0.27,"ay":0.86,"yawRate":0.266,"rpm":617,"trqCmd":32,"trqEst":32,"vdc":379,"idc":5,"thr":26,"pot1":635,"pot2":1366,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":123.82,"vx":4.37,"ax":-0.34,"ay":0.84,"yawRate":0.211,"rpm":660,"trqCmd":31,"trqEst":34,"vdc":378,"idc":6,"thr":26,"pot1":652,"pot2":1376,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":124.78,"vx":4.59,"ax":-0.28,"ay":0.55,"yawRate":0.18,"rpm":686,"trqCmd":31,"trqEst":35,"vdc":378,"idc":6,"thr":25,"pot1":631,"pot2":1346,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":125.74,"vx":4.78,"ax":-0.59,"ay":0.34,"yawRate":0.06,"rpm":729,"trqCmd":29,"trqEst":26,"vdc":378,"idc":5,"thr":25,"pot1":620,"pot2":1325,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":126.71,"vx":4.94,"ax":-0.63,"ay":0.47,"yawRate":0.059,"rpm":748,"trqCmd":28,"trqEst":29,"vdc":377,"idc":6,"thr":24,"pot1":617,"pot2":1318,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":127.67,"vx":5.13,"ax":-0.58,"ay":0.78,"yawRate":0.063,"rpm":775,"trqCmd":24,"trqEst":25,"vdc":378,"idc":5,"thr":22,"pot1":591,"pot2":1260,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":128.64,"vx":5.27,"ax":-0.7,"ay":0.61,"yawRate":0.07,"rpm":796,"trqCmd":22,"trqEst":21,"vdc":378,"idc":5,"thr":21,"pot1":585,"pot2":1257,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":129.6,"vx":5.39,"ax":-0.64,"ay":0,"yawRate":0.058,"rpm":806,"trqCmd":22,"trqEst":21,"vdc":378,"idc":5,"thr":21,"pot1":584,"pot2":1256,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":130.56,"vx":5.52,"ax":-0.66,"ay":-0.17,"yawRate":-0.015,"rpm":826,"trqCmd":22,"trqEst":21,"vdc":379,"idc":5,"thr":21,"pot1":581,"pot2":1246,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":131.53,"vx":5.63,"ax":-0.72,"ay":0.45,"yawRate":-0.032,"rpm":850,"trqCmd":21,"trqEst":24,"vdc":378,"idc":5,"thr":20,"pot1":566,"pot2":1229,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":132.49,"vx":5.75,"ax":-0.74,"ay":0.16,"yawRate":-0.019,"rpm":858,"trqCmd":18,"trqEst":19,"vdc":380,"idc":5,"thr":20,"pot1":552,"pot2":1205,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":133.46,"vx":5.83,"ax":-0.96,"ay":0.98,"yawRate":-0.01,"rpm":873,"trqCmd":16,"trqEst":18,"vdc":378,"idc":4,"thr":19,"pot1":535,"pot2":1188,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":134.43,"vx":5.88,"ax":-1.09,"ay":0.12,"yawRate":-0.011,"rpm":883,"trqCmd":14,"trqEst":14,"vdc":379,"idc":3,"thr":17,"pot1":527,"pot2":1150,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":135.4,"vx":5.94,"ax":-1.36,"ay":0.89,"yawRate":0.004,"rpm":896,"trqCmd":14,"trqEst":14,"vdc":379,"idc":3,"thr":16,"pot1":529,"pot2":1152,"brkF":0,"brkR":0,"invT":32,"motT":31}],"23_08/23_08_2026-07.15.59.csv":[{"s":0,"vx":17.96,"ax":7.42,"ay":2.58,"yawRate":0.012,"rpm":2845,"trqCmd":179,"trqEst":183,"vdc":320,"idc":179,"thr":100,"pot1":1510,"pot2":3057,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":0.97,"vx":18.21,"ax":6.6,"ay":0.54,"yawRate":-0.073,"rpm":2867,"trqCmd":179,"trqEst":183,"vdc":318,"idc":185,"thr":100,"pot1":1506,"pot2":3055,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":1.94,"vx":18.54,"ax":6.35,"ay":0,"yawRate":-0.09,"rpm":2930,"trqCmd":179,"trqEst":175,"vdc":322,"idc":183,"thr":100,"pot1":1514,"pot2":3064,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":2.92,"vx":18.98,"ax":6.13,"ay":-0.23,"yawRate":-0.078,"rpm":3045,"trqCmd":179,"trqEst":168,"vdc":316,"idc":196,"thr":100,"pot1":1501,"pot2":3045,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":3.89,"vx":19.18,"ax":5.76,"ay":-1.9,"yawRate":-0.075,"rpm":3006,"trqCmd":179,"trqEst":198,"vdc":314,"idc":195,"thr":100,"pot1":1508,"pot2":3052,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":4.86,"vx":19.49,"ax":6.02,"ay":-2.71,"yawRate":-0.08,"rpm":3057,"trqCmd":179,"trqEst":169,"vdc":316,"idc":199,"thr":100,"pot1":1513,"pot2":3058,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":5.84,"vx":19.84,"ax":6.55,"ay":-3.12,"yawRate":-0.082,"rpm":3193,"trqCmd":179,"trqEst":181,"vdc":312,"idc":212,"thr":100,"pot1":1508,"pot2":3048,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":6.81,"vx":20.01,"ax":7.03,"ay":-3.24,"yawRate":-0.086,"rpm":3162,"trqCmd":145,"trqEst":158,"vdc":320,"idc":181,"thr":100,"pot1":1166,"pot2":2392,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":7.79,"vx":20.01,"ax":-0.71,"ay":-0.16,"yawRate":-0.024,"rpm":2951,"trqCmd":29,"trqEst":29,"vdc":362,"idc":24,"thr":41,"pot1":625,"pot2":1324,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":8.76,"vx":19.88,"ax":-3.29,"ay":0.2,"yawRate":0.001,"rpm":3044,"trqCmd":31,"trqEst":29,"vdc":362,"idc":27,"thr":24,"pot1":635,"pot2":1345,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":9.74,"vx":19.51,"ax":-5.18,"ay":1.95,"yawRate":0.02,"rpm":2840,"trqCmd":2,"trqEst":0,"vdc":370,"idc":10,"thr":18,"pot1":425,"pot2":936,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":10.71,"vx":19.06,"ax":-7.96,"ay":1.92,"yawRate":0.02,"rpm":2783,"trqCmd":0,"trqEst":-3,"vdc":369,"idc":0,"thr":0,"pot1":331,"pot2":739,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":11.69,"vx":18.6,"ax":-8.1,"ay":1.94,"yawRate":0.018,"rpm":2682,"trqCmd":0,"trqEst":1,"vdc":371,"idc":0,"thr":0,"pot1":334,"pot2":744,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":12.66,"vx":18.21,"ax":-8.41,"ay":2.1,"yawRate":0.017,"rpm":2658,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":335,"pot2":750,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":13.64,"vx":17.93,"ax":-8.74,"ay":1.38,"yawRate":0.027,"rpm":2639,"trqCmd":0,"trqEst":1,"vdc":373,"idc":0,"thr":0,"pot1":336,"pot2":746,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":14.61,"vx":17.37,"ax":-8.76,"ay":1.43,"yawRate":0.027,"rpm":2580,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":336,"pot2":744,"brkF":0,"brkR":0,"invT":38,"motT":31},{"s":15.59,"vx":16.55,"ax":-9.08,"ay":1.42,"yawRate":0.015,"rpm":2432,"trqCmd":0,"trqEst":-1,"vdc":374,"idc":0,"thr":0,"pot1":333,"pot2":746,"brkF":0,"brkR":0,"invT":38,"motT":31},{"s":16.57,"vx":16.1,"ax":-8.98,"ay":1.18,"yawRate":0.018,"rpm":2376,"trqCmd":0,"trqEst":-4,"vdc":371,"idc":0,"thr":0,"pot1":335,"pot2":750,"brkF":0,"brkR":0,"invT":37,"motT":31},{"s":17.54,"vx":15.7,"ax":-8.3,"ay":1.11,"yawRate":0.013,"rpm":2243,"trqCmd":0,"trqEst":1,"vdc":373,"idc":0,"thr":0,"pot1":332,"pot2":746,"brkF":0,"brkR":0,"invT":37,"motT":31},{"s":18.52,"vx":15.25,"ax":-8.54,"ay":1.3,"yawRate":0.011,"rpm":2153,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":333,"pot2":743,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":19.5,"vx":14.51,"ax":-9.59,"ay":1.23,"yawRate":0.008,"rpm":2102,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":334,"pot2":745,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":20.48,"vx":13.91,"ax":-9.8,"ay":1.2,"yawRate":0.012,"rpm":2097,"trqCmd":0,"trqEst":-1,"vdc":373,"idc":0,"thr":0,"pot1":332,"pot2":742,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":21.45,"vx":13.33,"ax":-9.24,"ay":0.87,"yawRate":-0.006,"rpm":1971,"trqCmd":0,"trqEst":0,"vdc":373,"idc":0,"thr":0,"pot1":336,"pot2":745,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":22.43,"vx":12.43,"ax":-8.8,"ay":0.16,"yawRate":0.005,"rpm":1844,"trqCmd":0,"trqEst":0,"vdc":375,"idc":0,"thr":0,"pot1":337,"pot2":752,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":23.4,"vx":12.06,"ax":-8.46,"ay":-0.09,"yawRate":0.009,"rpm":1718,"trqCmd":0,"trqEst":-2,"vdc":373,"idc":0,"thr":1,"pot1":334,"pot2":743,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":24.38,"vx":11.3,"ax":-9.35,"ay":0.96,"yawRate":0.001,"rpm":1646,"trqCmd":0,"trqEst":0,"vdc":374,"idc":0,"thr":0,"pot1":329,"pot2":739,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":25.35,"vx":10.34,"ax":-8.28,"ay":0.2,"yawRate":-0.02,"rpm":1496,"trqCmd":0,"trqEst":0,"vdc":373,"idc":0,"thr":0,"pot1":329,"pot2":740,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":26.32,"vx":9.43,"ax":-9.07,"ay":-0.13,"yawRate":-0.012,"rpm":1412,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":0,"pot1":334,"pot2":747,"brkF":0,"brkR":0,"invT":35,"motT":31},{"s":27.29,"vx":8.57,"ax":-9.22,"ay":0.44,"yawRate":-0.003,"rpm":1262,"trqCmd":0,"trqEst":0,"vdc":375,"idc":0,"thr":0,"pot1":335,"pot2":747,"brkF":0,"brkR":0,"invT":35,"motT":31},{"s":28.24,"vx":7.35,"ax":-9.24,"ay":0.8,"yawRate":0,"rpm":1076,"trqCmd":0,"trqEst":0,"vdc":375,"idc":0,"thr":0,"pot1":332,"pot2":736,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":29.19,"vx":6.06,"ax":-9.09,"ay":0.78,"yawRate":0.003,"rpm":903,"trqCmd":0,"trqEst":0,"vdc":374,"idc":0,"thr":0,"pot1":334,"pot2":746,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":30.12,"vx":2.93,"ax":-7.28,"ay":3.12,"yawRate":0.334,"rpm":640,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":329,"pot2":743,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":31.03,"vx":3.81,"ax":0.05,"ay":2.73,"yawRate":0.916,"rpm":522,"trqCmd":31,"trqEst":32,"vdc":374,"idc":5,"thr":25,"pot1":636,"pot2":1357,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":31.92,"vx":3.92,"ax":-0.22,"ay":3.69,"yawRate":0.916,"rpm":579,"trqCmd":35,"trqEst":36,"vdc":372,"idc":6,"thr":28,"pot1":668,"pot2":1409,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":32.78,"vx":4.13,"ax":0.41,"ay":3.6,"yawRate":0.973,"rpm":629,"trqCmd":47,"trqEst":46,"vdc":371,"idc":9,"thr":34,"pot1":741,"pot2":1551,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":33.61,"vx":4.46,"ax":0.17,"ay":4.07,"yawRate":1.042,"rpm":661,"trqCmd":48,"trqEst":50,"vdc":373,"idc":9,"thr":34,"pot1":751,"pot2":1568,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":34.41,"vx":4.76,"ax":-0.31,"ay":5.39,"yawRate":1.088,"rpm":691,"trqCmd":47,"trqEst":49,"vdc":371,"idc":10,"thr":34,"pot1":745,"pot2":1552,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":35.18,"vx":5.07,"ax":-0.5,"ay":5.54,"yawRate":1.149,"rpm":744,"trqCmd":49,"trqEst":53,"vdc":372,"idc":10,"thr":34,"pot1":743,"pot2":1564,"brkF":0,"brkR":0,"invT":34,"motT":35},{"s":35.93,"vx":5.26,"ax":-0.34,"ay":6.06,"yawRate":1.173,"rpm":771,"trqCmd":48,"trqEst":50,"vdc":373,"idc":11,"thr":34,"pot1":744,"pot2":1558,"brkF":0,"brkR":0,"invT":34,"motT":35},{"s":36.66,"vx":5.53,"ax":-0.06,"ay":5.54,"yawRate":1.11,"rpm":804,"trqCmd":46,"trqEst":48,"vdc":374,"idc":12,"thr":34,"pot1":719,"pot2":1508,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":37.4,"vx":5.67,"ax":-0.05,"ay":4.88,"yawRate":0.922,"rpm":828,"trqCmd":28,"trqEst":30,"vdc":373,"idc":6,"thr":27,"pot1":609,"pot2":1288,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":38.14,"vx":5.73,"ax":-0.98,"ay":3.23,"yawRate":0.649,"rpm":809,"trqCmd":0,"trqEst":-3,"vdc":377,"idc":0,"thr":10,"pot1":386,"pot2":855,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":38.9,"vx":5.59,"ax":-1.45,"ay":3.42,"yawRate":0.526,"rpm":814,"trqCmd":0,"trqEst":0,"vdc":375,"idc":0,"thr":4,"pot1":405,"pot2":897,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":39.7,"vx":5.5,"ax":-1.24,"ay":3.33,"yawRate":0.456,"rpm":843,"trqCmd":10,"trqEst":8,"vdc":375,"idc":2,"thr":13,"pot1":506,"pot2":1092,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":40.53,"vx":5.49,"ax":-1.07,"ay":4.24,"yawRate":0.453,"rpm":821,"trqCmd":16,"trqEst":15,"vdc":374,"idc":4,"thr":19,"pot1":541,"pot2":1176,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":41.39,"vx":5.55,"ax":-0.34,"ay":4,"yawRate":0.459,"rpm":841,"trqCmd":17,"trqEst":18,"vdc":375,"idc":4,"thr":18,"pot1":552,"pot2":1185,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":42.3,"vx":5.61,"ax":-0.53,"ay":3.26,"yawRate":0.444,"rpm":841,"trqCmd":16,"trqEst":20,"vdc":374,"idc":4,"thr":18,"pot1":557,"pot2":1191,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":43.23,"vx":5.69,"ax":-0.4,"ay":3.19,"yawRate":0.439,"rpm":855,"trqCmd":17,"trqEst":20,"vdc":375,"idc":4,"thr":19,"pot1":559,"pot2":1193,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":44.2,"vx":5.76,"ax":-0.13,"ay":3.64,"yawRate":0.398,"rpm":873,"trqCmd":19,"trqEst":22,"vdc":373,"idc":5,"thr":19,"pot1":564,"pot2":1211,"brkF":0,"brkR":0,"invT":34,"motT":30},{"s":45.19,"vx":5.81,"ax":-0.33,"ay":3.22,"yawRate":0.332,"rpm":879,"trqCmd":18,"trqEst":19,"vdc":375,"idc":4,"thr":19,"pot1":565,"pot2":1211,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":46.19,"vx":5.9,"ax":-0.19,"ay":3.19,"yawRate":0.3,"rpm":886,"trqCmd":17,"trqEst":20,"vdc":373,"idc":5,"thr":19,"pot1":560,"pot2":1199,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":47.2,"vx":5.95,"ax":-0.38,"ay":2.71,"yawRate":0.263,"rpm":900,"trqCmd":17,"trqEst":20,"vdc":376,"idc":4,"thr":19,"pot1":555,"pot2":1196,"brkF":0,"brkR":0,"invT":34,"motT":35},{"s":48.22,"vx":5.98,"ax":-0.18,"ay":2.91,"yawRate":0.213,"rpm":910,"trqCmd":17,"trqEst":19,"vdc":375,"idc":4,"thr":19,"pot1":557,"pot2":1205,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":49.23,"vx":6.07,"ax":-0.04,"ay":2.72,"yawRate":0.197,"rpm":924,"trqCmd":17,"trqEst":18,"vdc":373,"idc":4,"thr":19,"pot1":554,"pot2":1191,"brkF":0,"brkR":0,"invT":34,"motT":31},{"s":50.25,"vx":6.13,"ax":-0.13,"ay":2.82,"yawRate":0.18,"rpm":927,"trqCmd":17,"trqEst":18,"vdc":375,"idc":5,"thr":19,"pot1":555,"pot2":1195,"brkF":0,"brkR":0,"invT":34,"motT":34},{"s":51.27,"vx":6.21,"ax":-0.09,"ay":2.5,"yawRate":0.093,"rpm":942,"trqCmd":17,"trqEst":20,"vdc":374,"idc":5,"thr":19,"pot1":553,"pot2":1189,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":52.28,"vx":6.27,"ax":-0.24,"ay":1.97,"yawRate":0.04,"rpm":943,"trqCmd":18,"trqEst":22,"vdc":376,"idc":5,"thr":19,"pot1":555,"pot2":1201,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":53.29,"vx":6.33,"ax":-0.11,"ay":2.44,"yawRate":0.054,"rpm":965,"trqCmd":17,"trqEst":20,"vdc":374,"idc":5,"thr":19,"pot1":551,"pot2":1193,"brkF":0,"brkR":0,"invT":34,"motT":31},{"s":54.3,"vx":6.4,"ax":-0.02,"ay":1.86,"yawRate":0.054,"rpm":967,"trqCmd":17,"trqEst":20,"vdc":376,"idc":5,"thr":19,"pot1":557,"pot2":1202,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":55.3,"vx":6.49,"ax":0.08,"ay":2.45,"yawRate":0.058,"rpm":970,"trqCmd":17,"trqEst":18,"vdc":375,"idc":5,"thr":19,"pot1":551,"pot2":1187,"brkF":0,"brkR":0,"invT":34,"motT":31},{"s":56.3,"vx":6.5,"ax":-0.15,"ay":1.71,"yawRate":0.054,"rpm":994,"trqCmd":16,"trqEst":18,"vdc":375,"idc":5,"thr":18,"pot1":554,"pot2":1187,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":57.31,"vx":6.56,"ax":-0.36,"ay":2.55,"yawRate":0.057,"rpm":996,"trqCmd":14,"trqEst":14,"vdc":375,"idc":3,"thr":16,"pot1":524,"pot2":1133,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":58.31,"vx":6.56,"ax":-0.53,"ay":1.82,"yawRate":0.057,"rpm":976,"trqCmd":5,"trqEst":5,"vdc":375,"idc":1,"thr":12,"pot1":484,"pot2":1056,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":59.3,"vx":6.55,"ax":-0.61,"ay":1.4,"yawRate":-0.072,"rpm":986,"trqCmd":5,"trqEst":6,"vdc":377,"idc":1,"thr":13,"pot1":476,"pot2":1050,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":60.3,"vx":6.51,"ax":-0.83,"ay":1.04,"yawRate":-0.072,"rpm":978,"trqCmd":3,"trqEst":1,"vdc":376,"idc":1,"thr":12,"pot1":472,"pot2":1034,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":61.29,"vx":6.46,"ax":-0.82,"ay":1.35,"yawRate":-0.068,"rpm":982,"trqCmd":4,"trqEst":0,"vdc":377,"idc":1,"thr":12,"pot1":481,"pot2":1045,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":62.28,"vx":6.42,"ax":-0.74,"ay":0.89,"yawRate":-0.059,"rpm":953,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":9,"pot1":406,"pot2":902,"brkF":0,"brkR":0,"invT":34,"motT":31},{"s":63.27,"vx":6.36,"ax":-1.15,"ay":1.97,"yawRate":-0.06,"rpm":954,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":1,"pot1":330,"pot2":741,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":64.26,"vx":6.25,"ax":-0.93,"ay":2.4,"yawRate":-0.045,"rpm":942,"trqCmd":0,"trqEst":0,"vdc":375,"idc":0,"thr":0,"pot1":328,"pot2":738,"brkF":0,"brkR":0,"invT":34,"motT":30},{"s":65.25,"vx":6.21,"ax":-0.83,"ay":2.17,"yawRate":0.037,"rpm":930,"trqCmd":0,"trqEst":-1,"vdc":378,"idc":0,"thr":0,"pot1":326,"pot2":738,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":66.24,"vx":6.12,"ax":-0.73,"ay":1.67,"yawRate":0.015,"rpm":917,"trqCmd":0,"trqEst":-1,"vdc":375,"idc":0,"thr":0,"pot1":324,"pot2":733,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":67.22,"vx":6.05,"ax":-1.01,"ay":1.91,"yawRate":0.01,"rpm":912,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":0,"pot1":324,"pot2":734,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":68.2,"vx":5.97,"ax":-1.15,"ay":0.84,"yawRate":0.008,"rpm":901,"trqCmd":0,"trqEst":0,"vdc":375,"idc":0,"thr":0,"pot1":323,"pot2":732,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":69.18,"vx":5.76,"ax":-2.08,"ay":0.76,"yawRate":0.012,"rpm":853,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":0,"pot1":329,"pot2":741,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":70.15,"vx":5.37,"ax":-3.27,"ay":2.1,"yawRate":0.011,"rpm":799,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":0,"pot1":322,"pot2":733,"brkF":0,"brkR":0,"invT":33,"motT":34},{"s":71.11,"vx":4.76,"ax":-3.64,"ay":2.37,"yawRate":0.007,"rpm":714,"trqCmd":0,"trqEst":-4,"vdc":374,"idc":0,"thr":0,"pot1":326,"pot2":734,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":72.07,"vx":4.25,"ax":-2.53,"ay":1.83,"yawRate":0.008,"rpm":636,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":0,"pot1":327,"pot2":738,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":73.01,"vx":3.73,"ax":-2.35,"ay":1.85,"yawRate":0.013,"rpm":561,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":0,"pot1":327,"pot2":736,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":73.94,"vx":3.31,"ax":-1.58,"ay":1.57,"yawRate":0.011,"rpm":494,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":0,"pot1":325,"pot2":731,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":74.86,"vx":3.04,"ax":-0.35,"ay":1.58,"yawRate":0.009,"rpm":472,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":0,"pot1":326,"pot2":734,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":75.76,"vx":2.98,"ax":-0.31,"ay":1.1,"yawRate":0.011,"rpm":448,"trqCmd":0,"trqEst":-3,"vdc":378,"idc":0,"thr":0,"pot1":352,"pot2":797,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":76.64,"vx":2.89,"ax":0.08,"ay":1.41,"yawRate":0.078,"rpm":447,"trqCmd":9,"trqEst":5,"vdc":376,"idc":1,"thr":14,"pot1":515,"pot2":1122,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":77.51,"vx":2.98,"ax":0.45,"ay":1.21,"yawRate":0.122,"rpm":450,"trqCmd":17,"trqEst":18,"vdc":376,"idc":2,"thr":19,"pot1":551,"pot2":1200,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":78.36,"vx":3.17,"ax":0.63,"ay":1.58,"yawRate":0.15,"rpm":486,"trqCmd":21,"trqEst":20,"vdc":377,"idc":3,"thr":20,"pot1":572,"pot2":1233,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":79.2,"vx":3.43,"ax":0.68,"ay":1.45,"yawRate":0.246,"rpm":520,"trqCmd":22,"trqEst":28,"vdc":375,"idc":3,"thr":21,"pot1":584,"pot2":1258,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":80.03,"vx":3.64,"ax":0.56,"ay":1.54,"yawRate":0.265,"rpm":555,"trqCmd":25,"trqEst":24,"vdc":375,"idc":4,"thr":22,"pot1":598,"pot2":1533,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":80.86,"vx":3.88,"ax":0.8,"ay":2.16,"yawRate":0.354,"rpm":584,"trqCmd":29,"trqEst":29,"vdc":376,"idc":5,"thr":24,"pot1":621,"pot2":1326,"brkF":0,"brkR":0,"invT":34,"motT":34},{"s":81.68,"vx":4.13,"ax":0.89,"ay":2.09,"yawRate":0.38,"rpm":618,"trqCmd":31,"trqEst":31,"vdc":377,"idc":5,"thr":25,"pot1":637,"pot2":1351,"brkF":0,"brkR":0,"invT":34,"motT":34},{"s":82.51,"vx":4.42,"ax":0.88,"ay":2.4,"yawRate":0.399,"rpm":649,"trqCmd":31,"trqEst":30,"vdc":374,"idc":5,"thr":25,"pot1":633,"pot2":1351,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":83.34,"vx":4.66,"ax":0.92,"ay":2.45,"yawRate":0.419,"rpm":715,"trqCmd":31,"trqEst":31,"vdc":375,"idc":6,"thr":26,"pot1":637,"pot2":1355,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":84.19,"vx":4.9,"ax":1.04,"ay":2.8,"yawRate":0.43,"rpm":737,"trqCmd":31,"trqEst":32,"vdc":373,"idc":6,"thr":26,"pot1":644,"pot2":1368,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":85.04,"vx":5.06,"ax":0.96,"ay":2.77,"yawRate":0.449,"rpm":767,"trqCmd":31,"trqEst":27,"vdc":375,"idc":7,"thr":26,"pot1":634,"pot2":1352,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":85.91,"vx":5.29,"ax":0.9,"ay":2.34,"yawRate":0.449,"rpm":791,"trqCmd":31,"trqEst":32,"vdc":375,"idc":7,"thr":26,"pot1":641,"pot2":1366,"brkF":0,"brkR":0,"invT":34,"motT":31},{"s":86.79,"vx":5.55,"ax":1,"ay":1.66,"yawRate":0.379,"rpm":830,"trqCmd":31,"trqEst":33,"vdc":373,"idc":7,"thr":25,"pot1":638,"pot2":1358,"brkF":0,"brkR":0,"invT":34,"motT":34},{"s":87.69,"vx":5.74,"ax":0.7,"ay":1.92,"yawRate":0.307,"rpm":855,"trqCmd":31,"trqEst":34,"vdc":375,"idc":8,"thr":26,"pot1":641,"pot2":1366,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":88.6,"vx":5.86,"ax":0.83,"ay":2.54,"yawRate":0.308,"rpm":891,"trqCmd":31,"trqEst":26,"vdc":374,"idc":8,"thr":25,"pot1":641,"pot2":1360,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":89.52,"vx":6.06,"ax":1.06,"ay":2.47,"yawRate":0.3,"rpm":910,"trqCmd":31,"trqEst":31,"vdc":374,"idc":8,"thr":26,"pot1":646,"pot2":1372,"brkF":0,"brkR":0,"invT":34,"motT":34},{"s":90.44,"vx":6.23,"ax":0.86,"ay":2.27,"yawRate":0.282,"rpm":940,"trqCmd":31,"trqEst":32,"vdc":377,"idc":9,"thr":25,"pot1":642,"pot2":1362,"brkF":0,"brkR":0,"invT":34,"motT":34},{"s":91.36,"vx":6.37,"ax":0.75,"ay":2.16,"yawRate":0.24,"rpm":955,"trqCmd":31,"trqEst":41,"vdc":376,"idc":9,"thr":26,"pot1":636,"pot2":1352,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":92.27,"vx":6.54,"ax":0.37,"ay":2.44,"yawRate":0.228,"rpm":976,"trqCmd":17,"trqEst":20,"vdc":377,"idc":5,"thr":22,"pot1":553,"pot2":1194,"brkF":0,"brkR":0,"invT":34,"motT":31},{"s":93.17,"vx":6.57,"ax":-0.7,"ay":1.36,"yawRate":0.185,"rpm":957,"trqCmd":0,"trqEst":2,"vdc":376,"idc":0,"thr":10,"pot1":448,"pot2":983,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":94.06,"vx":6.43,"ax":-0.85,"ay":1.68,"yawRate":0.138,"rpm":955,"trqCmd":0,"trqEst":-2,"vdc":376,"idc":0,"thr":2,"pot1":355,"pot2":801,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":94.93,"vx":6.35,"ax":-0.9,"ay":1.48,"yawRate":0.144,"rpm":943,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":1,"pot1":345,"pot2":780,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":95.79,"vx":6.28,"ax":-0.92,"ay":1.92,"yawRate":0.141,"rpm":933,"trqCmd":0,"trqEst":-1,"vdc":376,"idc":0,"thr":0,"pot1":327,"pot2":744,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":96.63,"vx":6.14,"ax":-1.03,"ay":1.5,"yawRate":0.138,"rpm":928,"trqCmd":0,"trqEst":0,"vdc":379,"idc":0,"thr":0,"pot1":325,"pot2":735,"brkF":0,"brkR":0,"invT":34,"motT":30},{"s":97.47,"vx":5.93,"ax":-1.62,"ay":1.67,"yawRate":0.14,"rpm":892,"trqCmd":0,"trqEst":1,"vdc":377,"idc":0,"thr":0,"pot1":315,"pot2":722,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":98.29,"vx":5.63,"ax":-1.59,"ay":2.61,"yawRate":0.121,"rpm":841,"trqCmd":0,"trqEst":0,"vdc":379,"idc":0,"thr":0,"pot1":321,"pot2":734,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":99.11,"vx":5.39,"ax":-0.97,"ay":1.06,"yawRate":0.092,"rpm":809,"trqCmd":0,"trqEst":-1,"vdc":377,"idc":0,"thr":0,"pot1":321,"pot2":727,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":99.94,"vx":5.29,"ax":-0.76,"ay":1.53,"yawRate":0.067,"rpm":802,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":0,"pot1":327,"pot2":739,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":100.78,"vx":5.25,"ax":-0.54,"ay":1.46,"yawRate":0.064,"rpm":784,"trqCmd":0,"trqEst":-1,"vdc":376,"idc":0,"thr":0,"pot1":324,"pot2":735,"brkF":0,"brkR":0,"invT":34,"motT":35},{"s":101.62,"vx":5.15,"ax":-0.61,"ay":0.92,"yawRate":0.066,"rpm":778,"trqCmd":0,"trqEst":-1,"vdc":377,"idc":0,"thr":0,"pot1":326,"pot2":733,"brkF":0,"brkR":0,"invT":34,"motT":31},{"s":102.47,"vx":5.08,"ax":-0.46,"ay":0.8,"yawRate":0.066,"rpm":757,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":0,"pot1":341,"pot2":734,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":103.34,"vx":4.98,"ax":-0.86,"ay":1.58,"yawRate":0.061,"rpm":739,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":0,"pot1":325,"pot2":734,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":104.2,"vx":4.77,"ax":-1.84,"ay":0.56,"yawRate":0.029,"rpm":713,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":0,"pot1":309,"pot2":724,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":105.07,"vx":4.38,"ax":-2.1,"ay":1.02,"yawRate":0.028,"rpm":651,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":0,"pot1":327,"pot2":734,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":105.94,"vx":4.15,"ax":-0.63,"ay":1.19,"yawRate":0.033,"rpm":630,"trqCmd":0,"trqEst":-2,"vdc":377,"idc":0,"thr":0,"pot1":321,"pot2":721,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":106.79,"vx":4.02,"ax":-0.96,"ay":0.75,"yawRate":0.036,"rpm":602,"trqCmd":0,"trqEst":1,"vdc":379,"idc":0,"thr":0,"pot1":323,"pot2":731,"brkF":0,"brkR":0,"invT":33,"motT":35},{"s":107.63,"vx":3.65,"ax":-2.06,"ay":0.44,"yawRate":0.034,"rpm":536,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":0,"pot1":316,"pot2":725,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":108.45,"vx":3.38,"ax":-0.67,"ay":1.08,"yawRate":0.034,"rpm":513,"trqCmd":0,"trqEst":2,"vdc":377,"idc":0,"thr":0,"pot1":330,"pot2":742,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":109.25,"vx":3.28,"ax":-0.58,"ay":2.53,"yawRate":0.379,"rpm":494,"trqCmd":0,"trqEst":-1,"vdc":378,"idc":0,"thr":3,"pot1":353,"pot2":813,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":110.01,"vx":3.21,"ax":-1.09,"ay":3,"yawRate":0.56,"rpm":464,"trqCmd":0,"trqEst":-1,"vdc":378,"idc":0,"thr":5,"pot1":410,"pot2":911,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":110.75,"vx":3.05,"ax":-1.5,"ay":2.98,"yawRate":0.698,"rpm":425,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":10,"pot1":444,"pot2":987,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":111.46,"vx":2.79,"ax":-1.19,"ay":2.12,"yawRate":0.651,"rpm":394,"trqCmd":2,"trqEst":4,"vdc":376,"idc":0,"thr":11,"pot1":463,"pot2":1020,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":112.15,"vx":2.57,"ax":-0.89,"ay":2,"yawRate":0.596,"rpm":369,"trqCmd":5,"trqEst":4,"vdc":378,"idc":0,"thr":13,"pot1":484,"pot2":1064,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":112.84,"vx":2.45,"ax":-0.55,"ay":1.6,"yawRate":0.562,"rpm":352,"trqCmd":12,"trqEst":13,"vdc":378,"idc":1,"thr":16,"pot1":510,"pot2":1124,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":113.53,"vx":2.4,"ax":-0.4,"ay":1.1,"yawRate":0.565,"rpm":342,"trqCmd":13,"trqEst":12,"vdc":378,"idc":1,"thr":16,"pot1":524,"pot2":1132,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":114.23,"vx":2.38,"ax":-0.12,"ay":0.34,"yawRate":0.48,"rpm":347,"trqCmd":11,"trqEst":10,"vdc":378,"idc":1,"thr":16,"pot1":509,"pot2":1119,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":114.97,"vx":2.42,"ax":-0.76,"ay":0.49,"yawRate":0.428,"rpm":349,"trqCmd":4,"trqEst":3,"vdc":378,"idc":0,"thr":12,"pot1":477,"pot2":1047,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":115.73,"vx":2.25,"ax":-1.31,"ay":0.26,"yawRate":0.4,"rpm":326,"trqCmd":0,"trqEst":1,"vdc":377,"idc":0,"thr":0,"pot1":305,"pot2":723,"brkF":0,"brkR":0,"invT":33,"motT":35},{"s":116.53,"vx":3.32,"ax":5.79,"ay":-0.77,"yawRate":0.042,"rpm":3216,"trqCmd":179,"trqEst":161,"vdc":317,"idc":197,"thr":100,"pot1":1505,"pot2":3036,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":117.36,"vx":4.76,"ax":6.57,"ay":-0.26,"yawRate":-0.013,"rpm":3876,"trqCmd":153,"trqEst":171,"vdc":318,"idc":228,"thr":100,"pot1":1481,"pot2":3012,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":118.23,"vx":5.88,"ax":6.72,"ay":-0.21,"yawRate":0.028,"rpm":4052,"trqCmd":145,"trqEst":112,"vdc":311,"idc":226,"thr":100,"pot1":1508,"pot2":3055,"brkF":0,"brkR":0,"invT":35,"motT":31},{"s":119.12,"vx":6.97,"ax":7.37,"ay":-0.56,"yawRate":0.066,"rpm":3977,"trqCmd":148,"trqEst":114,"vdc":313,"idc":229,"thr":100,"pot1":1512,"pot2":3064,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":120.04,"vx":7.91,"ax":7.97,"ay":-0.83,"yawRate":0.13,"rpm":3797,"trqCmd":156,"trqEst":164,"vdc":310,"idc":232,"thr":100,"pot1":1516,"pot2":3061,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":120.97,"vx":8.93,"ax":8.24,"ay":-0.77,"yawRate":0.169,"rpm":3697,"trqCmd":159,"trqEst":164,"vdc":306,"idc":227,"thr":100,"pot1":1504,"pot2":3047,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":121.91,"vx":9.87,"ax":8.22,"ay":-0.55,"yawRate":-0.007,"rpm":3608,"trqCmd":163,"trqEst":149,"vdc":313,"idc":224,"thr":100,"pot1":1502,"pot2":3045,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":122.86,"vx":10.43,"ax":8.36,"ay":-0.76,"yawRate":-0.025,"rpm":3509,"trqCmd":168,"trqEst":167,"vdc":313,"idc":226,"thr":100,"pot1":1508,"pot2":3052,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":123.82,"vx":11.13,"ax":8.47,"ay":-1.4,"yawRate":-0.014,"rpm":3356,"trqCmd":174,"trqEst":182,"vdc":312,"idc":224,"thr":100,"pot1":1515,"pot2":3071,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":124.78,"vx":11.93,"ax":9,"ay":-1.12,"yawRate":-0.099,"rpm":3246,"trqCmd":179,"trqEst":170,"vdc":310,"idc":221,"thr":100,"pot1":1509,"pot2":3059,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":125.74,"vx":12.65,"ax":9.02,"ay":-1.16,"yawRate":-0.25,"rpm":3157,"trqCmd":179,"trqEst":177,"vdc":313,"idc":210,"thr":100,"pot1":1503,"pot2":3050,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":126.71,"vx":13.45,"ax":8.76,"ay":-1.14,"yawRate":-0.304,"rpm":2996,"trqCmd":179,"trqEst":184,"vdc":313,"idc":200,"thr":100,"pot1":1512,"pot2":3068,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":127.67,"vx":13.82,"ax":8.97,"ay":-1.82,"yawRate":-0.239,"rpm":2918,"trqCmd":179,"trqEst":186,"vdc":321,"idc":192,"thr":100,"pot1":1511,"pot2":3059,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":128.64,"vx":14.4,"ax":9.12,"ay":-2.48,"yawRate":-0.236,"rpm":2796,"trqCmd":179,"trqEst":184,"vdc":319,"idc":183,"thr":100,"pot1":1512,"pot2":3059,"brkF":0,"brkR":0,"invT":38,"motT":31},{"s":129.6,"vx":15.11,"ax":8.49,"ay":-2.2,"yawRate":-0.206,"rpm":2667,"trqCmd":179,"trqEst":197,"vdc":319,"idc":168,"thr":100,"pot1":1502,"pot2":3048,"brkF":0,"brkR":0,"invT":38,"motT":34},{"s":130.56,"vx":15.48,"ax":7.09,"ay":-1.63,"yawRate":-0.066,"rpm":2596,"trqCmd":179,"trqEst":186,"vdc":322,"idc":160,"thr":100,"pot1":1516,"pot2":3075,"brkF":0,"brkR":0,"invT":38,"motT":34},{"s":131.53,"vx":16,"ax":7.34,"ay":0.04,"yawRate":0.164,"rpm":2660,"trqCmd":179,"trqEst":194,"vdc":322,"idc":168,"thr":100,"pot1":1512,"pot2":3063,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":132.49,"vx":16.35,"ax":7.05,"ay":1.54,"yawRate":0.34,"rpm":2714,"trqCmd":179,"trqEst":192,"vdc":325,"idc":171,"thr":100,"pot1":1511,"pot2":3060,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":133.46,"vx":16.6,"ax":7.03,"ay":3.69,"yawRate":0.541,"rpm":2762,"trqCmd":179,"trqEst":188,"vdc":323,"idc":171,"thr":100,"pot1":1504,"pot2":3042,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":134.43,"vx":17.1,"ax":7.07,"ay":2.32,"yawRate":0.516,"rpm":2763,"trqCmd":179,"trqEst":188,"vdc":318,"idc":176,"thr":100,"pot1":1509,"pot2":3058,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":135.4,"vx":17.81,"ax":7.6,"ay":2.03,"yawRate":0.064,"rpm":2868,"trqCmd":179,"trqEst":184,"vdc":319,"idc":182,"thr":100,"pot1":1509,"pot2":3063,"brkF":0,"brkR":0,"invT":38,"motT":33}],"23_08/23_08_2026-07.30.55.csv":[{"s":0,"vx":16.97,"ax":7.46,"ay":-1.06,"yawRate":-0.065,"rpm":2782,"trqCmd":190,"trqEst":194,"vdc":315,"idc":189,"thr":71,"pot1":1198,"pot2":2455,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":0.97,"vx":17.67,"ax":7.65,"ay":-0.96,"yawRate":0.104,"rpm":2932,"trqCmd":204,"trqEst":200,"vdc":308,"idc":220,"thr":77,"pot1":1267,"pot2":2606,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":1.94,"vx":18.44,"ax":8.55,"ay":1.54,"yawRate":0.19,"rpm":3007,"trqCmd":201,"trqEst":196,"vdc":312,"idc":225,"thr":79,"pot1":1293,"pot2":2643,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":2.92,"vx":18.72,"ax":8.58,"ay":1.39,"yawRate":0.187,"rpm":3043,"trqCmd":199,"trqEst":219,"vdc":308,"idc":232,"thr":80,"pot1":1287,"pot2":2629,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":3.89,"vx":18.95,"ax":7.81,"ay":1.2,"yawRate":0.183,"rpm":3124,"trqCmd":105,"trqEst":113,"vdc":335,"idc":135,"thr":74,"pot1":650,"pot2":1385,"brkF":0,"brkR":0,"invT":37,"motT":29},{"s":4.86,"vx":19.08,"ax":4.71,"ay":1.76,"yawRate":0.171,"rpm":2685,"trqCmd":0,"trqEst":-5,"vdc":370,"idc":0,"thr":27,"pot1":315,"pot2":712,"brkF":0,"brkR":0,"invT":37,"motT":29},{"s":5.84,"vx":18.99,"ax":-2.89,"ay":1.94,"yawRate":0.104,"rpm":2861,"trqCmd":0,"trqEst":-1,"vdc":367,"idc":0,"thr":0,"pot1":326,"pot2":731,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":6.81,"vx":18.88,"ax":-2.75,"ay":1.3,"yawRate":-0.052,"rpm":2817,"trqCmd":0,"trqEst":1,"vdc":370,"idc":0,"thr":4,"pot1":390,"pot2":879,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":7.79,"vx":18.23,"ax":-5.72,"ay":-0.74,"yawRate":-0.131,"rpm":2742,"trqCmd":0,"trqEst":-1,"vdc":371,"idc":0,"thr":0,"pot1":317,"pot2":725,"brkF":0,"brkR":0,"invT":37,"motT":31},{"s":8.76,"vx":18.23,"ax":-7.03,"ay":-1.62,"yawRate":-0.127,"rpm":2751,"trqCmd":0,"trqEst":2,"vdc":372,"idc":0,"thr":0,"pot1":321,"pot2":725,"brkF":0,"brkR":0,"invT":37,"motT":31},{"s":9.74,"vx":17.87,"ax":-6.54,"ay":-2.49,"yawRate":-0.127,"rpm":2734,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":320,"pot2":727,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":10.71,"vx":17.47,"ax":-6.34,"ay":-1.38,"yawRate":-0.126,"rpm":2590,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":0,"pot1":323,"pot2":727,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":11.69,"vx":17.22,"ax":-6.34,"ay":-1.1,"yawRate":-0.113,"rpm":2576,"trqCmd":0,"trqEst":-1,"vdc":369,"idc":0,"thr":0,"pot1":312,"pot2":721,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":12.66,"vx":16.75,"ax":-6.12,"ay":-1.01,"yawRate":-0.065,"rpm":2536,"trqCmd":0,"trqEst":1,"vdc":371,"idc":0,"thr":0,"pot1":329,"pot2":728,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":13.64,"vx":16.36,"ax":-6.26,"ay":-1.25,"yawRate":-0.057,"rpm":2444,"trqCmd":0,"trqEst":-2,"vdc":370,"idc":0,"thr":0,"pot1":322,"pot2":731,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":14.61,"vx":16.05,"ax":-6.1,"ay":-1.91,"yawRate":-0.067,"rpm":2400,"trqCmd":0,"trqEst":-1,"vdc":373,"idc":0,"thr":0,"pot1":322,"pot2":729,"brkF":0,"brkR":0,"invT":35,"motT":30},{"s":15.59,"vx":15.7,"ax":-6.08,"ay":-1.74,"yawRate":-0.071,"rpm":2350,"trqCmd":0,"trqEst":-1,"vdc":371,"idc":0,"thr":0,"pot1":320,"pot2":727,"brkF":0,"brkR":0,"invT":35,"motT":30},{"s":16.57,"vx":15.03,"ax":-5.95,"ay":-0.3,"yawRate":-0.053,"rpm":2280,"trqCmd":0,"trqEst":0,"vdc":373,"idc":0,"thr":0,"pot1":318,"pot2":725,"brkF":0,"brkR":0,"invT":35,"motT":31},{"s":17.54,"vx":14.88,"ax":-5.59,"ay":-0.37,"yawRate":-0.066,"rpm":2234,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":315,"pot2":732,"brkF":0,"brkR":0,"invT":35,"motT":31},{"s":18.52,"vx":14.42,"ax":-5.28,"ay":-0.23,"yawRate":-0.076,"rpm":2158,"trqCmd":0,"trqEst":-2,"vdc":373,"idc":0,"thr":1,"pot1":325,"pot2":736,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":19.5,"vx":13.9,"ax":-5.4,"ay":-0.8,"yawRate":-0.07,"rpm":2090,"trqCmd":0,"trqEst":0,"vdc":373,"idc":0,"thr":0,"pot1":323,"pot2":734,"brkF":0,"brkR":0,"invT":35,"motT":31},{"s":20.48,"vx":13.77,"ax":-5.38,"ay":-0.59,"yawRate":-0.064,"rpm":2068,"trqCmd":0,"trqEst":0,"vdc":373,"idc":0,"thr":0,"pot1":327,"pot2":739,"brkF":0,"brkR":0,"invT":35,"motT":31},{"s":21.45,"vx":13.4,"ax":-5.76,"ay":0.32,"yawRate":-0.061,"rpm":1997,"trqCmd":0,"trqEst":-2,"vdc":374,"idc":0,"thr":0,"pot1":326,"pot2":739,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":22.43,"vx":12.63,"ax":-6.24,"ay":0.12,"yawRate":-0.067,"rpm":1907,"trqCmd":0,"trqEst":0,"vdc":373,"idc":0,"thr":0,"pot1":326,"pot2":739,"brkF":0,"brkR":0,"invT":34,"motT":35},{"s":23.4,"vx":12.3,"ax":-5.96,"ay":-0.44,"yawRate":-0.058,"rpm":1838,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":324,"pot2":741,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":24.38,"vx":11.74,"ax":-5.79,"ay":-0.4,"yawRate":-0.058,"rpm":1760,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":322,"pot2":732,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":25.35,"vx":11.15,"ax":-6.6,"ay":-0.68,"yawRate":-0.058,"rpm":1670,"trqCmd":0,"trqEst":-1,"vdc":372,"idc":0,"thr":0,"pot1":320,"pot2":729,"brkF":0,"brkR":0,"invT":34,"motT":34},{"s":26.32,"vx":10.63,"ax":-6.43,"ay":-0.25,"yawRate":-0.054,"rpm":1593,"trqCmd":0,"trqEst":1,"vdc":375,"idc":0,"thr":0,"pot1":326,"pot2":738,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":27.29,"vx":9.96,"ax":-6.45,"ay":-1.2,"yawRate":-0.046,"rpm":1493,"trqCmd":0,"trqEst":0,"vdc":374,"idc":0,"thr":0,"pot1":321,"pot2":729,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":28.24,"vx":9.07,"ax":-6.41,"ay":-0.29,"yawRate":-0.048,"rpm":1348,"trqCmd":0,"trqEst":0,"vdc":373,"idc":0,"thr":0,"pot1":322,"pot2":734,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":29.19,"vx":8.52,"ax":-6.53,"ay":0.35,"yawRate":-0.036,"rpm":1276,"trqCmd":0,"trqEst":-1,"vdc":375,"idc":0,"thr":0,"pot1":323,"pot2":730,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":30.12,"vx":7.68,"ax":-6.48,"ay":-0.17,"yawRate":-0.034,"rpm":1139,"trqCmd":0,"trqEst":1,"vdc":375,"idc":0,"thr":0,"pot1":325,"pot2":736,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":31.03,"vx":6.56,"ax":-6.62,"ay":0.48,"yawRate":-0.024,"rpm":987,"trqCmd":0,"trqEst":0,"vdc":374,"idc":0,"thr":0,"pot1":322,"pot2":729,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":31.92,"vx":5.54,"ax":-6.36,"ay":0.93,"yawRate":-0.005,"rpm":830,"trqCmd":0,"trqEst":0,"vdc":375,"idc":0,"thr":0,"pot1":321,"pot2":735,"brkF":0,"brkR":0,"invT":33,"motT":35},{"s":32.78,"vx":4.33,"ax":-4.44,"ay":5.16,"yawRate":0.465,"rpm":677,"trqCmd":0,"trqEst":-1,"vdc":376,"idc":0,"thr":0,"pot1":316,"pot2":732,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":33.61,"vx":4.1,"ax":-1.46,"ay":2.94,"yawRate":0.813,"rpm":601,"trqCmd":0,"trqEst":2,"vdc":375,"idc":0,"thr":2,"pot1":366,"pot2":827,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":34.41,"vx":3.98,"ax":-0.75,"ay":2.75,"yawRate":0.835,"rpm":550,"trqCmd":18,"trqEst":18,"vdc":373,"idc":3,"thr":16,"pot1":525,"pot2":1129,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":35.18,"vx":4.12,"ax":-0.14,"ay":3.24,"yawRate":0.885,"rpm":618,"trqCmd":31,"trqEst":31,"vdc":373,"idc":6,"thr":20,"pot1":564,"pot2":1212,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":35.93,"vx":4.33,"ax":-0.57,"ay":3.93,"yawRate":0.914,"rpm":644,"trqCmd":30,"trqEst":29,"vdc":374,"idc":5,"thr":20,"pot1":567,"pot2":1218,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":36.66,"vx":4.46,"ax":-0.58,"ay":4.35,"yawRate":0.944,"rpm":641,"trqCmd":21,"trqEst":21,"vdc":375,"idc":4,"thr":17,"pot1":536,"pot2":1158,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":37.4,"vx":4.51,"ax":-0.81,"ay":4.17,"yawRate":0.969,"rpm":646,"trqCmd":21,"trqEst":22,"vdc":374,"idc":4,"thr":17,"pot1":537,"pot2":1153,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":38.14,"vx":4.6,"ax":-1.05,"ay":4.64,"yawRate":0.965,"rpm":667,"trqCmd":20,"trqEst":24,"vdc":374,"idc":4,"thr":17,"pot1":536,"pot2":1150,"brkF":0,"brkR":0,"invT":33,"motT":35},{"s":38.9,"vx":4.66,"ax":-1.47,"ay":4.93,"yawRate":0.979,"rpm":671,"trqCmd":21,"trqEst":21,"vdc":374,"idc":4,"thr":17,"pot1":536,"pot2":1157,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":39.7,"vx":4.7,"ax":-1.24,"ay":5.31,"yawRate":0.979,"rpm":678,"trqCmd":21,"trqEst":24,"vdc":375,"idc":4,"thr":17,"pot1":533,"pot2":1153,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":40.53,"vx":4.77,"ax":-1.26,"ay":5.23,"yawRate":1,"rpm":693,"trqCmd":20,"trqEst":22,"vdc":373,"idc":4,"thr":17,"pot1":530,"pot2":1150,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":41.39,"vx":4.82,"ax":-1.2,"ay":6.23,"yawRate":0.988,"rpm":692,"trqCmd":20,"trqEst":21,"vdc":373,"idc":4,"thr":17,"pot1":534,"pot2":1146,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":42.3,"vx":4.85,"ax":-1.06,"ay":5.26,"yawRate":0.937,"rpm":699,"trqCmd":20,"trqEst":22,"vdc":372,"idc":4,"thr":17,"pot1":536,"pot2":1150,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":43.23,"vx":4.88,"ax":-0.27,"ay":2.77,"yawRate":0.686,"rpm":725,"trqCmd":25,"trqEst":26,"vdc":374,"idc":5,"thr":18,"pot1":550,"pot2":1179,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":44.2,"vx":4.97,"ax":0.1,"ay":2.46,"yawRate":0.38,"rpm":756,"trqCmd":31,"trqEst":31,"vdc":373,"idc":7,"thr":19,"pot1":573,"pot2":1231,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":45.19,"vx":5.21,"ax":0.57,"ay":2.56,"yawRate":0.204,"rpm":793,"trqCmd":35,"trqEst":34,"vdc":373,"idc":8,"thr":22,"pot1":595,"pot2":1270,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":46.19,"vx":5.47,"ax":0.84,"ay":3.02,"yawRate":0.13,"rpm":840,"trqCmd":37,"trqEst":41,"vdc":372,"idc":9,"thr":22,"pot1":597,"pot2":1278,"brkF":0,"brkR":0,"invT":33,"motT":34},{"s":47.2,"vx":5.67,"ax":0.86,"ay":3.09,"yawRate":0.085,"rpm":864,"trqCmd":36,"trqEst":39,"vdc":374,"idc":9,"thr":22,"pot1":600,"pot2":1284,"brkF":0,"brkR":0,"invT":33,"motT":35},{"s":48.22,"vx":5.91,"ax":0.45,"ay":1.59,"yawRate":0.076,"rpm":900,"trqCmd":37,"trqEst":39,"vdc":371,"idc":10,"thr":22,"pot1":597,"pot2":1275,"brkF":0,"brkR":0,"invT":33,"motT":34},{"s":49.23,"vx":6.13,"ax":0.95,"ay":1.23,"yawRate":0.013,"rpm":928,"trqCmd":36,"trqEst":37,"vdc":373,"idc":10,"thr":22,"pot1":596,"pot2":1275,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":50.25,"vx":6.36,"ax":0.83,"ay":1.27,"yawRate":-0.06,"rpm":959,"trqCmd":36,"trqEst":36,"vdc":370,"idc":10,"thr":22,"pot1":592,"pot2":1273,"brkF":0,"brkR":0,"invT":33,"motT":34},{"s":51.27,"vx":6.51,"ax":0.69,"ay":1.89,"yawRate":-0.058,"rpm":982,"trqCmd":37,"trqEst":40,"vdc":372,"idc":11,"thr":22,"pot1":584,"pot2":1252,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":52.28,"vx":6.73,"ax":0.57,"ay":1.64,"yawRate":-0.053,"rpm":1014,"trqCmd":33,"trqEst":37,"vdc":372,"idc":10,"thr":21,"pot1":585,"pot2":1254,"brkF":0,"brkR":0,"invT":33,"motT":34},{"s":53.29,"vx":6.83,"ax":0.61,"ay":1.71,"yawRate":-0.049,"rpm":1038,"trqCmd":33,"trqEst":38,"vdc":370,"idc":10,"thr":21,"pot1":580,"pot2":1244,"brkF":0,"brkR":0,"invT":33,"motT":34},{"s":54.3,"vx":7.08,"ax":0.61,"ay":1.62,"yawRate":-0.035,"rpm":1069,"trqCmd":32,"trqEst":35,"vdc":371,"idc":11,"thr":21,"pot1":579,"pot2":1243,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":55.3,"vx":7.19,"ax":0.22,"ay":1.71,"yawRate":0.004,"rpm":1063,"trqCmd":17,"trqEst":20,"vdc":373,"idc":6,"thr":19,"pot1":522,"pot2":1135,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":56.3,"vx":7.25,"ax":-0.16,"ay":2.1,"yawRate":0.012,"rpm":1091,"trqCmd":16,"trqEst":16,"vdc":373,"idc":5,"thr":15,"pot1":517,"pot2":1113,"brkF":0,"brkR":0,"invT":33,"motT":34},{"s":57.31,"vx":7.24,"ax":-1.37,"ay":2.01,"yawRate":0.009,"rpm":1065,"trqCmd":0,"trqEst":2,"vdc":374,"idc":0,"thr":4,"pot1":377,"pot2":841,"brkF":0,"brkR":0,"invT":33,"motT":35},{"s":58.31,"vx":7.11,"ax":-1.71,"ay":2.1,"yawRate":0.01,"rpm":1056,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":3,"pot1":349,"pot2":792,"brkF":0,"brkR":0,"invT":33,"motT":31},{"s":59.3,"vx":6.82,"ax":-2.12,"ay":2.13,"yawRate":0.004,"rpm":1032,"trqCmd":0,"trqEst":-4,"vdc":377,"idc":0,"thr":0,"pot1":322,"pot2":731,"brkF":0,"brkR":0,"invT":33,"motT":34},{"s":60.3,"vx":6.56,"ax":-2.36,"ay":1.98,"yawRate":0.008,"rpm":984,"trqCmd":0,"trqEst":2,"vdc":377,"idc":0,"thr":0,"pot1":326,"pot2":735,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":61.29,"vx":6.28,"ax":-2.37,"ay":1.78,"yawRate":-0.004,"rpm":944,"trqCmd":0,"trqEst":-2,"vdc":375,"idc":0,"thr":0,"pot1":331,"pot2":745,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":62.28,"vx":6,"ax":-2.19,"ay":2,"yawRate":-0.002,"rpm":897,"trqCmd":0,"trqEst":1,"vdc":375,"idc":0,"thr":0,"pot1":331,"pot2":737,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":63.27,"vx":5.64,"ax":-2.36,"ay":1.79,"yawRate":0.005,"rpm":849,"trqCmd":0,"trqEst":-2,"vdc":375,"idc":0,"thr":0,"pot1":333,"pot2":745,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":64.26,"vx":5.28,"ax":-1.92,"ay":1.64,"yawRate":-0.002,"rpm":792,"trqCmd":0,"trqEst":0,"vdc":375,"idc":0,"thr":0,"pot1":326,"pot2":736,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":65.25,"vx":5.12,"ax":-0.89,"ay":2.27,"yawRate":0.002,"rpm":772,"trqCmd":0,"trqEst":-1,"vdc":377,"idc":0,"thr":0,"pot1":357,"pot2":807,"brkF":0,"brkR":0,"invT":32,"motT":35},{"s":66.24,"vx":5.06,"ax":-0.76,"ay":1.74,"yawRate":0.001,"rpm":765,"trqCmd":0,"trqEst":-1,"vdc":377,"idc":0,"thr":8,"pot1":441,"pot2":971,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":67.22,"vx":4.98,"ax":-0.79,"ay":1.9,"yawRate":0,"rpm":762,"trqCmd":1,"trqEst":3,"vdc":376,"idc":0,"thr":10,"pot1":452,"pot2":999,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":68.2,"vx":4.93,"ax":-0.73,"ay":1.51,"yawRate":0.005,"rpm":736,"trqCmd":2,"trqEst":0,"vdc":377,"idc":0,"thr":10,"pot1":455,"pot2":1007,"brkF":0,"brkR":0,"invT":32,"motT":30},{"s":69.18,"vx":4.87,"ax":-0.52,"ay":1.79,"yawRate":0.004,"rpm":736,"trqCmd":10,"trqEst":10,"vdc":376,"idc":2,"thr":13,"pot1":485,"pot2":1064,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":70.15,"vx":4.92,"ax":-0.37,"ay":1.78,"yawRate":-0.002,"rpm":743,"trqCmd":11,"trqEst":9,"vdc":374,"idc":2,"thr":13,"pot1":498,"pot2":1066,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":71.11,"vx":4.94,"ax":-0.33,"ay":1.49,"yawRate":0.002,"rpm":743,"trqCmd":11,"trqEst":10,"vdc":375,"idc":2,"thr":13,"pot1":495,"pot2":1072,"brkF":0,"brkR":0,"invT":32,"motT":35},{"s":72.07,"vx":4.98,"ax":-0.33,"ay":1.62,"yawRate":0.005,"rpm":758,"trqCmd":11,"trqEst":9,"vdc":375,"idc":2,"thr":13,"pot1":489,"pot2":1066,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":73.01,"vx":4.97,"ax":-0.2,"ay":1.86,"yawRate":0.007,"rpm":745,"trqCmd":11,"trqEst":11,"vdc":375,"idc":2,"thr":13,"pot1":492,"pot2":1068,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":73.94,"vx":5,"ax":-0.2,"ay":1.81,"yawRate":0.002,"rpm":759,"trqCmd":11,"trqEst":10,"vdc":376,"idc":2,"thr":14,"pot1":491,"pot2":1066,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":74.86,"vx":5.02,"ax":-0.48,"ay":1.82,"yawRate":0.008,"rpm":751,"trqCmd":8,"trqEst":10,"vdc":376,"idc":1,"thr":12,"pot1":480,"pot2":1043,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":75.76,"vx":4.96,"ax":-0.68,"ay":2.09,"yawRate":0.009,"rpm":746,"trqCmd":0,"trqEst":1,"vdc":377,"idc":0,"thr":10,"pot1":448,"pot2":990,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":76.64,"vx":4.9,"ax":-0.71,"ay":2.74,"yawRate":0.024,"rpm":734,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":10,"pot1":445,"pot2":979,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":77.51,"vx":4.83,"ax":-0.61,"ay":3.74,"yawRate":0.281,"rpm":733,"trqCmd":5,"trqEst":7,"vdc":375,"idc":1,"thr":11,"pot1":467,"pot2":1021,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":78.36,"vx":4.82,"ax":-0.34,"ay":3.14,"yawRate":0.327,"rpm":722,"trqCmd":9,"trqEst":10,"vdc":374,"idc":2,"thr":13,"pot1":478,"pot2":1044,"brkF":0,"brkR":0,"invT":32,"motT":29},{"s":79.2,"vx":4.83,"ax":-0.13,"ay":3.39,"yawRate":0.333,"rpm":722,"trqCmd":9,"trqEst":7,"vdc":378,"idc":1,"thr":13,"pot1":480,"pot2":1048,"brkF":0,"brkR":0,"invT":32,"motT":36},{"s":80.03,"vx":4.84,"ax":-0.3,"ay":3.05,"yawRate":0.325,"rpm":722,"trqCmd":9,"trqEst":7,"vdc":376,"idc":1,"thr":13,"pot1":483,"pot2":1054,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":80.86,"vx":4.84,"ax":-0.21,"ay":3.15,"yawRate":0.329,"rpm":728,"trqCmd":10,"trqEst":8,"vdc":375,"idc":2,"thr":13,"pot1":479,"pot2":1049,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":81.68,"vx":4.84,"ax":-0.07,"ay":3.05,"yawRate":0.323,"rpm":724,"trqCmd":10,"trqEst":7,"vdc":375,"idc":2,"thr":13,"pot1":483,"pot2":1055,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":82.51,"vx":4.89,"ax":-0.03,"ay":3.21,"yawRate":0.328,"rpm":730,"trqCmd":10,"trqEst":8,"vdc":375,"idc":2,"thr":13,"pot1":480,"pot2":1049,"brkF":0,"brkR":0,"invT":32,"motT":35},{"s":83.34,"vx":4.87,"ax":0.09,"ay":3.2,"yawRate":0.327,"rpm":730,"trqCmd":11,"trqEst":10,"vdc":375,"idc":2,"thr":13,"pot1":494,"pot2":1070,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":84.19,"vx":4.88,"ax":-0.09,"ay":2.96,"yawRate":0.325,"rpm":735,"trqCmd":10,"trqEst":10,"vdc":376,"idc":2,"thr":14,"pot1":492,"pot2":1067,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":85.04,"vx":4.9,"ax":0.17,"ay":3.08,"yawRate":0.323,"rpm":738,"trqCmd":11,"trqEst":11,"vdc":376,"idc":2,"thr":13,"pot1":493,"pot2":1066,"brkF":0,"brkR":0,"invT":32,"motT":36},{"s":85.91,"vx":4.94,"ax":0.83,"ay":3.34,"yawRate":0.324,"rpm":745,"trqCmd":15,"trqEst":18,"vdc":374,"idc":3,"thr":15,"pot1":515,"pot2":1115,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":86.79,"vx":5.04,"ax":0.38,"ay":2.76,"yawRate":0.322,"rpm":750,"trqCmd":17,"trqEst":20,"vdc":376,"idc":4,"thr":15,"pot1":517,"pot2":1121,"brkF":0,"brkR":0,"invT":32,"motT":35},{"s":87.69,"vx":5.15,"ax":0.45,"ay":2.54,"yawRate":0.287,"rpm":776,"trqCmd":16,"trqEst":17,"vdc":376,"idc":4,"thr":15,"pot1":515,"pot2":1117,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":88.6,"vx":5.25,"ax":0.69,"ay":2.53,"yawRate":0.265,"rpm":789,"trqCmd":16,"trqEst":18,"vdc":375,"idc":4,"thr":16,"pot1":518,"pot2":1118,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":89.52,"vx":5.35,"ax":0.64,"ay":2.72,"yawRate":0.26,"rpm":807,"trqCmd":18,"trqEst":14,"vdc":377,"idc":4,"thr":16,"pot1":520,"pot2":1123,"brkF":0,"brkR":0,"invT":32,"motT":36},{"s":90.44,"vx":5.46,"ax":0.6,"ay":2.72,"yawRate":0.259,"rpm":826,"trqCmd":12,"trqEst":12,"vdc":374,"idc":3,"thr":15,"pot1":495,"pot2":1073,"brkF":0,"brkR":0,"invT":32,"motT":35},{"s":91.36,"vx":5.5,"ax":-0.09,"ay":3.23,"yawRate":0.256,"rpm":811,"trqCmd":1,"trqEst":1,"vdc":376,"idc":0,"thr":11,"pot1":450,"pot2":991,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":92.27,"vx":5.4,"ax":-0.27,"ay":2.03,"yawRate":0.197,"rpm":802,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":3,"pot1":364,"pot2":809,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":93.17,"vx":5.32,"ax":-0.16,"ay":2.14,"yawRate":0.193,"rpm":797,"trqCmd":0,"trqEst":-2,"vdc":376,"idc":0,"thr":2,"pot1":359,"pot2":798,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":94.06,"vx":5.2,"ax":-0.46,"ay":2.15,"yawRate":0.183,"rpm":775,"trqCmd":0,"trqEst":-1,"vdc":376,"idc":0,"thr":2,"pot1":354,"pot2":797,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":94.93,"vx":5.11,"ax":-0.53,"ay":2.11,"yawRate":0.173,"rpm":762,"trqCmd":0,"trqEst":1,"vdc":377,"idc":0,"thr":2,"pot1":355,"pot2":798,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":95.79,"vx":4.99,"ax":-0.47,"ay":2.12,"yawRate":0.181,"rpm":753,"trqCmd":0,"trqEst":-2,"vdc":375,"idc":0,"thr":2,"pot1":358,"pot2":800,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":96.63,"vx":4.8,"ax":-0.85,"ay":2.08,"yawRate":0.171,"rpm":724,"trqCmd":0,"trqEst":1,"vdc":375,"idc":0,"thr":1,"pot1":332,"pot2":755,"brkF":0,"brkR":0,"invT":32,"motT":31},{"s":97.47,"vx":4.55,"ax":-1.31,"ay":2.43,"yawRate":0.157,"rpm":674,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":0,"pot1":331,"pot2":743,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":98.29,"vx":4.15,"ax":-1.34,"ay":1.82,"yawRate":0.144,"rpm":620,"trqCmd":0,"trqEst":-3,"vdc":378,"idc":0,"thr":0,"pot1":328,"pot2":740,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":99.11,"vx":3.88,"ax":-0.27,"ay":1.57,"yawRate":0.141,"rpm":585,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":0,"pot1":324,"pot2":738,"brkF":0,"brkR":0,"invT":32,"motT":35},{"s":99.94,"vx":3.75,"ax":-0.29,"ay":1.93,"yawRate":0.138,"rpm":573,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":0,"pot1":322,"pot2":735,"brkF":0,"brkR":0,"invT":32,"motT":29},{"s":100.78,"vx":3.64,"ax":-0.21,"ay":1.67,"yawRate":0.128,"rpm":556,"trqCmd":0,"trqEst":-4,"vdc":375,"idc":0,"thr":0,"pot1":326,"pot2":736,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":101.62,"vx":3.55,"ax":-0.08,"ay":1.03,"yawRate":0.11,"rpm":534,"trqCmd":0,"trqEst":-1,"vdc":378,"idc":0,"thr":1,"pot1":342,"pot2":778,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":102.47,"vx":3.43,"ax":-0.08,"ay":1.25,"yawRate":0.023,"rpm":515,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":4,"pot1":380,"pot2":846,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":103.34,"vx":3.31,"ax":-0.21,"ay":0.63,"yawRate":0.032,"rpm":503,"trqCmd":0,"trqEst":3,"vdc":375,"idc":0,"thr":6,"pot1":421,"pot2":927,"brkF":0,"brkR":0,"invT":32,"motT":35},{"s":104.2,"vx":3.18,"ax":0.09,"ay":1.2,"yawRate":0.028,"rpm":481,"trqCmd":3,"trqEst":3,"vdc":377,"idc":0,"thr":11,"pot1":458,"pot2":1006,"brkF":0,"brkR":0,"invT":32,"motT":34},{"s":105.07,"vx":3.15,"ax":0.17,"ay":0.69,"yawRate":0.025,"rpm":474,"trqCmd":6,"trqEst":4,"vdc":376,"idc":1,"thr":12,"pot1":468,"pot2":1029,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":105.94,"vx":3.12,"ax":0.27,"ay":0.59,"yawRate":0.025,"rpm":470,"trqCmd":10,"trqEst":9,"vdc":376,"idc":1,"thr":12,"pot1":486,"pot2":1061,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":106.79,"vx":3.15,"ax":0.49,"ay":1.14,"yawRate":0.003,"rpm":492,"trqCmd":14,"trqEst":12,"vdc":375,"idc":1,"thr":14,"pot1":494,"pot2":1089,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":107.63,"vx":3.14,"ax":-0.34,"ay":1.14,"yawRate":0.007,"rpm":488,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":6,"pot1":357,"pot2":811,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":108.45,"vx":2.84,"ax":-1.1,"ay":0.88,"yawRate":0.005,"rpm":408,"trqCmd":0,"trqEst":2,"vdc":377,"idc":0,"thr":0,"pot1":325,"pot2":733,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":109.25,"vx":2.39,"ax":0.07,"ay":0.68,"yawRate":0.004,"rpm":358,"trqCmd":0,"trqEst":0,"vdc":378,"idc":0,"thr":0,"pot1":324,"pot2":733,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":110.01,"vx":2.22,"ax":-0.02,"ay":0.6,"yawRate":0.01,"rpm":329,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":3,"pot1":358,"pot2":824,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":110.75,"vx":2.03,"ax":0,"ay":1.42,"yawRate":0.222,"rpm":300,"trqCmd":0,"trqEst":0,"vdc":380,"idc":0,"thr":3,"pot1":377,"pot2":833,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":111.46,"vx":1.83,"ax":-0.48,"ay":0.22,"yawRate":0.411,"rpm":255,"trqCmd":0,"trqEst":0,"vdc":376,"idc":0,"thr":6,"pot1":407,"pot2":905,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":112.15,"vx":1.49,"ax":-0.04,"ay":-0.03,"yawRate":0.355,"rpm":239,"trqCmd":15,"trqEst":19,"vdc":375,"idc":1,"thr":15,"pot1":520,"pot2":1129,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":112.84,"vx":1.6,"ax":0.11,"ay":0.19,"yawRate":0.377,"rpm":235,"trqCmd":17,"trqEst":18,"vdc":375,"idc":1,"thr":16,"pot1":516,"pot2":1128,"brkF":0,"brkR":0,"invT":32,"motT":33},{"s":113.53,"vx":1.71,"ax":-0.4,"ay":0.2,"yawRate":0.403,"rpm":237,"trqCmd":17,"trqEst":18,"vdc":378,"idc":0,"thr":16,"pot1":520,"pot2":1126,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":114.23,"vx":1.83,"ax":-0.79,"ay":0.62,"yawRate":0.456,"rpm":269,"trqCmd":16,"trqEst":15,"vdc":377,"idc":1,"thr":16,"pot1":530,"pot2":1139,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":114.97,"vx":1.93,"ax":-0.85,"ay":0.89,"yawRate":0.466,"rpm":275,"trqCmd":17,"trqEst":18,"vdc":378,"idc":1,"thr":16,"pot1":518,"pot2":1120,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":115.73,"vx":2.08,"ax":-0.31,"ay":-0.01,"yawRate":0.378,"rpm":304,"trqCmd":13,"trqEst":12,"vdc":376,"idc":1,"thr":14,"pot1":491,"pot2":1083,"brkF":0,"brkR":0,"invT":33,"motT":32},{"s":116.53,"vx":2.14,"ax":-1.05,"ay":0.78,"yawRate":0.33,"rpm":308,"trqCmd":0,"trqEst":0,"vdc":377,"idc":0,"thr":8,"pot1":424,"pot2":948,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":117.36,"vx":1.92,"ax":5.3,"ay":-0.27,"yawRate":0.029,"rpm":2819,"trqCmd":216,"trqEst":194,"vdc":320,"idc":212,"thr":87,"pot1":1401,"pot2":2847,"brkF":0,"brkR":0,"invT":32,"motT":32},{"s":118.23,"vx":3.82,"ax":5.72,"ay":-0.01,"yawRate":-0.056,"rpm":4397,"trqCmd":137,"trqEst":119,"vdc":314,"idc":238,"thr":85,"pot1":1344,"pot2":2743,"brkF":0,"brkR":0,"invT":33,"motT":33},{"s":119.12,"vx":5.06,"ax":6.18,"ay":-0.85,"yawRate":-0.15,"rpm":4554,"trqCmd":130,"trqEst":70,"vdc":313,"idc":233,"thr":80,"pot1":1304,"pot2":2661,"brkF":0,"brkR":0,"invT":34,"motT":34},{"s":120.04,"vx":6.25,"ax":6.76,"ay":0.48,"yawRate":-0.046,"rpm":4450,"trqCmd":133,"trqEst":98,"vdc":309,"idc":232,"thr":78,"pot1":1268,"pot2":2597,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":120.97,"vx":7.3,"ax":7.74,"ay":-0.76,"yawRate":0.107,"rpm":4294,"trqCmd":140,"trqEst":112,"vdc":308,"idc":240,"thr":74,"pot1":1203,"pot2":2460,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":121.91,"vx":8.28,"ax":8.35,"ay":-0.43,"yawRate":0.026,"rpm":3984,"trqCmd":145,"trqEst":145,"vdc":313,"idc":223,"thr":69,"pot1":1143,"pot2":2342,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":122.86,"vx":9.33,"ax":7.96,"ay":-0.06,"yawRate":0.035,"rpm":3737,"trqCmd":157,"trqEst":135,"vdc":306,"idc":230,"thr":64,"pot1":1084,"pot2":2236,"brkF":0,"brkR":0,"invT":36,"motT":31},{"s":123.82,"vx":10.17,"ax":8.34,"ay":-0.28,"yawRate":0.022,"rpm":3615,"trqCmd":157,"trqEst":146,"vdc":315,"idc":215,"thr":62,"pot1":1088,"pot2":2245,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":124.78,"vx":10.88,"ax":8.78,"ay":-0.69,"yawRate":0.022,"rpm":3440,"trqCmd":158,"trqEst":141,"vdc":319,"idc":205,"thr":62,"pot1":1078,"pot2":2222,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":125.74,"vx":11.55,"ax":8.38,"ay":-0.37,"yawRate":0.066,"rpm":3208,"trqCmd":159,"trqEst":152,"vdc":320,"idc":183,"thr":62,"pot1":1088,"pot2":2239,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":126.71,"vx":12.35,"ax":8.88,"ay":0.04,"yawRate":0.116,"rpm":2929,"trqCmd":158,"trqEst":170,"vdc":318,"idc":160,"thr":62,"pot1":1082,"pot2":2229,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":127.67,"vx":13.09,"ax":8.96,"ay":1.57,"yawRate":0.157,"rpm":2763,"trqCmd":173,"trqEst":180,"vdc":323,"idc":163,"thr":65,"pot1":1136,"pot2":2333,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":128.64,"vx":13.83,"ax":8.88,"ay":0.81,"yawRate":0.194,"rpm":2593,"trqCmd":174,"trqEst":180,"vdc":325,"idc":153,"thr":68,"pot1":1143,"pot2":2350,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":129.6,"vx":14.31,"ax":8.62,"ay":0.45,"yawRate":0.187,"rpm":2446,"trqCmd":177,"trqEst":189,"vdc":328,"idc":146,"thr":68,"pot1":1160,"pot2":2379,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":130.56,"vx":14.77,"ax":8.12,"ay":-0.48,"yawRate":0.019,"rpm":2384,"trqCmd":188,"trqEst":207,"vdc":326,"idc":145,"thr":68,"pot1":1175,"pot2":2412,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":131.53,"vx":15.49,"ax":7.85,"ay":-1.67,"yawRate":-0.247,"rpm":2472,"trqCmd":191,"trqEst":219,"vdc":326,"idc":163,"thr":72,"pot1":1177,"pot2":2422,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":132.49,"vx":15.77,"ax":6.62,"ay":-2.61,"yawRate":-0.295,"rpm":2505,"trqCmd":175,"trqEst":193,"vdc":327,"idc":148,"thr":68,"pot1":1154,"pot2":2372,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":133.46,"vx":16.29,"ax":6.23,"ay":-4.23,"yawRate":-0.329,"rpm":2687,"trqCmd":185,"trqEst":181,"vdc":322,"idc":162,"thr":70,"pot1":1181,"pot2":2416,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":134.43,"vx":16.57,"ax":6.71,"ay":-2.6,"yawRate":-0.343,"rpm":2740,"trqCmd":187,"trqEst":183,"vdc":327,"idc":176,"thr":70,"pot1":1181,"pot2":2426,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":135.4,"vx":16.91,"ax":7.11,"ay":-2.38,"yawRate":-0.173,"rpm":2719,"trqCmd":190,"trqEst":195,"vdc":318,"idc":181,"thr":71,"pot1":1192,"pot2":2446,"brkF":0,"brkR":0,"invT":37,"motT":32}],"23_08/23_08_2026-07.49.03.csv":[{"s":0,"vx":21.51,"ax":7.64,"ay":-5.8,"yawRate":-0.427,"rpm":3473,"trqCmd":178,"trqEst":151,"vdc":302,"idc":241,"thr":90,"pot1":1394,"pot2":2828,"brkF":0,"brkR":0,"invT":47,"motT":38},{"s":0.97,"vx":22.05,"ax":7.4,"ay":-4.64,"yawRate":-0.393,"rpm":3553,"trqCmd":126,"trqEst":124,"vdc":319,"idc":143,"thr":85,"pot1":869,"pot2":1808,"brkF":0,"brkR":0,"invT":47,"motT":38},{"s":1.94,"vx":22.05,"ax":5.79,"ay":-4.41,"yawRate":-0.298,"rpm":3229,"trqCmd":0,"trqEst":0,"vdc":361,"idc":6,"thr":45,"pot1":326,"pot2":738,"brkF":0,"brkR":0,"invT":47,"motT":39},{"s":2.92,"vx":21.84,"ax":-5.26,"ay":-1.3,"yawRate":0.063,"rpm":3243,"trqCmd":0,"trqEst":0,"vdc":362,"idc":-1,"thr":0,"pot1":323,"pot2":730,"brkF":0,"brkR":0,"invT":47,"motT":39},{"s":3.89,"vx":21.39,"ax":-7.02,"ay":4.63,"yawRate":0.569,"rpm":3273,"trqCmd":0,"trqEst":1,"vdc":361,"idc":0,"thr":0,"pot1":326,"pot2":731,"brkF":0,"brkR":0,"invT":47,"motT":39},{"s":4.86,"vx":21.15,"ax":-5.95,"ay":6.06,"yawRate":0.658,"rpm":3094,"trqCmd":0,"trqEst":-1,"vdc":362,"idc":0,"thr":0,"pot1":330,"pot2":738,"brkF":0,"brkR":0,"invT":47,"motT":35},{"s":5.84,"vx":20.87,"ax":-5.62,"ay":5.85,"yawRate":0.678,"rpm":2923,"trqCmd":0,"trqEst":1,"vdc":362,"idc":0,"thr":0,"pot1":328,"pot2":735,"brkF":0,"brkR":0,"invT":47,"motT":35},{"s":6.81,"vx":20.67,"ax":-6.92,"ay":5.81,"yawRate":0.542,"rpm":2878,"trqCmd":0,"trqEst":-1,"vdc":364,"idc":0,"thr":0,"pot1":321,"pot2":730,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":7.79,"vx":20.43,"ax":-7.34,"ay":5.34,"yawRate":0.472,"rpm":2809,"trqCmd":0,"trqEst":-3,"vdc":368,"idc":0,"thr":0,"pot1":324,"pot2":734,"brkF":0,"brkR":0,"invT":46,"motT":35},{"s":8.76,"vx":19.81,"ax":-8.53,"ay":5.57,"yawRate":0.219,"rpm":2737,"trqCmd":0,"trqEst":2,"vdc":365,"idc":0,"thr":0,"pot1":325,"pot2":738,"brkF":0,"brkR":0,"invT":46,"motT":37},{"s":9.74,"vx":18.88,"ax":-8.98,"ay":4.02,"yawRate":-0.141,"rpm":2790,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":323,"pot2":733,"brkF":0,"brkR":0,"invT":46,"motT":38},{"s":10.71,"vx":18.66,"ax":-9,"ay":1.26,"yawRate":-0.32,"rpm":2731,"trqCmd":0,"trqEst":1,"vdc":366,"idc":0,"thr":0,"pot1":323,"pot2":740,"brkF":0,"brkR":0,"invT":46,"motT":38},{"s":11.69,"vx":18.34,"ax":-7.35,"ay":-2.29,"yawRate":-0.526,"rpm":2615,"trqCmd":0,"trqEst":1,"vdc":366,"idc":0,"thr":0,"pot1":327,"pot2":735,"brkF":0,"brkR":0,"invT":45,"motT":37},{"s":12.66,"vx":18.05,"ax":-7.24,"ay":-3.04,"yawRate":-0.623,"rpm":2468,"trqCmd":0,"trqEst":3,"vdc":364,"idc":0,"thr":0,"pot1":328,"pot2":741,"brkF":0,"brkR":0,"invT":45,"motT":37},{"s":13.64,"vx":17.31,"ax":-8.99,"ay":-1.53,"yawRate":-0.489,"rpm":2458,"trqCmd":0,"trqEst":1,"vdc":365,"idc":0,"thr":0,"pot1":324,"pot2":738,"brkF":0,"brkR":0,"invT":45,"motT":37},{"s":14.61,"vx":16.77,"ax":-9.66,"ay":-3.07,"yawRate":-0.101,"rpm":2500,"trqCmd":0,"trqEst":-2,"vdc":366,"idc":0,"thr":0,"pot1":327,"pot2":736,"brkF":0,"brkR":0,"invT":45,"motT":37},{"s":15.59,"vx":15.7,"ax":-9.32,"ay":-1.31,"yawRate":0.204,"rpm":2477,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":329,"pot2":737,"brkF":0,"brkR":0,"invT":44,"motT":36},{"s":16.57,"vx":15.7,"ax":-7.2,"ay":1.32,"yawRate":0.21,"rpm":2289,"trqCmd":0,"trqEst":-1,"vdc":367,"idc":0,"thr":0,"pot1":327,"pot2":738,"brkF":0,"brkR":0,"invT":44,"motT":36},{"s":17.54,"vx":15.32,"ax":-6.96,"ay":2.59,"yawRate":0.185,"rpm":2194,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":328,"pot2":739,"brkF":0,"brkR":0,"invT":44,"motT":40},{"s":18.52,"vx":14.73,"ax":-7.38,"ay":3.79,"yawRate":0.168,"rpm":2197,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":325,"pot2":738,"brkF":0,"brkR":0,"invT":43,"motT":38},{"s":19.5,"vx":14.1,"ax":-7.61,"ay":1.49,"yawRate":0.08,"rpm":2119,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":324,"pot2":740,"brkF":0,"brkR":0,"invT":43,"motT":37},{"s":20.48,"vx":13.46,"ax":-7.83,"ay":0.61,"yawRate":-0.002,"rpm":2003,"trqCmd":0,"trqEst":2,"vdc":366,"idc":0,"thr":0,"pot1":323,"pot2":735,"brkF":0,"brkR":0,"invT":43,"motT":37},{"s":21.45,"vx":13.06,"ax":-7.59,"ay":-0.03,"yawRate":-0.008,"rpm":1941,"trqCmd":0,"trqEst":1,"vdc":367,"idc":0,"thr":0,"pot1":326,"pot2":736,"brkF":0,"brkR":0,"invT":43,"motT":39},{"s":22.43,"vx":12.34,"ax":-7.71,"ay":0.68,"yawRate":0.065,"rpm":1851,"trqCmd":0,"trqEst":-2,"vdc":366,"idc":0,"thr":0,"pot1":324,"pot2":737,"brkF":0,"brkR":0,"invT":42,"motT":37},{"s":23.4,"vx":11.52,"ax":-6.87,"ay":1.03,"yawRate":0.085,"rpm":1721,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":329,"pot2":737,"brkF":0,"brkR":0,"invT":42,"motT":37},{"s":24.38,"vx":11.03,"ax":-7.3,"ay":0.97,"yawRate":0.037,"rpm":1658,"trqCmd":0,"trqEst":1,"vdc":366,"idc":0,"thr":0,"pot1":326,"pot2":740,"brkF":0,"brkR":0,"invT":42,"motT":37},{"s":25.35,"vx":10.38,"ax":-7.42,"ay":0.82,"yawRate":0.079,"rpm":1551,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":324,"pot2":733,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":26.32,"vx":9.8,"ax":-7.19,"ay":1.01,"yawRate":0.049,"rpm":1439,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":321,"pot2":730,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":27.29,"vx":8.74,"ax":-7.28,"ay":0.12,"yawRate":0.05,"rpm":1319,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":325,"pot2":729,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":28.24,"vx":7.92,"ax":-7.24,"ay":0.78,"yawRate":0.05,"rpm":1204,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":320,"pot2":735,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":29.19,"vx":6.85,"ax":-7.29,"ay":0.81,"yawRate":0.038,"rpm":1029,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":321,"pot2":734,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":30.12,"vx":5.57,"ax":-7.61,"ay":0.71,"yawRate":0.031,"rpm":839,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":326,"pot2":736,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":31.03,"vx":4.36,"ax":-7.07,"ay":0.59,"yawRate":0.031,"rpm":641,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":325,"pot2":734,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":31.92,"vx":2.67,"ax":-3.38,"ay":1.76,"yawRate":0.137,"rpm":401,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":1,"pot1":433,"pot2":957,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":32.78,"vx":2.4,"ax":-0.87,"ay":1.29,"yawRate":0.495,"rpm":359,"trqCmd":0,"trqEst":2,"vdc":368,"idc":0,"thr":10,"pot1":456,"pot2":1004,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":33.61,"vx":2.42,"ax":-0.18,"ay":1.31,"yawRate":0.581,"rpm":356,"trqCmd":27,"trqEst":27,"vdc":369,"idc":2,"thr":18,"pot1":556,"pot2":1216,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":34.41,"vx":2.54,"ax":-1.25,"ay":1.53,"yawRate":0.638,"rpm":379,"trqCmd":11,"trqEst":11,"vdc":369,"idc":1,"thr":13,"pot1":488,"pot2":1070,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":35.18,"vx":2.57,"ax":-0.81,"ay":1.4,"yawRate":0.652,"rpm":386,"trqCmd":25,"trqEst":27,"vdc":368,"idc":2,"thr":18,"pot1":533,"pot2":1158,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":35.93,"vx":2.73,"ax":-1.13,"ay":1.78,"yawRate":0.672,"rpm":397,"trqCmd":21,"trqEst":22,"vdc":369,"idc":2,"thr":17,"pot1":525,"pot2":1147,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":36.66,"vx":2.85,"ax":-1.61,"ay":2.31,"yawRate":0.708,"rpm":406,"trqCmd":19,"trqEst":23,"vdc":368,"idc":2,"thr":17,"pot1":538,"pot2":1165,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":37.4,"vx":2.9,"ax":-1.21,"ay":2.95,"yawRate":0.687,"rpm":419,"trqCmd":20,"trqEst":20,"vdc":369,"idc":2,"thr":17,"pot1":524,"pot2":1149,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":38.14,"vx":3.01,"ax":-1.52,"ay":3.11,"yawRate":0.728,"rpm":450,"trqCmd":19,"trqEst":20,"vdc":369,"idc":2,"thr":17,"pot1":531,"pot2":1152,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":38.9,"vx":3.08,"ax":-1.49,"ay":3.01,"yawRate":0.719,"rpm":440,"trqCmd":19,"trqEst":20,"vdc":371,"idc":2,"thr":18,"pot1":520,"pot2":1138,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":39.7,"vx":3.16,"ax":-0.98,"ay":3.25,"yawRate":0.708,"rpm":451,"trqCmd":21,"trqEst":22,"vdc":371,"idc":2,"thr":17,"pot1":526,"pot2":1146,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":40.53,"vx":3.27,"ax":-0.32,"ay":2.67,"yawRate":0.427,"rpm":493,"trqCmd":19,"trqEst":18,"vdc":369,"idc":2,"thr":16,"pot1":524,"pot2":1147,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":41.39,"vx":3.42,"ax":-0.47,"ay":2.16,"yawRate":0.18,"rpm":513,"trqCmd":15,"trqEst":14,"vdc":370,"idc":2,"thr":16,"pot1":517,"pot2":1134,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":42.3,"vx":3.57,"ax":-0.5,"ay":2.08,"yawRate":0.11,"rpm":539,"trqCmd":17,"trqEst":17,"vdc":370,"idc":2,"thr":16,"pot1":512,"pot2":1126,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":43.23,"vx":3.72,"ax":-0.27,"ay":2.15,"yawRate":0.123,"rpm":576,"trqCmd":17,"trqEst":18,"vdc":369,"idc":3,"thr":15,"pot1":507,"pot2":1120,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":44.2,"vx":3.84,"ax":0.15,"ay":1.32,"yawRate":-0.052,"rpm":583,"trqCmd":28,"trqEst":28,"vdc":370,"idc":5,"thr":19,"pot1":555,"pot2":1208,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":45.19,"vx":4.11,"ax":0.21,"ay":1.14,"yawRate":-0.046,"rpm":631,"trqCmd":31,"trqEst":34,"vdc":369,"idc":6,"thr":20,"pot1":567,"pot2":1227,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":46.19,"vx":4.37,"ax":0.59,"ay":1.2,"yawRate":-0.048,"rpm":659,"trqCmd":29,"trqEst":28,"vdc":369,"idc":6,"thr":20,"pot1":560,"pot2":1219,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":47.2,"vx":4.65,"ax":0.19,"ay":2.02,"yawRate":-0.008,"rpm":717,"trqCmd":28,"trqEst":26,"vdc":368,"idc":6,"thr":19,"pot1":560,"pot2":1216,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":48.22,"vx":4.86,"ax":-0.05,"ay":0.71,"yawRate":-0.005,"rpm":724,"trqCmd":28,"trqEst":24,"vdc":370,"idc":6,"thr":19,"pot1":559,"pot2":1212,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":49.23,"vx":5.07,"ax":0.03,"ay":0.82,"yawRate":-0.003,"rpm":779,"trqCmd":31,"trqEst":31,"vdc":369,"idc":7,"thr":20,"pot1":569,"pot2":1227,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":50.25,"vx":5.3,"ax":0.19,"ay":1.67,"yawRate":-0.012,"rpm":805,"trqCmd":30,"trqEst":28,"vdc":368,"idc":7,"thr":20,"pot1":573,"pot2":1221,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":51.27,"vx":5.49,"ax":0.21,"ay":1.31,"yawRate":0.001,"rpm":843,"trqCmd":26,"trqEst":28,"vdc":368,"idc":6,"thr":19,"pot1":553,"pot2":1188,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":52.28,"vx":5.66,"ax":0.09,"ay":2.33,"yawRate":0.008,"rpm":847,"trqCmd":27,"trqEst":28,"vdc":369,"idc":6,"thr":19,"pot1":551,"pot2":1184,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":53.29,"vx":5.8,"ax":-0.08,"ay":2.97,"yawRate":0.093,"rpm":874,"trqCmd":25,"trqEst":27,"vdc":370,"idc":6,"thr":18,"pot1":546,"pot2":1172,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":54.3,"vx":5.96,"ax":-0.07,"ay":2.25,"yawRate":0.089,"rpm":898,"trqCmd":24,"trqEst":27,"vdc":369,"idc":6,"thr":18,"pot1":541,"pot2":1167,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":55.3,"vx":6.08,"ax":-0.07,"ay":2.62,"yawRate":0.082,"rpm":936,"trqCmd":24,"trqEst":27,"vdc":369,"idc":6,"thr":18,"pot1":544,"pot2":1170,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":56.3,"vx":6.21,"ax":-0.02,"ay":2.43,"yawRate":0.068,"rpm":943,"trqCmd":22,"trqEst":18,"vdc":370,"idc":6,"thr":18,"pot1":538,"pot2":1163,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":57.31,"vx":6.33,"ax":0.08,"ay":2.26,"yawRate":0.073,"rpm":956,"trqCmd":19,"trqEst":18,"vdc":370,"idc":6,"thr":17,"pot1":528,"pot2":1146,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":58.31,"vx":6.37,"ax":-0.86,"ay":2.41,"yawRate":0.081,"rpm":935,"trqCmd":0,"trqEst":-4,"vdc":374,"idc":0,"thr":9,"pot1":419,"pot2":933,"brkF":0,"brkR":0,"invT":40,"motT":35},{"s":59.3,"vx":6.3,"ax":-1.02,"ay":2.41,"yawRate":0.087,"rpm":932,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":8,"pot1":449,"pot2":989,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":60.3,"vx":6.23,"ax":-0.85,"ay":2.33,"yawRate":0.075,"rpm":934,"trqCmd":3,"trqEst":0,"vdc":369,"idc":1,"thr":11,"pot1":462,"pot2":1012,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":61.29,"vx":6.2,"ax":-1.06,"ay":2.4,"yawRate":0.075,"rpm":942,"trqCmd":4,"trqEst":2,"vdc":370,"idc":1,"thr":11,"pot1":465,"pot2":1017,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":62.28,"vx":6.17,"ax":-0.6,"ay":2.52,"yawRate":0.074,"rpm":928,"trqCmd":4,"trqEst":4,"vdc":371,"idc":1,"thr":11,"pot1":471,"pot2":1015,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":63.27,"vx":6.14,"ax":-0.94,"ay":2.29,"yawRate":0.069,"rpm":918,"trqCmd":4,"trqEst":4,"vdc":372,"idc":1,"thr":11,"pot1":465,"pot2":1016,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":64.26,"vx":6.09,"ax":-0.98,"ay":2.57,"yawRate":0.073,"rpm":914,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":9,"pot1":416,"pot2":923,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":65.25,"vx":6,"ax":-0.88,"ay":2.64,"yawRate":0.08,"rpm":906,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":334,"pot2":748,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":66.24,"vx":5.94,"ax":-1.19,"ay":2.6,"yawRate":0.072,"rpm":894,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":0,"pot1":337,"pot2":749,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":67.22,"vx":5.87,"ax":-0.93,"ay":2.59,"yawRate":0.07,"rpm":878,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":0,"pot1":330,"pot2":742,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":68.2,"vx":5.78,"ax":-1.01,"ay":3.11,"yawRate":0.072,"rpm":864,"trqCmd":0,"trqEst":1,"vdc":372,"idc":0,"thr":0,"pot1":335,"pot2":748,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":69.18,"vx":5.69,"ax":-1.07,"ay":2.42,"yawRate":0.071,"rpm":854,"trqCmd":0,"trqEst":1,"vdc":371,"idc":0,"thr":0,"pot1":334,"pot2":747,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":70.15,"vx":5.63,"ax":-0.98,"ay":2.08,"yawRate":0.062,"rpm":847,"trqCmd":0,"trqEst":-2,"vdc":372,"idc":0,"thr":0,"pot1":334,"pot2":747,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":71.11,"vx":5.53,"ax":-0.86,"ay":2.55,"yawRate":0.063,"rpm":841,"trqCmd":0,"trqEst":-2,"vdc":371,"idc":0,"thr":0,"pot1":333,"pot2":746,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":72.07,"vx":5.45,"ax":-0.82,"ay":2.37,"yawRate":0.071,"rpm":820,"trqCmd":0,"trqEst":2,"vdc":373,"idc":0,"thr":0,"pot1":326,"pot2":739,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":73.01,"vx":5.18,"ax":-2.97,"ay":2.38,"yawRate":0.066,"rpm":774,"trqCmd":0,"trqEst":2,"vdc":371,"idc":0,"thr":0,"pot1":330,"pot2":739,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":73.94,"vx":4.51,"ax":-4.01,"ay":1.88,"yawRate":0.058,"rpm":670,"trqCmd":0,"trqEst":-3,"vdc":372,"idc":0,"thr":0,"pot1":332,"pot2":744,"brkF":0,"brkR":0,"invT":39,"motT":39},{"s":74.86,"vx":3.7,"ax":-1.37,"ay":2.23,"yawRate":0.042,"rpm":559,"trqCmd":0,"trqEst":1,"vdc":371,"idc":0,"thr":0,"pot1":331,"pot2":742,"brkF":0,"brkR":0,"invT":39,"motT":36},{"s":75.76,"vx":3.55,"ax":-0.79,"ay":2.14,"yawRate":0.041,"rpm":538,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":335,"pot2":749,"brkF":0,"brkR":0,"invT":39,"motT":38},{"s":76.64,"vx":3.47,"ax":-0.69,"ay":2.12,"yawRate":0.039,"rpm":535,"trqCmd":0,"trqEst":1,"vdc":371,"idc":0,"thr":0,"pot1":334,"pot2":744,"brkF":0,"brkR":0,"invT":39,"motT":38},{"s":77.51,"vx":3.41,"ax":-0.52,"ay":1.61,"yawRate":0.043,"rpm":514,"trqCmd":0,"trqEst":0,"vdc":371,"idc":0,"thr":0,"pot1":327,"pot2":743,"brkF":0,"brkR":0,"invT":39,"motT":38},{"s":78.36,"vx":3.35,"ax":-0.55,"ay":1.75,"yawRate":0.037,"rpm":510,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":1,"pot1":345,"pot2":779,"brkF":0,"brkR":0,"invT":39,"motT":38},{"s":79.2,"vx":3.25,"ax":-0.37,"ay":1.33,"yawRate":0.042,"rpm":494,"trqCmd":0,"trqEst":-4,"vdc":371,"idc":0,"thr":8,"pot1":425,"pot2":939,"brkF":0,"brkR":0,"invT":39,"motT":38},{"s":80.03,"vx":3.16,"ax":-0.4,"ay":1.06,"yawRate":0.038,"rpm":482,"trqCmd":2,"trqEst":2,"vdc":371,"idc":0,"thr":11,"pot1":456,"pot2":1001,"brkF":0,"brkR":0,"invT":39,"motT":39},{"s":80.86,"vx":3.15,"ax":-0.04,"ay":1.03,"yawRate":0.035,"rpm":480,"trqCmd":11,"trqEst":12,"vdc":371,"idc":1,"thr":13,"pot1":486,"pot2":1061,"brkF":0,"brkR":0,"invT":39,"motT":38},{"s":81.68,"vx":3.23,"ax":0.09,"ay":0.96,"yawRate":0.038,"rpm":501,"trqCmd":11,"trqEst":9,"vdc":370,"idc":1,"thr":14,"pot1":488,"pot2":1061,"brkF":0,"brkR":0,"invT":39,"motT":40},{"s":82.51,"vx":3.29,"ax":0.06,"ay":0.86,"yawRate":0.04,"rpm":495,"trqCmd":10,"trqEst":11,"vdc":371,"idc":1,"thr":13,"pot1":487,"pot2":1067,"brkF":0,"brkR":0,"invT":39,"motT":38},{"s":83.34,"vx":3.34,"ax":0.18,"ay":0.82,"yawRate":0.039,"rpm":514,"trqCmd":14,"trqEst":14,"vdc":370,"idc":2,"thr":14,"pot1":506,"pot2":1102,"brkF":0,"brkR":0,"invT":39,"motT":37},{"s":84.19,"vx":3.7,"ax":1.3,"ay":0.69,"yawRate":0.042,"rpm":576,"trqCmd":40,"trqEst":40,"vdc":370,"idc":7,"thr":23,"pot1":604,"pot2":1287,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":85.04,"vx":4.14,"ax":1.23,"ay":0.76,"yawRate":0.042,"rpm":639,"trqCmd":40,"trqEst":39,"vdc":371,"idc":7,"thr":23,"pot1":607,"pot2":1289,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":85.91,"vx":4.36,"ax":-1.94,"ay":1.1,"yawRate":0.064,"rpm":626,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":4,"pot1":369,"pot2":836,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":86.79,"vx":3.03,"ax":-5.8,"ay":1.25,"yawRate":0.028,"rpm":447,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":326,"pot2":736,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":87.69,"vx":1.77,"ax":1.24,"ay":0.93,"yawRate":0.042,"rpm":287,"trqCmd":43,"trqEst":47,"vdc":370,"idc":3,"thr":24,"pot1":620,"pot2":1320,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":88.6,"vx":3.1,"ax":2.82,"ay":0.84,"yawRate":0.162,"rpm":497,"trqCmd":86,"trqEst":91,"vdc":368,"idc":14,"thr":38,"pot1":803,"pot2":1675,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":89.52,"vx":4.19,"ax":3.17,"ay":1.16,"yawRate":0.217,"rpm":686,"trqCmd":97,"trqEst":103,"vdc":364,"idc":21,"thr":42,"pot1":842,"pot2":1759,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":90.44,"vx":5.11,"ax":3.02,"ay":1.95,"yawRate":0.285,"rpm":824,"trqCmd":96,"trqEst":101,"vdc":364,"idc":26,"thr":42,"pot1":834,"pot2":1739,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":91.36,"vx":5.92,"ax":1.36,"ay":2.29,"yawRate":0.336,"rpm":864,"trqCmd":41,"trqEst":44,"vdc":369,"idc":11,"thr":24,"pot1":578,"pot2":1240,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":92.27,"vx":5.7,"ax":-3.2,"ay":2.53,"yawRate":0.322,"rpm":815,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":7,"pot1":406,"pot2":911,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":93.17,"vx":4.85,"ax":-6.63,"ay":2.08,"yawRate":0.283,"rpm":694,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":326,"pot2":738,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":94.06,"vx":3.46,"ax":-7.23,"ay":1.18,"yawRate":0.195,"rpm":501,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":0,"pot1":327,"pot2":737,"brkF":0,"brkR":0,"invT":41,"motT":39},{"s":94.93,"vx":1.97,"ax":0.17,"ay":1.09,"yawRate":0.095,"rpm":293,"trqCmd":37,"trqEst":43,"vdc":372,"idc":3,"thr":22,"pot1":591,"pot2":1276,"brkF":0,"brkR":0,"invT":41,"motT":39},{"s":95.79,"vx":3.02,"ax":1.95,"ay":1.38,"yawRate":0.15,"rpm":468,"trqCmd":73,"trqEst":72,"vdc":369,"idc":10,"thr":34,"pot1":743,"pot2":1566,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":96.63,"vx":3.98,"ax":1.87,"ay":1.58,"yawRate":0.21,"rpm":621,"trqCmd":78,"trqEst":77,"vdc":365,"idc":15,"thr":35,"pot1":752,"pot2":1585,"brkF":0,"brkR":0,"invT":41,"motT":39},{"s":97.47,"vx":4.68,"ax":1.88,"ay":2.03,"yawRate":0.247,"rpm":735,"trqCmd":74,"trqEst":72,"vdc":366,"idc":17,"thr":35,"pot1":735,"pot2":1550,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":98.29,"vx":5.16,"ax":-1.62,"ay":3.24,"yawRate":0.401,"rpm":716,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":13,"pot1":422,"pot2":940,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":99.11,"vx":4.77,"ax":-4.13,"ay":2.34,"yawRate":0.352,"rpm":671,"trqCmd":0,"trqEst":-1,"vdc":370,"idc":0,"thr":0,"pot1":328,"pot2":737,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":99.94,"vx":3.94,"ax":-4.75,"ay":2.17,"yawRate":0.24,"rpm":585,"trqCmd":0,"trqEst":3,"vdc":369,"idc":0,"thr":0,"pot1":326,"pot2":738,"brkF":0,"brkR":0,"invT":41,"motT":40},{"s":100.78,"vx":3.09,"ax":-1.54,"ay":0.9,"yawRate":0.088,"rpm":469,"trqCmd":0,"trqEst":-1,"vdc":372,"idc":0,"thr":0,"pot1":321,"pot2":733,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":101.62,"vx":2.94,"ax":-1.1,"ay":1.23,"yawRate":0.036,"rpm":445,"trqCmd":0,"trqEst":1,"vdc":372,"idc":0,"thr":3,"pot1":371,"pot2":836,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":102.47,"vx":2.81,"ax":-1.04,"ay":1.26,"yawRate":0.035,"rpm":428,"trqCmd":0,"trqEst":-1,"vdc":371,"idc":0,"thr":5,"pot1":391,"pot2":878,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":103.34,"vx":2.71,"ax":-1.08,"ay":1.27,"yawRate":0.033,"rpm":411,"trqCmd":2,"trqEst":1,"vdc":372,"idc":0,"thr":10,"pot1":456,"pot2":1007,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":104.2,"vx":2.68,"ax":-0.45,"ay":0.83,"yawRate":-0.003,"rpm":414,"trqCmd":11,"trqEst":10,"vdc":370,"idc":1,"thr":13,"pot1":475,"pot2":1059,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":105.07,"vx":2.72,"ax":-1.32,"ay":0.88,"yawRate":0.008,"rpm":401,"trqCmd":0,"trqEst":-2,"vdc":372,"idc":0,"thr":10,"pot1":440,"pot2":972,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":105.94,"vx":2.51,"ax":-1.04,"ay":1.1,"yawRate":0.004,"rpm":373,"trqCmd":0,"trqEst":1,"vdc":371,"idc":0,"thr":9,"pot1":433,"pot2":961,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":106.79,"vx":2.35,"ax":-0.51,"ay":1.16,"yawRate":0.106,"rpm":364,"trqCmd":4,"trqEst":5,"vdc":370,"idc":0,"thr":11,"pot1":466,"pot2":1025,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":107.63,"vx":2.36,"ax":0.14,"ay":1.45,"yawRate":0.307,"rpm":372,"trqCmd":17,"trqEst":16,"vdc":371,"idc":1,"thr":15,"pot1":517,"pot2":1123,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":108.45,"vx":2.66,"ax":-0.13,"ay":2.23,"yawRate":0.642,"rpm":386,"trqCmd":28,"trqEst":27,"vdc":370,"idc":3,"thr":19,"pot1":560,"pot2":1205,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":109.25,"vx":2.82,"ax":-1.07,"ay":1.94,"yawRate":0.661,"rpm":390,"trqCmd":6,"trqEst":6,"vdc":369,"idc":0,"thr":13,"pot1":471,"pot2":1023,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":110.01,"vx":2.54,"ax":-1.23,"ay":1.62,"yawRate":0.574,"rpm":348,"trqCmd":0,"trqEst":0,"vdc":372,"idc":0,"thr":5,"pot1":391,"pot2":882,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":110.75,"vx":2.26,"ax":-1.17,"ay":0.87,"yawRate":0.508,"rpm":319,"trqCmd":3,"trqEst":2,"vdc":373,"idc":0,"thr":10,"pot1":459,"pot2":1018,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":111.46,"vx":2.04,"ax":-0.94,"ay":0.69,"yawRate":0.482,"rpm":273,"trqCmd":11,"trqEst":9,"vdc":372,"idc":1,"thr":13,"pot1":477,"pot2":1058,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":112.15,"vx":2.01,"ax":-0.72,"ay":0.94,"yawRate":0.465,"rpm":280,"trqCmd":14,"trqEst":12,"vdc":371,"idc":1,"thr":14,"pot1":502,"pot2":1102,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":112.84,"vx":2.07,"ax":-0.5,"ay":0.77,"yawRate":0.478,"rpm":294,"trqCmd":15,"trqEst":14,"vdc":371,"idc":0,"thr":15,"pot1":495,"pot2":1098,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":113.53,"vx":2.49,"ax":6.59,"ay":-0.71,"yawRate":-0.017,"rpm":2960,"trqCmd":208,"trqEst":194,"vdc":318,"idc":224,"thr":100,"pot1":1505,"pot2":3053,"brkF":0,"brkR":0,"invT":39,"motT":37},{"s":114.23,"vx":4.56,"ax":7.23,"ay":-0.45,"yawRate":-0.051,"rpm":4030,"trqCmd":154,"trqEst":78,"vdc":308,"idc":237,"thr":100,"pot1":1499,"pot2":3039,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":114.97,"vx":5.98,"ax":7.38,"ay":-0.04,"yawRate":-0.118,"rpm":3993,"trqCmd":155,"trqEst":118,"vdc":311,"idc":238,"thr":100,"pot1":1500,"pot2":3040,"brkF":0,"brkR":0,"invT":42,"motT":37},{"s":115.73,"vx":7.44,"ax":8.33,"ay":-0.18,"yawRate":-0.015,"rpm":3878,"trqCmd":159,"trqEst":140,"vdc":298,"idc":246,"thr":100,"pot1":1504,"pot2":3054,"brkF":0,"brkR":0,"invT":42,"motT":36},{"s":116.53,"vx":8.68,"ax":9.27,"ay":-1.43,"yawRate":0.19,"rpm":3691,"trqCmd":167,"trqEst":141,"vdc":304,"idc":241,"thr":100,"pot1":1495,"pot2":3044,"brkF":0,"brkR":0,"invT":43,"motT":37},{"s":117.36,"vx":9.5,"ax":9.49,"ay":-1.62,"yawRate":0.166,"rpm":3515,"trqCmd":174,"trqEst":132,"vdc":303,"idc":239,"thr":100,"pot1":1504,"pot2":3047,"brkF":0,"brkR":0,"invT":43,"motT":38},{"s":118.23,"vx":10.54,"ax":9.53,"ay":-1,"yawRate":0.027,"rpm":3435,"trqCmd":179,"trqEst":172,"vdc":307,"idc":242,"thr":100,"pot1":1494,"pot2":3033,"brkF":0,"brkR":0,"invT":44,"motT":37},{"s":119.12,"vx":11.66,"ax":9.6,"ay":0.19,"yawRate":-0.019,"rpm":3329,"trqCmd":186,"trqEst":173,"vdc":306,"idc":249,"thr":100,"pot1":1497,"pot2":3040,"brkF":0,"brkR":0,"invT":44,"motT":37},{"s":120.04,"vx":12.3,"ax":9.89,"ay":-0.71,"yawRate":-0.012,"rpm":3242,"trqCmd":189,"trqEst":162,"vdc":291,"idc":249,"thr":100,"pot1":1497,"pot2":3038,"brkF":0,"brkR":0,"invT":44,"motT":37},{"s":120.97,"vx":12.98,"ax":10.82,"ay":-0.58,"yawRate":-0.04,"rpm":3154,"trqCmd":195,"trqEst":167,"vdc":295,"idc":257,"thr":100,"pot1":1491,"pot2":3031,"brkF":0,"brkR":0,"invT":44,"motT":37},{"s":121.91,"vx":13.8,"ax":9.08,"ay":1.58,"yawRate":0.068,"rpm":3268,"trqCmd":190,"trqEst":173,"vdc":301,"idc":254,"thr":100,"pot1":1497,"pot2":3039,"brkF":0,"brkR":0,"invT":44,"motT":37},{"s":122.86,"vx":14.43,"ax":9.24,"ay":0.22,"yawRate":0.232,"rpm":3254,"trqCmd":190,"trqEst":144,"vdc":299,"idc":253,"thr":100,"pot1":1502,"pot2":3043,"brkF":0,"brkR":0,"invT":45,"motT":38},{"s":123.82,"vx":15.32,"ax":10.2,"ay":-0.77,"yawRate":0.186,"rpm":3163,"trqCmd":195,"trqEst":171,"vdc":297,"idc":260,"thr":100,"pot1":1456,"pot2":2944,"brkF":0,"brkR":0,"invT":45,"motT":38},{"s":124.78,"vx":16.1,"ax":9.86,"ay":-0.76,"yawRate":-0.03,"rpm":3198,"trqCmd":194,"trqEst":161,"vdc":294,"idc":260,"thr":91,"pot1":1428,"pot2":2896,"brkF":0,"brkR":0,"invT":45,"motT":38},{"s":125.74,"vx":16.58,"ax":9.76,"ay":0.01,"yawRate":-0.156,"rpm":3168,"trqCmd":194,"trqEst":172,"vdc":300,"idc":261,"thr":91,"pot1":1426,"pot2":2893,"brkF":0,"brkR":0,"invT":45,"motT":37},{"s":126.71,"vx":17.34,"ax":9.23,"ay":1.51,"yawRate":-0.04,"rpm":3201,"trqCmd":195,"trqEst":202,"vdc":303,"idc":261,"thr":94,"pot1":1493,"pot2":3032,"brkF":0,"brkR":0,"invT":46,"motT":36},{"s":127.67,"vx":17.8,"ax":8.73,"ay":-0.25,"yawRate":0.079,"rpm":3330,"trqCmd":189,"trqEst":180,"vdc":303,"idc":252,"thr":100,"pot1":1497,"pot2":3040,"brkF":0,"brkR":0,"invT":46,"motT":36},{"s":128.64,"vx":18.13,"ax":9.07,"ay":-0.96,"yawRate":0.092,"rpm":3370,"trqCmd":185,"trqEst":156,"vdc":300,"idc":249,"thr":100,"pot1":1498,"pot2":3043,"brkF":0,"brkR":0,"invT":46,"motT":37},{"s":129.6,"vx":18.67,"ax":9.88,"ay":-1.57,"yawRate":0.094,"rpm":3304,"trqCmd":185,"trqEst":147,"vdc":302,"idc":246,"thr":100,"pot1":1494,"pot2":3034,"brkF":0,"brkR":0,"invT":46,"motT":37},{"s":130.56,"vx":19.39,"ax":9.34,"ay":-0.62,"yawRate":0.001,"rpm":3259,"trqCmd":190,"trqEst":154,"vdc":300,"idc":258,"thr":100,"pot1":1498,"pot2":3041,"brkF":0,"brkR":0,"invT":46,"motT":37},{"s":131.53,"vx":19.54,"ax":9.37,"ay":-1.52,"yawRate":-0.085,"rpm":3316,"trqCmd":187,"trqEst":219,"vdc":299,"idc":251,"thr":100,"pot1":1502,"pot2":3049,"brkF":0,"brkR":0,"invT":46,"motT":37},{"s":132.49,"vx":20.04,"ax":8.38,"ay":-1.2,"yawRate":-0.189,"rpm":3283,"trqCmd":189,"trqEst":174,"vdc":290,"idc":257,"thr":100,"pot1":1500,"pot2":3040,"brkF":0,"brkR":0,"invT":46,"motT":37},{"s":133.46,"vx":20.54,"ax":7.58,"ay":-4.56,"yawRate":-0.217,"rpm":3347,"trqCmd":186,"trqEst":142,"vdc":301,"idc":248,"thr":100,"pot1":1491,"pot2":3037,"brkF":0,"brkR":0,"invT":46,"motT":37},{"s":134.43,"vx":20.78,"ax":7.08,"ay":-4.79,"yawRate":-0.294,"rpm":3483,"trqCmd":178,"trqEst":130,"vdc":300,"idc":246,"thr":100,"pot1":1496,"pot2":3046,"brkF":0,"brkR":0,"invT":46,"motT":37},{"s":135.4,"vx":21.23,"ax":7.65,"ay":-5.03,"yawRate":-0.408,"rpm":3474,"trqCmd":177,"trqEst":134,"vdc":298,"idc":243,"thr":100,"pot1":1480,"pot2":2995,"brkF":0,"brkR":0,"invT":46,"motT":37}],"23_08/23_08_2026-10.29.23.csv":[{"s":0,"vx":18.63,"ax":6.53,"ay":0.42,"yawRate":0.016,"rpm":2948,"trqCmd":157,"trqEst":167,"vdc":316,"idc":164,"thr":62,"pot1":1067,"pot2":2199,"brkF":0,"brkR":0,"invT":40,"motT":35},{"s":0.97,"vx":18.63,"ax":6.53,"ay":0.42,"yawRate":0.016,"rpm":2948,"trqCmd":157,"trqEst":167,"vdc":316,"idc":164,"thr":62,"pot1":1067,"pot2":2199,"brkF":0,"brkR":0,"invT":40,"motT":35},{"s":1.94,"vx":18.91,"ax":6.79,"ay":0.26,"yawRate":0.016,"rpm":2976,"trqCmd":158,"trqEst":154,"vdc":319,"idc":161,"thr":62,"pot1":1080,"pot2":2219,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":2.92,"vx":19.41,"ax":7.02,"ay":-0.09,"yawRate":0.02,"rpm":3045,"trqCmd":157,"trqEst":163,"vdc":315,"idc":169,"thr":61,"pot1":1072,"pot2":2207,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":3.89,"vx":19.67,"ax":6.76,"ay":-0.64,"yawRate":0.02,"rpm":3076,"trqCmd":156,"trqEst":147,"vdc":317,"idc":172,"thr":62,"pot1":1069,"pot2":2204,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":4.86,"vx":20.03,"ax":6.32,"ay":-0.36,"yawRate":0.012,"rpm":3111,"trqCmd":154,"trqEst":148,"vdc":317,"idc":172,"thr":61,"pot1":1071,"pot2":2210,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":5.84,"vx":20.33,"ax":6.37,"ay":0.68,"yawRate":0.004,"rpm":3204,"trqCmd":155,"trqEst":150,"vdc":310,"idc":178,"thr":61,"pot1":1067,"pot2":2202,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":6.81,"vx":20.53,"ax":6.1,"ay":0.21,"yawRate":0.003,"rpm":3201,"trqCmd":155,"trqEst":151,"vdc":315,"idc":180,"thr":62,"pot1":1066,"pot2":2192,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":7.79,"vx":20.96,"ax":5.83,"ay":0.45,"yawRate":-0.002,"rpm":3280,"trqCmd":155,"trqEst":142,"vdc":313,"idc":185,"thr":61,"pot1":1068,"pot2":2204,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":8.76,"vx":21.26,"ax":6.13,"ay":-0.13,"yawRate":-0.003,"rpm":3349,"trqCmd":151,"trqEst":149,"vdc":314,"idc":186,"thr":61,"pot1":1047,"pot2":2161,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":9.74,"vx":21.6,"ax":6.16,"ay":0,"yawRate":-0.008,"rpm":3387,"trqCmd":143,"trqEst":129,"vdc":314,"idc":177,"thr":57,"pot1":1014,"pot2":2097,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":10.71,"vx":21.89,"ax":5.4,"ay":-1.07,"yawRate":-0.005,"rpm":3386,"trqCmd":114,"trqEst":122,"vdc":319,"idc":147,"thr":57,"pot1":867,"pot2":1805,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":11.69,"vx":22.01,"ax":4.84,"ay":-0.97,"yawRate":-0.006,"rpm":3358,"trqCmd":76,"trqEst":76,"vdc":335,"idc":102,"thr":44,"pot1":750,"pot2":1581,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":12.66,"vx":22.02,"ax":0.72,"ay":-0.34,"yawRate":-0.011,"rpm":3277,"trqCmd":6,"trqEst":4,"vdc":361,"idc":6,"thr":24,"pot1":474,"pot2":1035,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":13.64,"vx":21.92,"ax":-3.92,"ay":-0.03,"yawRate":-0.015,"rpm":3273,"trqCmd":0,"trqEst":-3,"vdc":363,"idc":0,"thr":12,"pot1":347,"pot2":777,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":14.61,"vx":21.42,"ax":-5.37,"ay":-0.45,"yawRate":-0.013,"rpm":3237,"trqCmd":0,"trqEst":3,"vdc":360,"idc":0,"thr":0,"pot1":325,"pot2":730,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":15.59,"vx":21.21,"ax":-5.76,"ay":-0.16,"yawRate":-0.01,"rpm":3179,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":321,"pot2":731,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":16.57,"vx":20.91,"ax":-6.09,"ay":0.75,"yawRate":-0.009,"rpm":3088,"trqCmd":0,"trqEst":2,"vdc":361,"idc":0,"thr":0,"pot1":324,"pot2":731,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":17.54,"vx":20.57,"ax":-5.64,"ay":1.08,"yawRate":-0.021,"rpm":2951,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":322,"pot2":726,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":18.52,"vx":20,"ax":-6.56,"ay":1.87,"yawRate":-0.028,"rpm":2881,"trqCmd":0,"trqEst":2,"vdc":363,"idc":0,"thr":0,"pot1":326,"pot2":729,"brkF":0,"brkR":0,"invT":40,"motT":32},{"s":19.5,"vx":19.26,"ax":-10.43,"ay":0.05,"yawRate":-0.043,"rpm":2915,"trqCmd":0,"trqEst":-1,"vdc":361,"idc":0,"thr":0,"pot1":321,"pot2":726,"brkF":0,"brkR":0,"invT":40,"motT":32},{"s":20.48,"vx":18.64,"ax":-10.85,"ay":-1.98,"yawRate":-0.018,"rpm":2768,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":326,"pot2":743,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":21.45,"vx":18.41,"ax":-8.98,"ay":-1,"yawRate":0.016,"rpm":2648,"trqCmd":0,"trqEst":-2,"vdc":363,"idc":0,"thr":0,"pot1":321,"pot2":732,"brkF":0,"brkR":0,"invT":39,"motT":32},{"s":22.43,"vx":17.73,"ax":-8.73,"ay":0.78,"yawRate":-0.011,"rpm":2430,"trqCmd":0,"trqEst":-2,"vdc":361,"idc":0,"thr":0,"pot1":321,"pot2":729,"brkF":0,"brkR":0,"invT":39,"motT":32},{"s":23.4,"vx":17.16,"ax":-9.73,"ay":0.01,"yawRate":-0.017,"rpm":2295,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":320,"pot2":727,"brkF":0,"brkR":0,"invT":39,"motT":33},{"s":24.38,"vx":16.57,"ax":-10.25,"ay":-0.41,"yawRate":-0.032,"rpm":2252,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":324,"pot2":733,"brkF":0,"brkR":0,"invT":39,"motT":33},{"s":25.35,"vx":15.84,"ax":-10.55,"ay":-0.53,"yawRate":-0.019,"rpm":2209,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":326,"pot2":740,"brkF":0,"brkR":0,"invT":39,"motT":35},{"s":26.32,"vx":14.98,"ax":-9.83,"ay":-0.55,"yawRate":-0.016,"rpm":1980,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":0,"pot1":328,"pot2":739,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":27.29,"vx":14.34,"ax":-9.91,"ay":-0.31,"yawRate":-0.013,"rpm":1795,"trqCmd":0,"trqEst":1,"vdc":364,"idc":0,"thr":0,"pot1":321,"pot2":728,"brkF":0,"brkR":0,"invT":38,"motT":32},{"s":28.24,"vx":13.26,"ax":-9.95,"ay":0.09,"yawRate":0.059,"rpm":1592,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":320,"pot2":729,"brkF":0,"brkR":0,"invT":38,"motT":35},{"s":29.19,"vx":12.68,"ax":-9.93,"ay":1.48,"yawRate":0.132,"rpm":1379,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":323,"pot2":736,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":30.12,"vx":11.65,"ax":-10.04,"ay":1.6,"yawRate":0.235,"rpm":1147,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":324,"pot2":729,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":31.03,"vx":10.42,"ax":-11.47,"ay":3.76,"yawRate":0.254,"rpm":966,"trqCmd":0,"trqEst":1,"vdc":366,"idc":0,"thr":0,"pot1":325,"pot2":737,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":31.92,"vx":8.14,"ax":-9.67,"ay":2.59,"yawRate":0.213,"rpm":629,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":322,"pot2":728,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":32.78,"vx":3.36,"ax":-10.26,"ay":1.45,"yawRate":0.109,"rpm":145,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":322,"pot2":728,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":33.61,"vx":3.58,"ax":-3.14,"ay":6.92,"yawRate":0.258,"rpm":508,"trqCmd":0,"trqEst":4,"vdc":365,"idc":0,"thr":0,"pot1":329,"pot2":739,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":34.41,"vx":3.33,"ax":-1.23,"ay":2.3,"yawRate":0.562,"rpm":480,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":348,"pot2":795,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":35.18,"vx":3.22,"ax":-1.04,"ay":2.29,"yawRate":0.661,"rpm":565,"trqCmd":40,"trqEst":42,"vdc":363,"idc":8,"thr":22,"pot1":619,"pot2":1323,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":35.93,"vx":3.86,"ax":1.16,"ay":2.9,"yawRate":0.789,"rpm":579,"trqCmd":66,"trqEst":67,"vdc":362,"idc":12,"thr":32,"pot1":713,"pot2":1503,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":36.66,"vx":4.24,"ax":-0.84,"ay":4.3,"yawRate":0.897,"rpm":583,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":13,"pot1":374,"pot2":850,"brkF":0,"brkR":0,"invT":36,"motT":35},{"s":37.4,"vx":4.09,"ax":-2.49,"ay":3.6,"yawRate":0.92,"rpm":602,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":323,"pot2":723,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":38.14,"vx":3.91,"ax":-2.36,"ay":4.17,"yawRate":0.937,"rpm":557,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":324,"pot2":732,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":38.9,"vx":3.61,"ax":-1.96,"ay":3.49,"yawRate":0.85,"rpm":581,"trqCmd":19,"trqEst":19,"vdc":365,"idc":4,"thr":16,"pot1":530,"pot2":1144,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":39.7,"vx":3.83,"ax":0.04,"ay":4.94,"yawRate":0.891,"rpm":580,"trqCmd":53,"trqEst":56,"vdc":363,"idc":10,"thr":28,"pot1":669,"pot2":1420,"brkF":0,"brkR":0,"invT":36,"motT":36},{"s":40.53,"vx":4.32,"ax":0.17,"ay":5.41,"yawRate":0.995,"rpm":641,"trqCmd":53,"trqEst":57,"vdc":364,"idc":10,"thr":28,"pot1":666,"pot2":1414,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":41.39,"vx":4.68,"ax":0.11,"ay":5.47,"yawRate":1.036,"rpm":676,"trqCmd":51,"trqEst":51,"vdc":364,"idc":11,"thr":27,"pot1":655,"pot2":1394,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":42.3,"vx":5.02,"ax":0.72,"ay":5.34,"yawRate":0.99,"rpm":751,"trqCmd":49,"trqEst":51,"vdc":363,"idc":11,"thr":27,"pot1":645,"pot2":1381,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":43.23,"vx":5.3,"ax":1.57,"ay":3.35,"yawRate":0.661,"rpm":796,"trqCmd":45,"trqEst":47,"vdc":364,"idc":10,"thr":25,"pot1":624,"pot2":1329,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":44.2,"vx":5.58,"ax":1.24,"ay":2.86,"yawRate":0.351,"rpm":853,"trqCmd":44,"trqEst":41,"vdc":361,"idc":11,"thr":24,"pot1":615,"pot2":1325,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":45.19,"vx":5.82,"ax":1.16,"ay":1.89,"yawRate":0.155,"rpm":878,"trqCmd":42,"trqEst":43,"vdc":362,"idc":12,"thr":24,"pot1":619,"pot2":1323,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":46.19,"vx":6.15,"ax":1.19,"ay":1.29,"yawRate":-0.031,"rpm":922,"trqCmd":38,"trqEst":43,"vdc":364,"idc":11,"thr":23,"pot1":605,"pot2":1293,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":47.2,"vx":6.32,"ax":0.76,"ay":2.26,"yawRate":-0.124,"rpm":951,"trqCmd":31,"trqEst":31,"vdc":364,"idc":9,"thr":20,"pot1":570,"pot2":1231,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":48.22,"vx":6.48,"ax":0.87,"ay":0.89,"yawRate":-0.145,"rpm":979,"trqCmd":32,"trqEst":27,"vdc":362,"idc":9,"thr":21,"pot1":571,"pot2":1230,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":49.23,"vx":6.67,"ax":0.77,"ay":1.76,"yawRate":-0.152,"rpm":1009,"trqCmd":32,"trqEst":33,"vdc":364,"idc":10,"thr":20,"pot1":579,"pot2":1243,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":50.25,"vx":6.82,"ax":0.95,"ay":0.7,"yawRate":-0.144,"rpm":1027,"trqCmd":31,"trqEst":30,"vdc":366,"idc":10,"thr":21,"pot1":572,"pot2":1233,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":51.27,"vx":6.98,"ax":0.49,"ay":0.49,"yawRate":-0.163,"rpm":1047,"trqCmd":30,"trqEst":30,"vdc":364,"idc":9,"thr":20,"pot1":564,"pot2":1217,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":52.28,"vx":7.12,"ax":-0.01,"ay":1.12,"yawRate":-0.148,"rpm":1064,"trqCmd":21,"trqEst":28,"vdc":365,"idc":6,"thr":17,"pot1":535,"pot2":1147,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":53.29,"vx":7.15,"ax":0.08,"ay":2.42,"yawRate":-0.136,"rpm":1086,"trqCmd":20,"trqEst":23,"vdc":364,"idc":6,"thr":16,"pot1":523,"pot2":1142,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":54.3,"vx":7.22,"ax":0.11,"ay":3.49,"yawRate":-0.103,"rpm":1098,"trqCmd":20,"trqEst":20,"vdc":364,"idc":6,"thr":16,"pot1":526,"pot2":1148,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":55.3,"vx":7.3,"ax":0.37,"ay":1.42,"yawRate":-0.015,"rpm":1094,"trqCmd":25,"trqEst":25,"vdc":364,"idc":8,"thr":18,"pot1":544,"pot2":1177,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":56.3,"vx":7.42,"ax":-0.02,"ay":1.58,"yawRate":-0.014,"rpm":1118,"trqCmd":26,"trqEst":25,"vdc":365,"idc":8,"thr":18,"pot1":551,"pot2":1184,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":57.31,"vx":7.49,"ax":0.22,"ay":1.49,"yawRate":-0.012,"rpm":1139,"trqCmd":26,"trqEst":25,"vdc":364,"idc":8,"thr":18,"pot1":544,"pot2":1180,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":58.31,"vx":7.65,"ax":0.55,"ay":1.77,"yawRate":0,"rpm":1160,"trqCmd":34,"trqEst":36,"vdc":363,"idc":13,"thr":22,"pot1":586,"pot2":1261,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":59.3,"vx":7.76,"ax":0.64,"ay":1.62,"yawRate":-0.008,"rpm":1171,"trqCmd":31,"trqEst":30,"vdc":364,"idc":12,"thr":21,"pot1":588,"pot2":1266,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":60.3,"vx":7.95,"ax":1.25,"ay":1.67,"yawRate":-0.007,"rpm":1208,"trqCmd":38,"trqEst":40,"vdc":362,"idc":14,"thr":23,"pot1":608,"pot2":1299,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":61.29,"vx":8.16,"ax":0.74,"ay":1.73,"yawRate":-0.014,"rpm":1222,"trqCmd":26,"trqEst":27,"vdc":363,"idc":9,"thr":19,"pot1":548,"pot2":1181,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":62.28,"vx":8.17,"ax":-1.19,"ay":2.22,"yawRate":0.004,"rpm":1166,"trqCmd":0,"trqEst":-1,"vdc":367,"idc":0,"thr":11,"pot1":336,"pot2":770,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":63.27,"vx":8,"ax":-1.91,"ay":2.98,"yawRate":0.025,"rpm":1221,"trqCmd":0,"trqEst":-1,"vdc":367,"idc":0,"thr":0,"pot1":318,"pot2":730,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":64.26,"vx":7.75,"ax":-1.9,"ay":2.87,"yawRate":0.155,"rpm":1167,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":326,"pot2":734,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":65.25,"vx":7.55,"ax":-1.33,"ay":2.95,"yawRate":0.124,"rpm":1107,"trqCmd":0,"trqEst":-4,"vdc":367,"idc":0,"thr":0,"pot1":315,"pot2":725,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":66.24,"vx":7.34,"ax":-1.77,"ay":2.16,"yawRate":0.08,"rpm":1099,"trqCmd":0,"trqEst":1,"vdc":367,"idc":0,"thr":0,"pot1":317,"pot2":719,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":67.22,"vx":7.05,"ax":-1.98,"ay":2.69,"yawRate":0.077,"rpm":1060,"trqCmd":0,"trqEst":-2,"vdc":366,"idc":0,"thr":0,"pot1":315,"pot2":720,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":68.2,"vx":6.88,"ax":-2.16,"ay":2.54,"yawRate":0.079,"rpm":1037,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":319,"pot2":726,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":69.18,"vx":6.53,"ax":-2.04,"ay":2.45,"yawRate":0.07,"rpm":987,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":322,"pot2":731,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":70.15,"vx":6.23,"ax":-1.96,"ay":2.93,"yawRate":0.068,"rpm":937,"trqCmd":0,"trqEst":2,"vdc":366,"idc":0,"thr":0,"pot1":317,"pot2":722,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":71.11,"vx":6,"ax":-1.55,"ay":2.37,"yawRate":0.062,"rpm":1008,"trqCmd":47,"trqEst":45,"vdc":364,"idc":15,"thr":18,"pot1":640,"pot2":1366,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":72.07,"vx":6.18,"ax":0.9,"ay":2.43,"yawRate":0.055,"rpm":978,"trqCmd":46,"trqEst":45,"vdc":362,"idc":14,"thr":26,"pot1":632,"pot2":1352,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":73.01,"vx":6.38,"ax":0.04,"ay":2.67,"yawRate":0.053,"rpm":941,"trqCmd":27,"trqEst":28,"vdc":363,"idc":7,"thr":21,"pot1":525,"pot2":1143,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":73.94,"vx":6.24,"ax":-1.98,"ay":2.61,"yawRate":0.067,"rpm":957,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":318,"pot2":720,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":74.86,"vx":5.8,"ax":-2.48,"ay":2.36,"yawRate":0.062,"rpm":872,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":316,"pot2":722,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":75.76,"vx":5.36,"ax":-2.65,"ay":2.42,"yawRate":0.053,"rpm":801,"trqCmd":0,"trqEst":2,"vdc":367,"idc":0,"thr":0,"pot1":318,"pot2":728,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":76.64,"vx":4.92,"ax":-2.65,"ay":2.19,"yawRate":0.045,"rpm":724,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":317,"pot2":722,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":77.51,"vx":4.25,"ax":-2.37,"ay":2.48,"yawRate":0.048,"rpm":628,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":326,"pot2":734,"brkF":0,"brkR":0,"invT":36,"motT":36},{"s":78.36,"vx":3.86,"ax":-1.4,"ay":2.37,"yawRate":0.044,"rpm":579,"trqCmd":0,"trqEst":6,"vdc":365,"idc":0,"thr":1,"pot1":385,"pot2":863,"brkF":0,"brkR":0,"invT":36,"motT":35},{"s":79.2,"vx":3.83,"ax":1.89,"ay":2,"yawRate":0.033,"rpm":657,"trqCmd":37,"trqEst":42,"vdc":363,"idc":7,"thr":21,"pot1":604,"pot2":1286,"brkF":0,"brkR":0,"invT":36,"motT":36},{"s":80.03,"vx":4.26,"ax":1.6,"ay":2.09,"yawRate":0.038,"rpm":679,"trqCmd":43,"trqEst":43,"vdc":363,"idc":9,"thr":23,"pot1":623,"pot2":1326,"brkF":0,"brkR":0,"invT":36,"motT":35},{"s":80.86,"vx":4.75,"ax":1.87,"ay":3.04,"yawRate":0.143,"rpm":730,"trqCmd":49,"trqEst":49,"vdc":363,"idc":11,"thr":26,"pot1":638,"pot2":1367,"brkF":0,"brkR":0,"invT":36,"motT":35},{"s":81.68,"vx":5.2,"ax":1.44,"ay":3.26,"yawRate":0.24,"rpm":780,"trqCmd":46,"trqEst":45,"vdc":365,"idc":11,"thr":26,"pot1":628,"pot2":1332,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":82.51,"vx":5.58,"ax":1.61,"ay":3.41,"yawRate":0.262,"rpm":841,"trqCmd":43,"trqEst":42,"vdc":363,"idc":11,"thr":24,"pot1":618,"pot2":1322,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":83.34,"vx":5.87,"ax":1.47,"ay":3.69,"yawRate":0.276,"rpm":881,"trqCmd":40,"trqEst":39,"vdc":364,"idc":10,"thr":23,"pot1":608,"pot2":1296,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":84.19,"vx":6.12,"ax":1.24,"ay":3.37,"yawRate":0.287,"rpm":921,"trqCmd":35,"trqEst":35,"vdc":363,"idc":10,"thr":23,"pot1":591,"pot2":1270,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":85.04,"vx":6.37,"ax":1.09,"ay":3.79,"yawRate":0.3,"rpm":961,"trqCmd":33,"trqEst":35,"vdc":364,"idc":9,"thr":21,"pot1":582,"pot2":1246,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":85.91,"vx":6.55,"ax":0.87,"ay":3.95,"yawRate":0.318,"rpm":986,"trqCmd":16,"trqEst":17,"vdc":365,"idc":5,"thr":16,"pot1":483,"pot2":1055,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":86.79,"vx":6.49,"ax":-0.19,"ay":3.53,"yawRate":0.318,"rpm":996,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":2,"pot1":329,"pot2":742,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":87.69,"vx":6.39,"ax":0.07,"ay":4.25,"yawRate":0.327,"rpm":967,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":331,"pot2":740,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":88.6,"vx":6.35,"ax":-0.3,"ay":4.4,"yawRate":0.356,"rpm":968,"trqCmd":0,"trqEst":-1,"vdc":367,"idc":0,"thr":0,"pot1":335,"pot2":745,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":89.52,"vx":6.28,"ax":-0.31,"ay":3.96,"yawRate":0.361,"rpm":949,"trqCmd":0,"trqEst":-1,"vdc":367,"idc":0,"thr":0,"pot1":331,"pot2":741,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":90.44,"vx":6.2,"ax":-0.18,"ay":4.34,"yawRate":0.36,"rpm":931,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":331,"pot2":741,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":91.36,"vx":6.13,"ax":-0.11,"ay":3.8,"yawRate":0.367,"rpm":912,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":330,"pot2":743,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":92.27,"vx":6.06,"ax":0.11,"ay":3.84,"yawRate":0.351,"rpm":904,"trqCmd":0,"trqEst":1,"vdc":367,"idc":0,"thr":1,"pot1":346,"pot2":775,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":93.17,"vx":6.01,"ax":0.04,"ay":4.2,"yawRate":0.342,"rpm":894,"trqCmd":0,"trqEst":-2,"vdc":368,"idc":0,"thr":4,"pot1":371,"pot2":829,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":94.06,"vx":5.95,"ax":0.03,"ay":3.62,"yawRate":0.334,"rpm":882,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":4,"pot1":376,"pot2":839,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":94.93,"vx":5.88,"ax":0.04,"ay":3.61,"yawRate":0.339,"rpm":875,"trqCmd":0,"trqEst":2,"vdc":367,"idc":0,"thr":4,"pot1":377,"pot2":845,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":95.79,"vx":5.79,"ax":0.25,"ay":3.35,"yawRate":0.332,"rpm":864,"trqCmd":0,"trqEst":-1,"vdc":368,"idc":0,"thr":4,"pot1":384,"pot2":862,"brkF":0,"brkR":0,"invT":36,"motT":35},{"s":96.63,"vx":5.7,"ax":0.28,"ay":3.29,"yawRate":0.328,"rpm":856,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":4,"pot1":384,"pot2":856,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":97.47,"vx":5.62,"ax":0.11,"ay":3.41,"yawRate":0.293,"rpm":849,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":4,"pot1":382,"pot2":851,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":98.29,"vx":5.52,"ax":-0.25,"ay":2.25,"yawRate":0.287,"rpm":822,"trqCmd":0,"trqEst":-1,"vdc":367,"idc":0,"thr":1,"pot1":332,"pot2":755,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":99.11,"vx":5.13,"ax":-1.42,"ay":2.65,"yawRate":0.236,"rpm":762,"trqCmd":0,"trqEst":2,"vdc":368,"idc":0,"thr":0,"pot1":329,"pot2":735,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":99.94,"vx":4.7,"ax":-1.69,"ay":2.29,"yawRate":0.171,"rpm":691,"trqCmd":0,"trqEst":0,"vdc":369,"idc":0,"thr":0,"pot1":334,"pot2":743,"brkF":0,"brkR":0,"invT":36,"motT":35},{"s":100.78,"vx":4.11,"ax":-0.85,"ay":2.08,"yawRate":0.119,"rpm":616,"trqCmd":0,"trqEst":-1,"vdc":368,"idc":0,"thr":0,"pot1":330,"pot2":740,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":101.62,"vx":3.89,"ax":-0.02,"ay":1.3,"yawRate":0.067,"rpm":582,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":328,"pot2":740,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":102.47,"vx":3.71,"ax":0.1,"ay":1.74,"yawRate":0.01,"rpm":560,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":0,"pot1":331,"pot2":741,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":103.34,"vx":3.53,"ax":0.09,"ay":1.65,"yawRate":0.018,"rpm":532,"trqCmd":0,"trqEst":1,"vdc":369,"idc":0,"thr":0,"pot1":326,"pot2":734,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":104.2,"vx":3.37,"ax":0.18,"ay":1.62,"yawRate":0.016,"rpm":505,"trqCmd":0,"trqEst":0,"vdc":370,"idc":0,"thr":0,"pot1":326,"pot2":738,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":105.07,"vx":3.21,"ax":0.28,"ay":1.53,"yawRate":0.061,"rpm":483,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":2,"pot1":352,"pot2":791,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":105.94,"vx":3.03,"ax":0.2,"ay":1.59,"yawRate":0.048,"rpm":452,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":4,"pot1":371,"pot2":834,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":106.79,"vx":2.86,"ax":0.11,"ay":1.36,"yawRate":0.042,"rpm":430,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":6,"pot1":408,"pot2":901,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":107.63,"vx":2.69,"ax":0.45,"ay":1.16,"yawRate":0.037,"rpm":418,"trqCmd":4,"trqEst":4,"vdc":369,"idc":0,"thr":12,"pot1":464,"pot2":1018,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":108.45,"vx":2.63,"ax":0.57,"ay":1.28,"yawRate":0.035,"rpm":401,"trqCmd":9,"trqEst":7,"vdc":367,"idc":1,"thr":13,"pot1":481,"pot2":1050,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":109.25,"vx":2.65,"ax":0.6,"ay":1.14,"yawRate":0.031,"rpm":396,"trqCmd":9,"trqEst":9,"vdc":368,"idc":1,"thr":13,"pot1":480,"pot2":1055,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":110.01,"vx":2.54,"ax":0.13,"ay":1,"yawRate":0.02,"rpm":377,"trqCmd":0,"trqEst":1,"vdc":368,"idc":0,"thr":0,"pot1":325,"pot2":734,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":110.75,"vx":2.32,"ax":0.2,"ay":1.37,"yawRate":0.097,"rpm":347,"trqCmd":0,"trqEst":1,"vdc":367,"idc":0,"thr":0,"pot1":323,"pot2":732,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":111.46,"vx":2.16,"ax":0.14,"ay":1.24,"yawRate":0.312,"rpm":324,"trqCmd":6,"trqEst":5,"vdc":366,"idc":0,"thr":11,"pot1":474,"pot2":1038,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":112.15,"vx":2.16,"ax":0.29,"ay":0.79,"yawRate":0.324,"rpm":321,"trqCmd":11,"trqEst":10,"vdc":367,"idc":0,"thr":13,"pot1":491,"pot2":1070,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":112.84,"vx":2.22,"ax":0.24,"ay":0.64,"yawRate":0.334,"rpm":325,"trqCmd":11,"trqEst":12,"vdc":367,"idc":1,"thr":13,"pot1":488,"pot2":1067,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":113.53,"vx":2.23,"ax":-0.25,"ay":0.66,"yawRate":0.398,"rpm":318,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":322,"pot2":729,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":114.23,"vx":1.96,"ax":-0.76,"ay":0.45,"yawRate":0.41,"rpm":271,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":0,"pot1":324,"pot2":732,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":114.97,"vx":1.66,"ax":-0.52,"ay":-0.04,"yawRate":0.353,"rpm":229,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":9,"pot1":442,"pot2":977,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":115.73,"vx":1.56,"ax":0.27,"ay":-0.03,"yawRate":0.309,"rpm":233,"trqCmd":18,"trqEst":18,"vdc":368,"idc":1,"thr":16,"pot1":523,"pot2":1127,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":116.53,"vx":1.78,"ax":-0.45,"ay":-0.01,"yawRate":0.244,"rpm":262,"trqCmd":0,"trqEst":0,"vdc":368,"idc":0,"thr":7,"pot1":396,"pot2":887,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":117.36,"vx":1.66,"ax":-0.39,"ay":0.02,"yawRate":0.298,"rpm":245,"trqCmd":4,"trqEst":2,"vdc":367,"idc":0,"thr":11,"pot1":457,"pot2":1027,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":118.23,"vx":2.4,"ax":6.59,"ay":-0.3,"yawRate":0.013,"rpm":433,"trqCmd":135,"trqEst":139,"vdc":365,"idc":20,"thr":54,"pot1":1002,"pot2":2065,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":119.12,"vx":4.6,"ax":7.56,"ay":-0.54,"yawRate":0.002,"rpm":822,"trqCmd":179,"trqEst":191,"vdc":353,"idc":50,"thr":68,"pot1":1212,"pot2":2483,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":120.04,"vx":6.11,"ax":7.55,"ay":-0.51,"yawRate":0.024,"rpm":1962,"trqCmd":215,"trqEst":227,"vdc":330,"idc":154,"thr":79,"pot1":1293,"pot2":2649,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":120.97,"vx":7.25,"ax":7.75,"ay":-0.35,"yawRate":0.07,"rpm":2748,"trqCmd":217,"trqEst":218,"vdc":311,"idc":212,"thr":80,"pot1":1299,"pot2":2652,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":121.91,"vx":8.57,"ax":7.96,"ay":-0.37,"yawRate":0.102,"rpm":3299,"trqCmd":186,"trqEst":155,"vdc":303,"idc":244,"thr":78,"pot1":1245,"pot2":2553,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":122.86,"vx":9.56,"ax":7.93,"ay":-0.3,"yawRate":0.049,"rpm":3435,"trqCmd":178,"trqEst":132,"vdc":301,"idc":239,"thr":75,"pot1":1224,"pot2":2529,"brkF":0,"brkR":0,"invT":38,"motT":34},{"s":123.82,"vx":10.46,"ax":8.71,"ay":-0.33,"yawRate":0.024,"rpm":3481,"trqCmd":174,"trqEst":174,"vdc":299,"idc":240,"thr":72,"pot1":1178,"pot2":2425,"brkF":0,"brkR":0,"invT":39,"motT":33},{"s":124.78,"vx":11.26,"ax":8.92,"ay":-0.95,"yawRate":-0.19,"rpm":3392,"trqCmd":178,"trqEst":171,"vdc":303,"idc":238,"thr":71,"pot1":1193,"pot2":2443,"brkF":0,"brkR":0,"invT":39,"motT":33},{"s":125.74,"vx":12.24,"ax":8.92,"ay":-0.06,"yawRate":-0.196,"rpm":3258,"trqCmd":174,"trqEst":178,"vdc":296,"idc":199,"thr":68,"pot1":1148,"pot2":2357,"brkF":0,"brkR":0,"invT":39,"motT":33},{"s":126.71,"vx":13.06,"ax":8.8,"ay":-0.61,"yawRate":0.054,"rpm":3120,"trqCmd":160,"trqEst":161,"vdc":310,"idc":186,"thr":67,"pot1":1092,"pot2":2234,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":127.67,"vx":13.68,"ax":9.35,"ay":-0.73,"yawRate":0.029,"rpm":2923,"trqCmd":158,"trqEst":172,"vdc":318,"idc":171,"thr":62,"pot1":1072,"pot2":2208,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":128.64,"vx":14.45,"ax":9.26,"ay":-0.67,"yawRate":0.036,"rpm":2555,"trqCmd":149,"trqEst":157,"vdc":328,"idc":130,"thr":59,"pot1":1051,"pot2":2163,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":129.6,"vx":14.93,"ax":8.75,"ay":0.15,"yawRate":0.066,"rpm":2314,"trqCmd":149,"trqEst":154,"vdc":330,"idc":114,"thr":60,"pot1":1047,"pot2":2168,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":130.56,"vx":15.47,"ax":6.81,"ay":0.37,"yawRate":0.099,"rpm":2440,"trqCmd":167,"trqEst":163,"vdc":323,"idc":139,"thr":62,"pot1":1114,"pot2":2288,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":131.53,"vx":15.77,"ax":6.86,"ay":0.62,"yawRate":0.07,"rpm":2485,"trqCmd":168,"trqEst":173,"vdc":324,"idc":147,"thr":66,"pot1":1120,"pot2":2302,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":132.49,"vx":16.37,"ax":6.61,"ay":1.41,"yawRate":0.058,"rpm":2593,"trqCmd":168,"trqEst":181,"vdc":319,"idc":147,"thr":65,"pot1":1123,"pot2":2310,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":133.46,"vx":16.79,"ax":6.63,"ay":1.1,"yawRate":0.039,"rpm":2752,"trqCmd":170,"trqEst":171,"vdc":320,"idc":164,"thr":66,"pot1":1128,"pot2":2318,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":134.43,"vx":17.25,"ax":7.47,"ay":0.68,"yawRate":0.044,"rpm":2761,"trqCmd":169,"trqEst":175,"vdc":318,"idc":167,"thr":65,"pot1":1120,"pot2":2302,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":135.4,"vx":17.49,"ax":7.15,"ay":-0.14,"yawRate":0.045,"rpm":2760,"trqCmd":165,"trqEst":176,"vdc":318,"idc":166,"thr":66,"pot1":1121,"pot2":2292,"brkF":0,"brkR":0,"invT":40,"motT":33}],"23_08/23_08_2026-10.45.00.csv":[{"s":0,"vx":16.96,"ax":8.71,"ay":-2.43,"yawRate":-0.336,"rpm":3302,"trqCmd":189,"trqEst":162,"vdc":285,"idc":255,"thr":85,"pot1":1376,"pot2":2780,"brkF":0,"brkR":0,"invT":40,"motT":35},{"s":0.97,"vx":17.64,"ax":9.48,"ay":-1.48,"yawRate":-0.343,"rpm":3343,"trqCmd":187,"trqEst":177,"vdc":296,"idc":249,"thr":86,"pot1":1372,"pot2":2785,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":1.94,"vx":17.83,"ax":9.63,"ay":-1.73,"yawRate":-0.236,"rpm":3250,"trqCmd":190,"trqEst":200,"vdc":286,"idc":254,"thr":86,"pot1":1372,"pot2":2768,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":2.92,"vx":18.69,"ax":9.68,"ay":-2.09,"yawRate":-0.015,"rpm":3219,"trqCmd":192,"trqEst":163,"vdc":292,"idc":266,"thr":81,"pot1":1292,"pot2":2622,"brkF":0,"brkR":0,"invT":41,"motT":33},{"s":3.89,"vx":19.27,"ax":9.73,"ay":-1.69,"yawRate":0.143,"rpm":3266,"trqCmd":188,"trqEst":232,"vdc":290,"idc":254,"thr":78,"pot1":1282,"pot2":2595,"brkF":0,"brkR":0,"invT":41,"motT":33},{"s":4.86,"vx":19.83,"ax":8.28,"ay":1.88,"yawRate":0.356,"rpm":3234,"trqCmd":190,"trqEst":138,"vdc":286,"idc":260,"thr":79,"pot1":1227,"pot2":2491,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":5.84,"vx":19.98,"ax":7.57,"ay":3.84,"yawRate":0.467,"rpm":3281,"trqCmd":148,"trqEst":151,"vdc":307,"idc":179,"thr":74,"pot1":983,"pot2":2034,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":6.81,"vx":20.4,"ax":4.04,"ay":6.73,"yawRate":0.69,"rpm":2973,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":11,"pot1":326,"pot2":733,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":7.79,"vx":20.32,"ax":-0.79,"ay":6.18,"yawRate":0.656,"rpm":2962,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":0,"pot1":323,"pot2":728,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":8.76,"vx":20.1,"ax":-1.67,"ay":2.2,"yawRate":0.308,"rpm":3059,"trqCmd":10,"trqEst":8,"vdc":357,"idc":1,"thr":1,"pot1":488,"pot2":1069,"brkF":0,"brkR":0,"invT":41,"motT":33},{"s":9.74,"vx":20.01,"ax":-1.91,"ay":1.83,"yawRate":-0.186,"rpm":2997,"trqCmd":0,"trqEst":1,"vdc":357,"idc":6,"thr":13,"pot1":325,"pot2":740,"brkF":0,"brkR":0,"invT":41,"motT":33},{"s":10.71,"vx":19.66,"ax":-3.62,"ay":-1.37,"yawRate":-0.449,"rpm":2910,"trqCmd":0,"trqEst":0,"vdc":359,"idc":0,"thr":0,"pot1":324,"pot2":736,"brkF":0,"brkR":0,"invT":41,"motT":32},{"s":11.69,"vx":19.16,"ax":-5.67,"ay":-3.15,"yawRate":-0.438,"rpm":2923,"trqCmd":0,"trqEst":0,"vdc":359,"idc":0,"thr":0,"pot1":320,"pot2":731,"brkF":0,"brkR":0,"invT":41,"motT":32},{"s":12.66,"vx":19.02,"ax":-5.77,"ay":-2.76,"yawRate":-0.289,"rpm":2839,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":0,"pot1":325,"pot2":731,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":13.64,"vx":18.66,"ax":-5.93,"ay":-1.61,"yawRate":-0.067,"rpm":2773,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":0,"pot1":316,"pot2":726,"brkF":0,"brkR":0,"invT":41,"motT":34},{"s":14.61,"vx":18.28,"ax":-6.62,"ay":-0.87,"yawRate":0.06,"rpm":2742,"trqCmd":0,"trqEst":1,"vdc":360,"idc":0,"thr":0,"pot1":325,"pot2":732,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":15.59,"vx":17.91,"ax":-6.76,"ay":0.56,"yawRate":0.104,"rpm":2676,"trqCmd":0,"trqEst":4,"vdc":359,"idc":0,"thr":0,"pot1":324,"pot2":735,"brkF":0,"brkR":0,"invT":40,"motT":34},{"s":16.57,"vx":17.6,"ax":-6.7,"ay":0.65,"yawRate":0.105,"rpm":2620,"trqCmd":0,"trqEst":1,"vdc":361,"idc":0,"thr":0,"pot1":322,"pot2":735,"brkF":0,"brkR":0,"invT":40,"motT":31},{"s":17.54,"vx":17.33,"ax":-6.98,"ay":1.1,"yawRate":0.097,"rpm":2578,"trqCmd":0,"trqEst":0,"vdc":359,"idc":0,"thr":0,"pot1":325,"pot2":733,"brkF":0,"brkR":0,"invT":40,"motT":31},{"s":18.52,"vx":17.04,"ax":-7.49,"ay":1.55,"yawRate":0.079,"rpm":2528,"trqCmd":0,"trqEst":0,"vdc":359,"idc":0,"thr":0,"pot1":322,"pot2":730,"brkF":0,"brkR":0,"invT":39,"motT":33},{"s":19.5,"vx":16.31,"ax":-7.42,"ay":0.75,"yawRate":0.086,"rpm":2429,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":0,"pot1":325,"pot2":735,"brkF":0,"brkR":0,"invT":39,"motT":33},{"s":20.48,"vx":15.88,"ax":-7.32,"ay":0.21,"yawRate":0.078,"rpm":2379,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":326,"pot2":738,"brkF":0,"brkR":0,"invT":39,"motT":32},{"s":21.45,"vx":15.6,"ax":-6.96,"ay":0.78,"yawRate":0.077,"rpm":2292,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":322,"pot2":738,"brkF":0,"brkR":0,"invT":39,"motT":32},{"s":22.43,"vx":15.27,"ax":-7.26,"ay":1.52,"yawRate":0.078,"rpm":2237,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":322,"pot2":730,"brkF":0,"brkR":0,"invT":38,"motT":35},{"s":23.4,"vx":14.56,"ax":-7.64,"ay":1.78,"yawRate":0.075,"rpm":2207,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":322,"pot2":733,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":24.38,"vx":13.58,"ax":-8.08,"ay":1.82,"yawRate":0.07,"rpm":2071,"trqCmd":0,"trqEst":-2,"vdc":363,"idc":0,"thr":0,"pot1":323,"pot2":734,"brkF":0,"brkR":0,"invT":38,"motT":34},{"s":25.35,"vx":13.19,"ax":-6.71,"ay":1.39,"yawRate":0.08,"rpm":1977,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":323,"pot2":733,"brkF":0,"brkR":0,"invT":38,"motT":34},{"s":26.32,"vx":12.99,"ax":-6.46,"ay":1.99,"yawRate":0.102,"rpm":1869,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":320,"pot2":727,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":27.29,"vx":12.44,"ax":-7.42,"ay":2.06,"yawRate":0.113,"rpm":1848,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":325,"pot2":733,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":28.24,"vx":11.77,"ax":-7.6,"ay":2.38,"yawRate":0.073,"rpm":1765,"trqCmd":0,"trqEst":-1,"vdc":363,"idc":0,"thr":0,"pot1":330,"pot2":733,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":29.19,"vx":11.02,"ax":-7.09,"ay":0.23,"yawRate":0.052,"rpm":1638,"trqCmd":0,"trqEst":-2,"vdc":361,"idc":0,"thr":0,"pot1":326,"pot2":735,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":30.12,"vx":10.42,"ax":-7.17,"ay":1.02,"yawRate":0.054,"rpm":1560,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":0,"pot1":324,"pot2":731,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":31.03,"vx":9.71,"ax":-7.46,"ay":0.46,"yawRate":0.042,"rpm":1451,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":0,"pot1":326,"pot2":731,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":31.92,"vx":8.97,"ax":-7,"ay":0.68,"yawRate":0.043,"rpm":1366,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":328,"pot2":738,"brkF":0,"brkR":0,"invT":36,"motT":31},{"s":32.78,"vx":8.19,"ax":-6.36,"ay":0.81,"yawRate":0.049,"rpm":1246,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":0,"pot1":327,"pot2":730,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":33.61,"vx":7.42,"ax":-6.22,"ay":1.61,"yawRate":0.076,"rpm":1109,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":324,"pot2":732,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":34.41,"vx":6.36,"ax":-4.75,"ay":5.36,"yawRate":0.265,"rpm":1002,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":324,"pot2":733,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":35.18,"vx":6.08,"ax":-2.94,"ay":7.52,"yawRate":0.843,"rpm":955,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":8,"pot1":424,"pot2":945,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":35.93,"vx":5.97,"ax":-3.58,"ay":7.4,"yawRate":1.235,"rpm":871,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":5,"pot1":379,"pot2":842,"brkF":0,"brkR":0,"invT":35,"motT":31},{"s":36.66,"vx":5.78,"ax":-2.51,"ay":7.37,"yawRate":1.296,"rpm":822,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":4,"pot1":374,"pot2":836,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":37.4,"vx":5.62,"ax":-2.05,"ay":6.51,"yawRate":1.223,"rpm":808,"trqCmd":0,"trqEst":1,"vdc":365,"idc":0,"thr":8,"pot1":448,"pot2":989,"brkF":0,"brkR":0,"invT":35,"motT":35},{"s":38.14,"vx":5.5,"ax":-1.93,"ay":5.72,"yawRate":1.184,"rpm":799,"trqCmd":8,"trqEst":9,"vdc":364,"idc":2,"thr":12,"pot1":482,"pot2":1046,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":38.9,"vx":5.44,"ax":-1.88,"ay":6.37,"yawRate":1.17,"rpm":788,"trqCmd":17,"trqEst":17,"vdc":362,"idc":3,"thr":14,"pot1":522,"pot2":1134,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":39.7,"vx":5.45,"ax":-0.67,"ay":6.38,"yawRate":1.167,"rpm":825,"trqCmd":48,"trqEst":42,"vdc":362,"idc":12,"thr":22,"pot1":647,"pot2":1373,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":40.53,"vx":5.66,"ax":0.01,"ay":7.03,"yawRate":1.255,"rpm":971,"trqCmd":62,"trqEst":58,"vdc":360,"idc":19,"thr":30,"pot1":696,"pot2":1469,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":41.39,"vx":5.96,"ax":0,"ay":8.3,"yawRate":1.325,"rpm":1023,"trqCmd":63,"trqEst":65,"vdc":359,"idc":20,"thr":30,"pot1":692,"pot2":1465,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":42.3,"vx":6.25,"ax":0.44,"ay":8.21,"yawRate":1.29,"rpm":1085,"trqCmd":60,"trqEst":59,"vdc":357,"idc":21,"thr":30,"pot1":690,"pot2":1456,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":43.23,"vx":6.55,"ax":0.82,"ay":6.83,"yawRate":1.091,"rpm":978,"trqCmd":54,"trqEst":57,"vdc":359,"idc":17,"thr":28,"pot1":664,"pot2":1405,"brkF":0,"brkR":0,"invT":35,"motT":36},{"s":44.2,"vx":6.8,"ax":1.15,"ay":4.26,"yawRate":0.637,"rpm":1020,"trqCmd":54,"trqEst":56,"vdc":360,"idc":17,"thr":28,"pot1":661,"pot2":1414,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":45.19,"vx":7.07,"ax":2.1,"ay":4.01,"yawRate":0.5,"rpm":1086,"trqCmd":77,"trqEst":73,"vdc":358,"idc":26,"thr":34,"pot1":757,"pot2":1593,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":46.19,"vx":7.51,"ax":2.72,"ay":3.68,"yawRate":0.382,"rpm":1160,"trqCmd":89,"trqEst":96,"vdc":354,"idc":33,"thr":38,"pot1":810,"pot2":1686,"brkF":0,"brkR":0,"invT":36,"motT":35},{"s":47.2,"vx":8.05,"ax":2.92,"ay":2.94,"yawRate":0.287,"rpm":1256,"trqCmd":89,"trqEst":91,"vdc":352,"idc":36,"thr":39,"pot1":803,"pot2":1686,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":48.22,"vx":8.38,"ax":3.06,"ay":4.31,"yawRate":0.302,"rpm":1303,"trqCmd":90,"trqEst":97,"vdc":353,"idc":37,"thr":39,"pot1":805,"pot2":1695,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":49.23,"vx":8.91,"ax":3.06,"ay":3.1,"yawRate":0.3,"rpm":1377,"trqCmd":93,"trqEst":98,"vdc":353,"idc":40,"thr":40,"pot1":819,"pot2":1712,"brkF":0,"brkR":0,"invT":36,"motT":35},{"s":50.25,"vx":9.25,"ax":3.75,"ay":3.07,"yawRate":0.237,"rpm":1442,"trqCmd":96,"trqEst":101,"vdc":351,"idc":46,"thr":42,"pot1":832,"pot2":1741,"brkF":0,"brkR":0,"invT":36,"motT":35},{"s":51.27,"vx":9.68,"ax":3.47,"ay":2.71,"yawRate":0.154,"rpm":1491,"trqCmd":95,"trqEst":100,"vdc":352,"idc":46,"thr":41,"pot1":828,"pot2":1741,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":52.28,"vx":10.07,"ax":4.4,"ay":2.75,"yawRate":0.14,"rpm":1566,"trqCmd":107,"trqEst":115,"vdc":348,"idc":55,"thr":46,"pot1":860,"pot2":1789,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":53.29,"vx":10.48,"ax":3.31,"ay":3.63,"yawRate":0.158,"rpm":1598,"trqCmd":89,"trqEst":89,"vdc":351,"idc":46,"thr":39,"pot1":791,"pot2":1672,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":54.3,"vx":10.84,"ax":3.28,"ay":2.24,"yawRate":0.131,"rpm":1658,"trqCmd":94,"trqEst":98,"vdc":351,"idc":49,"thr":41,"pot1":835,"pot2":1735,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":55.3,"vx":11.18,"ax":3.32,"ay":2.47,"yawRate":0.105,"rpm":1697,"trqCmd":88,"trqEst":92,"vdc":349,"idc":49,"thr":38,"pot1":798,"pot2":1665,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":56.3,"vx":11.41,"ax":3.49,"ay":2.78,"yawRate":0.073,"rpm":1739,"trqCmd":88,"trqEst":90,"vdc":350,"idc":50,"thr":39,"pot1":803,"pot2":1678,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":57.31,"vx":11.71,"ax":3.1,"ay":1.89,"yawRate":0.079,"rpm":1790,"trqCmd":88,"trqEst":93,"vdc":352,"idc":51,"thr":39,"pot1":800,"pot2":1675,"brkF":0,"brkR":0,"invT":37,"motT":30},{"s":58.31,"vx":11.93,"ax":3.24,"ay":2.09,"yawRate":0.074,"rpm":1853,"trqCmd":89,"trqEst":94,"vdc":348,"idc":53,"thr":39,"pot1":810,"pot2":1699,"brkF":0,"brkR":0,"invT":37,"motT":30},{"s":59.3,"vx":12.34,"ax":3.26,"ay":2.56,"yawRate":0.067,"rpm":1905,"trqCmd":95,"trqEst":95,"vdc":346,"idc":57,"thr":41,"pot1":837,"pot2":1745,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":60.3,"vx":12.7,"ax":3.6,"ay":2.29,"yawRate":0.079,"rpm":1956,"trqCmd":96,"trqEst":102,"vdc":348,"idc":62,"thr":41,"pot1":830,"pot2":1743,"brkF":0,"brkR":0,"invT":37,"motT":31},{"s":61.29,"vx":12.88,"ax":3.58,"ay":3.28,"yawRate":0.08,"rpm":1974,"trqCmd":98,"trqEst":103,"vdc":349,"idc":64,"thr":42,"pot1":845,"pot2":1770,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":62.28,"vx":13.19,"ax":3.88,"ay":3.26,"yawRate":0.073,"rpm":2013,"trqCmd":100,"trqEst":103,"vdc":347,"idc":68,"thr":43,"pot1":846,"pot2":1773,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":63.27,"vx":13.5,"ax":3.63,"ay":2.72,"yawRate":0.069,"rpm":2077,"trqCmd":104,"trqEst":115,"vdc":341,"idc":70,"thr":43,"pot1":855,"pot2":1793,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":64.26,"vx":13.69,"ax":3.41,"ay":2.64,"yawRate":0.066,"rpm":2106,"trqCmd":97,"trqEst":107,"vdc":344,"idc":71,"thr":44,"pot1":818,"pot2":1718,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":65.25,"vx":14.06,"ax":2.83,"ay":1.87,"yawRate":0.063,"rpm":2131,"trqCmd":77,"trqEst":79,"vdc":348,"idc":51,"thr":35,"pot1":753,"pot2":1585,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":66.24,"vx":14.3,"ax":2.25,"ay":1.95,"yawRate":0.055,"rpm":2128,"trqCmd":42,"trqEst":40,"vdc":354,"idc":28,"thr":32,"pot1":591,"pot2":1265,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":67.22,"vx":14.31,"ax":0.04,"ay":2.94,"yawRate":0.055,"rpm":2125,"trqCmd":15,"trqEst":15,"vdc":360,"idc":9,"thr":14,"pot1":505,"pot2":1101,"brkF":0,"brkR":0,"invT":37,"motT":32},{"s":68.2,"vx":14.23,"ax":-0.86,"ay":2.78,"yawRate":0.057,"rpm":2108,"trqCmd":0,"trqEst":1,"vdc":362,"idc":1,"thr":11,"pot1":412,"pot2":917,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":69.18,"vx":14.18,"ax":-1.31,"ay":2.91,"yawRate":0.055,"rpm":2083,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":5,"pot1":372,"pot2":833,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":70.15,"vx":14,"ax":-1.48,"ay":2.16,"yawRate":0.062,"rpm":2131,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":2,"pot1":326,"pot2":740,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":71.11,"vx":13.94,"ax":-1.74,"ay":2.82,"yawRate":0.065,"rpm":2079,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":0,"pot1":325,"pot2":725,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":72.07,"vx":13.7,"ax":-2.02,"ay":3.51,"yawRate":0.063,"rpm":2089,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":323,"pot2":729,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":73.01,"vx":13.62,"ax":-2.14,"ay":2.78,"yawRate":0.051,"rpm":2046,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":0,"pot1":327,"pot2":717,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":73.94,"vx":13.31,"ax":-2.94,"ay":2.9,"yawRate":0.062,"rpm":2006,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":320,"pot2":725,"brkF":0,"brkR":0,"invT":36,"motT":36},{"s":74.86,"vx":13.13,"ax":-3.68,"ay":2.73,"yawRate":0.062,"rpm":1986,"trqCmd":0,"trqEst":-3,"vdc":364,"idc":0,"thr":0,"pot1":324,"pot2":729,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":75.76,"vx":12.98,"ax":-3.71,"ay":2.48,"yawRate":0.059,"rpm":1940,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":323,"pot2":730,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":76.64,"vx":12.67,"ax":-3.59,"ay":3.12,"yawRate":0.071,"rpm":1885,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":320,"pot2":726,"brkF":0,"brkR":0,"invT":36,"motT":32},{"s":77.51,"vx":12.29,"ax":-4.03,"ay":3.48,"yawRate":0.072,"rpm":1842,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":0,"pot1":321,"pot2":728,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":78.36,"vx":11.86,"ax":-4.67,"ay":2.52,"yawRate":0.062,"rpm":1799,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":320,"pot2":725,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":79.2,"vx":11.6,"ax":-4.55,"ay":2.64,"yawRate":0.055,"rpm":1742,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":0,"pot1":320,"pot2":734,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":80.03,"vx":11.19,"ax":-4,"ay":3.01,"yawRate":0.053,"rpm":1683,"trqCmd":0,"trqEst":1,"vdc":365,"idc":0,"thr":0,"pot1":320,"pot2":725,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":80.86,"vx":10.73,"ax":-4.56,"ay":2.92,"yawRate":0.047,"rpm":1618,"trqCmd":0,"trqEst":1,"vdc":365,"idc":0,"thr":0,"pot1":319,"pot2":719,"brkF":0,"brkR":0,"invT":36,"motT":33},{"s":81.68,"vx":10.38,"ax":-4.63,"ay":3.6,"yawRate":0.046,"rpm":1555,"trqCmd":0,"trqEst":2,"vdc":363,"idc":0,"thr":0,"pot1":321,"pot2":726,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":82.51,"vx":9.85,"ax":-4.68,"ay":2.4,"yawRate":0.058,"rpm":1485,"trqCmd":0,"trqEst":-1,"vdc":363,"idc":0,"thr":0,"pot1":315,"pot2":715,"brkF":0,"brkR":0,"invT":36,"motT":36},{"s":83.34,"vx":9.32,"ax":-5.02,"ay":3.8,"yawRate":0.108,"rpm":1418,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":320,"pot2":732,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":84.19,"vx":8.68,"ax":-5,"ay":6.66,"yawRate":0.329,"rpm":1336,"trqCmd":0,"trqEst":2,"vdc":364,"idc":0,"thr":0,"pot1":313,"pot2":725,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":85.04,"vx":7.77,"ax":-4.98,"ay":7.33,"yawRate":0.636,"rpm":1228,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":318,"pot2":724,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":85.91,"vx":7.36,"ax":-4.43,"ay":8.39,"yawRate":0.88,"rpm":1120,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":0,"pot1":318,"pot2":721,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":86.79,"vx":6.9,"ax":-3.92,"ay":8.36,"yawRate":0.93,"rpm":1025,"trqCmd":0,"trqEst":-1,"vdc":366,"idc":0,"thr":0,"pot1":315,"pot2":726,"brkF":0,"brkR":0,"invT":35,"motT":36},{"s":87.69,"vx":6.5,"ax":-2.93,"ay":7.43,"yawRate":0.839,"rpm":971,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":3,"pot1":421,"pot2":942,"brkF":0,"brkR":0,"invT":35,"motT":36},{"s":88.6,"vx":6.32,"ax":-0.77,"ay":6.42,"yawRate":0.787,"rpm":945,"trqCmd":2,"trqEst":1,"vdc":365,"idc":0,"thr":10,"pot1":456,"pot2":1000,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":89.52,"vx":6.26,"ax":-0.38,"ay":5.61,"yawRate":0.713,"rpm":933,"trqCmd":1,"trqEst":3,"vdc":364,"idc":0,"thr":10,"pot1":453,"pot2":996,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":90.44,"vx":6.19,"ax":-0.07,"ay":5.45,"yawRate":0.686,"rpm":919,"trqCmd":0,"trqEst":2,"vdc":365,"idc":0,"thr":10,"pot1":448,"pot2":987,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":91.36,"vx":6.12,"ax":0.11,"ay":5.27,"yawRate":0.628,"rpm":910,"trqCmd":0,"trqEst":-1,"vdc":364,"idc":0,"thr":9,"pot1":435,"pot2":961,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":92.27,"vx":6.07,"ax":0.17,"ay":4.85,"yawRate":0.555,"rpm":893,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":9,"pot1":425,"pot2":951,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":93.17,"vx":6.03,"ax":0.71,"ay":3.59,"yawRate":0.433,"rpm":904,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":8,"pot1":435,"pot2":958,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":94.06,"vx":5.96,"ax":0.42,"ay":3.62,"yawRate":0.388,"rpm":901,"trqCmd":0,"trqEst":-2,"vdc":364,"idc":0,"thr":9,"pot1":430,"pot2":952,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":94.93,"vx":5.89,"ax":0.3,"ay":3.47,"yawRate":0.368,"rpm":877,"trqCmd":0,"trqEst":1,"vdc":367,"idc":0,"thr":6,"pot1":393,"pot2":876,"brkF":0,"brkR":0,"invT":35,"motT":35},{"s":95.79,"vx":5.74,"ax":-0.35,"ay":2.89,"yawRate":0.336,"rpm":857,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":2,"pot1":357,"pot2":803,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":96.63,"vx":5.46,"ax":-0.51,"ay":2.83,"yawRate":0.241,"rpm":814,"trqCmd":0,"trqEst":-1,"vdc":365,"idc":0,"thr":2,"pot1":346,"pot2":784,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":97.47,"vx":5.33,"ax":-0.03,"ay":2.19,"yawRate":0.211,"rpm":802,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":1,"pot1":342,"pot2":786,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":98.29,"vx":5.1,"ax":-0.04,"ay":1.68,"yawRate":0.118,"rpm":764,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":2,"pot1":347,"pot2":785,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":99.11,"vx":4.89,"ax":-0.21,"ay":1.37,"yawRate":0.04,"rpm":730,"trqCmd":0,"trqEst":-1,"vdc":365,"idc":0,"thr":1,"pot1":347,"pot2":783,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":99.94,"vx":4.64,"ax":-0.14,"ay":1.68,"yawRate":0.039,"rpm":699,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":1,"pot1":343,"pot2":777,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":100.78,"vx":4.44,"ax":-0.29,"ay":1.9,"yawRate":0.042,"rpm":658,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":1,"pot1":344,"pot2":780,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":101.62,"vx":4.15,"ax":-0.02,"ay":1.35,"yawRate":0.03,"rpm":610,"trqCmd":0,"trqEst":1,"vdc":365,"idc":0,"thr":1,"pot1":347,"pot2":774,"brkF":0,"brkR":0,"invT":35,"motT":31},{"s":102.47,"vx":3.85,"ax":-0.41,"ay":0.62,"yawRate":-0.112,"rpm":572,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":1,"pot1":337,"pot2":770,"brkF":0,"brkR":0,"invT":34,"motT":32},{"s":103.34,"vx":3.57,"ax":-0.1,"ay":1.07,"yawRate":-0.227,"rpm":534,"trqCmd":0,"trqEst":1,"vdc":366,"idc":0,"thr":1,"pot1":333,"pot2":768,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":104.2,"vx":3.37,"ax":0.35,"ay":0.77,"yawRate":-0.217,"rpm":502,"trqCmd":0,"trqEst":1,"vdc":366,"idc":0,"thr":1,"pot1":335,"pot2":767,"brkF":0,"brkR":0,"invT":35,"motT":35},{"s":105.07,"vx":3.24,"ax":0.13,"ay":0.91,"yawRate":-0.241,"rpm":486,"trqCmd":0,"trqEst":1,"vdc":365,"idc":0,"thr":1,"pot1":340,"pot2":770,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":105.94,"vx":3.11,"ax":0.22,"ay":1,"yawRate":-0.225,"rpm":462,"trqCmd":0,"trqEst":-3,"vdc":367,"idc":0,"thr":2,"pot1":357,"pot2":803,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":106.79,"vx":2.98,"ax":0.21,"ay":0.86,"yawRate":-0.215,"rpm":452,"trqCmd":0,"trqEst":2,"vdc":365,"idc":0,"thr":3,"pot1":386,"pot2":841,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":107.63,"vx":2.86,"ax":0.35,"ay":2.11,"yawRate":-0.104,"rpm":431,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":5,"pot1":389,"pot2":883,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":108.45,"vx":2.7,"ax":0.38,"ay":2.41,"yawRate":0.178,"rpm":420,"trqCmd":0,"trqEst":0,"vdc":365,"idc":0,"thr":8,"pot1":429,"pot2":946,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":109.25,"vx":2.57,"ax":0.32,"ay":1.42,"yawRate":0.17,"rpm":389,"trqCmd":2,"trqEst":1,"vdc":365,"idc":0,"thr":11,"pot1":462,"pot2":1015,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":110.01,"vx":2.56,"ax":1.13,"ay":1.21,"yawRate":0.105,"rpm":381,"trqCmd":16,"trqEst":16,"vdc":365,"idc":2,"thr":15,"pot1":512,"pot2":1113,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":110.75,"vx":2.77,"ax":0.62,"ay":1.28,"yawRate":0.113,"rpm":425,"trqCmd":8,"trqEst":9,"vdc":367,"idc":0,"thr":13,"pot1":480,"pot2":1049,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":111.46,"vx":2.7,"ax":0.25,"ay":1.93,"yawRate":0.258,"rpm":408,"trqCmd":0,"trqEst":0,"vdc":366,"idc":0,"thr":1,"pot1":344,"pot2":785,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":112.15,"vx":2.56,"ax":-0.11,"ay":2.09,"yawRate":0.428,"rpm":369,"trqCmd":0,"trqEst":1,"vdc":365,"idc":0,"thr":4,"pot1":395,"pot2":880,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":112.84,"vx":2.32,"ax":0.18,"ay":1.16,"yawRate":0.172,"rpm":353,"trqCmd":0,"trqEst":0,"vdc":367,"idc":0,"thr":8,"pot1":431,"pot2":947,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":113.53,"vx":2.22,"ax":0.31,"ay":1.82,"yawRate":0.359,"rpm":337,"trqCmd":6,"trqEst":6,"vdc":368,"idc":1,"thr":12,"pot1":478,"pot2":1040,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":114.23,"vx":2.27,"ax":0.2,"ay":1.41,"yawRate":0.507,"rpm":330,"trqCmd":13,"trqEst":15,"vdc":366,"idc":1,"thr":14,"pot1":505,"pot2":1091,"brkF":0,"brkR":0,"invT":35,"motT":36},{"s":114.97,"vx":2.29,"ax":0.07,"ay":0.76,"yawRate":0.491,"rpm":326,"trqCmd":15,"trqEst":14,"vdc":366,"idc":1,"thr":15,"pot1":507,"pot2":1093,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":115.73,"vx":2.36,"ax":0.24,"ay":0.3,"yawRate":0.44,"rpm":349,"trqCmd":15,"trqEst":13,"vdc":368,"idc":1,"thr":15,"pot1":514,"pot2":1111,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":116.53,"vx":2.51,"ax":0,"ay":0.54,"yawRate":0.435,"rpm":374,"trqCmd":15,"trqEst":17,"vdc":365,"idc":1,"thr":15,"pot1":506,"pot2":1104,"brkF":0,"brkR":0,"invT":35,"motT":34},{"s":117.36,"vx":2.65,"ax":-0.86,"ay":0.56,"yawRate":0.495,"rpm":384,"trqCmd":0,"trqEst":1,"vdc":367,"idc":0,"thr":11,"pot1":448,"pot2":983,"brkF":0,"brkR":0,"invT":35,"motT":32},{"s":118.23,"vx":2.42,"ax":-0.78,"ay":0.76,"yawRate":0.249,"rpm":369,"trqCmd":0,"trqEst":-2,"vdc":367,"idc":0,"thr":9,"pot1":442,"pot2":978,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":119.12,"vx":2.43,"ax":-1.31,"ay":1.2,"yawRate":0.484,"rpm":352,"trqCmd":0,"trqEst":-2,"vdc":367,"idc":0,"thr":7,"pot1":377,"pot2":848,"brkF":0,"brkR":0,"invT":35,"motT":33},{"s":120.04,"vx":1.23,"ax":5.16,"ay":-0.15,"yawRate":0.029,"rpm":2911,"trqCmd":215,"trqEst":195,"vdc":311,"idc":228,"thr":94,"pot1":1476,"pot2":2980,"brkF":0,"brkR":0,"invT":34,"motT":33},{"s":120.97,"vx":3.59,"ax":6.7,"ay":-1.43,"yawRate":0.127,"rpm":4509,"trqCmd":137,"trqEst":111,"vdc":304,"idc":235,"thr":100,"pot1":1491,"pot2":3005,"brkF":0,"brkR":0,"invT":36,"motT":34},{"s":121.91,"vx":4.97,"ax":8.02,"ay":-1.11,"yawRate":0.104,"rpm":4395,"trqCmd":140,"trqEst":83,"vdc":301,"idc":238,"thr":100,"pot1":1493,"pot2":3008,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":122.86,"vx":6.45,"ax":7.46,"ay":-0.18,"yawRate":0.184,"rpm":4199,"trqCmd":148,"trqEst":84,"vdc":301,"idc":243,"thr":100,"pot1":1502,"pot2":3025,"brkF":0,"brkR":0,"invT":37,"motT":33},{"s":123.82,"vx":7.52,"ax":8.6,"ay":-0.81,"yawRate":0.132,"rpm":3941,"trqCmd":155,"trqEst":132,"vdc":302,"idc":239,"thr":100,"pot1":1496,"pot2":3013,"brkF":0,"brkR":0,"invT":38,"motT":35},{"s":124.78,"vx":8.57,"ax":8.9,"ay":0.5,"yawRate":0.244,"rpm":3749,"trqCmd":164,"trqEst":111,"vdc":297,"idc":251,"thr":93,"pot1":1447,"pot2":2916,"brkF":0,"brkR":0,"invT":38,"motT":34},{"s":125.74,"vx":9.69,"ax":8.91,"ay":-0.64,"yawRate":0.223,"rpm":3616,"trqCmd":171,"trqEst":153,"vdc":295,"idc":252,"thr":92,"pot1":1443,"pot2":2917,"brkF":0,"brkR":0,"invT":38,"motT":33},{"s":126.71,"vx":10.44,"ax":8.95,"ay":-0.34,"yawRate":0.133,"rpm":3541,"trqCmd":174,"trqEst":165,"vdc":290,"idc":247,"thr":93,"pot1":1447,"pot2":2924,"brkF":0,"brkR":0,"invT":39,"motT":33},{"s":127.67,"vx":11.33,"ax":9.69,"ay":0.4,"yawRate":0.097,"rpm":3406,"trqCmd":178,"trqEst":144,"vdc":294,"idc":245,"thr":91,"pot1":1434,"pot2":2894,"brkF":0,"brkR":0,"invT":39,"motT":32},{"s":128.64,"vx":12.27,"ax":9.73,"ay":-0.32,"yawRate":0.121,"rpm":3283,"trqCmd":189,"trqEst":179,"vdc":288,"idc":257,"thr":89,"pot1":1411,"pot2":2856,"brkF":0,"brkR":0,"invT":39,"motT":32},{"s":129.6,"vx":13.02,"ax":9.18,"ay":-0.17,"yawRate":0.048,"rpm":3298,"trqCmd":186,"trqEst":151,"vdc":294,"idc":252,"thr":89,"pot1":1415,"pot2":2854,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":130.56,"vx":13.61,"ax":9.33,"ay":-0.5,"yawRate":-0.099,"rpm":3278,"trqCmd":189,"trqEst":175,"vdc":298,"idc":255,"thr":88,"pot1":1395,"pot2":2810,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":131.53,"vx":14.27,"ax":9.82,"ay":-1.28,"yawRate":-0.257,"rpm":3231,"trqCmd":191,"trqEst":203,"vdc":297,"idc":258,"thr":88,"pot1":1371,"pot2":2776,"brkF":0,"brkR":0,"invT":40,"motT":32},{"s":132.49,"vx":14.75,"ax":9.76,"ay":-1.23,"yawRate":-0.308,"rpm":3184,"trqCmd":193,"trqEst":186,"vdc":293,"idc":268,"thr":86,"pot1":1373,"pot2":2778,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":133.46,"vx":15.75,"ax":9.44,"ay":-1.53,"yawRate":-0.265,"rpm":3174,"trqCmd":192,"trqEst":151,"vdc":286,"idc":260,"thr":85,"pot1":1374,"pot2":2780,"brkF":0,"brkR":0,"invT":40,"motT":32},{"s":134.43,"vx":16.12,"ax":9.77,"ay":-2.18,"yawRate":-0.249,"rpm":3129,"trqCmd":195,"trqEst":199,"vdc":290,"idc":265,"thr":86,"pot1":1366,"pot2":2769,"brkF":0,"brkR":0,"invT":40,"motT":32},{"s":135.4,"vx":16.79,"ax":8.98,"ay":-2.42,"yawRate":-0.288,"rpm":3218,"trqCmd":193,"trqEst":138,"vdc":284,"idc":268,"thr":86,"pot1":1363,"pot2":2766,"brkF":0,"brkR":0,"invT":40,"motT":35}],"23_08/23_08_2026-11.03.02.csv":[{"s":0,"vx":17,"ax":7.02,"ay":-1.28,"yawRate":-0.174,"rpm":2781,"trqCmd":156,"trqEst":165,"vdc":316,"idc":154,"thr":61,"pot1":1069,"pot2":2202,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":0.97,"vx":17.27,"ax":6.44,"ay":-2.11,"yawRate":-0.307,"rpm":2794,"trqCmd":155,"trqEst":166,"vdc":315,"idc":152,"thr":61,"pot1":1062,"pot2":2187,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":1.94,"vx":17.82,"ax":6.43,"ay":-2.46,"yawRate":-0.24,"rpm":2883,"trqCmd":161,"trqEst":159,"vdc":314,"idc":166,"thr":63,"pot1":1107,"pot2":2275,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":2.92,"vx":18.07,"ax":6.66,"ay":-2.31,"yawRate":-0.089,"rpm":2947,"trqCmd":160,"trqEst":169,"vdc":314,"idc":171,"thr":64,"pot1":1085,"pot2":2229,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":3.89,"vx":18.71,"ax":6.62,"ay":-1.23,"yawRate":-0.036,"rpm":2992,"trqCmd":155,"trqEst":177,"vdc":314,"idc":169,"thr":62,"pot1":1067,"pot2":2197,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":4.86,"vx":18.89,"ax":6.42,"ay":-0.35,"yawRate":0.058,"rpm":2975,"trqCmd":147,"trqEst":147,"vdc":317,"idc":158,"thr":60,"pot1":1041,"pot2":2144,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":5.84,"vx":19.06,"ax":5.97,"ay":-0.04,"yawRate":0.09,"rpm":2994,"trqCmd":141,"trqEst":131,"vdc":319,"idc":154,"thr":59,"pot1":989,"pot2":2042,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":6.81,"vx":19.67,"ax":5.65,"ay":1.27,"yawRate":0.103,"rpm":3032,"trqCmd":113,"trqEst":122,"vdc":321,"idc":123,"thr":55,"pot1":902,"pot2":1879,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":7.79,"vx":19.82,"ax":4.07,"ay":2.06,"yawRate":0.115,"rpm":3030,"trqCmd":107,"trqEst":110,"vdc":328,"idc":106,"thr":45,"pot1":877,"pot2":1819,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":8.76,"vx":19.95,"ax":4.01,"ay":2.82,"yawRate":0.112,"rpm":3116,"trqCmd":124,"trqEst":134,"vdc":321,"idc":131,"thr":46,"pot1":947,"pot2":1962,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":9.74,"vx":20.25,"ax":5.22,"ay":2.93,"yawRate":0.118,"rpm":3168,"trqCmd":124,"trqEst":118,"vdc":319,"idc":144,"thr":51,"pot1":942,"pot2":1959,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":10.71,"vx":20.57,"ax":4.68,"ay":3.28,"yawRate":0.144,"rpm":3151,"trqCmd":91,"trqEst":99,"vdc":328,"idc":107,"thr":45,"pot1":766,"pot2":1613,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":11.69,"vx":20.52,"ax":0.97,"ay":3.26,"yawRate":0.114,"rpm":3009,"trqCmd":0,"trqEst":-3,"vdc":357,"idc":0,"thr":25,"pot1":324,"pot2":738,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":12.66,"vx":20.48,"ax":-2.12,"ay":2.82,"yawRate":0.102,"rpm":3001,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":0,"pot1":325,"pot2":736,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":13.64,"vx":20.4,"ax":-5.15,"ay":0.84,"yawRate":0.063,"rpm":3074,"trqCmd":0,"trqEst":-1,"vdc":357,"idc":0,"thr":0,"pot1":325,"pot2":731,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":14.61,"vx":19.96,"ax":-5.77,"ay":1.29,"yawRate":0.037,"rpm":2929,"trqCmd":0,"trqEst":3,"vdc":358,"idc":0,"thr":0,"pot1":324,"pot2":733,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":15.59,"vx":19.5,"ax":-6.87,"ay":0.54,"yawRate":0.013,"rpm":2894,"trqCmd":0,"trqEst":-2,"vdc":357,"idc":0,"thr":0,"pot1":328,"pot2":734,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":16.57,"vx":19.23,"ax":-8.05,"ay":0.77,"yawRate":0.013,"rpm":2864,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":0,"pot1":326,"pot2":730,"brkF":0,"brkR":0,"invT":41,"motT":35},{"s":17.54,"vx":18.58,"ax":-8.53,"ay":0.83,"yawRate":0.014,"rpm":2699,"trqCmd":0,"trqEst":-1,"vdc":360,"idc":0,"thr":0,"pot1":327,"pot2":734,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":18.52,"vx":18.09,"ax":-8.61,"ay":-0.87,"yawRate":0.015,"rpm":2616,"trqCmd":0,"trqEst":2,"vdc":357,"idc":0,"thr":0,"pot1":320,"pot2":733,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":19.5,"vx":17.77,"ax":-8.97,"ay":-0.75,"yawRate":0.015,"rpm":2559,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":0,"pot1":322,"pot2":732,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":20.48,"vx":17.3,"ax":-9.75,"ay":-0.8,"yawRate":0.016,"rpm":2528,"trqCmd":0,"trqEst":1,"vdc":357,"idc":0,"thr":0,"pot1":323,"pot2":730,"brkF":0,"brkR":0,"invT":40,"motT":35},{"s":21.45,"vx":16.49,"ax":-9.9,"ay":0.91,"yawRate":0.005,"rpm":2510,"trqCmd":0,"trqEst":-1,"vdc":358,"idc":0,"thr":0,"pot1":325,"pot2":731,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":22.43,"vx":15.9,"ax":-9.25,"ay":0.89,"yawRate":0.001,"rpm":2351,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":0,"pot1":320,"pot2":726,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":23.4,"vx":15.71,"ax":-8.31,"ay":1.32,"yawRate":-0.011,"rpm":2158,"trqCmd":0,"trqEst":1,"vdc":358,"idc":0,"thr":0,"pot1":324,"pot2":734,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":24.38,"vx":14.89,"ax":-8.92,"ay":0.16,"yawRate":0,"rpm":2006,"trqCmd":0,"trqEst":1,"vdc":359,"idc":0,"thr":0,"pot1":324,"pot2":733,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":25.35,"vx":14.35,"ax":-10.1,"ay":0.64,"yawRate":-0.014,"rpm":1981,"trqCmd":0,"trqEst":0,"vdc":359,"idc":0,"thr":0,"pot1":326,"pot2":739,"brkF":0,"brkR":0,"invT":39,"motT":36},{"s":26.32,"vx":13.41,"ax":-10.29,"ay":1.2,"yawRate":-0.022,"rpm":1982,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":0,"pot1":324,"pot2":732,"brkF":0,"brkR":0,"invT":39,"motT":36},{"s":27.29,"vx":12.62,"ax":-9.8,"ay":0.99,"yawRate":0,"rpm":1830,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":0,"pot1":322,"pot2":730,"brkF":0,"brkR":0,"invT":39,"motT":36},{"s":28.24,"vx":11.74,"ax":-9.59,"ay":0.68,"yawRate":0.004,"rpm":1704,"trqCmd":0,"trqEst":-1,"vdc":357,"idc":0,"thr":0,"pot1":327,"pot2":731,"brkF":0,"brkR":0,"invT":39,"motT":36},{"s":29.19,"vx":10.99,"ax":-9.78,"ay":0.66,"yawRate":0.025,"rpm":1567,"trqCmd":0,"trqEst":1,"vdc":361,"idc":0,"thr":0,"pot1":321,"pot2":723,"brkF":0,"brkR":0,"invT":39,"motT":37},{"s":30.12,"vx":9.72,"ax":-9.6,"ay":0.85,"yawRate":0.04,"rpm":1432,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":0,"pot1":323,"pot2":730,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":31.03,"vx":8.61,"ax":-9.59,"ay":0.72,"yawRate":0.026,"rpm":1236,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":0,"pot1":323,"pot2":733,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":31.92,"vx":5.82,"ax":-9.82,"ay":0.87,"yawRate":0.007,"rpm":1102,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":0,"pot1":320,"pot2":729,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":32.78,"vx":3.49,"ax":-6.28,"ay":1.74,"yawRate":0.052,"rpm":793,"trqCmd":0,"trqEst":-2,"vdc":361,"idc":0,"thr":0,"pot1":326,"pot2":736,"brkF":0,"brkR":0,"invT":38,"motT":34},{"s":33.61,"vx":4.63,"ax":-1.61,"ay":4.33,"yawRate":0.625,"rpm":679,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":325,"pot2":732,"brkF":0,"brkR":0,"invT":38,"motT":35},{"s":34.41,"vx":4.49,"ax":-1.48,"ay":4.23,"yawRate":0.832,"rpm":658,"trqCmd":0,"trqEst":-1,"vdc":360,"idc":0,"thr":0,"pot1":321,"pot2":729,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":35.18,"vx":4.33,"ax":-1.98,"ay":4.06,"yawRate":1.018,"rpm":620,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":1,"pot1":352,"pot2":788,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":35.93,"vx":4.18,"ax":-1.95,"ay":3.86,"yawRate":0.968,"rpm":591,"trqCmd":0,"trqEst":0,"vdc":360,"idc":0,"thr":4,"pot1":380,"pot2":852,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":36.66,"vx":3.98,"ax":-2.37,"ay":3.9,"yawRate":0.928,"rpm":569,"trqCmd":3,"trqEst":4,"vdc":362,"idc":0,"thr":10,"pot1":458,"pot2":1015,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":37.4,"vx":3.87,"ax":-1.66,"ay":4.2,"yawRate":0.914,"rpm":570,"trqCmd":22,"trqEst":23,"vdc":360,"idc":4,"thr":18,"pot1":547,"pot2":1170,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":38.14,"vx":4.03,"ax":-0.43,"ay":4.58,"yawRate":0.95,"rpm":610,"trqCmd":42,"trqEst":37,"vdc":359,"idc":7,"thr":23,"pot1":611,"pot2":1307,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":38.9,"vx":4.34,"ax":-0.45,"ay":5.27,"yawRate":1.019,"rpm":627,"trqCmd":40,"trqEst":38,"vdc":360,"idc":8,"thr":23,"pot1":608,"pot2":1295,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":39.7,"vx":4.54,"ax":-0.53,"ay":5.54,"yawRate":1.05,"rpm":660,"trqCmd":38,"trqEst":38,"vdc":360,"idc":8,"thr":23,"pot1":603,"pot2":1287,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":40.53,"vx":4.7,"ax":-0.97,"ay":5.97,"yawRate":1.051,"rpm":667,"trqCmd":27,"trqEst":25,"vdc":359,"idc":5,"thr":19,"pot1":556,"pot2":1204,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":41.39,"vx":4.8,"ax":-0.96,"ay":5.7,"yawRate":1.051,"rpm":700,"trqCmd":19,"trqEst":19,"vdc":360,"idc":4,"thr":17,"pot1":529,"pot2":1143,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":42.3,"vx":4.78,"ax":-0.26,"ay":3.29,"yawRate":0.807,"rpm":698,"trqCmd":16,"trqEst":19,"vdc":361,"idc":3,"thr":15,"pot1":514,"pot2":1109,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":43.23,"vx":4.74,"ax":-0.05,"ay":1.69,"yawRate":0.317,"rpm":723,"trqCmd":12,"trqEst":11,"vdc":360,"idc":2,"thr":14,"pot1":488,"pot2":1070,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":44.2,"vx":4.74,"ax":-0.15,"ay":1.84,"yawRate":0.122,"rpm":708,"trqCmd":11,"trqEst":5,"vdc":359,"idc":2,"thr":14,"pot1":491,"pot2":1070,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":45.19,"vx":4.78,"ax":-0.08,"ay":2.06,"yawRate":0.053,"rpm":714,"trqCmd":12,"trqEst":9,"vdc":361,"idc":2,"thr":14,"pot1":492,"pot2":1071,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":46.19,"vx":4.8,"ax":0.01,"ay":2.04,"yawRate":0.067,"rpm":720,"trqCmd":12,"trqEst":9,"vdc":361,"idc":2,"thr":14,"pot1":491,"pot2":1074,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":47.2,"vx":4.85,"ax":-0.14,"ay":2.17,"yawRate":0.068,"rpm":737,"trqCmd":10,"trqEst":9,"vdc":361,"idc":2,"thr":13,"pot1":487,"pot2":1062,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":48.22,"vx":4.89,"ax":-0.1,"ay":2.09,"yawRate":0.062,"rpm":741,"trqCmd":12,"trqEst":11,"vdc":361,"idc":2,"thr":14,"pot1":494,"pot2":1076,"brkF":0,"brkR":0,"invT":37,"motT":38},{"s":49.23,"vx":4.92,"ax":0.06,"ay":2.04,"yawRate":0.062,"rpm":743,"trqCmd":11,"trqEst":8,"vdc":360,"idc":3,"thr":13,"pot1":493,"pot2":1082,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":50.25,"vx":4.98,"ax":-0.16,"ay":2.11,"yawRate":0.049,"rpm":752,"trqCmd":11,"trqEst":11,"vdc":360,"idc":2,"thr":14,"pot1":493,"pot2":1075,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":51.27,"vx":5.02,"ax":0.07,"ay":1.04,"yawRate":-0.07,"rpm":763,"trqCmd":15,"trqEst":16,"vdc":361,"idc":3,"thr":14,"pot1":518,"pot2":1119,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":52.28,"vx":5.13,"ax":0.28,"ay":1.45,"yawRate":-0.088,"rpm":772,"trqCmd":21,"trqEst":22,"vdc":360,"idc":4,"thr":16,"pot1":528,"pot2":1149,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":53.29,"vx":5.27,"ax":0.37,"ay":1.2,"yawRate":-0.086,"rpm":801,"trqCmd":19,"trqEst":20,"vdc":360,"idc":4,"thr":16,"pot1":534,"pot2":1148,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":54.3,"vx":5.39,"ax":0.32,"ay":1.44,"yawRate":-0.084,"rpm":805,"trqCmd":20,"trqEst":19,"vdc":360,"idc":5,"thr":17,"pot1":530,"pot2":1144,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":55.3,"vx":5.5,"ax":0.31,"ay":1.58,"yawRate":-0.082,"rpm":826,"trqCmd":18,"trqEst":21,"vdc":361,"idc":4,"thr":16,"pot1":522,"pot2":1137,"brkF":0,"brkR":0,"invT":37,"motT":38},{"s":56.3,"vx":5.61,"ax":0.27,"ay":1.55,"yawRate":-0.079,"rpm":851,"trqCmd":19,"trqEst":19,"vdc":360,"idc":5,"thr":16,"pot1":525,"pot2":1136,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":57.31,"vx":5.73,"ax":0.01,"ay":1.19,"yawRate":-0.087,"rpm":855,"trqCmd":16,"trqEst":18,"vdc":361,"idc":4,"thr":16,"pot1":516,"pot2":1122,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":58.31,"vx":5.84,"ax":-0.09,"ay":1.34,"yawRate":-0.068,"rpm":876,"trqCmd":17,"trqEst":15,"vdc":359,"idc":4,"thr":15,"pot1":516,"pot2":1122,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":59.3,"vx":5.92,"ax":0.22,"ay":1.58,"yawRate":-0.032,"rpm":886,"trqCmd":17,"trqEst":16,"vdc":360,"idc":4,"thr":15,"pot1":515,"pot2":1123,"brkF":0,"brkR":0,"invT":38,"motT":37},{"s":60.3,"vx":5.99,"ax":0.13,"ay":1.23,"yawRate":0.009,"rpm":899,"trqCmd":17,"trqEst":16,"vdc":359,"idc":4,"thr":15,"pot1":512,"pot2":1113,"brkF":0,"brkR":0,"invT":38,"motT":37},{"s":61.29,"vx":6.08,"ax":0.1,"ay":2.21,"yawRate":0.02,"rpm":916,"trqCmd":16,"trqEst":14,"vdc":360,"idc":5,"thr":16,"pot1":514,"pot2":1117,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":62.28,"vx":6.14,"ax":0.15,"ay":0.99,"yawRate":0.019,"rpm":927,"trqCmd":15,"trqEst":16,"vdc":359,"idc":4,"thr":15,"pot1":508,"pot2":1107,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":63.27,"vx":6.19,"ax":-0.23,"ay":1.77,"yawRate":0.009,"rpm":931,"trqCmd":13,"trqEst":10,"vdc":362,"idc":3,"thr":14,"pot1":491,"pot2":1083,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":64.26,"vx":6.19,"ax":-0.22,"ay":1.93,"yawRate":0.014,"rpm":928,"trqCmd":3,"trqEst":1,"vdc":361,"idc":0,"thr":12,"pot1":452,"pot2":995,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":65.25,"vx":6.17,"ax":-0.76,"ay":1.43,"yawRate":0.009,"rpm":924,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":10,"pot1":446,"pot2":988,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":66.24,"vx":6.11,"ax":-0.63,"ay":2.14,"yawRate":0.01,"rpm":918,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":9,"pot1":443,"pot2":972,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":67.22,"vx":6.02,"ax":-0.7,"ay":1.41,"yawRate":0.014,"rpm":904,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":9,"pot1":439,"pot2":970,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":68.2,"vx":5.99,"ax":-0.71,"ay":2.16,"yawRate":0.01,"rpm":889,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":9,"pot1":452,"pot2":989,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":69.18,"vx":5.95,"ax":-0.45,"ay":2,"yawRate":0.014,"rpm":886,"trqCmd":1,"trqEst":3,"vdc":362,"idc":0,"thr":11,"pot1":456,"pot2":996,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":70.15,"vx":5.88,"ax":-0.69,"ay":2.1,"yawRate":0.019,"rpm":891,"trqCmd":1,"trqEst":0,"vdc":362,"idc":0,"thr":10,"pot1":455,"pot2":994,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":71.11,"vx":5.84,"ax":-0.28,"ay":1.95,"yawRate":0.012,"rpm":875,"trqCmd":1,"trqEst":2,"vdc":364,"idc":0,"thr":11,"pot1":453,"pot2":999,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":72.07,"vx":5.8,"ax":-0.41,"ay":1.54,"yawRate":0.013,"rpm":874,"trqCmd":4,"trqEst":3,"vdc":362,"idc":1,"thr":11,"pot1":468,"pot2":1022,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":73.01,"vx":5.76,"ax":-0.49,"ay":1.31,"yawRate":0.011,"rpm":873,"trqCmd":5,"trqEst":4,"vdc":362,"idc":1,"thr":11,"pot1":475,"pot2":1033,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":73.94,"vx":5.76,"ax":-0.06,"ay":2.26,"yawRate":0.007,"rpm":872,"trqCmd":10,"trqEst":9,"vdc":362,"idc":2,"thr":13,"pot1":484,"pot2":1055,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":74.86,"vx":5.78,"ax":-0.23,"ay":2.48,"yawRate":0.009,"rpm":879,"trqCmd":10,"trqEst":7,"vdc":363,"idc":2,"thr":12,"pot1":484,"pot2":1049,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":75.76,"vx":5.8,"ax":-0.22,"ay":1.46,"yawRate":0.017,"rpm":872,"trqCmd":9,"trqEst":8,"vdc":362,"idc":2,"thr":12,"pot1":486,"pot2":1058,"brkF":0,"brkR":0,"invT":37,"motT":38},{"s":76.64,"vx":5.81,"ax":-0.11,"ay":1.49,"yawRate":0.013,"rpm":872,"trqCmd":10,"trqEst":8,"vdc":361,"idc":2,"thr":12,"pot1":486,"pot2":1053,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":77.51,"vx":5.81,"ax":-0.01,"ay":3,"yawRate":0.075,"rpm":865,"trqCmd":10,"trqEst":9,"vdc":362,"idc":2,"thr":13,"pot1":487,"pot2":1055,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":78.36,"vx":5.82,"ax":-0.22,"ay":3.58,"yawRate":0.326,"rpm":873,"trqCmd":8,"trqEst":9,"vdc":361,"idc":2,"thr":13,"pot1":478,"pot2":1042,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":79.2,"vx":5.84,"ax":-0.26,"ay":3.88,"yawRate":0.366,"rpm":870,"trqCmd":9,"trqEst":8,"vdc":361,"idc":2,"thr":13,"pot1":485,"pot2":1054,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":80.03,"vx":5.83,"ax":-0.39,"ay":3.72,"yawRate":0.381,"rpm":874,"trqCmd":9,"trqEst":6,"vdc":362,"idc":2,"thr":13,"pot1":474,"pot2":1039,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":80.86,"vx":5.83,"ax":-0.01,"ay":4.3,"yawRate":0.396,"rpm":884,"trqCmd":9,"trqEst":9,"vdc":360,"idc":2,"thr":13,"pot1":482,"pot2":1047,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":81.68,"vx":5.85,"ax":-0.19,"ay":4.24,"yawRate":0.393,"rpm":874,"trqCmd":9,"trqEst":8,"vdc":361,"idc":2,"thr":13,"pot1":485,"pot2":1051,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":82.51,"vx":5.84,"ax":0.09,"ay":3.64,"yawRate":0.394,"rpm":876,"trqCmd":8,"trqEst":8,"vdc":362,"idc":2,"thr":13,"pot1":481,"pot2":1045,"brkF":0,"brkR":0,"invT":37,"motT":38},{"s":83.34,"vx":5.88,"ax":0.06,"ay":4.05,"yawRate":0.39,"rpm":873,"trqCmd":9,"trqEst":8,"vdc":363,"idc":2,"thr":12,"pot1":484,"pot2":1052,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":84.19,"vx":5.87,"ax":-0.02,"ay":3.84,"yawRate":0.392,"rpm":882,"trqCmd":8,"trqEst":7,"vdc":362,"idc":2,"thr":13,"pot1":475,"pot2":1038,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":85.04,"vx":5.86,"ax":0.09,"ay":4.02,"yawRate":0.389,"rpm":891,"trqCmd":6,"trqEst":7,"vdc":362,"idc":1,"thr":12,"pot1":474,"pot2":1031,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":85.91,"vx":5.82,"ax":-0.16,"ay":4.34,"yawRate":0.395,"rpm":867,"trqCmd":2,"trqEst":3,"vdc":362,"idc":1,"thr":11,"pot1":459,"pot2":1010,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":86.79,"vx":5.79,"ax":-0.01,"ay":3.74,"yawRate":0.388,"rpm":860,"trqCmd":3,"trqEst":1,"vdc":362,"idc":0,"thr":11,"pot1":458,"pot2":1004,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":87.69,"vx":5.74,"ax":0.08,"ay":4,"yawRate":0.38,"rpm":859,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":9,"pot1":441,"pot2":964,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":88.6,"vx":5.71,"ax":0.1,"ay":3.92,"yawRate":0.386,"rpm":848,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":5,"pot1":380,"pot2":860,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":89.52,"vx":5.61,"ax":0.12,"ay":3.66,"yawRate":0.388,"rpm":844,"trqCmd":0,"trqEst":5,"vdc":364,"idc":0,"thr":4,"pot1":375,"pot2":836,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":90.44,"vx":5.55,"ax":0.1,"ay":3.49,"yawRate":0.389,"rpm":835,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":4,"pot1":369,"pot2":829,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":91.36,"vx":5.42,"ax":-0.69,"ay":3.55,"yawRate":0.371,"rpm":807,"trqCmd":0,"trqEst":2,"vdc":363,"idc":0,"thr":0,"pot1":330,"pot2":741,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":92.27,"vx":5.07,"ax":-1.42,"ay":3.32,"yawRate":0.338,"rpm":752,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":0,"pot1":325,"pot2":739,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":93.17,"vx":4.62,"ax":-1.9,"ay":2.9,"yawRate":0.308,"rpm":685,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":337,"pot2":743,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":94.06,"vx":4.16,"ax":-0.33,"ay":2.56,"yawRate":0.276,"rpm":623,"trqCmd":0,"trqEst":1,"vdc":364,"idc":0,"thr":0,"pot1":337,"pot2":743,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":94.93,"vx":4.03,"ax":0.38,"ay":2.25,"yawRate":0.257,"rpm":614,"trqCmd":0,"trqEst":-1,"vdc":362,"idc":0,"thr":0,"pot1":333,"pot2":744,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":95.79,"vx":3.97,"ax":0.45,"ay":2.12,"yawRate":0.253,"rpm":593,"trqCmd":0,"trqEst":-1,"vdc":363,"idc":0,"thr":0,"pot1":332,"pot2":741,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":96.63,"vx":3.91,"ax":0.47,"ay":1.52,"yawRate":0.208,"rpm":582,"trqCmd":0,"trqEst":0,"vdc":361,"idc":0,"thr":0,"pot1":333,"pot2":743,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":97.47,"vx":3.84,"ax":0.31,"ay":1.6,"yawRate":0.08,"rpm":576,"trqCmd":0,"trqEst":0,"vdc":362,"idc":0,"thr":0,"pot1":332,"pot2":741,"brkF":0,"brkR":0,"invT":37,"motT":37},{"s":98.29,"vx":3.75,"ax":0.35,"ay":1.69,"yawRate":0.084,"rpm":560,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":332,"pot2":741,"brkF":0,"brkR":0,"invT":37,"motT":38},{"s":99.11,"vx":3.62,"ax":0.35,"ay":1.27,"yawRate":0.081,"rpm":541,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":338,"pot2":750,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":99.94,"vx":3.51,"ax":0.31,"ay":1.32,"yawRate":0.057,"rpm":523,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":327,"pot2":736,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":100.78,"vx":3.4,"ax":0.16,"ay":0.83,"yawRate":-0.089,"rpm":510,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":329,"pot2":740,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":101.62,"vx":3.3,"ax":0.35,"ay":1.05,"yawRate":-0.088,"rpm":489,"trqCmd":0,"trqEst":4,"vdc":362,"idc":0,"thr":0,"pot1":332,"pot2":741,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":102.47,"vx":3.12,"ax":-0.07,"ay":0.96,"yawRate":-0.079,"rpm":468,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":331,"pot2":737,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":103.34,"vx":2.84,"ax":-0.05,"ay":0.71,"yawRate":-0.132,"rpm":414,"trqCmd":0,"trqEst":-3,"vdc":362,"idc":0,"thr":0,"pot1":322,"pot2":740,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":104.2,"vx":2.62,"ax":0.26,"ay":0.67,"yawRate":-0.118,"rpm":394,"trqCmd":0,"trqEst":1,"vdc":364,"idc":0,"thr":8,"pot1":438,"pot2":972,"brkF":0,"brkR":0,"invT":37,"motT":38},{"s":105.07,"vx":2.73,"ax":1.47,"ay":0.38,"yawRate":-0.118,"rpm":416,"trqCmd":24,"trqEst":22,"vdc":363,"idc":3,"thr":18,"pot1":544,"pot2":1168,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":105.94,"vx":3.01,"ax":1,"ay":0.52,"yawRate":-0.129,"rpm":452,"trqCmd":12,"trqEst":14,"vdc":363,"idc":1,"thr":16,"pot1":483,"pot2":1049,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":106.79,"vx":2.95,"ax":0.1,"ay":1.09,"yawRate":0.046,"rpm":440,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":3,"pot1":349,"pot2":799,"brkF":0,"brkR":0,"invT":37,"motT":39},{"s":107.63,"vx":2.79,"ax":-0.15,"ay":1.06,"yawRate":0.049,"rpm":420,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":324,"pot2":736,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":108.45,"vx":2.49,"ax":-0.62,"ay":1.09,"yawRate":0.037,"rpm":360,"trqCmd":0,"trqEst":0,"vdc":363,"idc":0,"thr":0,"pot1":328,"pot2":731,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":109.25,"vx":2.01,"ax":0.05,"ay":0.88,"yawRate":0.124,"rpm":293,"trqCmd":0,"trqEst":-1,"vdc":362,"idc":0,"thr":0,"pot1":327,"pot2":731,"brkF":0,"brkR":0,"invT":37,"motT":38},{"s":110.01,"vx":1.81,"ax":0.16,"ay":0.48,"yawRate":0.151,"rpm":270,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":0,"pot1":339,"pot2":770,"brkF":0,"brkR":0,"invT":37,"motT":38},{"s":110.75,"vx":1.59,"ax":0.13,"ay":0.25,"yawRate":0.087,"rpm":236,"trqCmd":0,"trqEst":0,"vdc":364,"idc":0,"thr":9,"pot1":440,"pot2":975,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":111.46,"vx":1.62,"ax":0.04,"ay":1.07,"yawRate":0.208,"rpm":201,"trqCmd":0,"trqEst":1,"vdc":363,"idc":0,"thr":0,"pot1":325,"pot2":735,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":112.15,"vx":1.74,"ax":0.46,"ay":0.93,"yawRate":0.401,"rpm":244,"trqCmd":27,"trqEst":25,"vdc":363,"idc":2,"thr":19,"pot1":544,"pot2":1184,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":112.84,"vx":2,"ax":0.36,"ay":0.77,"yawRate":0.356,"rpm":284,"trqCmd":15,"trqEst":19,"vdc":364,"idc":1,"thr":15,"pot1":512,"pot2":1112,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":113.53,"vx":2.14,"ax":-0.16,"ay":0.66,"yawRate":0.381,"rpm":306,"trqCmd":9,"trqEst":6,"vdc":364,"idc":0,"thr":12,"pot1":482,"pot2":1050,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":114.23,"vx":2.16,"ax":-0.21,"ay":0.37,"yawRate":0.384,"rpm":315,"trqCmd":9,"trqEst":7,"vdc":363,"idc":0,"thr":13,"pot1":476,"pot2":1046,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":114.97,"vx":2.17,"ax":-0.46,"ay":0.46,"yawRate":0.39,"rpm":307,"trqCmd":6,"trqEst":6,"vdc":362,"idc":0,"thr":12,"pot1":473,"pot2":1040,"brkF":0,"brkR":0,"invT":37,"motT":34},{"s":115.73,"vx":2.18,"ax":-0.67,"ay":0.35,"yawRate":0.469,"rpm":315,"trqCmd":6,"trqEst":6,"vdc":363,"idc":0,"thr":12,"pot1":472,"pot2":1034,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":116.53,"vx":2.1,"ax":-0.52,"ay":-0.01,"yawRate":0.448,"rpm":294,"trqCmd":2,"trqEst":3,"vdc":362,"idc":0,"thr":12,"pot1":472,"pot2":1017,"brkF":0,"brkR":0,"invT":37,"motT":36},{"s":117.36,"vx":1.98,"ax":-0.74,"ay":0.01,"yawRate":0.419,"rpm":285,"trqCmd":2,"trqEst":4,"vdc":364,"idc":0,"thr":10,"pot1":457,"pot2":1003,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":118.23,"vx":1.79,"ax":5.58,"ay":-0.49,"yawRate":0.013,"rpm":414,"trqCmd":121,"trqEst":121,"vdc":361,"idc":18,"thr":49,"pot1":931,"pot2":1921,"brkF":0,"brkR":0,"invT":36,"motT":36},{"s":119.12,"vx":4.01,"ax":6.18,"ay":-0.29,"yawRate":0.005,"rpm":678,"trqCmd":159,"trqEst":171,"vdc":354,"idc":38,"thr":57,"pot1":1109,"pot2":2272,"brkF":0,"brkR":0,"invT":37,"motT":35},{"s":120.04,"vx":5.42,"ax":6.82,"ay":-0.64,"yawRate":-0.011,"rpm":1275,"trqCmd":196,"trqEst":211,"vdc":340,"idc":88,"thr":71,"pot1":1194,"pot2":2441,"brkF":0,"brkR":0,"invT":38,"motT":36},{"s":120.97,"vx":6.75,"ax":6.68,"ay":-0.02,"yawRate":0.021,"rpm":2068,"trqCmd":193,"trqEst":209,"vdc":322,"idc":149,"thr":72,"pot1":1202,"pot2":2453,"brkF":0,"brkR":0,"invT":39,"motT":35},{"s":121.91,"vx":7.72,"ax":7.05,"ay":-0.45,"yawRate":0.093,"rpm":2700,"trqCmd":192,"trqEst":191,"vdc":312,"idc":180,"thr":72,"pot1":1201,"pot2":2448,"brkF":0,"brkR":0,"invT":39,"motT":35},{"s":122.86,"vx":8.75,"ax":6.67,"ay":0.74,"yawRate":0.153,"rpm":3124,"trqCmd":172,"trqEst":155,"vdc":309,"idc":197,"thr":68,"pot1":1141,"pot2":2343,"brkF":0,"brkR":0,"invT":40,"motT":35},{"s":123.82,"vx":9.58,"ax":7.23,"ay":-0.35,"yawRate":0.096,"rpm":3281,"trqCmd":160,"trqEst":147,"vdc":313,"idc":190,"thr":65,"pot1":1086,"pot2":2234,"brkF":0,"brkR":0,"invT":40,"motT":36},{"s":124.78,"vx":10.29,"ax":7.56,"ay":-0.19,"yawRate":0.093,"rpm":3263,"trqCmd":159,"trqEst":153,"vdc":305,"idc":192,"thr":63,"pot1":1090,"pot2":2238,"brkF":0,"brkR":0,"invT":40,"motT":35},{"s":125.74,"vx":10.94,"ax":6.9,"ay":0.25,"yawRate":0.142,"rpm":3227,"trqCmd":160,"trqEst":166,"vdc":313,"idc":189,"thr":62,"pot1":1099,"pot2":2257,"brkF":0,"brkR":0,"invT":40,"motT":35},{"s":126.71,"vx":11.62,"ax":7.85,"ay":0.12,"yawRate":0.201,"rpm":3241,"trqCmd":158,"trqEst":157,"vdc":309,"idc":193,"thr":63,"pot1":1088,"pot2":2241,"brkF":0,"brkR":0,"invT":40,"motT":37},{"s":127.67,"vx":12.37,"ax":6.64,"ay":-1.68,"yawRate":-0.066,"rpm":3347,"trqCmd":154,"trqEst":146,"vdc":308,"idc":192,"thr":62,"pot1":1073,"pot2":2208,"brkF":0,"brkR":0,"invT":40,"motT":33},{"s":128.64,"vx":12.9,"ax":7.15,"ay":-0.01,"yawRate":-0.198,"rpm":3323,"trqCmd":151,"trqEst":160,"vdc":310,"idc":183,"thr":59,"pot1":1049,"pot2":2171,"brkF":0,"brkR":0,"invT":41,"motT":37},{"s":129.6,"vx":13.57,"ax":8.25,"ay":0.31,"yawRate":-0.082,"rpm":3214,"trqCmd":157,"trqEst":156,"vdc":309,"idc":186,"thr":62,"pot1":1079,"pot2":2221,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":130.56,"vx":14.22,"ax":7.69,"ay":0.55,"yawRate":0.114,"rpm":3080,"trqCmd":143,"trqEst":145,"vdc":314,"idc":162,"thr":59,"pot1":1028,"pot2":2120,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":131.53,"vx":14.61,"ax":7.43,"ay":0.05,"yawRate":0.138,"rpm":2995,"trqCmd":142,"trqEst":150,"vdc":317,"idc":151,"thr":57,"pot1":1028,"pot2":2117,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":132.49,"vx":15.2,"ax":7.13,"ay":0.07,"yawRate":0.168,"rpm":2839,"trqCmd":142,"trqEst":145,"vdc":321,"idc":146,"thr":57,"pot1":1028,"pot2":2121,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":133.46,"vx":15.54,"ax":6.62,"ay":0.17,"yawRate":0.093,"rpm":2792,"trqCmd":144,"trqEst":154,"vdc":317,"idc":143,"thr":57,"pot1":1040,"pot2":2146,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":134.43,"vx":16.36,"ax":7.06,"ay":-0.11,"yawRate":-0.013,"rpm":2846,"trqCmd":156,"trqEst":158,"vdc":318,"idc":162,"thr":61,"pot1":1071,"pot2":2208,"brkF":0,"brkR":0,"invT":41,"motT":36},{"s":135.4,"vx":16.86,"ax":7.08,"ay":-0.86,"yawRate":-0.108,"rpm":2802,"trqCmd":154,"trqEst":160,"vdc":314,"idc":157,"thr":62,"pot1":1070,"pot2":2206,"brkF":0,"brkR":0,"invT":41,"motT":35}],"23_08/23_08_2026-11.31.49.csv":[{"s":0,"vx":19.44,"ax":-4.52,"ay":-4.41,"yawRate":-0.205,"rpm":2778,"trqCmd":5,"trqEst":3,"vdc":351,"idc":3,"thr":13,"pot1":485,"pot2":1060,"brkF":0,"brkR":0,"invT":45,"motT":40},{"s":0.97,"vx":19,"ax":-5.84,"ay":-3.38,"yawRate":-0.074,"rpm":2918,"trqCmd":8,"trqEst":5,"vdc":349,"idc":5,"thr":13,"pot1":498,"pot2":1087,"brkF":0,"brkR":0,"invT":45,"motT":40},{"s":1.94,"vx":18.46,"ax":-7.07,"ay":0.18,"yawRate":0.031,"rpm":2722,"trqCmd":0,"trqEst":0,"vdc":351,"idc":0,"thr":5,"pot1":331,"pot2":741,"brkF":0,"brkR":0,"invT":45,"motT":39},{"s":2.92,"vx":18.22,"ax":-7.96,"ay":1.73,"yawRate":0.079,"rpm":2707,"trqCmd":0,"trqEst":-2,"vdc":352,"idc":0,"thr":0,"pot1":322,"pot2":717,"brkF":0,"brkR":0,"invT":45,"motT":39},{"s":3.89,"vx":17.93,"ax":-7.85,"ay":1.68,"yawRate":0.083,"rpm":2661,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":0,"pot1":324,"pot2":734,"brkF":0,"brkR":0,"invT":44,"motT":39},{"s":4.86,"vx":17.38,"ax":-7.04,"ay":0.48,"yawRate":0.087,"rpm":2583,"trqCmd":0,"trqEst":-1,"vdc":353,"idc":0,"thr":0,"pot1":328,"pot2":736,"brkF":0,"brkR":0,"invT":44,"motT":40},{"s":5.84,"vx":16.89,"ax":-6.89,"ay":1.7,"yawRate":0.052,"rpm":2535,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":0,"pot1":325,"pot2":733,"brkF":0,"brkR":0,"invT":44,"motT":40},{"s":6.81,"vx":16.51,"ax":-6.76,"ay":0.97,"yawRate":0.024,"rpm":2489,"trqCmd":0,"trqEst":1,"vdc":352,"idc":0,"thr":0,"pot1":329,"pot2":738,"brkF":0,"brkR":0,"invT":44,"motT":38},{"s":7.79,"vx":16.17,"ax":-7.03,"ay":1.03,"yawRate":0.009,"rpm":2400,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":0,"pot1":327,"pot2":729,"brkF":0,"brkR":0,"invT":44,"motT":38},{"s":8.76,"vx":15.47,"ax":-7.26,"ay":0.9,"yawRate":0.021,"rpm":2329,"trqCmd":0,"trqEst":2,"vdc":353,"idc":0,"thr":0,"pot1":327,"pot2":732,"brkF":0,"brkR":0,"invT":44,"motT":40},{"s":9.74,"vx":15.11,"ax":-7.21,"ay":0.81,"yawRate":0.012,"rpm":2266,"trqCmd":0,"trqEst":-1,"vdc":352,"idc":0,"thr":0,"pot1":327,"pot2":732,"brkF":0,"brkR":0,"invT":43,"motT":39},{"s":10.71,"vx":14.41,"ax":-7.25,"ay":1.3,"yawRate":-0.001,"rpm":2183,"trqCmd":0,"trqEst":-2,"vdc":353,"idc":0,"thr":0,"pot1":327,"pot2":731,"brkF":0,"brkR":0,"invT":43,"motT":39},{"s":11.69,"vx":14.1,"ax":-7.11,"ay":1.54,"yawRate":-0.022,"rpm":2110,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":0,"pot1":329,"pot2":736,"brkF":0,"brkR":0,"invT":43,"motT":41},{"s":12.66,"vx":13.7,"ax":-5.63,"ay":0.8,"yawRate":-0.04,"rpm":2032,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":0,"pot1":328,"pot2":735,"brkF":0,"brkR":0,"invT":43,"motT":39},{"s":13.64,"vx":13.34,"ax":-4.96,"ay":-0.08,"yawRate":-0.041,"rpm":2000,"trqCmd":0,"trqEst":0,"vdc":352,"idc":0,"thr":0,"pot1":327,"pot2":736,"brkF":0,"brkR":0,"invT":43,"motT":39},{"s":14.61,"vx":13.07,"ax":-4.17,"ay":-0.6,"yawRate":-0.041,"rpm":1974,"trqCmd":0,"trqEst":-1,"vdc":354,"idc":0,"thr":0,"pot1":324,"pot2":733,"brkF":0,"brkR":0,"invT":42,"motT":37},{"s":15.59,"vx":12.77,"ax":-3.65,"ay":-0.23,"yawRate":-0.046,"rpm":1921,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":0,"pot1":325,"pot2":735,"brkF":0,"brkR":0,"invT":42,"motT":40},{"s":16.57,"vx":12.41,"ax":-3.27,"ay":-1.68,"yawRate":-0.119,"rpm":1863,"trqCmd":0,"trqEst":-1,"vdc":354,"idc":0,"thr":0,"pot1":330,"pot2":738,"brkF":0,"brkR":0,"invT":42,"motT":40},{"s":17.54,"vx":12.15,"ax":-3.06,"ay":-2.29,"yawRate":-0.17,"rpm":1806,"trqCmd":0,"trqEst":-1,"vdc":355,"idc":0,"thr":0,"pot1":328,"pot2":739,"brkF":0,"brkR":0,"invT":42,"motT":40},{"s":18.52,"vx":11.84,"ax":-3.68,"ay":-2.94,"yawRate":-0.194,"rpm":1791,"trqCmd":0,"trqEst":0,"vdc":353,"idc":0,"thr":0,"pot1":330,"pot2":737,"brkF":0,"brkR":0,"invT":42,"motT":39},{"s":19.5,"vx":11.51,"ax":-3.86,"ay":-2.18,"yawRate":-0.202,"rpm":1733,"trqCmd":0,"trqEst":-1,"vdc":354,"idc":0,"thr":0,"pot1":330,"pot2":738,"brkF":0,"brkR":0,"invT":42,"motT":41},{"s":20.48,"vx":11.12,"ax":-4.09,"ay":-2.93,"yawRate":-0.228,"rpm":1671,"trqCmd":0,"trqEst":0,"vdc":355,"idc":0,"thr":0,"pot1":327,"pot2":732,"brkF":0,"brkR":0,"invT":41,"motT":39},{"s":21.45,"vx":10.77,"ax":-3.55,"ay":-3.27,"yawRate":-0.312,"rpm":1629,"trqCmd":0,"trqEst":-1,"vdc":356,"idc":0,"thr":0,"pot1":329,"pot2":731,"brkF":0,"brkR":0,"invT":41,"motT":39},{"s":22.43,"vx":10.27,"ax":-4.22,"ay":-2.67,"yawRate":-0.41,"rpm":1546,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":0,"pot1":329,"pot2":731,"brkF":0,"brkR":0,"invT":41,"motT":39},{"s":23.4,"vx":9.89,"ax":-4.64,"ay":-3.47,"yawRate":-0.421,"rpm":1480,"trqCmd":0,"trqEst":-1,"vdc":354,"idc":0,"thr":0,"pot1":326,"pot2":737,"brkF":0,"brkR":0,"invT":41,"motT":39},{"s":24.38,"vx":9.41,"ax":-5.05,"ay":-3.59,"yawRate":-0.416,"rpm":1431,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":0,"pot1":324,"pot2":735,"brkF":0,"brkR":0,"invT":41,"motT":39},{"s":25.35,"vx":8.81,"ax":-5.28,"ay":-3.12,"yawRate":-0.396,"rpm":1332,"trqCmd":0,"trqEst":0,"vdc":355,"idc":0,"thr":0,"pot1":320,"pot2":740,"brkF":0,"brkR":0,"invT":41,"motT":40},{"s":26.32,"vx":8.1,"ax":-4.8,"ay":-2.59,"yawRate":-0.354,"rpm":1226,"trqCmd":0,"trqEst":0,"vdc":355,"idc":0,"thr":0,"pot1":325,"pot2":734,"brkF":0,"brkR":0,"invT":41,"motT":39},{"s":27.29,"vx":7.64,"ax":-4.38,"ay":-2.16,"yawRate":-0.304,"rpm":1142,"trqCmd":0,"trqEst":1,"vdc":354,"idc":0,"thr":0,"pot1":324,"pot2":739,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":28.24,"vx":6.95,"ax":-3.43,"ay":-0.7,"yawRate":-0.24,"rpm":1059,"trqCmd":0,"trqEst":1,"vdc":355,"idc":0,"thr":0,"pot1":324,"pot2":730,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":29.19,"vx":6.44,"ax":-2.72,"ay":2.76,"yawRate":0.054,"rpm":982,"trqCmd":0,"trqEst":4,"vdc":356,"idc":0,"thr":0,"pot1":331,"pot2":732,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":30.12,"vx":6.03,"ax":-1.71,"ay":3.86,"yawRate":0.437,"rpm":910,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":0,"pot1":325,"pot2":731,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":31.03,"vx":5.78,"ax":-1.65,"ay":4.22,"yawRate":0.605,"rpm":864,"trqCmd":0,"trqEst":1,"vdc":354,"idc":0,"thr":0,"pot1":326,"pot2":734,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":31.92,"vx":5.52,"ax":-1.4,"ay":4.56,"yawRate":0.709,"rpm":819,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":0,"pot1":322,"pot2":730,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":32.78,"vx":5.39,"ax":-1.13,"ay":4.9,"yawRate":0.838,"rpm":787,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":0,"pot1":325,"pot2":733,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":33.61,"vx":5.33,"ax":-1.37,"ay":5.2,"yawRate":0.992,"rpm":764,"trqCmd":0,"trqEst":0,"vdc":354,"idc":0,"thr":0,"pot1":328,"pot2":734,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":34.41,"vx":5.22,"ax":-1.71,"ay":5.86,"yawRate":1.114,"rpm":751,"trqCmd":0,"trqEst":-2,"vdc":355,"idc":0,"thr":0,"pot1":329,"pot2":740,"brkF":0,"brkR":0,"invT":40,"motT":41},{"s":35.18,"vx":5.06,"ax":-1.92,"ay":5.36,"yawRate":1.113,"rpm":727,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":0,"pot1":327,"pot2":738,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":35.93,"vx":4.94,"ax":-2.06,"ay":5.15,"yawRate":1.074,"rpm":706,"trqCmd":0,"trqEst":-1,"vdc":357,"idc":0,"thr":0,"pot1":329,"pot2":733,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":36.66,"vx":4.74,"ax":-1.92,"ay":4.49,"yawRate":1.035,"rpm":674,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":0,"pot1":322,"pot2":730,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":37.4,"vx":4.62,"ax":-2.12,"ay":4.79,"yawRate":1.004,"rpm":654,"trqCmd":0,"trqEst":-1,"vdc":356,"idc":0,"thr":5,"pot1":409,"pot2":913,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":38.14,"vx":4.46,"ax":-1.93,"ay":4.65,"yawRate":0.975,"rpm":636,"trqCmd":0,"trqEst":-2,"vdc":356,"idc":0,"thr":9,"pot1":436,"pot2":960,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":38.9,"vx":4.31,"ax":-1.86,"ay":4.6,"yawRate":0.929,"rpm":634,"trqCmd":6,"trqEst":5,"vdc":357,"idc":1,"thr":13,"pot1":496,"pot2":1071,"brkF":0,"brkR":0,"invT":40,"motT":42},{"s":39.7,"vx":4.21,"ax":-1.81,"ay":4.78,"yawRate":0.944,"rpm":594,"trqCmd":10,"trqEst":14,"vdc":358,"idc":2,"thr":15,"pot1":512,"pot2":1101,"brkF":0,"brkR":0,"invT":40,"motT":42},{"s":40.53,"vx":4.11,"ax":-1.54,"ay":3.8,"yawRate":0.903,"rpm":587,"trqCmd":10,"trqEst":11,"vdc":356,"idc":1,"thr":15,"pot1":507,"pot2":1098,"brkF":0,"brkR":0,"invT":40,"motT":41},{"s":41.39,"vx":4.03,"ax":-1.58,"ay":4.34,"yawRate":0.884,"rpm":576,"trqCmd":10,"trqEst":10,"vdc":355,"idc":1,"thr":14,"pot1":514,"pot2":1105,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":42.3,"vx":3.99,"ax":-0.86,"ay":4.46,"yawRate":0.856,"rpm":576,"trqCmd":18,"trqEst":23,"vdc":355,"idc":4,"thr":20,"pot1":564,"pot2":1215,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":43.23,"vx":4.07,"ax":-0.14,"ay":4.11,"yawRate":0.832,"rpm":590,"trqCmd":26,"trqEst":27,"vdc":355,"idc":4,"thr":23,"pot1":597,"pot2":1283,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":44.2,"vx":4.23,"ax":0.41,"ay":3.86,"yawRate":0.728,"rpm":630,"trqCmd":32,"trqEst":35,"vdc":354,"idc":6,"thr":26,"pot1":651,"pot2":1379,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":45.19,"vx":4.4,"ax":0.58,"ay":3.19,"yawRate":0.533,"rpm":663,"trqCmd":33,"trqEst":35,"vdc":355,"idc":6,"thr":26,"pot1":649,"pot2":1373,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":46.19,"vx":4.64,"ax":0.66,"ay":2.97,"yawRate":0.377,"rpm":695,"trqCmd":32,"trqEst":35,"vdc":354,"idc":7,"thr":26,"pot1":644,"pot2":1366,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":47.2,"vx":4.89,"ax":1.07,"ay":2.56,"yawRate":0.253,"rpm":739,"trqCmd":32,"trqEst":34,"vdc":354,"idc":7,"thr":26,"pot1":650,"pot2":1376,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":48.22,"vx":5.12,"ax":0.89,"ay":2.46,"yawRate":0.165,"rpm":779,"trqCmd":33,"trqEst":33,"vdc":354,"idc":7,"thr":26,"pot1":655,"pot2":1386,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":49.23,"vx":5.31,"ax":0.15,"ay":1.18,"yawRate":0.054,"rpm":792,"trqCmd":12,"trqEst":12,"vdc":355,"idc":3,"thr":17,"pot1":498,"pot2":1073,"brkF":0,"brkR":0,"invT":41,"motT":40},{"s":50.25,"vx":5.25,"ax":-0.48,"ay":1.57,"yawRate":-0.037,"rpm":777,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":1,"pot1":344,"pot2":768,"brkF":0,"brkR":0,"invT":41,"motT":40},{"s":51.27,"vx":5.13,"ax":-0.62,"ay":1.42,"yawRate":-0.027,"rpm":781,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":2,"pot1":353,"pot2":797,"brkF":0,"brkR":0,"invT":41,"motT":42},{"s":52.28,"vx":5.07,"ax":-0.54,"ay":1.47,"yawRate":-0.026,"rpm":750,"trqCmd":0,"trqEst":-1,"vdc":358,"idc":0,"thr":2,"pot1":349,"pot2":776,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":53.29,"vx":5,"ax":-0.58,"ay":1.75,"yawRate":-0.023,"rpm":744,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":2,"pot1":349,"pot2":778,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":54.3,"vx":4.91,"ax":-0.51,"ay":1.77,"yawRate":-0.028,"rpm":731,"trqCmd":0,"trqEst":3,"vdc":358,"idc":0,"thr":1,"pot1":345,"pot2":775,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":55.3,"vx":4.84,"ax":-0.4,"ay":2.02,"yawRate":-0.024,"rpm":723,"trqCmd":0,"trqEst":1,"vdc":356,"idc":0,"thr":1,"pot1":344,"pot2":768,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":56.3,"vx":4.77,"ax":-0.54,"ay":1.84,"yawRate":-0.024,"rpm":719,"trqCmd":0,"trqEst":0,"vdc":355,"idc":0,"thr":1,"pot1":343,"pot2":768,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":57.31,"vx":4.69,"ax":-0.42,"ay":1.6,"yawRate":-0.021,"rpm":696,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":1,"pot1":342,"pot2":770,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":58.31,"vx":4.62,"ax":-0.55,"ay":1.5,"yawRate":-0.021,"rpm":700,"trqCmd":0,"trqEst":-3,"vdc":358,"idc":0,"thr":1,"pot1":343,"pot2":766,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":59.3,"vx":4.54,"ax":-0.45,"ay":1.67,"yawRate":-0.022,"rpm":680,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":1,"pot1":343,"pot2":770,"brkF":0,"brkR":0,"invT":40,"motT":41},{"s":60.3,"vx":4.47,"ax":-0.37,"ay":1.92,"yawRate":-0.021,"rpm":677,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":1,"pot1":344,"pot2":771,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":61.29,"vx":4.42,"ax":-0.43,"ay":1.88,"yawRate":-0.026,"rpm":662,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":4,"pot1":379,"pot2":837,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":62.28,"vx":4.32,"ax":-0.54,"ay":1.91,"yawRate":-0.024,"rpm":642,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":4,"pot1":386,"pot2":850,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":63.27,"vx":4.23,"ax":-0.55,"ay":1.86,"yawRate":-0.026,"rpm":634,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":5,"pot1":396,"pot2":869,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":64.26,"vx":4.16,"ax":-0.38,"ay":1.83,"yawRate":-0.032,"rpm":627,"trqCmd":0,"trqEst":-1,"vdc":357,"idc":0,"thr":5,"pot1":397,"pot2":877,"brkF":0,"brkR":0,"invT":40,"motT":41},{"s":65.25,"vx":4.1,"ax":-0.47,"ay":1.76,"yawRate":-0.041,"rpm":615,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":6,"pot1":403,"pot2":887,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":66.24,"vx":4.03,"ax":-0.18,"ay":1.58,"yawRate":-0.037,"rpm":619,"trqCmd":6,"trqEst":8,"vdc":356,"idc":1,"thr":13,"pot1":499,"pot2":1068,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":67.22,"vx":4.06,"ax":0.01,"ay":1.56,"yawRate":-0.034,"rpm":618,"trqCmd":12,"trqEst":10,"vdc":355,"idc":2,"thr":16,"pot1":521,"pot2":1117,"brkF":0,"brkR":0,"invT":40,"motT":41},{"s":68.2,"vx":4.14,"ax":0.09,"ay":1.69,"yawRate":-0.037,"rpm":619,"trqCmd":12,"trqEst":14,"vdc":355,"idc":2,"thr":16,"pot1":525,"pot2":1123,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":69.18,"vx":4.21,"ax":-0.01,"ay":1.79,"yawRate":-0.036,"rpm":639,"trqCmd":12,"trqEst":12,"vdc":356,"idc":2,"thr":16,"pot1":523,"pot2":1119,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":70.15,"vx":4.27,"ax":0.09,"ay":1.35,"yawRate":-0.035,"rpm":637,"trqCmd":12,"trqEst":10,"vdc":357,"idc":2,"thr":16,"pot1":518,"pot2":1112,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":71.11,"vx":4.32,"ax":0.04,"ay":1.42,"yawRate":-0.032,"rpm":644,"trqCmd":12,"trqEst":10,"vdc":356,"idc":2,"thr":16,"pot1":522,"pot2":1120,"brkF":0,"brkR":0,"invT":40,"motT":41},{"s":72.07,"vx":4.34,"ax":-0.39,"ay":1.6,"yawRate":-0.036,"rpm":643,"trqCmd":2,"trqEst":2,"vdc":357,"idc":0,"thr":12,"pot1":456,"pot2":996,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":73.01,"vx":4.3,"ax":-0.6,"ay":1.85,"yawRate":-0.034,"rpm":639,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":8,"pot1":437,"pot2":949,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":73.94,"vx":4.21,"ax":-0.6,"ay":1.84,"yawRate":-0.032,"rpm":633,"trqCmd":0,"trqEst":3,"vdc":356,"idc":0,"thr":9,"pot1":438,"pot2":954,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":74.86,"vx":4.12,"ax":-0.54,"ay":1.56,"yawRate":-0.034,"rpm":611,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":9,"pot1":441,"pot2":961,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":75.76,"vx":4.02,"ax":-0.6,"ay":1.45,"yawRate":-0.027,"rpm":604,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":9,"pot1":448,"pot2":982,"brkF":0,"brkR":0,"invT":40,"motT":41},{"s":76.64,"vx":3.94,"ax":-0.37,"ay":1.65,"yawRate":-0.032,"rpm":602,"trqCmd":6,"trqEst":4,"vdc":356,"idc":1,"thr":17,"pot1":492,"pot2":1064,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":77.51,"vx":3.93,"ax":-0.34,"ay":1.56,"yawRate":-0.035,"rpm":585,"trqCmd":9,"trqEst":6,"vdc":358,"idc":1,"thr":14,"pot1":508,"pot2":1095,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":78.36,"vx":3.95,"ax":-0.23,"ay":1.56,"yawRate":-0.031,"rpm":585,"trqCmd":9,"trqEst":10,"vdc":357,"idc":1,"thr":14,"pot1":503,"pot2":1086,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":79.2,"vx":3.96,"ax":-0.29,"ay":1.64,"yawRate":-0.033,"rpm":600,"trqCmd":10,"trqEst":5,"vdc":356,"idc":1,"thr":14,"pot1":503,"pot2":1090,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":80.03,"vx":3.97,"ax":-0.15,"ay":1.64,"yawRate":-0.034,"rpm":597,"trqCmd":9,"trqEst":11,"vdc":358,"idc":1,"thr":15,"pot1":500,"pot2":1084,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":80.86,"vx":3.96,"ax":-0.42,"ay":1.44,"yawRate":-0.036,"rpm":602,"trqCmd":5,"trqEst":7,"vdc":357,"idc":1,"thr":13,"pot1":483,"pot2":1044,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":81.68,"vx":3.91,"ax":-0.24,"ay":1.73,"yawRate":-0.027,"rpm":585,"trqCmd":4,"trqEst":5,"vdc":355,"idc":0,"thr":12,"pot1":481,"pot2":1042,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":82.51,"vx":3.85,"ax":-0.62,"ay":1.35,"yawRate":-0.033,"rpm":572,"trqCmd":0,"trqEst":1,"vdc":358,"idc":0,"thr":10,"pot1":442,"pot2":982,"brkF":0,"brkR":0,"invT":40,"motT":42},{"s":83.34,"vx":3.76,"ax":-0.56,"ay":1.36,"yawRate":-0.036,"rpm":566,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":8,"pot1":434,"pot2":947,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":84.19,"vx":3.68,"ax":-0.44,"ay":0.98,"yawRate":-0.034,"rpm":553,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":8,"pot1":428,"pot2":939,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":85.04,"vx":3.58,"ax":-0.37,"ay":0.86,"yawRate":-0.044,"rpm":534,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":9,"pot1":431,"pot2":941,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":85.91,"vx":3.49,"ax":-0.5,"ay":0.58,"yawRate":-0.054,"rpm":517,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":9,"pot1":429,"pot2":945,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":86.79,"vx":3.37,"ax":-0.25,"ay":0.64,"yawRate":-0.058,"rpm":512,"trqCmd":0,"trqEst":4,"vdc":358,"idc":0,"thr":10,"pot1":457,"pot2":994,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":87.69,"vx":3.31,"ax":-0.21,"ay":0.76,"yawRate":-0.063,"rpm":505,"trqCmd":1,"trqEst":3,"vdc":357,"idc":0,"thr":11,"pot1":458,"pot2":1000,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":88.6,"vx":3.19,"ax":-0.37,"ay":0.82,"yawRate":-0.054,"rpm":482,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":0,"pot1":333,"pot2":741,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":89.52,"vx":3.07,"ax":-0.33,"ay":0.51,"yawRate":-0.044,"rpm":453,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":6,"pot1":413,"pot2":909,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":90.44,"vx":2.94,"ax":-0.49,"ay":0.87,"yawRate":-0.034,"rpm":445,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":8,"pot1":427,"pot2":947,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":91.36,"vx":2.83,"ax":0.15,"ay":1.09,"yawRate":0.034,"rpm":425,"trqCmd":6,"trqEst":4,"vdc":358,"idc":0,"thr":13,"pot1":489,"pot2":1066,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":92.27,"vx":2.91,"ax":0.51,"ay":0.89,"yawRate":0.052,"rpm":444,"trqCmd":15,"trqEst":16,"vdc":358,"idc":2,"thr":18,"pot1":549,"pot2":1176,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":93.17,"vx":3.03,"ax":0.38,"ay":0.87,"yawRate":0.058,"rpm":463,"trqCmd":14,"trqEst":13,"vdc":357,"idc":1,"thr":17,"pot1":532,"pot2":1142,"brkF":0,"brkR":0,"invT":40,"motT":41},{"s":94.06,"vx":3.12,"ax":0.14,"ay":0.86,"yawRate":0.061,"rpm":473,"trqCmd":14,"trqEst":13,"vdc":358,"idc":2,"thr":17,"pot1":529,"pot2":1143,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":94.93,"vx":3.2,"ax":0.15,"ay":0.88,"yawRate":0.064,"rpm":489,"trqCmd":13,"trqEst":13,"vdc":357,"idc":1,"thr":16,"pot1":529,"pot2":1138,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":95.79,"vx":3.25,"ax":-0.02,"ay":1.03,"yawRate":0.16,"rpm":491,"trqCmd":8,"trqEst":10,"vdc":357,"idc":1,"thr":14,"pot1":493,"pot2":1068,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":96.63,"vx":3.25,"ax":-0.11,"ay":1,"yawRate":0.167,"rpm":480,"trqCmd":8,"trqEst":8,"vdc":357,"idc":1,"thr":14,"pot1":498,"pot2":1077,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":97.47,"vx":3.26,"ax":-0.18,"ay":0.88,"yawRate":0.224,"rpm":489,"trqCmd":8,"trqEst":8,"vdc":356,"idc":1,"thr":14,"pot1":497,"pot2":1083,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":98.29,"vx":3.25,"ax":-0.21,"ay":1,"yawRate":0.227,"rpm":492,"trqCmd":9,"trqEst":8,"vdc":359,"idc":1,"thr":14,"pot1":499,"pot2":1081,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":99.11,"vx":3.25,"ax":-0.36,"ay":1.33,"yawRate":0.316,"rpm":476,"trqCmd":8,"trqEst":7,"vdc":357,"idc":1,"thr":13,"pot1":484,"pot2":1054,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":99.94,"vx":3.21,"ax":-0.73,"ay":1.37,"yawRate":0.345,"rpm":481,"trqCmd":2,"trqEst":2,"vdc":358,"idc":0,"thr":12,"pot1":464,"pot2":1016,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":100.78,"vx":3.06,"ax":-0.68,"ay":1.22,"yawRate":0.41,"rpm":447,"trqCmd":0,"trqEst":4,"vdc":359,"idc":0,"thr":4,"pot1":384,"pot2":853,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":101.62,"vx":2.91,"ax":-0.76,"ay":0.94,"yawRate":0.385,"rpm":427,"trqCmd":0,"trqEst":-1,"vdc":359,"idc":0,"thr":7,"pot1":419,"pot2":922,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":102.47,"vx":2.76,"ax":-0.89,"ay":1.04,"yawRate":0.357,"rpm":400,"trqCmd":1,"trqEst":3,"vdc":358,"idc":0,"thr":11,"pot1":463,"pot2":1011,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":103.34,"vx":2.66,"ax":-0.82,"ay":1,"yawRate":0.333,"rpm":386,"trqCmd":4,"trqEst":2,"vdc":357,"idc":0,"thr":12,"pot1":476,"pot2":1037,"brkF":0,"brkR":0,"invT":40,"motT":38},{"s":104.2,"vx":2.62,"ax":-0.74,"ay":0.72,"yawRate":0.331,"rpm":401,"trqCmd":6,"trqEst":11,"vdc":357,"idc":1,"thr":13,"pot1":494,"pot2":1068,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":105.07,"vx":2.6,"ax":-0.53,"ay":0.84,"yawRate":0.329,"rpm":378,"trqCmd":6,"trqEst":7,"vdc":358,"idc":1,"thr":14,"pot1":495,"pot2":1073,"brkF":0,"brkR":0,"invT":40,"motT":41},{"s":105.94,"vx":2.6,"ax":-0.61,"ay":0.62,"yawRate":0.317,"rpm":390,"trqCmd":8,"trqEst":7,"vdc":358,"idc":1,"thr":14,"pot1":494,"pot2":1072,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":106.79,"vx":2.58,"ax":-0.53,"ay":0.4,"yawRate":0.317,"rpm":374,"trqCmd":8,"trqEst":7,"vdc":358,"idc":0,"thr":14,"pot1":500,"pot2":1079,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":107.63,"vx":2.63,"ax":-0.32,"ay":0.49,"yawRate":0.327,"rpm":396,"trqCmd":15,"trqEst":9,"vdc":357,"idc":1,"thr":17,"pot1":542,"pot2":1165,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":108.45,"vx":2.76,"ax":-0.47,"ay":0.79,"yawRate":0.356,"rpm":415,"trqCmd":15,"trqEst":16,"vdc":356,"idc":1,"thr":17,"pot1":546,"pot2":1174,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":109.25,"vx":2.86,"ax":-1.03,"ay":1.11,"yawRate":0.441,"rpm":418,"trqCmd":4,"trqEst":4,"vdc":357,"idc":0,"thr":13,"pot1":469,"pot2":1025,"brkF":0,"brkR":0,"invT":40,"motT":41},{"s":110.01,"vx":2.74,"ax":-1.7,"ay":1.43,"yawRate":0.525,"rpm":388,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":9,"pot1":445,"pot2":976,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":110.75,"vx":2.55,"ax":-1.73,"ay":1.26,"yawRate":0.571,"rpm":354,"trqCmd":0,"trqEst":3,"vdc":359,"idc":0,"thr":5,"pot1":394,"pot2":864,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":111.46,"vx":2.29,"ax":-0.98,"ay":0.52,"yawRate":0.516,"rpm":319,"trqCmd":0,"trqEst":0,"vdc":358,"idc":0,"thr":7,"pot1":459,"pot2":995,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":112.15,"vx":2.34,"ax":-0.31,"ay":0.8,"yawRate":0.524,"rpm":323,"trqCmd":19,"trqEst":20,"vdc":357,"idc":2,"thr":20,"pot1":567,"pot2":1205,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":112.84,"vx":2.42,"ax":-1.39,"ay":0.98,"yawRate":0.538,"rpm":350,"trqCmd":0,"trqEst":0,"vdc":357,"idc":0,"thr":7,"pot1":389,"pot2":858,"brkF":0,"brkR":0,"invT":40,"motT":40},{"s":113.53,"vx":2.23,"ax":-1.02,"ay":0.41,"yawRate":0.512,"rpm":309,"trqCmd":0,"trqEst":0,"vdc":356,"idc":0,"thr":1,"pot1":344,"pot2":769,"brkF":0,"brkR":0,"invT":40,"motT":39},{"s":114.23,"vx":3.78,"ax":7.65,"ay":-0.42,"yawRate":0.001,"rpm":2173,"trqCmd":186,"trqEst":209,"vdc":318,"idc":144,"thr":100,"pot1":1507,"pot2":3039,"brkF":0,"brkR":0,"invT":41,"motT":38},{"s":114.97,"vx":5.61,"ax":8.17,"ay":-0.42,"yawRate":0.034,"rpm":2500,"trqCmd":186,"trqEst":206,"vdc":314,"idc":166,"thr":100,"pot1":1500,"pot2":3023,"brkF":0,"brkR":0,"invT":41,"motT":40},{"s":115.73,"vx":6.87,"ax":8.75,"ay":-0.15,"yawRate":0.105,"rpm":2547,"trqCmd":185,"trqEst":206,"vdc":314,"idc":172,"thr":100,"pot1":1511,"pot2":3047,"brkF":0,"brkR":0,"invT":42,"motT":40},{"s":116.53,"vx":8.1,"ax":8.79,"ay":-0.69,"yawRate":0.12,"rpm":2495,"trqCmd":186,"trqEst":189,"vdc":314,"idc":169,"thr":100,"pot1":1506,"pot2":3038,"brkF":0,"brkR":0,"invT":42,"motT":39},{"s":117.36,"vx":9.29,"ax":8.93,"ay":-0.72,"yawRate":-0.118,"rpm":2455,"trqCmd":186,"trqEst":193,"vdc":313,"idc":166,"thr":100,"pot1":1498,"pot2":3017,"brkF":0,"brkR":0,"invT":43,"motT":39},{"s":118.23,"vx":10.09,"ax":9.25,"ay":-0.52,"yawRate":-0.232,"rpm":2453,"trqCmd":186,"trqEst":202,"vdc":314,"idc":165,"thr":100,"pot1":1499,"pot2":3026,"brkF":0,"brkR":0,"invT":43,"motT":40},{"s":119.12,"vx":10.96,"ax":9.04,"ay":-0.2,"yawRate":-0.085,"rpm":2266,"trqCmd":186,"trqEst":204,"vdc":311,"idc":151,"thr":100,"pot1":1518,"pot2":3051,"brkF":0,"brkR":0,"invT":43,"motT":41},{"s":120.04,"vx":11.76,"ax":8.81,"ay":-0.75,"yawRate":0.043,"rpm":2133,"trqCmd":187,"trqEst":198,"vdc":319,"idc":139,"thr":100,"pot1":1496,"pot2":3017,"brkF":0,"brkR":0,"invT":43,"motT":39},{"s":120.97,"vx":12.43,"ax":8.51,"ay":-1.35,"yawRate":0.097,"rpm":2149,"trqCmd":186,"trqEst":195,"vdc":323,"idc":143,"thr":100,"pot1":1505,"pot2":3034,"brkF":0,"brkR":0,"invT":43,"motT":39},{"s":121.91,"vx":12.93,"ax":8.06,"ay":-0.32,"yawRate":-0.048,"rpm":2154,"trqCmd":187,"trqEst":212,"vdc":314,"idc":143,"thr":100,"pot1":1504,"pot2":3029,"brkF":0,"brkR":0,"invT":43,"motT":39},{"s":122.86,"vx":13.61,"ax":8.06,"ay":0.25,"yawRate":0.056,"rpm":2229,"trqCmd":186,"trqEst":204,"vdc":312,"idc":147,"thr":100,"pot1":1506,"pot2":3030,"brkF":0,"brkR":0,"invT":44,"motT":38},{"s":123.82,"vx":14.35,"ax":7.54,"ay":0.59,"yawRate":0.092,"rpm":2272,"trqCmd":186,"trqEst":214,"vdc":321,"idc":154,"thr":100,"pot1":1504,"pot2":3031,"brkF":0,"brkR":0,"invT":44,"motT":38},{"s":124.78,"vx":14.79,"ax":7.92,"ay":0.93,"yawRate":0.126,"rpm":2432,"trqCmd":186,"trqEst":209,"vdc":316,"idc":164,"thr":100,"pot1":1492,"pot2":3013,"brkF":0,"brkR":0,"invT":44,"motT":38},{"s":125.74,"vx":15.27,"ax":7.79,"ay":1.28,"yawRate":0.142,"rpm":2456,"trqCmd":186,"trqEst":194,"vdc":313,"idc":164,"thr":100,"pot1":1506,"pot2":3035,"brkF":0,"brkR":0,"invT":44,"motT":41},{"s":126.71,"vx":15.96,"ax":7.33,"ay":1.67,"yawRate":0.152,"rpm":2651,"trqCmd":185,"trqEst":193,"vdc":308,"idc":176,"thr":100,"pot1":1501,"pot2":3037,"brkF":0,"brkR":0,"invT":44,"motT":40},{"s":127.67,"vx":16.09,"ax":7.39,"ay":1.5,"yawRate":0.15,"rpm":2760,"trqCmd":185,"trqEst":186,"vdc":305,"idc":188,"thr":100,"pot1":1499,"pot2":3021,"brkF":0,"brkR":0,"invT":44,"motT":40},{"s":128.64,"vx":16.76,"ax":8.34,"ay":1.54,"yawRate":0.154,"rpm":2798,"trqCmd":185,"trqEst":192,"vdc":307,"idc":195,"thr":100,"pot1":1507,"pot2":3035,"brkF":0,"brkR":0,"invT":44,"motT":40},{"s":129.6,"vx":17.09,"ax":8.58,"ay":1.58,"yawRate":0.103,"rpm":2814,"trqCmd":185,"trqEst":184,"vdc":308,"idc":198,"thr":100,"pot1":1496,"pot2":3024,"brkF":0,"brkR":0,"invT":44,"motT":40},{"s":130.56,"vx":17.66,"ax":8.55,"ay":0.75,"yawRate":0.035,"rpm":2835,"trqCmd":185,"trqEst":184,"vdc":298,"idc":195,"thr":100,"pot1":1507,"pot2":3032,"brkF":0,"brkR":0,"invT":44,"motT":39},{"s":131.53,"vx":18.02,"ax":7.36,"ay":1.11,"yawRate":-0.021,"rpm":2972,"trqCmd":185,"trqEst":162,"vdc":304,"idc":211,"thr":100,"pot1":1499,"pot2":3024,"brkF":0,"brkR":0,"invT":44,"motT":39},{"s":132.49,"vx":18.46,"ax":6.43,"ay":0.24,"yawRate":-0.083,"rpm":2957,"trqCmd":185,"trqEst":163,"vdc":300,"idc":210,"thr":100,"pot1":1499,"pot2":3023,"brkF":0,"brkR":0,"invT":44,"motT":41},{"s":133.46,"vx":18.94,"ax":6.64,"ay":-2.14,"yawRate":-0.12,"rpm":3093,"trqCmd":185,"trqEst":169,"vdc":302,"idc":224,"thr":100,"pot1":1493,"pot2":3012,"brkF":0,"brkR":0,"invT":44,"motT":38},{"s":134.43,"vx":19.31,"ax":6.64,"ay":-2.62,"yawRate":-0.236,"rpm":3244,"trqCmd":153,"trqEst":145,"vdc":308,"idc":204,"thr":100,"pot1":1238,"pot2":2509,"brkF":0,"brkR":0,"invT":44,"motT":38},{"s":135.4,"vx":19.51,"ax":4.7,"ay":-3.37,"yawRate":-0.257,"rpm":2919,"trqCmd":27,"trqEst":35,"vdc":341,"idc":53,"thr":45,"pot1":556,"pot2":1210,"brkF":0,"brkR":0,"invT":45,"motT":40}]};
