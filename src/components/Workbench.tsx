@@ -45,7 +45,7 @@ import TrackCanvas, { type ColorMode, type MapAlign } from './TrackCanvas';
 import TelemetryCharts from './TelemetryCharts';
 import GGDiagram from './GGDiagram';
 import { PowertrainForm, VehicleForm, type PowertrainKey, type VehicleKey } from './ParamPanel';
-import { DeltaBadge, Kpi, Panel, Segmented } from './ui';
+import { DeltaBadge, DisclosureGroup, Kpi, Panel, Segmented } from './ui';
 import CornersPanel from './panels/CornersPanel';
 import TorqueVectoringPanel from './panels/TorqueVectoringPanel';
 import LaunchPanel from './panels/LaunchPanel';
@@ -54,6 +54,7 @@ import CodegenPanel from './panels/CodegenPanel';
 import KorfezPanel, { KorfezFacilityBar } from './panels/KorfezPanel';
 import SensitivityPanel from './panels/SensitivityPanel';
 import EndurancePanel from './panels/EndurancePanel';
+import CanCockpitDrawer from './panels/CanCockpitDrawer';
 
 type TrackSel = PresetTrackId | 'custom';
 type Tab = 'corners' | 'tv' | 'sensitivity' | 'endurance' | 'launch' | 'powertrain' | 'codegen' | 'korfez';
@@ -155,9 +156,10 @@ function lapTelemetryToCsv(lap: LapResult): string {
 export interface WorkbenchProps {
   externalPresetId?: VehiclePresetId;
   onPresetIdChange?: (id: VehiclePresetId) => void;
+  onOpenHavuzLab?: () => void;
 }
 
-export default function Workbench({ externalPresetId, onPresetIdChange }: WorkbenchProps = {}) {
+export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHavuzLab }: WorkbenchProps = {}) {
   const [trackSel, setTrackSel] = useState<TrackSel>('endurance');
   const [customTrack, setCustomTrack] = useState<Track | null>(null);
   const [csvMsg, setCsvMsg] = useState<string | null>(null);
@@ -189,6 +191,9 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
   const [presetMenuOpen, setPresetMenuOpen] = useState(false);
   const [trackMenuOpen, setTrackMenuOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [leftInspectorOpen, setLeftInspectorOpen] = useState(true);
+  const [canCockpitOpen, setCanCockpitOpen] = useState(false);
+  const [benchmarksOpen, setBenchmarksOpen] = useState(false);
   const [mapAlign, setMapAlign] = useState<MapAlign>({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true });
   const [mapUpload, setMapUpload] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -617,18 +622,18 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
   };
 
   const pillBase =
-    'px-2.5 h-7 inline-flex items-center justify-center rounded-[3px] font-mono text-xs uppercase tracking-wider transition select-none whitespace-nowrap border';
-  const pillActive = 'bg-cyan-950/60 text-cyan-400 border-cyan-500/40';
-  const pillIdle = 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/60';
+    'px-2.5 h-7 inline-flex items-center justify-center rounded-md font-mono text-[11px] uppercase tracking-wider transition select-none whitespace-nowrap border';
+  const pillActive = 'bg-slate-800/95 text-cyan-300 border-white/[0.12] shadow-sm';
+  const pillIdle = 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]';
 
   const presetDisplayLabel =
     presetId === 'ist26-rwd'
-      ? 'IST26 RWD (Cascadia · 3.2:1)'
+      ? 'IST26 RWD (3.2:1)'
       : presetId === 'ist27'
-        ? 'IST27 Baseline (80 kW EV)'
+        ? 'IST27 Baseline'
         : presetId === 'ist27-twotrack'
           ? 'IST27 TwoTrackSim'
-          : 'TPSC Reference (220+ km/h)';
+          : 'TPSC Reference';
 
   const trackDisplayLabel =
     trackSel === 'skidpad'
@@ -652,50 +657,70 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
                       : `${dTrack.name} (${Math.round(dTrack.length)}m)`;
 
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Unified 52px Single-Row Aerospace / Motorsport Control Ribbon */}
-      <header className="sticky top-0 z-30 flex h-13 min-h-[52px] max-h-[52px] items-center justify-between gap-2 border-b border-slate-800/80 bg-[#07090e] px-4">
-        {/* ZONE A (LEFT): BRANDING & CONTEXT SELECTORS */}
-        <div className="flex shrink-0 items-center gap-2">
-          <div className="flex shrink-0 items-baseline gap-1.5" title="ApexLapSim — Formula Student & Motorsport Vehicle Dynamics Suite">
-            <span className="font-mono text-base font-bold tracking-[0.22em] text-[#00f0ff] drop-shadow-[0_0_8px_rgba(0,240,255,0.35)]">
-              APEX
-            </span>
-            <span className="font-mono text-base font-light tracking-[0.22em] text-slate-400">LAPSIM</span>
+    <div className="flex min-h-screen flex-col bg-[#090a0f] text-slate-200">
+      {/* ===================================================================== */}
+      {/* A. PERSISTENT TOP APP BAR (Single 50px Apple Pro Ribbon)              */}
+      {/* ===================================================================== */}
+      <header className="sticky top-0 z-30 flex h-[50px] min-h-[50px] max-h-[50px] items-center justify-between gap-2 border-b border-white/[0.07] bg-[#090a0f]/85 px-4 backdrop-blur-xl">
+        {/* ZONE A (LEFT): BRANDING, WORKSPACE SWITCHER & CONTEXT SELECTORS */}
+        <div className="flex shrink-0 items-center gap-2.5">
+          {/* Inspector Sidebar Toggle */}
+          <button
+            type="button"
+            onClick={() => setLeftInspectorOpen((o) => !o)}
+            title={leftInspectorOpen ? 'Hide Vehicle Inspector Sidebar' : 'Show Vehicle Inspector Sidebar'}
+            className={`inline-flex h-8 w-8 items-center justify-center rounded-lg border transition ${
+              leftInspectorOpen
+                ? 'border-white/[0.12] bg-slate-800/80 text-cyan-300'
+                : 'border-white/[0.06] bg-slate-900/60 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <rect x="3" y="3" width="18" height="18" rx="3" />
+              <line x1="9" y1="3" x2="9" y2="21" />
+            </svg>
+          </button>
+
+          {/* Brand: Sleek "APEX" in crisp white, "LAPSIM" in subtle tracking-wide slate-400 */}
+          <div className="flex shrink-0 items-baseline gap-1.5" title="ApexLapSim — Motorsport Vehicle Dynamics Suite">
+            <span className="font-mono text-sm font-bold tracking-[0.22em] text-white">APEX</span>
+            <span className="font-mono text-sm font-light tracking-widest text-slate-400">LAPSIM</span>
           </div>
 
-          <div className="h-5 w-[1px] shrink-0 bg-slate-800" />
+          {onOpenHavuzLab && (
+            <button
+              type="button"
+              onClick={onOpenHavuzLab}
+              title="Switch to İTÜ Havuz Otoparkı Telemetry & SIL Lab"
+              className="inline-flex h-7 items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 font-mono text-[10px] font-medium uppercase tracking-wider text-amber-300 transition hover:bg-amber-500/20"
+            >
+              <span>🅿️</span>
+              <span className="hidden sm:inline">Havuz SIL Lab</span>
+            </button>
+          )}
 
-          {/* Compact Vehicle Profile Dropdown (Custom Popover — zero hidden-option width inflation) */}
+          <div className="h-4 w-[1px] shrink-0 bg-white/[0.08]" />
+
+          {/* Vehicle Preset Segmented Popover */}
           <div className="relative shrink-0" ref={presetMenuRef}>
             <button
               type="button"
-              aria-label="Vehicle Profile"
+              aria-label="Vehicle Preset"
               aria-expanded={presetMenuOpen}
               onClick={() => {
                 setPresetMenuOpen((o) => !o);
                 setTrackMenuOpen(false);
                 setExportOpen(false);
               }}
-              title={`Vehicle Profile: ${presetDisplayLabel}`}
-              className="inline-flex h-8 shrink-0 items-center gap-2 rounded border border-slate-800 bg-slate-900/70 px-2.5 font-mono text-xs uppercase tracking-wider text-slate-200 outline-none transition hover:border-cyan-500/40 focus:border-cyan-500/60"
+              title={`Vehicle Preset: ${presetDisplayLabel}`}
+              className="inline-flex h-8 shrink-0 items-center gap-2 rounded-lg border border-white/[0.08] bg-[#11141d]/90 px-2.5 font-mono text-xs text-slate-200 outline-none transition hover:border-white/[0.16]"
             >
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400 hidden md:inline">
+                Vehicle:
+              </span>
+              <span className="whitespace-nowrap font-medium text-white">{presetDisplayLabel}</span>
               <svg
-                className="h-3.5 w-3.5 shrink-0 text-cyan-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2" />
-                <circle cx="6.5" cy="16.5" r="2.5" />
-                <circle cx="16.5" cy="16.5" r="2.5" />
-              </svg>
-              <span className="whitespace-nowrap">{presetDisplayLabel}</span>
-              <svg
-                className={`h-3 w-3 shrink-0 text-slate-400 transition-transform ${presetMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
+                className={`h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform ${presetMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -708,9 +733,9 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
             </button>
 
             {presetMenuOpen && (
-              <div className="absolute left-0 top-full z-50 mt-1.5 w-76 rounded border border-slate-800 bg-[#07090e] p-1 shadow-2xl shadow-black/90">
-                <div className="px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-slate-500">
-                  Vehicle Profile Presets
+              <div className="absolute left-0 top-full z-50 mt-1.5 w-76 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl">
+                <div className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-slate-400">
+                  Vehicle Preset
                 </div>
                 {(
                   [
@@ -729,14 +754,14 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
                         applyPreset(item.id);
                         setPresetMenuOpen(false);
                       }}
-                      className={`flex w-full items-center justify-between rounded px-2.5 py-2 text-left font-mono text-xs uppercase tracking-wider transition ${
+                      className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left font-mono text-xs transition ${
                         active
-                          ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-500/40'
-                          : 'border border-transparent text-slate-300 hover:bg-slate-900 hover:text-cyan-400'
+                          ? 'bg-slate-800/95 text-cyan-300 border border-white/[0.1]'
+                          : 'border border-transparent text-slate-300 hover:bg-white/[0.04] hover:text-white'
                       }`}
                     >
                       <span>{item.label}</span>
-                      <span className="text-[10px] text-slate-500">{item.badge}</span>
+                      <span className="text-[10px] tabular-nums text-slate-400">{item.badge}</span>
                     </button>
                   );
                 })}
@@ -744,11 +769,11 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
             )}
           </div>
 
-          {/* Compact Track Selector Dropdown with Optgroups (Custom Popover — sizes strictly to active track) */}
+          {/* Circuit Selector Segmented Popover */}
           <div className="relative shrink-0" ref={trackMenuRef}>
             <button
               type="button"
-              aria-label="Track Selector"
+              aria-label="Circuit Selector"
               aria-expanded={trackMenuOpen}
               onClick={() => {
                 setTrackMenuOpen((o) => !o);
@@ -756,23 +781,14 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
                 setExportOpen(false);
               }}
               title={`Active Circuit: ${dTrack.name} (${fmt(dTrack.length, 0)} m)`}
-              className="inline-flex h-8 shrink-0 items-center gap-2 rounded border border-slate-800 bg-slate-900/70 px-2.5 font-mono text-xs uppercase tracking-wider text-slate-200 outline-none transition hover:border-cyan-500/40 focus:border-cyan-500/60"
+              className="inline-flex h-8 shrink-0 items-center gap-2 rounded-lg border border-white/[0.08] bg-[#11141d]/90 px-2.5 font-mono text-xs text-slate-200 outline-none transition hover:border-white/[0.16]"
             >
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400 hidden md:inline">
+                Circuit:
+              </span>
+              <span className="whitespace-nowrap font-medium text-white">{trackDisplayLabel}</span>
               <svg
-                className="h-3.5 w-3.5 shrink-0 text-cyan-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-                <line x1="4" y1="22" x2="4" y2="15" />
-              </svg>
-              <span className="whitespace-nowrap">{trackDisplayLabel}</span>
-              <svg
-                className={`h-3 w-3 shrink-0 text-slate-400 transition-transform ${trackMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
+                className={`h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform ${trackMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -785,8 +801,8 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
             </button>
 
             {trackMenuOpen && (
-              <div className="absolute left-0 top-full z-50 mt-1.5 w-80 rounded border border-slate-800 bg-[#07090e] p-1.5 shadow-2xl shadow-black/90">
-                <div className="px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-cyan-400/90">
+              <div className="absolute left-0 top-full z-50 mt-1.5 w-80 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl">
+                <div className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-cyan-400/90">
                   Formula Student & İTÜ Havuz
                 </div>
                 {(
@@ -807,14 +823,14 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
                         selectTrackUnified(t.id);
                         setTrackMenuOpen(false);
                       }}
-                      className={`flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider transition ${
+                      className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left font-mono text-xs transition ${
                         active
-                          ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-500/40'
-                          : 'border border-transparent text-slate-300 hover:bg-slate-900 hover:text-cyan-400'
+                          ? 'bg-slate-800/95 text-cyan-300 border border-white/[0.1]'
+                          : 'border border-transparent text-slate-300 hover:bg-white/[0.04] hover:text-white'
                       }`}
                     >
                       <span>{t.label}</span>
-                      <span className="text-[11px] tabular-nums text-slate-500">{t.len}</span>
+                      <span className="text-[11px] tabular-nums text-slate-400">{t.len}</span>
                     </button>
                   );
                 })}
@@ -825,19 +841,19 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
                       selectTrackUnified('custom');
                       setTrackMenuOpen(false);
                     }}
-                    className={`flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider transition ${
+                    className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left font-mono text-xs transition ${
                       trackSel === 'custom'
-                        ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-500/40'
-                        : 'border border-transparent text-slate-300 hover:bg-slate-900 hover:text-cyan-400'
+                        ? 'bg-slate-800/95 text-cyan-300 border border-white/[0.1]'
+                        : 'border border-transparent text-slate-300 hover:bg-white/[0.04] hover:text-white'
                     }`}
                   >
                     <span>Custom: {customTrack.name}</span>
-                    <span className="text-[11px] tabular-nums text-slate-500">{Math.round(customTrack.length)}m</span>
+                    <span className="text-[11px] tabular-nums text-slate-400">{Math.round(customTrack.length)}m</span>
                   </button>
                 )}
 
-                <div className="my-1 border-t border-slate-800/80" />
-                <div className="px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-cyan-400/90">
+                <div className="my-1 border-t border-white/[0.06]" />
+                <div className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-cyan-400/90">
                   Kocaeli — TOSFED Körfez
                 </div>
                 {(
@@ -856,14 +872,14 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
                         selectTrackUnified(t.id);
                         setTrackMenuOpen(false);
                       }}
-                      className={`flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider transition ${
+                      className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left font-mono text-xs transition ${
                         active
-                          ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-500/40'
-                          : 'border border-transparent text-slate-300 hover:bg-slate-900 hover:text-cyan-400'
+                          ? 'bg-slate-800/95 text-cyan-300 border border-white/[0.1]'
+                          : 'border border-transparent text-slate-300 hover:bg-white/[0.04] hover:text-white'
                       }`}
                     >
                       <span>{t.label}</span>
-                      <span className="text-[11px] tabular-nums text-slate-500">{t.len}</span>
+                      <span className="text-[11px] tabular-nums text-slate-400">{t.len}</span>
                     </button>
                   );
                 })}
@@ -872,11 +888,11 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
           </div>
         </div>
 
-        {/* ZONE B (CENTER): COMPACT SOLVER SEGMENTED PILLS */}
-        <div className="flex shrink-0 items-center gap-2">
-          {/* 1. Racing Line Group */}
+        {/* ZONE B (CENTER): SOLVER ENGINE QUICK-BAR (Minimal Segmented Controls) */}
+        <div className="hidden shrink-0 items-center gap-1.5 lg:flex">
+          {/* 1. Line: [Center | Apex] */}
           <div
-            className="inline-flex items-center rounded border border-slate-800 bg-slate-950/90 p-0.5"
+            className="inline-flex items-center rounded-lg border border-white/[0.07] bg-[#11141d]/90 p-0.5"
             role="group"
             aria-label="Racing Line Mode"
           >
@@ -898,9 +914,9 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
             </button>
           </div>
 
-          {/* 2. Dynamics Model Group */}
+          {/* 2. Model: [Point | 2-Track Open | 2-Track TV] */}
           <div
-            className="inline-flex items-center rounded border border-slate-800 bg-slate-950/90 p-0.5"
+            className="inline-flex items-center rounded-lg border border-white/[0.07] bg-[#11141d]/90 p-0.5"
             role="group"
             aria-label="Vehicle Dynamics Model"
           >
@@ -910,32 +926,31 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
               title="Point-Mass — Single-track friction-ellipse QSS solver"
               className={`${pillBase} ${model === 'point-mass' ? pillActive : pillIdle}`}
             >
-              <span className="hidden 2xl:inline">Point-Mass</span>
-              <span className="2xl:hidden">Point</span>
+              Point
             </button>
             <button
               type="button"
               onClick={() => setModel('two-track-open')}
-              title="Open Diff — 2-Track 4-corner load transfer with open differential"
+              title="2-Track Open — 4-corner load transfer with open differential"
               className={`${pillBase} ${model === 'two-track-open' ? pillActive : pillIdle}`}
             >
-              <span className="hidden 2xl:inline">Open Diff</span>
+              <span className="hidden 2xl:inline">2-Track Open</span>
               <span className="2xl:hidden">Open</span>
             </button>
             <button
               type="button"
               onClick={() => setModel('two-track-tv')}
-              title="Torque Vectoring — 2-Track active direct yaw-moment allocation"
+              title="2-Track TV — Active direct yaw-moment torque vectoring"
               className={`${pillBase} ${model === 'two-track-tv' ? pillActive : pillIdle}`}
             >
-              <span className="hidden 2xl:inline">Torque Vectoring</span>
+              <span className="hidden 2xl:inline">2-Track TV</span>
               <span className="2xl:hidden">TV</span>
             </button>
           </div>
 
-          {/* 3. Numerical ODE Solver Group */}
+          {/* 3. Solver: [RK4 | Euler] */}
           <div
-            className="inline-flex items-center rounded border border-slate-800 bg-slate-950/90 p-0.5"
+            className="inline-flex items-center rounded-lg border border-white/[0.07] bg-[#11141d]/90 p-0.5"
             role="group"
             aria-label="Numerical ODE Solver"
           >
@@ -958,69 +973,84 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
           </div>
         </div>
 
-        {/* ZONE C (RIGHT): BENCHMARK METRICS & ACTION BUTTONS */}
+        {/* ZONE C (RIGHT): TELEMETRY BADGE, CAN COCKPIT, SNAPSHOT & EXPORT */}
         <div className="flex shrink-0 items-center gap-2">
-          {/* Execution Telemetry Badge */}
+          {/* Subtle Monospace Telemetry Badge */}
           <span
-            className="hidden h-8 items-center rounded border border-slate-800 bg-slate-900/60 px-2.5 font-mono text-xs tabular-nums text-slate-500 xl:inline-flex"
+            className="hidden h-8 items-center rounded-lg border border-white/[0.06] bg-[#11141d]/80 px-2.5 font-mono text-[11px] tabular-nums text-slate-400 2xl:inline-flex"
             title="Solver telemetry: setup (envelope + powertrain tables) + 3-pass QSS solve time · mesh nodes"
           >
             {fmt(sim.setupMs, 0)} + {fmt(sim.solveMs, 0)} ms · {n} pts
           </span>
 
-          {/* Snapshot Setup Button */}
+          {/* CAN Cockpit Drawer Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setCanCockpitOpen((o) => !o)}
+            title="Toggle Right Drawer: CAN Bus Monitor (FDCAN1/FDCAN2), Fault Injection & VCU C Codegen"
+            className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 font-mono text-xs transition ${
+              canCockpitOpen
+                ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300'
+                : 'border-white/[0.08] bg-[#11141d]/90 text-slate-300 hover:border-white/[0.16] hover:text-white'
+            }`}
+          >
+            <span className={`h-2 w-2 rounded-full ${canCockpitOpen ? 'bg-emerald-400' : 'bg-slate-500'}`} />
+            <span>CAN Cockpit</span>
+          </button>
+
+          {/* Snapshot Setup A Button */}
           {!baselineSolved ? (
             <button
               type="button"
               onClick={snapshotBaseline}
-              title="Snapshot Baseline (Setup A) — Lock current setup to compare Δt and KPI deltas"
-              className="inline-flex h-8 items-center gap-1.5 rounded border border-slate-800 bg-slate-900/70 px-2.5 font-mono text-xs uppercase tracking-wider text-slate-300 transition hover:border-cyan-500/40 hover:bg-cyan-950/40 hover:text-cyan-400"
+              title="Snapshot Setup A — Lock current setup to compare Δt and KPI deltas"
+              className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/[0.08] bg-[#11141d]/90 px-2.5 font-mono text-xs text-slate-300 transition hover:border-white/[0.16] hover:text-white"
             >
               <span className="text-cyan-400">⌖</span>
-              <span className="hidden lg:inline">Snapshot A</span>
+              <span className="hidden xl:inline">Snapshot Setup A</span>
             </button>
           ) : (
-            <div className="inline-flex h-8 items-center rounded border border-cyan-500/40 bg-cyan-950/60">
+            <div className="inline-flex h-8 items-center rounded-lg border border-cyan-500/40 bg-cyan-950/40">
               <button
                 type="button"
                 onClick={snapshotBaseline}
-                title={`Locked (Setup A: ${fmtTime(baselineSolved.lap.lapTime)}) — Click to overwrite Setup A with active setup`}
-                className="inline-flex h-full items-center gap-1.5 px-2.5 font-mono text-xs uppercase tracking-wider text-cyan-400 transition hover:bg-cyan-900/40"
+                title={`Locked (Setup A: ${fmtTime(baselineSolved.lap.lapTime)}) — Click to overwrite Setup A`}
+                className="inline-flex h-full items-center gap-1.5 px-2.5 font-mono text-xs text-cyan-300 transition hover:bg-cyan-900/30"
               >
                 <span>⌖</span>
-                <span>Locked (Setup A)</span>
+                <span>Setup A</span>
               </button>
               <button
                 type="button"
                 onClick={() => setBaselineCfg(null)}
                 title="Clear Setup A baseline snapshot"
-                className="inline-flex h-full items-center border-l border-cyan-500/30 px-2 font-mono text-xs text-slate-400 transition hover:bg-red-950/60 hover:text-red-400"
+                className="inline-flex h-full items-center border-l border-cyan-500/30 px-2 font-mono text-xs text-slate-400 transition hover:text-rose-400"
               >
                 ✕
               </button>
             </div>
           )}
 
-          {/* Export Dropdown Button */}
+          {/* Export Data Dropdown Button */}
           <div className="relative" ref={exportMenuRef}>
-            <div className="inline-flex h-8 items-center rounded border border-emerald-600/50 bg-emerald-950/50 font-mono text-xs uppercase tracking-wider text-emerald-400 transition hover:bg-emerald-900/60">
+            <div className="inline-flex h-8 items-center rounded-lg border border-white/[0.09] bg-[#11141d]/90 font-mono text-xs text-slate-200 transition hover:border-white/[0.18]">
               <button
                 type="button"
                 onClick={handleExportDossierMd}
                 title="Export FSAE Engineering Design Report (.md)"
                 className="inline-flex h-full items-center gap-1.5 px-2.5"
               >
-                <span>⬇</span>
-                <span>Export</span>
+                <span className="text-emerald-400">⬇</span>
+                <span>Export Data</span>
               </button>
               <button
                 type="button"
                 aria-label="Open Export Menu"
                 onClick={() => setExportOpen((o) => !o)}
                 title="More export options (.pdf, .md, VCU .h/.c, CSV telemetry)"
-                className="inline-flex h-full items-center border-l border-emerald-600/40 px-1.5 hover:bg-emerald-900/80"
+                className="inline-flex h-full items-center border-l border-white/[0.08] px-1.5 hover:bg-white/[0.04]"
               >
-                <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="h-3.5 w-3.5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
                   <path
                     fillRule="evenodd"
                     d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
@@ -1031,11 +1061,11 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
             </div>
 
             {exportOpen && (
-              <div className="absolute right-0 top-9 z-50 w-64 rounded border border-slate-800 bg-[#07090e] p-1 shadow-2xl">
+              <div className="absolute right-0 top-9 z-50 w-64 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl">
                 <button
                   type="button"
                   onClick={handleExportDossierMd}
-                  className="flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider text-emerald-400 transition hover:bg-slate-900"
+                  className="flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left font-mono text-xs text-emerald-400 transition hover:bg-white/[0.04]"
                 >
                   <span>Export FSAE Report</span>
                   <span className="text-[10px] text-slate-500">.md</span>
@@ -1043,16 +1073,16 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
                 <button
                   type="button"
                   onClick={handleExportDossierPdf}
-                  className="flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider text-slate-200 transition hover:bg-slate-900 hover:text-cyan-400"
+                  className="flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left font-mono text-xs text-slate-200 transition hover:bg-white/[0.04]"
                 >
                   <span>Print / Save FSAE Report</span>
                   <span className="text-[10px] text-slate-500">.pdf</span>
                 </button>
-                <div className="my-1 border-t border-slate-800/80" />
+                <div className="my-1 border-t border-white/[0.06]" />
                 <button
                   type="button"
                   onClick={handleExportVcuHeaders}
-                  className="flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider text-slate-200 transition hover:bg-slate-900 hover:text-cyan-400"
+                  className="flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left font-mono text-xs text-slate-200 transition hover:bg-white/[0.04]"
                 >
                   <span>Export VCU C Header</span>
                   <span className="text-[10px] text-slate-500">.h / .c</span>
@@ -1060,7 +1090,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
                 <button
                   type="button"
                   onClick={handleExportTelemetryCsv}
-                  className="flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left font-mono text-xs uppercase tracking-wider text-slate-200 transition hover:bg-slate-900 hover:text-cyan-400"
+                  className="flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left font-mono text-xs text-slate-200 transition hover:bg-white/[0.04]"
                 >
                   <span>Export CSV Telemetry</span>
                   <span className="text-[10px] text-slate-500">.csv</span>
@@ -1070,250 +1100,122 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
           </div>
         </div>
       </header>
+
       {venue === 'korfez' && <KorfezFacilityBar />}
-      {baselineSolved && (
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hud-line bg-hud-panel2/80 px-4 py-1.5 font-mono text-[11px]">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded bg-hud-violet/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-hud-violet">
-              Setup A (Baseline)
-            </span>
-            <span className="text-hud-dim">
-              {baselineSolved.cfg.veh.mass.toFixed(1)} kg · ClA {baselineSolved.cfg.veh.ClA.toFixed(2)} · CdA {baselineSolved.cfg.veh.CdA.toFixed(2)} ·{' '}
-              LLTD {(baselineSolved.cfg.veh.rollStiffnessFront * 100).toFixed(1)}% · {(baselineSolved.cfg.pt.batteryPowerLimit / 1000).toFixed(1)} kW ·{' '}
-              {baselineSolved.cfg.model} · {baselineSolved.cfg.racingLineMode}
-            </span>
+
+      {/* ===================================================================== */}
+      {/* B. KPI HERO METRIC ROW (Big Numbers, Zero Visual Noise)               */}
+      {/* ===================================================================== */}
+      <div className="border-b border-white/[0.06] bg-[#0c0e16]/80 px-4 py-3 backdrop-blur-md">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {/* 1. LAP TIME */}
+          <div className="flex flex-col justify-between border-r border-white/[0.06] pr-4 last:border-r-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
+                LAP TIME ({dTrack.name})
+              </span>
+              <DeltaBadge
+                delta={headline.delta != null ? headline.delta : 0}
+                unit="s"
+                digits={3}
+              />
+            </div>
+            <div className="mt-1 font-mono text-2xl font-semibold tabular-nums tracking-tight text-white drop-shadow-[0_0_16px_rgba(56,189,248,0.2)] sm:text-3xl">
+              {headline.value}
+            </div>
+            <div className="mt-1 font-mono text-[10px] tabular-nums text-slate-400">
+              {lap.integrator.toUpperCase()} · {lap.lateralModel} · {racingLineMode === 'optimal' ? 'Optimal Apex' : 'Centerline'}
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-hud-dim">Setup B vs Setup A:</span>
-            <DeltaBadge delta={lap.lapTime - baselineSolved.lap.lapTime} unit="s" digits={3} />
-            <DeltaBadge delta={(lap.lapTime - baselineSolved.lap.lapTime) * 1000} unit="ms" digits={0} />
+
+          {/* 2. SPEED */}
+          <div className="flex flex-col justify-between border-r border-white/[0.06] pr-4 last:border-r-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">SPEED</span>
+              {baselineSolved && (
+                <DeltaBadge
+                  delta={kph(lap.avgSpeed - baselineSolved.lap.avgSpeed)}
+                  unit=" km/h"
+                  digits={1}
+                  invertGood
+                />
+              )}
+            </div>
+            <div className="mt-1 flex items-baseline gap-2 font-mono tabular-nums">
+              <span className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                {fmt(kph(lap.avgSpeed), 1)}
+              </span>
+              <span className="text-xs text-slate-400">avg /</span>
+              <span className="text-lg font-medium text-cyan-300">{fmt(kph(lap.maxSpeed), 1)}</span>
+              <span className="text-xs text-slate-400">max km/h</span>
+            </div>
+            <div className="mt-1 font-mono text-[10px] tabular-nums text-slate-400">
+              Peak {fmt(lap.peakLatG, 2)}G lat · {fmt(lap.peakLongG, 2)}G accel · {fmt(lap.peakBrakeG, 2)}G brake
+            </div>
+          </div>
+
+          {/* 3. NET ENERGY */}
+          <div className="flex flex-col justify-between border-r border-white/[0.06] pr-4 last:border-r-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">NET ENERGY</span>
+              {baselineSolved && (
+                <DeltaBadge
+                  delta={(lap.energy.netKWh - baselineSolved.lap.energy.netKWh) * 1000}
+                  unit=" Wh"
+                  digits={1}
+                />
+              )}
+            </div>
+            <div className="mt-1 flex items-baseline gap-1.5 font-mono tabular-nums">
+              <span className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                {fmt(lap.energy.netKWh * 1000, 1)}
+              </span>
+              <span className="text-xs text-slate-400">Wh</span>
+            </div>
+            <div className="mt-1 font-mono text-[10px] tabular-nums text-emerald-400/90">
+              {fmt(lap.energy.regenKWh * 1000, 1)} Wh regen ({fmt(lap.energy.dischargeKWh * 1000, 1)} Wh out)
+            </div>
+          </div>
+
+          {/* 4. COOLING HEAT */}
+          <div className="flex flex-col justify-between">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">COOLING HEAT</span>
+              <button
+                type="button"
+                onClick={() => setBenchmarksOpen((o) => !o)}
+                className="inline-flex items-center gap-1 rounded-md border border-white/[0.07] bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-slate-300 transition hover:border-white/[0.15] hover:text-white"
+              >
+                <span>Benchmarks</span>
+                <span>{benchmarksOpen ? '▴' : '▾'}</span>
+              </button>
+            </div>
+            <div className="mt-1 flex items-baseline gap-2 font-mono tabular-nums">
+              <span className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                {fmt(lap.energy.coolingHeatKJ, 1)}
+              </span>
+              <span className="text-xs text-slate-400">kJ</span>
+              <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                Normal
+              </span>
+            </div>
+            <div className="mt-1 font-mono text-[10px] tabular-nums text-slate-400">
+              + {fmt(lap.energy.batteryLossKJ, 1)} kJ accumulator I²R loss
+            </div>
           </div>
         </div>
-      )}
 
-      <div className="grid flex-1 gap-3 p-3 lg:grid-cols-[290px_minmax(0,1fr)]">
-        <aside className="flex flex-col gap-3">
-          <Panel title="Track">
-            <div className="space-y-2 px-3 py-2 font-mono text-[11px]">
-              <div className="text-hud-text">{dTrack.name}</div>
-              <div className="text-hud-dim">{dTrack.description}</div>
-              <div className="grid grid-cols-2 gap-x-2 text-hud-dim">
-                <span>Length ({racingLineMode === 'optimal' ? 'optimal' : 'center'})</span>
-                <span className="text-right text-hud-text">{fmt(dTrack.length, 1)} m</span>
-                <span>Track width</span>
-                <span className="text-right text-hud-text">{fmt(dTrack.racingLine.trackWidthM, 1)} m</span>
-                <span>Corners</span>
-                <span className="text-right text-hud-text">{lap.corners.length}</span>
-                <span>Min radius</span>
-                <span className="text-right text-hud-text">
-                  {(() => {
-                    const kMax = Math.max(...dTrack.kappa.map(Math.abs));
-                    return kMax > 1e-6 ? `${fmt(1 / kMax, 2)} m` : '∞';
-                  })()}
-                </span>
-                <span>Closed / laps</span>
-                <span className="text-right text-hud-text">
-                  {dTrack.closed ? 'yes' : 'no'} / {dTrack.laps}
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-1 pt-1">
-                <button type="button" className="btn" onClick={() => fileRef.current?.click()}>
-                  Import CSV
-                </button>
-                <button type="button" className="btn" onClick={() => downloadText(`${dTrack.id}.csv`, trackToCsv(dTrack), 'text/csv')}>
-                  Export CSV
-                </button>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept=".csv,.txt,.tsv"
-                  className="hidden"
-                  onChange={async (e) => {
-                    const f = e.target.files?.[0];
-                    if (f) importCsv(await f.text(), f.name.replace(/\.[^.]+$/, ''));
-                    e.target.value = '';
-                  }}
-                />
-              </div>
-              <div className="text-[10px] text-hud-dim">CSV columns: X, Y [m] (header optional). Closed loops auto-detected.</div>
-              {csvMsg && <div className={`text-[10px] ${csvMsg.startsWith('Import failed') ? 'text-hud-red' : 'text-hud-lime'}`}>{csvMsg}</div>}
-            </div>
-          </Panel>
-          <Panel
-            title="Vehicle"
-            right={
-              <div className="flex items-center gap-1 normal-case">
-                <button
-                  type="button"
-                  className="btn !px-1.5 !py-0 text-[9px] border-hud-lime/50 text-hud-lime hover:bg-hud-lime/15"
-                  onClick={saveCurrentToTwoTrack}
-                  title="Ekrandaki mevcut verileri IST27 - TwoTrackSim profiline kalıcı olarak kaydet"
-                >
-                  💾 Kaydet (TwoTrackSim)
-                </button>
-                <button
-                  type="button"
-                  className="btn !px-1.5 !py-0 text-[9px]"
-                  onClick={() => applyPreset(presetId)}
-                  title="Seçili profilin kayıtlı değerlerine geri dön"
-                >
-                  ↺ Geri Yükle
-                </button>
-              </div>
-            }
-          >
-            {/* Preset Selector & Persistence Controls inside Vehicle Panel */}
-            <div className="space-y-1.5 border-b border-hud-line bg-hud-panel2/50 px-3 py-2 font-mono text-[10px]">
-              <div className="flex items-center justify-between">
-                <span className="uppercase tracking-wider text-hud-cyan">Araç Profili (Preset)</span>
-                {presetId === 'ist27-twotrack' && (
-                  <span className={`text-[9px] ${isTwoTrackDirty ? 'text-hud-amber' : 'text-hud-lime'}`}>
-                    {isTwoTrackDirty ? '● Değiştirildi (Kaydedilmedi)' : '✓ Kayıtlı Profil Aktif'}
-                  </span>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-1">
-                {KORFEZ_PRESETS.map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    className={`btn !px-1.5 !py-1 text-center text-[9px] normal-case ${presetId === p.id ? 'btn-active' : ''}`}
-                    onClick={() => applyPreset(p.id)}
-                  >
-                    {p.id === 'ist26-rwd'
-                      ? 'IST26 RWD (3.2:1)'
-                      : p.id === 'ist27-twotrack'
-                        ? 'IST27 - TwoTrackSim'
-                        : p.id === 'ist27'
-                          ? 'IST27 Baseline'
-                          : 'TPSC Touring'}
-                  </button>
-                ))}
-              </div>
-              <div className="flex flex-wrap items-center gap-1 pt-0.5">
-                <button
-                  type="button"
-                  className="btn flex-1 !py-0.5 text-[9px] border-hud-cyan/50 text-hud-cyan"
-                  onClick={saveCurrentToTwoTrack}
-                >
-                  💾 IST27 - TwoTrackSim Olarak Kaydet
-                </button>
-                <button
-                  type="button"
-                  className="btn !px-1.5 !py-0.5 text-[9px]"
-                  onClick={() =>
-                    downloadText(
-                      'IST27-TwoTrackSim-setup.json',
-                      JSON.stringify({ name: 'IST27 - TwoTrackSim', vehPatch, ptPatch, lambdaMu, regen, veh, pt }, null, 2),
-                      'application/json',
-                    )
-                  }
-                  title="Araç verilerini JSON dosyası olarak bilgisayarınıza yedekleyin"
-                >
-                  📥 JSON
-                </button>
-                <button
-                  type="button"
-                  className="btn !px-1.5 !py-0.5 text-[9px]"
-                  onClick={() => presetFileRef.current?.click()}
-                  title="JSON yedek dosyasından araç verilerini yükleyin"
-                >
-                  📤 Yükle
-                </button>
-                <input
-                  ref={presetFileRef}
-                  type="file"
-                  accept=".json"
-                  className="hidden"
-                  onChange={async (e) => {
-                    const f = e.target.files?.[0];
-                    if (f) {
-                      try {
-                        const data = JSON.parse(await f.text());
-                        if (data.vehPatch) setVehPatch(data.vehPatch);
-                        if (data.ptPatch) setPtPatch(data.ptPatch);
-                        if (typeof data.lambdaMu === 'number') setLambdaMu(data.lambdaMu);
-                        if (typeof data.regen === 'boolean') setRegen(data.regen);
-                        setPresetMsg('✓ JSON profil yüklendi');
-                        setTimeout(() => setPresetMsg(null), 3000);
-                      } catch {
-                        setPresetMsg('JSON okuma hatası');
-                      }
-                    }
-                    e.target.value = '';
-                  }}
-                />
-              </div>
-              {presetMsg && <div className="text-[10px] font-semibold text-hud-lime">{presetMsg}</div>}
-            </div>
-            <VehicleForm
-              veh={veh}
-              onChange={(k, v) => setVehPatch((p) => ({ ...p, [k]: v }))}
-              lambdaMu={lambdaMu}
-              onLambdaMu={setLambdaMu}
-              lap={lap}
-            />
-          </Panel>
-          <Panel title="Powertrain">
-            <PowertrainForm pt={pt} onChange={(k, v) => setPtPatch((p) => ({ ...p, [k]: v }))} onRegen={setRegen} />
-          </Panel>
-        </aside>
-
-        <main className="flex min-w-0 flex-col gap-3">
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 2xl:grid-cols-8">
-            <Kpi
-              label={headline.label}
-              value={headline.value}
-              accent="text-hud-cyan"
-              delta={headline.delta != null ? <DeltaBadge delta={headline.delta} unit="s" digits={3} /> : undefined}
-              sub={`${lap.integrator.toUpperCase()} · ${lap.lateralModel} · ${racingLineMode === 'optimal' ? 'OPT-APEX' : 'CENTER'}`}
-            />
-            <Kpi
-              label="Avg / max speed"
-              value={`${fmt(kph(lap.avgSpeed), 1)} / ${fmt(kph(lap.maxSpeed), 1)}`}
-              unit="km/h"
-              delta={
-                baselineSolved ? (
-                  <DeltaBadge delta={kph(lap.avgSpeed - baselineSolved.lap.avgSpeed)} unit="km/h" digits={1} invertGood />
-                ) : undefined
-              }
-            />
-            <Kpi
-              label="Energy (net)"
-              value={fmt(lap.energy.netKWh * 1000, 1)}
-              unit="Wh"
-              delta={
-                baselineSolved ? (
-                  <DeltaBadge delta={(lap.energy.netKWh - baselineSolved.lap.energy.netKWh) * 1000} unit="Wh" digits={1} />
-                ) : undefined
-              }
-              sub={`${fmt(lap.energy.dischargeKWh * 1000, 1)} out · ${fmt(lap.energy.regenKWh * 1000, 1)} regen`}
-              accent="text-hud-amber"
-            />
-            <Kpi
-              label="Cooling heat"
-              value={fmt(lap.energy.coolingHeatKJ, 1)}
-              unit="kJ"
-              delta={
-                baselineSolved ? (
-                  <DeltaBadge delta={lap.energy.coolingHeatKJ - baselineSolved.lap.energy.coolingHeatKJ} unit="kJ" digits={1} />
-                ) : undefined
-              }
-              sub={`+ ${fmt(lap.energy.batteryLossKJ, 1)} kJ in accumulator`}
-              accent="text-hud-violet"
-            />
+        {/* Collapsible Secondary Sub-Row: Stint & Analytic Benchmarks */}
+        {benchmarksOpen && (
+          <div className="mt-3 grid grid-cols-2 gap-2.5 border-t border-white/[0.06] pt-3 sm:grid-cols-4">
             <Kpi
               label="Peak lat / long / brake"
               value={`${fmt(lap.peakLatG, 2)} / ${fmt(lap.peakLongG, 2)} / ${fmt(lap.peakBrakeG, 2)}`}
               unit="G"
-              delta={
-                baselineSolved ? (
-                  <DeltaBadge delta={lap.peakLatG - baselineSolved.lap.peakLatG} unit="G" digits={2} invertGood />
-                ) : undefined
-              }
               sub={
                 lap.hasWheelLift ? (
-                  <span className="font-bold text-hud-red">⚠ Inner Wheel Lift! ({lap.wheelLiftCount} pts)</span>
+                  <span className="font-semibold text-rose-400">⚠ Inner Wheel Lift! ({lap.wheelLiftCount} pts)</span>
                 ) : (
                   `K_us ${fmt(lap.cornerUndersteerDegPerG, 2)}°/G · SI ${fmt(lap.avgStabilityIndex * 100, 1)}%`
                 )
@@ -1322,65 +1224,205 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
             <Kpi
               label="Skidpad (analytic)"
               value={fmtTime(skid.lapTime)}
-              delta={baselineSolved ? <DeltaBadge delta={skid.lapTime - baselineSolved.skid.lapTime} unit="s" digits={3} /> : undefined}
               sub={`${fmt(skid.ayG, 3)} G · μ_eff ${fmt(skid.muEffective, 3)}`}
             />
             <Kpi
               label="Accel 75 m (RK4)"
               value={fmtTime(launch.time75)}
-              delta={baselineSolved ? <DeltaBadge delta={launch.time75 - baselineSolved.launch.time75} unit="s" digits={3} /> : undefined}
               sub={`0–100 ${fmt(launch.time0to100, 2)} s · ${fmt(kph(launch.trapSpeed), 0)} km/h`}
             />
             <Kpi
               label={`Event · ${lap.event.laps} lap${lap.event.laps > 1 ? 's' : ''}`}
               value={fmtTime(lap.event.totalTime)}
-              delta={
-                baselineSolved ? (
-                  <DeltaBadge delta={lap.event.totalTime - baselineSolved.lap.event.totalTime} unit="s" digits={2} />
-                ) : undefined
-              }
               sub={`${fmt(lap.event.totalEnergyKWh, 2)} kWh · ${fmt(lap.event.totalHeatMJ, 2)} MJ heat`}
-              accent="text-hud-lime"
+              accent="text-emerald-300"
             />
           </div>
+        )}
+      </div>
 
+      {/* ===================================================================== */}
+      {/* C. 3-COLUMN WORKSPACE WITH DOCKABLE / COLLAPSIBLE SIDE PANELS         */}
+      {/* ===================================================================== */}
+      <div className="flex flex-1 flex-col gap-3 p-3 lg:flex-row">
+        {/* 1. LEFT INSPECTOR PANEL (Vehicle & Setup Parameters — Collapsible) */}
+        {leftInspectorOpen && (
+          <aside className="flex w-full shrink-0 flex-col justify-between rounded-xl border border-white/[0.07] bg-[#11141d]/90 backdrop-blur-md lg:w-[300px]">
+            <div className="divide-y divide-white/[0.06]">
+              {/* Profile Persistence Header */}
+              <div className="p-3.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
+                    Vehicle Inspector
+                  </span>
+                  {presetId === 'ist27-twotrack' && (
+                    <span className={`font-mono text-[10px] ${isTwoTrackDirty ? 'text-amber-300' : 'text-emerald-400'}`}>
+                      {isTwoTrackDirty ? '● Unsaved Edits' : '✓ Saved Profile'}
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                  <button
+                    type="button"
+                    className="btn flex-1 !py-1 text-[10px] border-cyan-500/40 text-cyan-300"
+                    onClick={saveCurrentToTwoTrack}
+                    title="Save active setup into IST27 - TwoTrackSim profile"
+                  >
+                    💾 Save TwoTrackSim
+                  </button>
+                  <button
+                    type="button"
+                    className="btn !px-2 !py-1 text-[10px]"
+                    onClick={() =>
+                      downloadText(
+                        'IST27-TwoTrackSim-setup.json',
+                        JSON.stringify({ name: 'IST27 - TwoTrackSim', vehPatch, ptPatch, lambdaMu, regen, veh, pt }, null, 2),
+                        'application/json',
+                      )
+                    }
+                    title="Export setup as JSON"
+                  >
+                    JSON
+                  </button>
+                  <button
+                    type="button"
+                    className="btn !px-2 !py-1 text-[10px]"
+                    onClick={() => presetFileRef.current?.click()}
+                    title="Load setup from JSON"
+                  >
+                    Load
+                  </button>
+                  <input
+                    ref={presetFileRef}
+                    type="file"
+                    accept=".json"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const f = e.target.files?.[0];
+                      if (f) {
+                        try {
+                          const data = JSON.parse(await f.text());
+                          if (data.vehPatch) setVehPatch(data.vehPatch);
+                          if (data.ptPatch) setPtPatch(data.ptPatch);
+                          if (typeof data.lambdaMu === 'number') setLambdaMu(data.lambdaMu);
+                          if (typeof data.regen === 'boolean') setRegen(data.regen);
+                          setPresetMsg('✓ JSON profile loaded');
+                          setTimeout(() => setPresetMsg(null), 3000);
+                        } catch {
+                          setPresetMsg('Invalid JSON file');
+                        }
+                      }
+                      e.target.value = '';
+                    }}
+                  />
+                </div>
+                {presetMsg && <div className="mt-1.5 font-mono text-[10px] text-emerald-400">{presetMsg}</div>}
+              </div>
+
+              {/* Collapsible Accordion Groups: Chassis & Mass, Aerodynamics, Tire & Wheel Mechanics */}
+              <VehicleForm
+                veh={veh}
+                onChange={(k, v) => setVehPatch((p) => ({ ...p, [k]: v }))}
+                lambdaMu={lambdaMu}
+                onLambdaMu={setLambdaMu}
+                lap={lap}
+              />
+
+              {/* Collapsible Accordion Group: Powertrain & Accumulator */}
+              <PowertrainForm
+                pt={pt}
+                onChange={(k, v) => setPtPatch((p) => ({ ...p, [k]: v }))}
+                onRegen={setRegen}
+              />
+
+              {/* Collapsible Accordion Group: Circuit Geometry & Custom CSV */}
+              <DisclosureGroup
+                title="Circuit & Custom CSV"
+                badge={`${fmt(dTrack.length, 0)} m`}
+                defaultOpen={false}
+              >
+                <div className="space-y-2 font-mono text-[11px] tabular-nums">
+                  <div className="text-slate-200">{dTrack.name}</div>
+                  <div className="text-[10px] text-slate-400">{dTrack.description}</div>
+                  <div className="grid grid-cols-2 gap-x-2 text-slate-400">
+                    <span>Length ({racingLineMode === 'optimal' ? 'optimal' : 'center'})</span>
+                    <span className="text-right text-slate-200">{fmt(dTrack.length, 1)} m</span>
+                    <span>Track width</span>
+                    <span className="text-right text-slate-200">{fmt(dTrack.racingLine.trackWidthM, 1)} m</span>
+                    <span>Corners</span>
+                    <span className="text-right text-slate-200">{lap.corners.length}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    <button type="button" className="btn" onClick={() => fileRef.current?.click()}>
+                      Import CSV
+                    </button>
+                    <button
+                      type="button"
+                      className="btn"
+                      onClick={() => downloadText(`${dTrack.id}.csv`, trackToCsv(dTrack), 'text/csv')}
+                    >
+                      Export CSV
+                    </button>
+                    <input
+                      ref={fileRef}
+                      type="file"
+                      accept=".csv,.txt,.tsv"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const f = e.target.files?.[0];
+                        if (f) importCsv(await f.text(), f.name.replace(/\.[^.]+$/, ''));
+                        e.target.value = '';
+                      }}
+                    />
+                  </div>
+                  {csvMsg && (
+                    <div className={`text-[10px] ${csvMsg.startsWith('Import failed') ? 'text-rose-400' : 'text-emerald-400'}`}>
+                      {csvMsg}
+                    </div>
+                  )}
+                </div>
+              </DisclosureGroup>
+            </div>
+
+            {/* Sticky "Reset to Defaults" text button at the bottom */}
+            <div className="sticky bottom-0 z-10 border-t border-white/[0.07] bg-[#11141d]/95 px-3.5 py-2.5 backdrop-blur-md">
+              <button
+                type="button"
+                onClick={() => applyPreset(presetId)}
+                className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-white/[0.07] bg-white/[0.03] py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white"
+              >
+                <span>↺</span>
+                <span>Reset to Defaults</span>
+              </button>
+            </div>
+          </aside>
+        )}
+
+        {/* 2. CENTER STAGE (Visual Canvas, Floating Playback Pill & Synchronized Telemetry) */}
+        <main className="flex min-w-0 flex-1 flex-col gap-3">
           <div className="grid gap-3 xl:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]">
             <Panel
-              title="Track heat-map"
+              title="Track Map Canvas"
               right={
-                <div className="flex items-center gap-1 normal-case tracking-normal">
-                  <Segmented
-                    options={[
-                      { value: 'mode', label: 'Mode' },
-                      { value: 'speed', label: 'Speed' },
-                      { value: 'latg', label: 'Lat G' },
-                      { value: 'grip', label: 'Grip' },
-                    ]}
-                    value={colorMode}
-                    onChange={setColorMode}
-                  />
-                  <button type="button" className={`btn ${playing ? 'btn-active' : ''}`} onClick={() => setPlaying((p) => !p)}>
-                    {playing ? '❚❚ Pause' : '▶ Play lap'}
-                  </button>
-                  <select className="field !w-auto !py-0.5" value={playRate} onChange={(e) => setPlayRate(Number(e.target.value))}>
-                    {[0.5, 1, 2, 4].map((r) => (
-                      <option key={r} value={r}>
-                        ×{r}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <span className="font-mono text-[10px] normal-case tabular-nums text-slate-400">
+                  {dTrack.name} · {fmt(dTrack.length, 1)} m · {lap.corners.length} corners
+                </span>
               }
-              bodyClassName="flex h-[500px] flex-col"
+              bodyClassName="relative flex h-[500px] flex-col"
             >
               {korfezOn && (
-                <div className="flex flex-wrap items-center gap-2 border-b border-hud-line px-2 py-1 font-mono text-[10px] text-hud-dim">
-                  <span className="uppercase tracking-wider text-hud-cyan">Pist görseli</span>
-                  <button type="button" className={`btn ${mapAlign.visible ? 'btn-active' : ''}`} onClick={() => setMapAlign((m) => ({ ...m, visible: !m.visible }))}>
-                    {mapAlign.visible ? 'Görsel açık' : 'Görsel kapalı'}
+                <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.06] px-3 py-1.5 font-mono text-[10px] text-slate-400">
+                  <span className="uppercase tracking-wider text-cyan-400">Satellite Overlay</span>
+                  <button
+                    type="button"
+                    className={`btn !py-0.5 ${mapAlign.visible ? 'btn-active' : ''}`}
+                    onClick={() => setMapAlign((m) => ({ ...m, visible: !m.visible }))}
+                  >
+                    {mapAlign.visible ? 'Visible' : 'Hidden'}
                   </button>
-                  <button type="button" className="btn" onClick={() => mapFileRef.current?.click()}>
-                    Yükle
+                  <button type="button" className="btn !py-0.5" onClick={() => mapFileRef.current?.click()}>
+                    Upload Map
                   </button>
                   <input
                     ref={mapFileRef}
@@ -1393,36 +1435,78 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
                       e.target.value = '';
                     }}
                   />
-                  {mapUpload && (
-                    <button type="button" className="btn" onClick={() => setMapUpload(null)}>
-                      Kroki
-                    </button>
-                  )}
                   <label className="flex items-center gap-1">
-                    opak
-                    <input type="range" min={0} max={100} value={Math.round(mapAlign.opacity * 100)} onChange={(e) => setMapAlign((m) => ({ ...m, opacity: Number(e.target.value) / 100 }))} />
+                    Opacity
+                    <input
+                      type="range"
+                      min={0}
+                      max={100}
+                      value={Math.round(mapAlign.opacity * 100)}
+                      onChange={(e) => setMapAlign((m) => ({ ...m, opacity: Number(e.target.value) / 100 }))}
+                    />
                   </label>
-                  <label className="flex items-center gap-1">
-                    ölçek
-                    <input type="range" min={50} max={180} value={Math.round(mapAlign.scale * 100)} onChange={(e) => setMapAlign((m) => ({ ...m, scale: Number(e.target.value) / 100 }))} />
-                  </label>
-                  <label className="flex items-center gap-1">
-                    X
-                    <input type="range" min={-400} max={400} value={mapAlign.x} onChange={(e) => setMapAlign((m) => ({ ...m, x: Number(e.target.value) }))} />
-                  </label>
-                  <label className="flex items-center gap-1">
-                    Y
-                    <input type="range" min={-400} max={400} value={mapAlign.y} onChange={(e) => setMapAlign((m) => ({ ...m, y: Number(e.target.value) }))} />
-                  </label>
-                  <label className="flex items-center gap-1">
-                    açı
-                    <input type="range" min={-180} max={180} value={mapAlign.rotation} onChange={(e) => setMapAlign((m) => ({ ...m, rotation: Number(e.target.value) }))} />
-                  </label>
-                  <button type="button" className="btn" onClick={() => setMapAlign({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true })}>
-                    Sıfırla
-                  </button>
                 </div>
               )}
+
+              {/* Floating Glass Playback Pill Docked Over Canvas */}
+              <div className="pointer-events-auto absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/[0.12] bg-[#090a0f]/85 px-3 py-1.5 shadow-2xl backdrop-blur-xl">
+                <button
+                  type="button"
+                  onClick={() => setPlaying((p) => !p)}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium transition ${
+                    playing
+                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                      : 'bg-white/[0.06] text-white hover:bg-white/[0.12]'
+                  }`}
+                >
+                  <span>{playing ? '❚❚' : '▶'}</span>
+                  <span>{playing ? 'Pause' : 'Play Lap'}</span>
+                </button>
+
+                <div className="h-4 w-[1px] bg-white/[0.1]" />
+
+                <label className="flex items-center gap-1 font-mono text-[11px] text-slate-300">
+                  <span className="text-[10px] uppercase text-slate-400">Speed:</span>
+                  <select
+                    className="rounded-md border border-white/[0.08] bg-slate-900/90 px-1.5 py-0.5 font-mono text-[11px] tabular-nums text-white outline-none"
+                    value={playRate}
+                    onChange={(e) => setPlayRate(Number(e.target.value))}
+                  >
+                    {[0.5, 1, 2, 4].map((r) => (
+                      <option key={r} value={r}>
+                        {r}x
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <div className="h-4 w-[1px] bg-white/[0.1]" />
+
+                <div className="flex items-center gap-0.5 font-mono text-[10px]">
+                  {(
+                    [
+                      { value: 'speed', label: 'Speed' },
+                      { value: 'latg', label: 'Lateral G' },
+                      { value: 'grip', label: 'Grip' },
+                      { value: 'mode', label: 'Mode' },
+                    ] as const
+                  ).map((m) => (
+                    <button
+                      key={m.value}
+                      type="button"
+                      onClick={() => setColorMode(m.value)}
+                      className={`rounded-full px-2.5 py-0.5 uppercase tracking-wider transition ${
+                        colorMode === m.value
+                          ? 'bg-slate-800 text-cyan-300 border border-white/[0.1]'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="min-h-0 flex-1">
                 <TrackCanvas
                   track={dTrack}
@@ -1439,7 +1523,8 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
                 />
               </div>
             </Panel>
-            <Panel title="G-G diagram · friction ellipse" bodyClassName="h-[460px]">
+
+            <Panel title="G-G Diagram · Friction Ellipse" bodyClassName="h-[500px]">
               <GGDiagram
                 lap={lap}
                 ctx={ctx}
@@ -1451,17 +1536,17 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
           </div>
 
           <Panel
-            title="Synchronised telemetry"
+            title="Synchronized Telemetry Strip"
             right={
               safeCursor != null ? (
-                <span className="font-mono text-[10px] normal-case tracking-normal text-hud-cyan">
+                <span className="font-mono text-[10px] normal-case tracking-normal tabular-nums text-cyan-300">
                   s {fmt(ch.s[safeCursor], 1)} m · {fmt(kph(ch.v[safeCursor]), 1)} km/h · {fmt(ch.gLat[safeCursor], 2)} G lat ·{' '}
                   Fz [{fmt(ch.fzFL[safeCursor], 0)}, {fmt(ch.fzFR[safeCursor], 0)}, {fmt(ch.fzRL[safeCursor], 0)}, {fmt(ch.fzRR[safeCursor], 0)}] N ·{' '}
                   K_us {fmt(ch.understeerDegPerG[safeCursor], 2)}°/G
                 </span>
               ) : undefined
             }
-            bodyClassName="p-2"
+            bodyClassName="p-2.5"
           >
             <TelemetryCharts
               lap={lap}
@@ -1513,14 +1598,26 @@ export default function Workbench({ externalPresetId, onPresetIdChange }: Workbe
               ))}
           </Panel>
         </main>
+
+        {/* 3. RIGHT DRAWER (CAN Bus & Embedded Architecture — Collapsible) */}
+        <CanCockpitDrawer
+          open={canCockpitOpen}
+          onClose={() => setCanCockpitOpen(false)}
+          lap={lap}
+          cursor={safeCursor}
+          veh={dVeh}
+          pt={dPt}
+          bundle={bundle}
+        />
       </div>
-      <footer className="border-t border-hud-line px-4 py-2 font-mono text-[10px] text-hud-dim">
-        ApexLapSim · Pacejka MF tires · 3-pass QSS solver (Euler / RK4 in v²) · 2-track yaw dynamics (RK4) · MISRA-C VCU export
+
+      <footer className="border-t border-white/[0.06] px-4 py-2 font-mono text-[10px] text-slate-500">
+        ApexLapSim · Pacejka MF tires · 3-pass QSS solver (Euler / RK4 in v²) · 2-track yaw dynamics (RK4) · FDCAN1/FDCAN2 & MISRA-C VCU export
       </footer>
     </div>
   );
 }
 
 function Busy() {
-  return <div className="p-6 font-mono text-xs text-hud-dim">Computing…</div>;
+  return <div className="p-6 font-mono text-xs text-slate-400">Computing…</div>;
 }

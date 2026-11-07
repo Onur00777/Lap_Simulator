@@ -8,26 +8,32 @@
 
 html,
 body {
-  background: #05070b;
-  color: #c9d4e2;
+  background: #090a0f;
+  color: #e2e8f0;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   background-image:
-    radial-gradient(circle at 20% -10%, rgba(34, 211, 238, 0.08), transparent 40%),
-    radial-gradient(circle at 110% 10%, rgba(167, 139, 250, 0.06), transparent 35%),
-    linear-gradient(rgba(27, 38, 51, 0.35) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(27, 38, 51, 0.35) 1px, transparent 1px);
-  background-size: auto, auto, 32px 32px, 32px 32px;
+    radial-gradient(circle at 18% -8%, rgba(56, 189, 248, 0.045), transparent 42%),
+    radial-gradient(circle at 88% 4%, rgba(139, 92, 246, 0.035), transparent 38%);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1b2633;
-  border-radius: 4px;
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.35);
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -35,21 +41,21 @@ body {
 
 @layer components {
   .panel {
-    @apply rounded-md border border-hud-line bg-hud-panel/90 backdrop-blur-sm;
+    @apply rounded-xl border border-white/[0.07] bg-[#11141d]/90 backdrop-blur-md;
   }
   .panel-title {
-    @apply flex items-center gap-2 border-b border-hud-line px-3 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-hud-dim;
+    @apply flex items-center gap-2 border-b border-white/[0.06] px-3.5 py-2.5 text-[10px] font-medium uppercase tracking-wider text-slate-400;
   }
   .kpi-value {
-    @apply font-mono text-xl font-semibold tabular-nums text-hud-text;
+    @apply font-mono text-xl font-semibold tabular-nums text-slate-100;
   }
   .btn {
-    @apply rounded border border-hud-line bg-hud-panel2 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-hud-text transition hover:border-hud-cyan/60 hover:text-hud-cyan disabled:opacity-40;
+    @apply rounded-lg border border-white/[0.08] bg-slate-900/80 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-slate-200 transition hover:border-cyan-500/40 hover:bg-slate-800/80 hover:text-cyan-300 disabled:opacity-40;
   }
   .btn-active {
-    @apply border-hud-cyan/70 text-hud-cyan shadow-glow;
+    @apply border-cyan-500/50 bg-cyan-950/50 text-cyan-300;
   }
   .field {
-    @apply w-full rounded border border-hud-line bg-hud-bg px-2 py-1 font-mono text-xs tabular-nums text-hud-text outline-none focus:border-hud-cyan/70;
+    @apply w-full rounded-lg border border-slate-700/60 bg-slate-900/80 px-2.5 py-1 font-mono text-xs tabular-nums text-slate-100 outline-none transition focus:border-cyan-500;
   }
 }

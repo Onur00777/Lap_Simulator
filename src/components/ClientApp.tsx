@@ -4,8 +4,25 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import type { VehiclePresetId } from '@/lib/tracks';
 
-const Workbench = dynamic(() => import('@/components/Workbench'), { ssr: false });
-const IST26HavuzWorkspace = dynamic(() => import('@/components/ist26-havuz/IST26HavuzWorkspace'), { ssr: false });
+const DarkLoadingFallback = () => (
+  <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-[#090a0f] font-mono text-xs text-slate-400">
+    <div className="flex items-baseline gap-1.5">
+      <span className="text-base font-bold tracking-[0.22em] text-white">APEX</span>
+      <span className="text-base font-light tracking-widest text-slate-400">LAPSIM</span>
+    </div>
+    <span className="text-[11px] text-cyan-400/80">Initializing Vehicle Dynamics & QSS Solver…</span>
+  </div>
+);
+
+const Workbench = dynamic(() => import('@/components/Workbench'), {
+  ssr: false,
+  loading: DarkLoadingFallback,
+});
+
+const IST26HavuzWorkspace = dynamic(() => import('@/components/ist26-havuz/IST26HavuzWorkspace'), {
+  ssr: false,
+  loading: DarkLoadingFallback,
+});
 
 export type WorkspaceMode = 'main-simulator' | 'ist26-havuz-lab';
 
@@ -21,44 +38,27 @@ export default function ClientApp() {
   const [activePresetId, setActivePresetId] = useState<VehiclePresetId>('ist27-twotrack');
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#05070b]">
-      {/* PRIMARY STEP 1 BAR: WORKSPACE SELECTOR (PIST vs HAVUZ) + VEHICLE SELECTOR */}
-      <div className="z-40 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/90 bg-[#04060a] px-4 py-2 font-mono text-xs">
-        {/* LEFT: STEP 1 — ÇALIŞMA ALANI SEÇİMİ (PİST Mİ HAVUZ MU?) */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">1. ÇALIŞMA ALANI:</span>
-          <div className="inline-flex items-center rounded border border-slate-800 bg-[#070a10] p-0.5">
+    <div className="flex min-h-screen flex-col bg-[#090a0f] text-slate-200">
+      {/* When in IST26 Havuz SIL Lab, show a sleek 50px Apple Pro Top Bar to switch back or change vehicles */}
+      {workspaceMode === 'ist26-havuz-lab' && (
+        <header className="sticky top-0 z-40 flex h-[50px] min-h-[50px] max-h-[50px] items-center justify-between gap-3 border-b border-white/[0.07] bg-[#090a0f]/85 px-4 font-mono text-xs backdrop-blur-xl">
+          <div className="flex items-center gap-3">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-sm font-bold tracking-[0.22em] text-white">APEX</span>
+              <span className="text-sm font-light tracking-widest text-slate-400">LAPSIM</span>
+            </div>
+            <div className="h-4 w-[1px] bg-white/[0.08]" />
             <button
               type="button"
               onClick={() => setWorkspaceMode('main-simulator')}
-              className={`inline-flex h-7 items-center gap-2 rounded-[3px] px-3 text-[11px] font-semibold uppercase tracking-wider transition ${
-                workspaceMode === 'main-simulator'
-                  ? 'border border-cyan-500/50 bg-cyan-950/70 text-cyan-300 shadow-[0_0_12px_rgba(0,240,255,0.15)]'
-                  : 'border border-transparent text-slate-400 hover:bg-slate-900/70 hover:text-slate-200'
-              }`}
+              className="inline-flex h-8 items-center gap-2 rounded-lg border border-white/[0.1] bg-[#11141d] px-3 text-xs font-medium text-cyan-300 transition hover:border-cyan-500/40 hover:text-white"
             >
-              <span>🏁</span>
-              <span>Pist Simülatörü (Körfez · FS · Havuz)</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setWorkspaceMode('ist26-havuz-lab')}
-              className={`inline-flex h-7 items-center gap-2 rounded-[3px] px-3 text-[11px] font-semibold uppercase tracking-wider transition ${
-                workspaceMode === 'ist26-havuz-lab'
-                  ? 'border border-amber-500/50 bg-amber-950/70 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.18)]'
-                  : 'border border-transparent text-slate-400 hover:bg-slate-900/70 hover:text-slate-200'
-              }`}
-            >
-              <span>🅿️</span>
-              <span>İTÜ Havuz Otoparkı Lab (Telemetri & SIL)</span>
+              <span>←</span>
+              <span>Circuit Simulator (Körfez · FS · Havuz)</span>
             </button>
           </div>
-        </div>
 
-        {/* RIGHT: STEP 2 — ARAÇ SEÇİMİ (HER İKİ ÇALIŞMA ALANINDA DA KOŞTURULABİLİR) */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">2. AKTİF ARAÇ:</span>
-          <div className="inline-flex flex-wrap items-center gap-1 rounded border border-slate-800 bg-[#070a10] p-0.5">
+          <div className="flex items-center gap-1.5 rounded-lg border border-white/[0.07] bg-[#11141d]/90 p-0.5">
             {VEHICLE_OPTIONS.map((v) => {
               const active = activePresetId === v.id;
               return (
@@ -66,25 +66,30 @@ export default function ClientApp() {
                   key={v.id}
                   type="button"
                   onClick={() => setActivePresetId(v.id)}
-                  className={`inline-flex h-7 items-center gap-2 rounded-[3px] px-2.5 text-[11px] uppercase tracking-wider transition ${
+                  className={`inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 text-[11px] uppercase tracking-wider transition ${
                     active
-                      ? 'border border-cyan-500/50 bg-cyan-950/75 font-semibold text-cyan-300 shadow-[0_0_10px_rgba(0,240,255,0.14)]'
-                      : 'border border-transparent text-slate-300 hover:bg-slate-900/80 hover:text-cyan-300'
+                      ? 'border border-white/[0.12] bg-slate-800/95 font-medium text-cyan-300 shadow-sm'
+                      : 'border border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   <span>{v.title}</span>
-                  <span className={`text-[9px] ${active ? 'text-cyan-400/90' : 'text-slate-500'}`}>{v.subtitle}</span>
+                  <span className="hidden text-[9px] text-slate-500 sm:inline">{v.subtitle}</span>
                 </button>
               );
             })}
           </div>
-        </div>
+        </header>
+      )}
+
+      {/* Keep Main Workbench mounted so solver state & setup edits are preserved */}
+      <div className={workspaceMode === 'main-simulator' ? 'block flex-1' : 'hidden'}>
+        <Workbench
+          externalPresetId={activePresetId}
+          onPresetIdChange={setActivePresetId}
+          onOpenHavuzLab={() => setWorkspaceMode('ist26-havuz-lab')}
+        />
       </div>
 
-      {/* Keep both workspaces mounted or toggle cleanly so state is never lost */}
-      <div className={workspaceMode === 'main-simulator' ? 'block flex-1' : 'hidden'}>
-        <Workbench externalPresetId={activePresetId} onPresetIdChange={setActivePresetId} />
-      </div>
       {workspaceMode === 'ist26-havuz-lab' && (
         <div className="flex-1">
           <IST26HavuzWorkspace activePresetId={activePresetId} onSelectPresetId={setActivePresetId} />
