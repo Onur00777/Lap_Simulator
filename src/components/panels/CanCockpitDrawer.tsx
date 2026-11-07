@@ -179,24 +179,35 @@ export default function CanCockpitDrawer({
   if (!open) return null;
 
   return (
-    <aside className="flex w-full shrink-0 flex-col rounded-xl border border-white/[0.07] bg-[#11141d]/95 backdrop-blur-xl xl:w-[350px]">
-      {/* Drawer Header */}
-      <div className="flex items-center justify-between border-b border-white/[0.06] px-3.5 py-2.5">
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-200">
-            CAN Cockpit & Embedded SIL
-          </span>
+    <>
+      {/* Drawer Overlay Backdrop */}
+      <div
+        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <aside
+        className="fixed inset-y-0 right-0 z-50 flex w-[440px] max-w-[95vw] flex-col border-l border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out"
+        role="dialog"
+        aria-label="CAN Cockpit & Embedded SIL"
+      >
+        {/* Drawer Header */}
+        <div className="flex h-12 items-center justify-between border-b border-white/[0.08] px-4 font-mono text-xs">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+            <span className="font-semibold uppercase tracking-wider text-slate-100">
+              CAN Cockpit & Embedded SIL
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            title="Close CAN Cockpit (Esc)"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/[0.08] text-slate-400 transition hover:bg-white/[0.06] hover:text-white"
+          >
+            ✕
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          title="Close CAN Cockpit Drawer"
-          className="rounded-md px-1.5 py-0.5 font-mono text-xs text-slate-400 transition hover:bg-white/[0.06] hover:text-slate-200"
-        >
-          ✕
-        </button>
-      </div>
 
       <div className="flex-1 divide-y divide-white/[0.06] overflow-y-auto">
         {/* 1. LIVE FDCAN1 / FDCAN2 BUS MONITOR */}
@@ -440,5 +451,6 @@ export default function CanCockpitDrawer({
         </DisclosureGroup>
       </div>
     </aside>
+    </>
   );
 }

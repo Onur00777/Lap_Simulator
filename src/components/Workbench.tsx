@@ -192,7 +192,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
   const [trackMenuOpen, setTrackMenuOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [engineMenuOpen, setEngineMenuOpen] = useState(false);
-  const [leftInspectorOpen, setLeftInspectorOpen] = useState(true);
+  const [leftInspectorOpen, setLeftInspectorOpen] = useState(false);
   const [ggDiagramOpen, setGgDiagramOpen] = useState(false);
   const [canCockpitOpen, setCanCockpitOpen] = useState(false);
   const [benchmarksOpen, setBenchmarksOpen] = useState(false);
@@ -205,6 +205,23 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
   const trackMenuRef = useRef<HTMLDivElement>(null);
   const exportMenuRef = useRef<HTMLDivElement>(null);
   const engineMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close header dropdowns and slide-out drawers on Esc or outside click
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setLeftInspectorOpen(false);
+        setGgDiagramOpen(false);
+        setCanCockpitOpen(false);
+        setEngineMenuOpen(false);
+        setPresetMenuOpen(false);
+        setTrackMenuOpen(false);
+        setExportOpen(false);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   // Close header dropdowns on outside click
   useEffect(() => {
@@ -1350,308 +1367,372 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
       </div>
 
       {/* ===================================================================== */}
-      {/* C. 3-COLUMN WORKSPACE WITH DOCKABLE / COLLAPSIBLE SIDE PANELS         */}
+      {/* PHASE 2: COLLAPSIBLE SIDE DRAWERS (FOCUS-FIRST FULL-WIDTH STAGE)      */}
       {/* ===================================================================== */}
-      <div className="flex flex-1 flex-col gap-3 p-3 lg:flex-row">
-        {/* 1. LEFT INSPECTOR PANEL (Vehicle & Setup Parameters — Collapsible) */}
-        {leftInspectorOpen && (
-          <aside className="flex w-full shrink-0 flex-col justify-between rounded-xl border border-white/[0.07] bg-[#11141d]/90 backdrop-blur-md lg:w-[300px]">
-            <div className="divide-y divide-white/[0.06]">
-              {/* Profile Persistence Header */}
-              <div className="p-3.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
-                    Vehicle Inspector
-                  </span>
-                  {presetId === 'ist27-twotrack' && (
-                    <span className={`font-mono text-[10px] ${isTwoTrackDirty ? 'text-amber-300' : 'text-emerald-400'}`}>
-                      {isTwoTrackDirty ? '● Unsaved Edits' : '✓ Saved Profile'}
-                    </span>
-                  )}
-                </div>
 
-                <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                  <button
-                    type="button"
-                    className="btn flex-1 !py-1 text-[10px] border-cyan-500/40 text-cyan-300"
-                    onClick={saveCurrentToTwoTrack}
-                    title="Save active setup into IST27 - TwoTrackSim profile"
-                  >
-                    💾 Save TwoTrackSim
-                  </button>
-                  <button
-                    type="button"
-                    className="btn !px-2 !py-1 text-[10px]"
-                    onClick={() =>
-                      downloadText(
-                        'IST27-TwoTrackSim-setup.json',
-                        JSON.stringify({ name: 'IST27 - TwoTrackSim', vehPatch, ptPatch, lambdaMu, regen, veh, pt }, null, 2),
-                        'application/json',
-                      )
-                    }
-                    title="Export setup as JSON"
-                  >
-                    JSON
-                  </button>
-                  <button
-                    type="button"
-                    className="btn !px-2 !py-1 text-[10px]"
-                    onClick={() => presetFileRef.current?.click()}
-                    title="Load setup from JSON"
-                  >
-                    Load
-                  </button>
-                  <input
-                    ref={presetFileRef}
-                    type="file"
-                    accept=".json"
-                    className="hidden"
-                    onChange={async (e) => {
-                      const f = e.target.files?.[0];
-                      if (f) {
-                        try {
-                          const data = JSON.parse(await f.text());
-                          if (data.vehPatch) setVehPatch(data.vehPatch);
-                          if (data.ptPatch) setPtPatch(data.ptPatch);
-                          if (typeof data.lambdaMu === 'number') setLambdaMu(data.lambdaMu);
-                          if (typeof data.regen === 'boolean') setRegen(data.regen);
-                          setPresetMsg('✓ JSON profile loaded');
-                          setTimeout(() => setPresetMsg(null), 3000);
-                        } catch {
-                          setPresetMsg('Invalid JSON file');
-                        }
-                      }
-                      e.target.value = '';
-                    }}
-                  />
-                </div>
-                {presetMsg && <div className="mt-1.5 font-mono text-[10px] text-emerald-400">{presetMsg}</div>}
-              </div>
+      {/* 1. LEFT DRAWER: VEHICLE & SETUP INSPECTOR (Slide-Out Panel) */}
+      {leftInspectorOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
+          onClick={() => setLeftInspectorOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex w-[350px] max-w-[90vw] flex-col justify-between border-r border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out ${
+          leftInspectorOpen ? 'translate-x-0' : '-translate-x-full pointer-events-none'
+        }`}
+        role="dialog"
+        aria-label="Vehicle Setup Inspector"
+      >
+        {/* Drawer Header */}
+        <div className="flex h-12 items-center justify-between border-b border-white/[0.08] px-4 font-mono text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-cyan-400">◨</span>
+            <span className="font-semibold text-white">Vehicle Setup</span>
+            {presetId === 'ist27-twotrack' && (
+              <span className={`text-[10px] ${isTwoTrackDirty ? 'text-amber-300' : 'text-emerald-400'}`}>
+                {isTwoTrackDirty ? '● Unsaved' : '✓ Saved'}
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => setLeftInspectorOpen(false)}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/[0.08] text-slate-400 transition hover:bg-white/[0.06] hover:text-white"
+            title="Close Drawer (Esc)"
+          >
+            ✕
+          </button>
+        </div>
 
-              {/* Collapsible Accordion Groups: Chassis & Mass, Aerodynamics, Tire & Wheel Mechanics */}
-              <VehicleForm
-                veh={veh}
-                onChange={(k, v) => setVehPatch((p) => ({ ...p, [k]: v }))}
-                lambdaMu={lambdaMu}
-                onLambdaMu={setLambdaMu}
-                lap={lap}
-              />
-
-              {/* Collapsible Accordion Group: Powertrain & Accumulator */}
-              <PowertrainForm
-                pt={pt}
-                onChange={(k, v) => setPtPatch((p) => ({ ...p, [k]: v }))}
-                onRegen={setRegen}
-              />
-
-              {/* Collapsible Accordion Group: Circuit Geometry & Custom CSV */}
-              <DisclosureGroup
-                title="Circuit & Custom CSV"
-                badge={`${fmt(dTrack.length, 0)} m`}
-                defaultOpen={false}
-              >
-                <div className="space-y-2 font-mono text-[11px] tabular-nums">
-                  <div className="text-slate-200">{dTrack.name}</div>
-                  <div className="text-[10px] text-slate-400">{dTrack.description}</div>
-                  <div className="grid grid-cols-2 gap-x-2 text-slate-400">
-                    <span>Length ({racingLineMode === 'optimal' ? 'optimal' : 'center'})</span>
-                    <span className="text-right text-slate-200">{fmt(dTrack.length, 1)} m</span>
-                    <span>Track width</span>
-                    <span className="text-right text-slate-200">{fmt(dTrack.racingLine.trackWidthM, 1)} m</span>
-                    <span>Corners</span>
-                    <span className="text-right text-slate-200">{lap.corners.length}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    <button type="button" className="btn" onClick={() => fileRef.current?.click()}>
-                      Import CSV
-                    </button>
-                    <button
-                      type="button"
-                      className="btn"
-                      onClick={() => downloadText(`${dTrack.id}.csv`, trackToCsv(dTrack), 'text/csv')}
-                    >
-                      Export CSV
-                    </button>
-                    <input
-                      ref={fileRef}
-                      type="file"
-                      accept=".csv,.txt,.tsv"
-                      className="hidden"
-                      onChange={async (e) => {
-                        const f = e.target.files?.[0];
-                        if (f) importCsv(await f.text(), f.name.replace(/\.[^.]+$/, ''));
-                        e.target.value = '';
-                      }}
-                    />
-                  </div>
-                  {csvMsg && (
-                    <div className={`text-[10px] ${csvMsg.startsWith('Import failed') ? 'text-rose-400' : 'text-emerald-400'}`}>
-                      {csvMsg}
-                    </div>
-                  )}
-                </div>
-              </DisclosureGroup>
+        <div className="flex-1 divide-y divide-white/[0.06] overflow-y-auto">
+          {/* Profile Persistence Header */}
+          <div className="p-3.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
+                Active Setup Profile
+              </span>
+              <span className="font-mono text-[10px] text-cyan-300">{presetDisplayLabel}</span>
             </div>
 
-            {/* Sticky "Reset to Defaults" text button at the bottom */}
-            <div className="sticky bottom-0 z-10 border-t border-white/[0.07] bg-[#11141d]/95 px-3.5 py-2.5 backdrop-blur-md">
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
               <button
                 type="button"
-                onClick={() => applyPreset(presetId)}
-                className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-white/[0.07] bg-white/[0.03] py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white"
+                className="btn flex-1 !py-1 text-[10px] border-cyan-500/40 text-cyan-300"
+                onClick={saveCurrentToTwoTrack}
+                title="Save active setup into IST27 - TwoTrackSim profile"
               >
-                <span>↺</span>
-                <span>Reset to Defaults</span>
+                💾 Save TwoTrackSim
               </button>
+              <button
+                type="button"
+                className="btn !px-2 !py-1 text-[10px]"
+                onClick={() =>
+                  downloadText(
+                    'IST27-TwoTrackSim-setup.json',
+                    JSON.stringify({ name: 'IST27 - TwoTrackSim', vehPatch, ptPatch, lambdaMu, regen, veh, pt }, null, 2),
+                    'application/json',
+                  )
+                }
+                title="Export setup as JSON"
+              >
+                JSON
+              </button>
+              <button
+                type="button"
+                className="btn !px-2 !py-1 text-[10px]"
+                onClick={() => presetFileRef.current?.click()}
+                title="Load setup from JSON"
+              >
+                Load
+              </button>
+              <input
+                ref={presetFileRef}
+                type="file"
+                accept=".json"
+                className="hidden"
+                onChange={async (e) => {
+                  const f = e.target.files?.[0];
+                  if (f) {
+                    try {
+                      const data = JSON.parse(await f.text());
+                      if (data.vehPatch) setVehPatch(data.vehPatch);
+                      if (data.ptPatch) setPtPatch(data.ptPatch);
+                      if (typeof data.lambdaMu === 'number') setLambdaMu(data.lambdaMu);
+                      if (typeof data.regen === 'boolean') setRegen(data.regen);
+                      setPresetMsg('✓ JSON profile loaded');
+                      setTimeout(() => setPresetMsg(null), 3000);
+                    } catch {
+                      setPresetMsg('Invalid JSON file');
+                    }
+                  }
+                  e.target.value = '';
+                }}
+              />
             </div>
-          </aside>
-        )}
+            {presetMsg && <div className="mt-1.5 font-mono text-[10px] text-emerald-400">{presetMsg}</div>}
+          </div>
 
-        {/* 2. CENTER STAGE (Visual Canvas, Floating Playback Pill & Synchronized Telemetry) */}
-        <main className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="grid gap-3 xl:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]">
-            <Panel
-              title="Track Map Canvas"
-              right={
-                <span className="font-mono text-[10px] normal-case tabular-nums text-slate-400">
-                  {dTrack.name} · {fmt(dTrack.length, 1)} m · {lap.corners.length} corners
-                </span>
-              }
-              bodyClassName="flex h-[540px] flex-col"
-            >
-              {korfezOn && (
-                <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.06] px-3 py-1.5 font-mono text-[10px] text-slate-400">
-                  <span className="uppercase tracking-wider text-cyan-400">Satellite Overlay</span>
-                  <button
-                    type="button"
-                    className={`btn !py-0.5 ${mapAlign.visible ? 'btn-active' : ''}`}
-                    onClick={() => setMapAlign((m) => ({ ...m, visible: !m.visible }))}
-                  >
-                    {mapAlign.visible ? 'Visible' : 'Hidden'}
-                  </button>
-                  <button type="button" className="btn !py-0.5" onClick={() => mapFileRef.current?.click()}>
-                    Upload Map
-                  </button>
-                  <input
-                    ref={mapFileRef}
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    className="hidden"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) setMapUpload(URL.createObjectURL(f));
-                      e.target.value = '';
-                    }}
-                  />
-                  <label className="flex items-center gap-1">
-                    Opacity
-                    <input
-                      type="range"
-                      min={0}
-                      max={100}
-                      value={Math.round(mapAlign.opacity * 100)}
-                      onChange={(e) => setMapAlign((m) => ({ ...m, opacity: Number(e.target.value) / 100 }))}
-                    />
-                  </label>
-                </div>
-              )}
+          {/* Grouped chassis/aero/powertrain inputs */}
+          <VehicleForm
+            veh={veh}
+            onChange={(k, v) => setVehPatch((p) => ({ ...p, [k]: v }))}
+            lambdaMu={lambdaMu}
+            onLambdaMu={setLambdaMu}
+            lap={lap}
+          />
 
-              {/* Full Unobstructed Track Map Canvas */}
-              <div className="min-h-0 flex-1">
-                <TrackCanvas
-                  track={dTrack}
-                  lap={lap}
-                  colorMode={colorMode}
-                  cursor={safeCursor}
-                  ghostLap={ghostLap}
-                  ghostTrack={ghostTrack}
-                  ghostCursor={effectiveGhostCursor}
-                  ghostLabel={ghostLabel}
-                  onHover={onHoverCanvas}
-                  mapAlign={korfezOn ? mapAlign : undefined}
-                  mapSrcOverride={mapUpload}
+          <PowertrainForm
+            pt={pt}
+            onChange={(k, v) => setPtPatch((p) => ({ ...p, [k]: v }))}
+            onRegen={setRegen}
+          />
+
+          <DisclosureGroup
+            title="Circuit & Custom CSV"
+            badge={`${fmt(dTrack.length, 0)} m`}
+            defaultOpen={false}
+          >
+            <div className="space-y-2 font-mono text-[11px] tabular-nums">
+              <div className="text-slate-200">{dTrack.name}</div>
+              <div className="text-[10px] text-slate-400">{dTrack.description}</div>
+              <div className="grid grid-cols-2 gap-x-2 text-slate-400">
+                <span>Length ({racingLineMode === 'optimal' ? 'optimal' : 'center'})</span>
+                <span className="text-right text-slate-200">{fmt(dTrack.length, 1)} m</span>
+                <span>Track width</span>
+                <span className="text-right text-slate-200">{fmt(dTrack.racingLine.trackWidthM, 1)} m</span>
+                <span>Corners</span>
+                <span className="text-right text-slate-200">{lap.corners.length}</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <button type="button" className="btn" onClick={() => fileRef.current?.click()}>
+                  Import CSV
+                </button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => downloadText(`${dTrack.id}.csv`, trackToCsv(dTrack), 'text/csv')}
+                >
+                  Export CSV
+                </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept=".csv,.txt,.tsv"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const f = e.target.files?.[0];
+                    if (f) importCsv(await f.text(), f.name.replace(/\.[^.]+$/, ''));
+                    e.target.value = '';
+                  }}
                 />
               </div>
-
-              {/* Dedicated Non-Overlapping Bottom Playback & Color-Mode Bar */}
-              <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-white/[0.07] bg-[#0b0e17]/95 px-3.5 py-2 backdrop-blur-md">
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => setPlaying((p) => !p)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 font-mono text-xs font-medium transition ${
-                      playing
-                        ? 'border border-cyan-500/50 bg-cyan-500/20 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.2)]'
-                        : 'border border-white/[0.1] bg-white/[0.06] text-white hover:bg-white/[0.12]'
-                    }`}
-                  >
-                    <span>{playing ? '❚❚' : '▶'}</span>
-                    <span>{playing ? 'Pause' : 'Play Lap'}</span>
-                  </button>
-
-                  <div className="h-4 w-[1px] bg-white/[0.1]" />
-
-                  <label className="flex items-center gap-1.5 font-mono text-[11px] text-slate-300">
-                    <span className="text-[10px] uppercase text-slate-400">Speed:</span>
-                    <select
-                      className="rounded-md border border-white/[0.08] bg-slate-900/90 px-2 py-0.5 font-mono text-[11px] tabular-nums text-white outline-none"
-                      value={playRate}
-                      onChange={(e) => setPlayRate(Number(e.target.value))}
-                    >
-                      {[0.5, 1, 2, 4].map((r) => (
-                        <option key={r} value={r}>
-                          {r}x
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <div className="h-4 w-[1px] bg-white/[0.1]" />
-
-                  <div className="flex items-center gap-0.5 rounded-full border border-white/[0.07] bg-[#090a0f]/80 p-0.5 font-mono text-[10px]">
-                    {(
-                      [
-                        { value: 'speed', label: 'Speed' },
-                        { value: 'latg', label: 'Lateral G' },
-                        { value: 'grip', label: 'Grip' },
-                        { value: 'mode', label: 'Mode' },
-                      ] as const
-                    ).map((m) => (
-                      <button
-                        key={m.value}
-                        type="button"
-                        onClick={() => setColorMode(m.value)}
-                        className={`rounded-full px-2.5 py-0.5 uppercase tracking-wider transition ${
-                          colorMode === m.value
-                            ? 'border border-white/[0.12] bg-slate-800 text-cyan-300'
-                            : 'text-slate-400 hover:text-slate-200'
-                        }`}
-                      >
-                        {m.label}
-                      </button>
-                    ))}
-                  </div>
+              {csvMsg && (
+                <div className={`text-[10px] ${csvMsg.startsWith('Import failed') ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  {csvMsg}
                 </div>
+              )}
+            </div>
+          </DisclosureGroup>
+        </div>
 
-                {/* Live Cursor Position Readout During Playback / Hover */}
-                {safeCursor != null && (
-                  <div className="font-mono text-[11px] tabular-nums text-cyan-300">
-                    s = {fmt(ch.s[safeCursor], 1)} m · {fmt(kph(ch.v[safeCursor]), 1)} km/h
-                  </div>
-                )}
-              </div>
-            </Panel>
+        {/* Sticky Reset to Defaults */}
+        <div className="sticky bottom-0 z-10 border-t border-white/[0.08] bg-[#0c0e17]/95 px-3.5 py-2.5 backdrop-blur-md">
+          <button
+            type="button"
+            onClick={() => applyPreset(presetId)}
+            className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-white/[0.07] bg-white/[0.03] py-2 text-xs font-medium text-slate-300 transition hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white"
+          >
+            <span>↺</span>
+            <span>Reset to Defaults</span>
+          </button>
+        </div>
+      </aside>
 
-            <Panel title="G-G Diagram · Friction Ellipse" bodyClassName="h-[500px]">
-              <GGDiagram
-                lap={lap}
-                ctx={ctx}
-                cursor={safeCursor}
-                baselineLap={baselineSolved?.lap}
-                baselineCtx={baselineSolved?.ctx}
-              />
-            </Panel>
+      {/* 2. RIGHT DRAWER: G-G POLAR STUDIO (Slide-Out Panel) */}
+      {ggDiagramOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
+          onClick={() => setGgDiagramOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+      <aside
+        className={`fixed inset-y-0 right-0 z-50 flex w-[480px] max-w-[95vw] flex-col border-l border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out ${
+          ggDiagramOpen ? 'translate-x-0' : 'translate-x-full pointer-events-none'
+        }`}
+        role="dialog"
+        aria-label="G-G Polar Studio"
+      >
+        <div className="flex h-12 items-center justify-between border-b border-white/[0.08] px-4 font-mono text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-cyan-400">◎</span>
+            <span className="font-semibold text-white">G-G Polar Studio</span>
+            <span className="text-[10px] text-slate-400">Friction Ellipse & Operating Points</span>
           </div>
+          <button
+            type="button"
+            onClick={() => setGgDiagramOpen(false)}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/[0.08] text-slate-400 transition hover:bg-white/[0.06] hover:text-white"
+            title="Close Drawer (Esc)"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4">
+          <GGDiagram
+            lap={lap}
+            ctx={ctx}
+            cursor={safeCursor}
+            baselineLap={baselineSolved?.lap}
+            baselineCtx={baselineSolved?.ctx}
+          />
+        </div>
+      </aside>
+
+      {/* 3. CENTER STAGE (100% Full-Width Focus Canvas & Telemetry) */}
+      <div className="flex flex-1 flex-col p-3">
+        <main className="flex min-w-0 flex-1 flex-col gap-3">
+          <Panel
+            title="Track Map Canvas"
+            right={
+              <div className="flex items-center gap-2 font-mono text-[10px] text-slate-400">
+                <span>{dTrack.name} · {fmt(dTrack.length, 1)} m · {lap.corners.length} corners</span>
+                <button
+                  type="button"
+                  onClick={() => setGgDiagramOpen(true)}
+                  className="rounded border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 text-xs text-cyan-300 hover:bg-white/[0.06] transition"
+                  title="Open G-G Polar Studio Drawer"
+                >
+                  ◎ G-G Studio
+                </button>
+              </div>
+            }
+            bodyClassName="flex h-[540px] flex-col"
+          >
+            {korfezOn && (
+              <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.06] px-3 py-1.5 font-mono text-[10px] text-slate-400">
+                <span className="uppercase tracking-wider text-cyan-400">Satellite Overlay</span>
+                <button
+                  type="button"
+                  className={`btn !py-0.5 ${mapAlign.visible ? 'btn-active' : ''}`}
+                  onClick={() => setMapAlign((m) => ({ ...m, visible: !m.visible }))}
+                >
+                  {mapAlign.visible ? 'Visible' : 'Hidden'}
+                </button>
+                <button type="button" className="btn !py-0.5" onClick={() => mapFileRef.current?.click()}>
+                  Upload Map
+                </button>
+                <input
+                  ref={mapFileRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) setMapUpload(URL.createObjectURL(f));
+                    e.target.value = '';
+                  }}
+                />
+                <label className="flex items-center gap-1">
+                  Opacity
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={Math.round(mapAlign.opacity * 100)}
+                    onChange={(e) => setMapAlign((m) => ({ ...m, opacity: Number(e.target.value) / 100 }))}
+                  />
+                </label>
+              </div>
+            )}
+
+            {/* Full Unobstructed Track Map Canvas */}
+            <div className="min-h-0 flex-1">
+              <TrackCanvas
+                track={dTrack}
+                lap={lap}
+                colorMode={colorMode}
+                cursor={safeCursor}
+                ghostLap={ghostLap}
+                ghostTrack={ghostTrack}
+                ghostCursor={effectiveGhostCursor}
+                ghostLabel={ghostLabel}
+                onHover={onHoverCanvas}
+                mapAlign={korfezOn ? mapAlign : undefined}
+                mapSrcOverride={mapUpload}
+              />
+            </div>
+
+            {/* Dedicated Non-Overlapping Bottom Playback & Color-Mode Bar */}
+            <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-white/[0.07] bg-[#0b0e17]/95 px-3.5 py-2 backdrop-blur-md">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setPlaying((p) => !p)}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 font-mono text-xs font-medium transition ${
+                    playing
+                      ? 'border border-cyan-500/50 bg-cyan-500/20 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.2)]'
+                      : 'border border-white/[0.1] bg-white/[0.06] text-white hover:bg-white/[0.12]'
+                  }`}
+                >
+                  <span>{playing ? '❚❚' : '▶'}</span>
+                  <span>{playing ? 'Pause' : 'Play Lap'}</span>
+                </button>
+
+                <div className="h-4 w-[1px] bg-white/[0.1]" />
+
+                <label className="flex items-center gap-1.5 font-mono text-[11px] text-slate-300">
+                  <span className="text-[10px] uppercase text-slate-400">Speed:</span>
+                  <select
+                    className="rounded-md border border-white/[0.08] bg-slate-900/90 px-2 py-0.5 font-mono text-[11px] tabular-nums text-white outline-none"
+                    value={playRate}
+                    onChange={(e) => setPlayRate(Number(e.target.value))}
+                  >
+                    {[0.5, 1, 2, 4].map((r) => (
+                      <option key={r} value={r}>
+                        {r}x
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <div className="h-4 w-[1px] bg-white/[0.1]" />
+
+                <div className="flex items-center gap-0.5 rounded-full border border-white/[0.07] bg-[#090a0f]/80 p-0.5 font-mono text-[10px]">
+                  {(
+                    [
+                      { value: 'speed', label: 'Speed' },
+                      { value: 'latg', label: 'Lateral G' },
+                      { value: 'grip', label: 'Grip' },
+                      { value: 'mode', label: 'Mode' },
+                    ] as const
+                  ).map((m) => (
+                    <button
+                      key={m.value}
+                      type="button"
+                      onClick={() => setColorMode(m.value)}
+                      className={`rounded-full px-2.5 py-0.5 uppercase tracking-wider transition ${
+                        colorMode === m.value
+                          ? 'border border-white/[0.12] bg-slate-800 text-cyan-300'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Live Cursor Position Readout During Playback / Hover */}
+              {safeCursor != null && (
+                <div className="font-mono text-[11px] tabular-nums text-cyan-300">
+                  s = {fmt(ch.s[safeCursor], 1)} m · {fmt(kph(ch.v[safeCursor]), 1)} km/h
+                </div>
+              )}
+            </div>
+          </Panel>
 
           <Panel
             title="Synchronized Telemetry Strip"
@@ -1717,7 +1798,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
           </Panel>
         </main>
 
-        {/* 3. RIGHT DRAWER (CAN Bus & Embedded Architecture — Collapsible) */}
+        {/* 4. CAN COCKPIT DRAWER (Slide-Out Bottom/Side Drawer) */}
         <CanCockpitDrawer
           open={canCockpitOpen}
           onClose={() => setCanCockpitOpen(false)}
