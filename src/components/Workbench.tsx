@@ -1665,18 +1665,18 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
               />
 
               {/* Floating Frosted-Glass Canvas HUD Controls */}
-              <div className="pointer-events-auto absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex flex-wrap items-center gap-2.5 rounded-full border border-white/10 bg-slate-900/60 px-4 py-1.5 shadow-2xl backdrop-blur-md">
+              <div className="pointer-events-auto absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-2.5 rounded-full border border-white/10 bg-slate-900/75 px-4 py-1.5 shadow-2xl backdrop-blur-md whitespace-nowrap">
                 {/* Play / Pause Lap */}
                 <button
                   type="button"
                   onClick={() => setPlaying((p) => !p)}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium transition ${
+                  className={`inline-flex w-[96px] items-center justify-center gap-1.5 rounded-full py-1 font-mono text-xs font-medium transition ${
                     playing
                       ? 'border border-cyan-500/50 bg-cyan-500/20 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.3)]'
                       : 'border border-white/[0.1] bg-white/[0.08] text-white hover:bg-white/[0.16]'
                   }`}
                 >
-                  <span>{playing ? '❚❚' : '▶'}</span>
+                  <span className="w-3 text-center">{playing ? '❚❚' : '▶'}</span>
                   <span>{playing ? 'Pause' : 'Play Lap'}</span>
                 </button>
 
@@ -1728,16 +1728,6 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                     </button>
                   ))}
                 </div>
-
-                {/* Live Cursor Readout */}
-                {safeCursor != null && (
-                  <>
-                    <div className="h-4 w-[1px] bg-white/[0.12]" />
-                    <div className="font-mono text-[11px] tabular-nums text-cyan-300 font-medium">
-                      s = {fmt(ch.s[safeCursor], 1)} m · {fmt(kph(ch.v[safeCursor]), 1)} km/h
-                    </div>
-                  </>
-                )}
               </div>
             </div>
           </Panel>
