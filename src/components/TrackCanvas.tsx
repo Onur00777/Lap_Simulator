@@ -104,9 +104,10 @@ export default function TrackCanvas({
   }, [track.mapImage?.src, mapSrcOverride]);
 
   const tf: Transform = useMemo(() => {
-    const padTop = 36;
-    const padX = 36;
-    const padBottom = 96;
+    const padTop = 38;
+    const padLeft = 44;
+    const padRight = 44;
+    const padBottom = 135;
     const allX = [...rl.leftCurbX, ...rl.rightCurbX, ...track.x];
     const allY = [...rl.leftCurbY, ...rl.rightCurbY, ...track.y];
     const minX = Math.min(...allX);
@@ -115,8 +116,8 @@ export default function TrackCanvas({
     const maxY = Math.max(...allY);
     const spanX = Math.max(maxX - minX, 1);
     const spanY = Math.max(maxY - minY, 1);
-    const scale = Math.min((w - 2 * padX) / spanX, (h - padTop - padBottom) / spanY);
-    const ox = (w - spanX * scale) / 2;
+    const scale = Math.min((w - padLeft - padRight) / spanX, (h - padTop - padBottom) / spanY);
+    const ox = padLeft + (w - padLeft - padRight - spanX * scale) / 2;
     const oy = padBottom + (h - padTop - padBottom - spanY * scale) / 2;
     return { sx: (x) => ox + (x - minX) * scale, sy: (y) => h - oy - (y - minY) * scale, scale };
   }, [track, rl, w, h]);
@@ -570,6 +571,15 @@ export default function TrackCanvas({
           )}
         </div>
       </div>
+
+      {/* Pinned dynamic cursor distance & speed readout */}
+      {activeIdx != null && (
+        <div className="pointer-events-none absolute bottom-8 left-3 z-10 flex items-center gap-1.5 font-mono text-xs tabular-nums text-cyan-400 font-medium">
+          <span>s = {fmt(ch.s[activeIdx], 1)} m</span>
+          <span className="text-slate-500">·</span>
+          <span>{fmt(kph(ch.v[activeIdx]), 1)} km/h</span>
+        </div>
+      )}
 
       {/* Track & Alignment Footnote */}
       <div className="pointer-events-none absolute bottom-2.5 left-3 z-10 font-mono text-[10px] text-slate-400">
