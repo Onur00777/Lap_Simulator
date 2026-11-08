@@ -157,9 +157,15 @@ export interface WorkbenchProps {
   externalPresetId?: VehiclePresetId;
   onPresetIdChange?: (id: VehiclePresetId) => void;
   onOpenHavuzLab?: () => void;
+  onOpenGuide?: () => void;
 }
 
-export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHavuzLab }: WorkbenchProps = {}) {
+export default function Workbench({
+  externalPresetId,
+  onPresetIdChange,
+  onOpenHavuzLab,
+  onOpenGuide,
+}: WorkbenchProps = {}) {
   const [trackSel, setTrackSel] = useState<TrackSel>('endurance');
   const [customTrack, setCustomTrack] = useState<Track | null>(null);
   const [csvMsg, setCsvMsg] = useState<string | null>(null);
@@ -734,6 +740,17 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                 <span>🅿️ Havuz Lab</span>
                 <span>→</span>
               </button>
+              {onOpenGuide && (
+                <button
+                  type="button"
+                  onClick={onOpenGuide}
+                  title="Çalışma Alanları Rehberi: Neredeyiz ve Nereye Geçebiliriz?"
+                  className="inline-flex h-6 items-center gap-1 rounded-md border border-white/[0.08] bg-white/[0.04] px-1.5 font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
+                >
+                  <span>🧭</span>
+                  <span className="hidden md:inline">Rehber</span>
+                </button>
+              )}
             </div>
           )}
         </div>

@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import type { VehiclePresetId } from '@/lib/tracks';
+import WorkspaceGuideModal from '@/components/navigation/WorkspaceGuideModal';
 
 const DarkLoadingFallback = () => (
   <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-[#090a0f] font-mono text-xs text-slate-400">
@@ -36,6 +37,7 @@ const VEHICLE_OPTIONS: { id: VehiclePresetId; title: string; subtitle: string }[
 export default function ClientApp() {
   const [workspaceMode, setWorkspaceMode] = useState<WorkspaceMode>('main-simulator');
   const [activePresetId, setActivePresetId] = useState<VehiclePresetId>('ist27-twotrack');
+  const [showGuideModal, setShowGuideModal] = useState(false);
 
   return (
     <div className="flex min-h-screen flex-col bg-[#090a0f] text-slate-200">
@@ -70,6 +72,15 @@ export default function ClientApp() {
                 <span className="h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]" />
                 <span>🅿️ İTÜ Havuz Lab</span>
               </span>
+              <button
+                type="button"
+                onClick={() => setShowGuideModal(true)}
+                title="Çalışma Alanları Rehberi: Neredeyiz ve Nereye Geçebiliriz?"
+                className="inline-flex h-6 items-center gap-1 rounded-md border border-white/[0.08] bg-white/[0.04] px-1.5 font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
+              >
+                <span>🧭</span>
+                <span className="hidden md:inline">Rehber</span>
+              </button>
             </div>
           </div>
 
@@ -102,6 +113,7 @@ export default function ClientApp() {
           externalPresetId={activePresetId}
           onPresetIdChange={setActivePresetId}
           onOpenHavuzLab={() => setWorkspaceMode('ist26-havuz-lab')}
+          onOpenGuide={() => setShowGuideModal(true)}
         />
       </div>
 
@@ -110,6 +122,13 @@ export default function ClientApp() {
           <IST26HavuzWorkspace activePresetId={activePresetId} onSelectPresetId={setActivePresetId} />
         </div>
       )}
+
+      <WorkspaceGuideModal
+        isOpen={showGuideModal}
+        onClose={() => setShowGuideModal(false)}
+        currentWorkspace={workspaceMode}
+        onSelectWorkspace={setWorkspaceMode}
+      />
     </div>
   );
 }
