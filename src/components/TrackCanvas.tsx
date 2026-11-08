@@ -104,10 +104,12 @@ export default function TrackCanvas({
   }, [track.mapImage?.src, mapSrcOverride]);
 
   const tf: Transform = useMemo(() => {
-    const padTop = 38;
-    const padLeft = 44;
-    const padRight = 44;
-    const padBottom = 135;
+    // Stage padding calibrated to make circuit the hero centerpiece filling ~82% of height
+    // while centering it in open space to the left of the right-hand HUD column.
+    const padTop = 42;
+    const padBottom = 66;
+    const padLeft = 32;
+    const padRight = w >= 960 ? 320 : (w >= 768 ? 200 : 40);
     const allX = [...rl.leftCurbX, ...rl.rightCurbX, ...track.x];
     const allY = [...rl.leftCurbY, ...rl.rightCurbY, ...track.y];
     const minX = Math.min(...allX);
@@ -188,7 +190,7 @@ export default function TrackCanvas({
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.strokeStyle = '#0e1722';
-    ctx.lineWidth = Math.max(10, rl.trackWidthM * tf.scale);
+    ctx.lineWidth = Math.max(12, rl.trackWidthM * 1.18 * tf.scale);
     ctx.beginPath();
     ctx.moveTo(tf.sx(rl.centerX[0]), tf.sy(rl.centerY[0]));
     for (let i = 1; i < n; i++) ctx.lineTo(tf.sx(rl.centerX[i]), tf.sy(rl.centerY[i]));
@@ -197,8 +199,8 @@ export default function TrackCanvas({
 
     // Left & Right curb boundary lines
     ctx.save();
-    ctx.strokeStyle = 'rgba(148,163,184,0.42)';
-    ctx.lineWidth = 1.25;
+    ctx.strokeStyle = 'rgba(148,163,184,0.48)';
+    ctx.lineWidth = 1.45;
     ctx.beginPath();
     ctx.moveTo(tf.sx(rl.leftCurbX[0]), tf.sy(rl.leftCurbY[0]));
     for (let i = 1; i < n; i++) ctx.lineTo(tf.sx(rl.leftCurbX[i]), tf.sy(rl.leftCurbY[i]));
@@ -214,8 +216,8 @@ export default function TrackCanvas({
 
     // 2. Dashed grey centerline
     ctx.save();
-    ctx.strokeStyle = rl.mode === 'optimal' ? 'rgba(148,163,184,0.55)' : 'rgba(148,163,184,0.3)';
-    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = rl.mode === 'optimal' ? 'rgba(148,163,184,0.6)' : 'rgba(148,163,184,0.35)';
+    ctx.lineWidth = 1.4;
     ctx.setLineDash([4, 4]);
     ctx.beginPath();
     ctx.moveTo(tf.sx(rl.centerX[0]), tf.sy(rl.centerY[0]));
@@ -227,10 +229,10 @@ export default function TrackCanvas({
     // 3. Glowing colored racing line (cutting outer entry curb -> inner apex curb -> outer exit curb)
     ctx.save();
     if (rl.mode === 'optimal') {
-      ctx.shadowColor = 'rgba(34,211,238,0.35)';
-      ctx.shadowBlur = 6;
+      ctx.shadowColor = 'rgba(34,211,238,0.4)';
+      ctx.shadowBlur = 7;
     }
-    ctx.lineWidth = Math.max(2.6, 0.95 * tf.scale);
+    ctx.lineWidth = Math.max(3.2, 1.15 * tf.scale);
     for (let i = 0; i < segs; i++) {
       const j = (i + 1) % n;
       ctx.strokeStyle = colorAt(i);
@@ -325,11 +327,12 @@ export default function TrackCanvas({
         ctx.fillText(`${lm.id} ${lm.direction === 'L' ? 'Sol' : 'Sağ'}`, tf.sx(px), tf.sy(py));
       }
     } else if (track.kind !== 'skidpad') {
-      ctx.fillStyle = 'rgba(201,212,226,0.75)';
+      ctx.font = 'bold 11px Consolas, monospace';
+      ctx.fillStyle = 'rgba(241, 245, 249, 0.95)';
       for (const c of lap.corners) {
         const i = c.apexIndex;
         const k = track.kappa[i];
-        const off = (Math.sign(k) || 1) * -9;
+        const off = (Math.sign(k) || 1) * -11;
         const px = track.x[i] + off * -Math.sin(track.heading[i]);
         const py = track.y[i] + off * Math.cos(track.heading[i]);
         ctx.fillText(`T${c.index}`, tf.sx(px) - 6, tf.sy(py) + 3);
