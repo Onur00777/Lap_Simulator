@@ -1598,6 +1598,24 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
             title="Track Map Canvas"
             right={
               <div className="flex items-center gap-2 font-mono text-[10px] text-slate-400">
+                {/* Fixed-width zero-shift cursor telemetry badge */}
+                <div className="hidden sm:inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-[#11141d]/90 px-2 py-0.5 font-mono text-[10px] tabular-nums text-slate-300 shadow-sm">
+                  <span
+                    className={`inline-block h-1.5 w-1.5 rounded-full ${
+                      cursor != null && !playing
+                        ? 'bg-amber-400 shadow-[0_0_6px_#f59e0b]'
+                        : playing
+                        ? 'bg-cyan-400 animate-pulse shadow-[0_0_6px_#22d3ee]'
+                        : 'bg-slate-500'
+                    }`}
+                  />
+                  <span className="text-[9px] uppercase tracking-wider text-slate-400">
+                    {cursor != null && !playing ? 'Hover' : playing ? 'Live' : 'Car'}:
+                  </span>
+                  <span className="font-medium text-cyan-300">s = {fmt(ch.s[safeCursor ?? 0], 1)} m</span>
+                  <span className="text-slate-500">·</span>
+                  <span className="font-medium text-white">{fmt(kph(ch.v[safeCursor ?? 0]), 1)} km/h</span>
+                </div>
                 <span>{dTrack.name} · {fmt(dTrack.length, 1)} m · {lap.corners.length} corners</span>
                 <button
                   type="button"
@@ -1660,6 +1678,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                 ghostCursor={effectiveGhostCursor}
                 ghostLabel={ghostLabel}
                 onHover={onHoverCanvas}
+                isPlaying={playing}
                 mapAlign={korfezOn ? mapAlign : undefined}
                 mapSrcOverride={mapUpload}
               />

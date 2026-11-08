@@ -31,6 +31,7 @@ interface Props {
   mapAlign?: MapAlign;
   /** Replaces the built-in facility drawing when the user uploads their own map. */
   mapSrcOverride?: string | null;
+  isPlaying?: boolean;
 }
 
 interface Transform {
@@ -77,12 +78,14 @@ export default function TrackCanvas({
   onHover,
   mapAlign,
   mapSrcOverride,
+  isPlaying = false,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const baseRef = useRef<HTMLCanvasElement>(null);
   const overRef = useRef<HTMLCanvasElement>(null);
   const { w, h } = useSize(wrapRef);
   const ch = lap.channels;
+  const [isHovering, setIsHovering] = useState(false);
 
   const rl: RacingLineSolution = useMemo(() => track.racingLine ?? solveRacingLine(track), [track]);
 
@@ -491,6 +494,7 @@ export default function TrackCanvas({
         best = i;
       }
     }
+    setIsHovering(best >= 0);
     onHover(best >= 0 ? best : null);
   };
 
@@ -517,8 +521,18 @@ export default function TrackCanvas({
     };
   }, [ghostLap, ghostCursor, activeIdx, ch.s, ch.v]);
 
+  const isHoverBadge = isHovering && !isPlaying;
+
   return (
-    <div ref={wrapRef} className="relative h-full min-h-[360px] w-full" onMouseMove={onMove} onMouseLeave={() => onHover(null)}>
+    <div
+      ref={wrapRef}
+      className="relative h-full min-h-[360px] w-full"
+      onMouseMove={onMove}
+      onMouseLeave={() => {
+        setIsHovering(false);
+        onHover(null);
+      }}
+    >
       <canvas ref={baseRef} className="absolute inset-0" />
       <canvas ref={overRef} className="pointer-events-none absolute inset-0" />
       {/* Apple Pro Minimalist Horizontal Canvas Legend */}
@@ -575,8 +589,14 @@ export default function TrackCanvas({
       >
         <div className="mb-2 flex items-center justify-between border-b border-white/[0.08] pb-1.5">
           <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-slate-300">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_6px_#22d3ee]" />
-            <span>LIVE CAR TELEMETRY HUD</span>
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                isHoverBadge
+                  ? 'bg-amber-400 shadow-[0_0_6px_#f59e0b]'
+                  : 'bg-cyan-400 animate-pulse shadow-[0_0_6px_#22d3ee]'
+              }`}
+            />
+            <span>{isHoverBadge ? 'HOVER CURSOR' : 'LIVE CAR'} TELEMETRY</span>
           </div>
           <span
             className="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
@@ -587,6 +607,16 @@ export default function TrackCanvas({
             }}
           >
             {MODE_LABELS[ch.mode[activeIdx]]}
+          </span>
+        </div>
+
+        {/* Dedicated Zero-Shift Instantaneous Telemetry Header */}
+        <div className="mb-2 flex items-center justify-between rounded-md border border-white/[0.06] bg-black/40 px-2 py-1 font-mono text-[11px] tabular-nums">
+          <span className="text-[10px] uppercase tracking-wider text-slate-400">
+            {isHoverBadge ? 'Hover Pos' : 'Instant'}:
+          </span>
+          <span className="font-medium text-cyan-300">
+            s = {fmt(ch.s[activeIdx], 1)} m <span className="text-slate-500">·</span> <span className="text-white">{fmt(kph(ch.v[activeIdx]), 1)} km/h</span>
           </span>
         </div>
 
