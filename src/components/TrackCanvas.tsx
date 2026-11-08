@@ -528,7 +528,7 @@ export default function TrackCanvas({
   return (
     <div
       ref={wrapRef}
-      className="relative h-full min-h-[360px] w-full"
+      className="relative h-full min-h-[560px] lg:min-h-[620px] w-full"
       onMouseMove={onMove}
       onMouseLeave={() => {
         setIsHovering(false);
@@ -594,7 +594,7 @@ export default function TrackCanvas({
       </div>
 
       {/* Right-Hand HUD Vertical Stack: G-Force Crosshair + Live Telemetry */}
-      <div className="pointer-events-none absolute bottom-3 right-3 z-10 flex w-[295px] max-w-[calc(100%-24px)] flex-col gap-2.5">
+      <div className="pointer-events-none absolute top-14 bottom-4 right-4 z-10 flex w-[295px] max-w-[calc(100%-24px)] flex-col justify-end gap-2.5">
         {/* Motorsport Circular G-Force Crosshair Meter */}
         <GForceCrosshair
           gLat={ch.gLat[activeIdx] ?? 0}
@@ -605,7 +605,7 @@ export default function TrackCanvas({
         {/* Docked Live Car Telemetry HUD */}
         <aside
           aria-label="Live Car Telemetry HUD"
-          className="rounded-xl border border-white/10 bg-[#0b0e17]/85 p-3 font-mono text-xs shadow-2xl backdrop-blur-md"
+          className="rounded-xl border border-white/10 bg-[#0b0e17]/85 p-2.5 font-mono text-xs shadow-2xl backdrop-blur-md"
         >
         <div className="mb-2 flex items-center justify-between border-b border-white/[0.08] pb-1.5">
           <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-slate-300">
@@ -627,16 +627,6 @@ export default function TrackCanvas({
             }}
           >
             {MODE_LABELS[ch.mode[activeIdx]]}
-          </span>
-        </div>
-
-        {/* Dedicated Zero-Shift Instantaneous Telemetry Header */}
-        <div className="mb-2 flex items-center justify-between rounded-md border border-white/[0.06] bg-black/40 px-2 py-1 font-mono text-[11px] tabular-nums">
-          <span className="text-[10px] uppercase tracking-wider text-slate-400">
-            {isHoverBadge ? 'Hover Pos' : 'Instant'}:
-          </span>
-          <span className="font-medium text-cyan-300">
-            s = {fmt(ch.s[activeIdx], 1)} m <span className="text-slate-500">·</span> <span className="text-white">{fmt(kph(ch.v[activeIdx]), 1)} km/h</span>
           </span>
         </div>
 

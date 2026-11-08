@@ -1630,7 +1630,7 @@ export default function Workbench({
                 </button>
               </div>
             }
-            bodyClassName="relative flex h-[540px] flex-col overflow-hidden"
+            bodyClassName="relative flex h-[560px] lg:h-[620px] flex-col overflow-hidden"
           >
             {korfezOn && (
               <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.06] px-3 py-1.5 font-mono text-[10px] text-slate-400">

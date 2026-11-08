@@ -30,11 +30,11 @@ export default function GForceCrosshair({
   const [trail, setTrail] = useState<TrailPoint[]>([]);
   const prevRef = useRef<{ gLong: number; gLat: number }>({ gLong, gLat });
 
-  const size = 150;
-  const cx = 75;
-  const cy = 75;
-  const maxR = 60; // Represents 3.0 G
-  const midR = 30; // Represents 1.5 G
+  const size = 128;
+  const cx = 64;
+  const cy = 64;
+  const maxR = 50; // Represents 3.0 G
+  const midR = 25; // Represents 1.5 G
 
   // Convert G-force to crosshair SVG coordinate clamped inside outer circle
   const toCoords = (lat: number, long: number) => {
@@ -78,14 +78,14 @@ export default function GForceCrosshair({
       <div className="mb-1 flex items-center justify-between border-b border-white/[0.08] pb-1">
         <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-slate-300">
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-rose-500 shadow-[0_0_6px_#f43f5e]" />
-          <span>G-FORCE CROSSHAIR</span>
+          <span>G-FORCE METER</span>
         </div>
         <div className="flex items-center gap-1 rounded bg-rose-500/10 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-rose-300 border border-rose-500/20">
           <span>|G| = {totalG.toFixed(2)} G</span>
         </div>
       </div>
 
-      {/* 150px x 150px Circular Crosshair Target */}
+      {/* 128px x 128px Circular Crosshair Target */}
       <div className="relative flex flex-col items-center justify-center">
         <svg
           width={size}
@@ -190,14 +190,14 @@ export default function GForceCrosshair({
           {/* Ring G-level labels */}
           <text
             x={cx + 3}
-            y={cy - midR + 7}
+            y={cy - midR + 6}
             className="fill-slate-500 font-mono text-[6px]"
           >
             1.5G
           </text>
           <text
             x={cx + 3}
-            y={cy - maxR + 18}
+            y={cy - maxR + 15}
             className="fill-slate-400 font-mono text-[6px] font-medium"
           >
             3.0G
