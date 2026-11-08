@@ -179,18 +179,11 @@ export default function CanCockpitDrawer({
   if (!open) return null;
 
   return (
-    <>
-      {/* Drawer Overlay Backdrop */}
-      <div
-        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <aside
-        className="fixed inset-y-0 right-0 z-50 flex w-[440px] max-w-[95vw] flex-col border-l border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out"
-        role="dialog"
-        aria-label="CAN Cockpit & Embedded SIL"
-      >
+    <aside
+      className="fixed inset-y-0 right-0 z-50 flex w-[440px] max-w-[95vw] flex-col border-l border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out pointer-events-auto"
+      role="dialog"
+      aria-label="CAN Cockpit & Embedded SIL"
+    >
         {/* Drawer Header */}
         <div className="flex h-12 items-center justify-between border-b border-white/[0.08] px-4 font-mono text-xs">
           <div className="flex items-center gap-2">
@@ -451,6 +444,5 @@ export default function CanCockpitDrawer({
         </DisclosureGroup>
       </div>
     </aside>
-    </>
   );
 }

@@ -1370,17 +1370,10 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
       {/* PHASE 2: COLLAPSIBLE SIDE DRAWERS (FOCUS-FIRST FULL-WIDTH STAGE)      */}
       {/* ===================================================================== */}
 
-      {/* 1. LEFT DRAWER: VEHICLE & SETUP INSPECTOR (Slide-Out Panel) */}
-      {leftInspectorOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
-          onClick={() => setLeftInspectorOpen(false)}
-          aria-hidden="true"
-        />
-      )}
+      {/* 1. LEFT DRAWER: VEHICLE & SETUP INSPECTOR (Slide-Out Panel - Non-modal) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[350px] max-w-[90vw] flex-col justify-between border-r border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out ${
-          leftInspectorOpen ? 'translate-x-0' : '-translate-x-full pointer-events-none'
+        className={`fixed inset-y-0 left-0 z-50 flex w-[350px] max-w-[90vw] flex-col justify-between border-r border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out pointer-events-auto ${
+          leftInspectorOpen ? 'translate-x-0' : '-translate-x-full !pointer-events-none'
         }`}
         role="dialog"
         aria-label="Vehicle Setup Inspector"
@@ -1550,17 +1543,10 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
         </div>
       </aside>
 
-      {/* 2. RIGHT DRAWER: G-G POLAR STUDIO (Slide-Out Panel) */}
-      {ggDiagramOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
-          onClick={() => setGgDiagramOpen(false)}
-          aria-hidden="true"
-        />
-      )}
+      {/* 2. RIGHT DRAWER: G-G POLAR STUDIO (Slide-Out Panel - Non-modal) */}
       <aside
-        className={`fixed inset-y-0 right-0 z-50 flex w-[480px] max-w-[95vw] flex-col border-l border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out ${
-          ggDiagramOpen ? 'translate-x-0' : 'translate-x-full pointer-events-none'
+        className={`fixed inset-y-0 right-0 z-50 flex w-[480px] max-w-[95vw] flex-col border-l border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out pointer-events-auto ${
+          ggDiagramOpen ? 'translate-x-0' : 'translate-x-full !pointer-events-none'
         }`}
         role="dialog"
         aria-label="G-G Polar Studio"
