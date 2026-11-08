@@ -1675,7 +1675,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
                 <button
                   type="button"
                   onClick={() => setPlaying((p) => !p)}
-                  className={`inline-flex w-[96px] items-center justify-center gap-1.5 rounded-full py-1 font-mono text-xs font-medium transition ${
+                  className={`inline-flex w-28 items-center justify-center gap-1.5 rounded-full py-1 font-mono text-xs font-medium transition ${
                     playing
                       ? 'border border-cyan-500/50 bg-cyan-500/20 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.3)]'
                       : 'border border-white/[0.1] bg-white/[0.08] text-white hover:bg-white/[0.16]'
