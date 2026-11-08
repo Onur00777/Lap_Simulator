@@ -523,7 +523,7 @@ export default function Workbench({ externalPresetId, onPresetIdChange, onOpenHa
       simT += ((now - last) / 1000) * playRate;
       last = now;
       if (simT >= tEnd) simT = lap.closed ? simT - tEnd : tEnd;
-      if (now - lastPush > 33) {
+      if (now - lastPush > 16) {
         lastPush = now;
         const activeT = lap.closed ? simT % lap.lapTime : Math.min(simT, lap.lapTime);
         setCursor(findTimeCursor(ch.t, activeT));

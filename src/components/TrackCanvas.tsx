@@ -5,6 +5,7 @@ import { solveRacingLine, type LapResult, type RacingLineSolution } from '@/lib/
 import type { Track } from '@/lib/tracks';
 import { MODE_COLORS, MODE_LABELS, rgb, turbo } from '@/lib/ui/colors';
 import { fmt, kph } from '@/lib/ui/format';
+import GForceCrosshair from './hud/GForceCrosshair';
 
 export type ColorMode = 'mode' | 'speed' | 'latg' | 'grip';
 
@@ -582,11 +583,20 @@ export default function TrackCanvas({
         <span className="ml-2 text-slate-500">· grid 10 m · {track.length.toFixed(0)} m</span>
       </div>
 
-      {/* Docked Live Car Telemetry HUD */}
-      <aside
-        aria-label="Live Car Telemetry HUD"
-        className="pointer-events-none absolute bottom-3 right-3 z-10 w-[300px] max-w-[calc(100%-24px)] rounded-xl border border-white/10 bg-[#0b0e17]/85 p-3 font-mono text-xs shadow-2xl backdrop-blur-md"
-      >
+      {/* Right-Hand HUD Vertical Stack: G-Force Crosshair + Live Telemetry */}
+      <div className="pointer-events-none absolute bottom-3 right-3 z-10 flex w-[295px] max-w-[calc(100%-24px)] flex-col gap-2.5">
+        {/* Motorsport Circular G-Force Crosshair Meter */}
+        <GForceCrosshair
+          gLat={ch.gLat[activeIdx] ?? 0}
+          gLong={ch.gLong[activeIdx] ?? 0}
+          className="w-full"
+        />
+
+        {/* Docked Live Car Telemetry HUD */}
+        <aside
+          aria-label="Live Car Telemetry HUD"
+          className="rounded-xl border border-white/10 bg-[#0b0e17]/85 p-3 font-mono text-xs shadow-2xl backdrop-blur-md"
+        >
         <div className="mb-2 flex items-center justify-between border-b border-white/[0.08] pb-1.5">
           <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-slate-300">
             <span
@@ -703,6 +713,7 @@ export default function TrackCanvas({
           </div>
         )}
       </aside>
+      </div>
     </div>
   );
 }
