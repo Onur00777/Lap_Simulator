@@ -131,10 +131,18 @@ export function createVehicleFusion(params: FusionParams = IST26_FUSION_PARAMS) 
       [-params.cgToRearM, params.rearTrackM / 2, 0], [-params.cgToRearM, -params.rearTrackM / 2, 0],
     ];
     const wheelEquations = geometry.map(([a, b, angle]) => ({ h: [0, 0, 0, Math.cos(angle), Math.sin(angle), 0, 0, 0, 0], offset: yawRate * (a * Math.sin(angle) - b * Math.cos(angle)) }));
+    const frontSpeedEstimates = wheelSpeeds.slice(0, 2).flatMap((speed, i) => {
+      const { h, offset } = wheelEquations[i];
+      return speed == null ? [] : [(speed - offset - h[4] * x[4]) / h[3]];
+    });
+    const frontSpeed = frontSpeedEstimates.length > 0
+      ? frontSpeedEstimates.reduce((sum, speed) => sum + speed, 0) / frontSpeedEstimates.length
+      : null;
     wheelSpeeds.forEach((speed, i) => {
       if (speed == null) return;
       const equation = wheelEquations[i];
-      const variance = i < 2 ? steerDropout ? 0.40 : 0.06 : 0.65;
+      const axleDisagreement = frontSpeed != null && i >= 2 ? Math.abs(speed - equation.offset - frontSpeed) : 0;
+      const variance = i < 2 ? steerDropout ? 0.40 : 0.06 : 0.65 + 8 * axleDisagreement ** 2;
       observe(speed - equation.offset, equation.h, variance, firstSample ? Infinity : 5);
     });
 
@@ -151,7 +159,7 @@ export function createVehicleFusion(params: FusionParams = IST26_FUSION_PARAMS) 
       const ay = accel[1] - GRAVITY * Math.sin(x[6]) * Math.cos(x[7]);
       const rearForce = params.massKg * ay * params.cgToFrontM / (params.cgToFrontM + params.cgToRearM);
       const rearSlip = clamp(rearForce / params.rearCorneringStiffnessNPerRad, -0.22, 0.22);
-      observe(params.cgToRearM * yawRate - Math.abs(x[3]) * Math.tan(rearSlip), [0, 0, 0, 0, 1, 0, 0, 0, 0], 0.15 + 0.08 * ay ** 2, 5);
+      observe(params.cgToRearM * yawRate - Math.abs(x[3]) * Math.tan(rearSlip), [0, 0, 0, 0, 1, 0, 0, 0, 0], 0.12 + 0.02 * ay ** 2, 5);
     }
     // Soft vertical contact constraint on the parking-lot surface.
     observe(0, [0, 0, 0, -Math.sin(x[7]), Math.sin(x[6]) * Math.cos(x[7]), Math.cos(x[6]) * Math.cos(x[7]), 0, 0, 0], 0.06);
