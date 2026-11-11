@@ -99,52 +99,58 @@ export default function CanCockpitDrawer({
     const vKph = kph(ch.v[idx] ?? 0);
     const axG = ch.gLong[idx] ?? 0;
     const ayG = ch.gLat[idx] ?? 0;
-    const trqCmdDeciNm = vcuRuntime.cascadiaTorqueCmdNm * 10;
     const rpm = vcuInputs.motorRpm;
     const vdcDeciV = pt.batteryVoltage * 10;
     const idcDeciA = ((vcuInputs.dcBusPowerKw * 1000) / Math.max(100, pt.batteryVoltage)) * 10;
 
-    const [tL, tH] = encodeInt16LE(trqCmdDeciNm);
     const [rpmL, rpmH] = encodeInt16LE(rpm);
+    const [freqL, freqH] = encodeInt16LE((rpm / 12) * 10);
     const [vdcL, vdcH] = encodeInt16LE(vdcDeciV);
     const [idcL, idcH] = encodeInt16LE(idcDeciA);
+    const [igbtL, igbtH] = encodeInt16LE(vcuInputs.inverterTempC * 10);
     const [axL, axH] = encodeInt16LE(axG * 9.81 * 100);
     const [ayL, ayH] = encodeInt16LE(ayG * 9.81 * 100);
     const [vL, vH] = encodeInt16LE(vKph * 100);
 
-    const invEnable = vcuRuntime.sdcRelayClosed && vcuRuntime.cascadiaTorqueCmdNm > 0;
-    const faultMask =
-      (vcuRuntime.appsImplausibilityLatched ? 1 : 0) |
-      (vcuRuntime.brakePlausibilityLatched ? 2 : 0) |
-      (vcuRuntime.bspdFaultSafeLatched ? 4 : 0);
+    const invEnable = vcuRuntime.cascadiaCanFrameHex.split(' ')[5] === '01';
 
     return [
       {
         bus: 'FDCAN1',
         id: '0x0C0',
         name: 'VCU_Cascadia_Cmd',
-        rateHz: 500,
+        rateHz: 100,
         dlc: 8,
-        payload: `${tL} ${tH} 00 00 ${invEnable ? '01' : '00'} 00 ${toHexByte(faultMask)} 00`,
+        payload: vcuRuntime.cascadiaCanFrameHex,
         decoded: `TrqCmd=${vcuRuntime.cascadiaTorqueCmdNm.toFixed(1)} Nm · EN=${invEnable ? 1 : 0}`,
       },
       {
         bus: 'FDCAN1',
         id: '0x0A5',
         name: 'Cascadia_Motor_Pos',
-        rateHz: 200,
+        rateHz: 100,
         dlc: 8,
-        payload: `00 00 ${rpmL} ${rpmH} 64 00 00 00`,
+        payload: `00 00 ${rpmL} ${rpmH} ${freqL} ${freqH} 00 00`,
         decoded: `Speed=${rpm} RPM · Freq=${(rpm / 12).toFixed(0)} Hz`,
       },
       {
         bus: 'FDCAN1',
         id: '0x0A7',
-        name: 'Cascadia_Volt_Curr',
+        name: 'Cascadia_Voltage',
         rateHz: 100,
         dlc: 8,
-        payload: `${vdcL} ${vdcH} ${idcL} ${idcH} ${toHexByte(vcuInputs.inverterTempC)} ${toHexByte(vcuInputs.motorTempC)} 00 00`,
-        decoded: `Vdc=${pt.batteryVoltage.toFixed(0)}V · P=${vcuInputs.dcBusPowerKw.toFixed(1)}kW · Tinv=${vcuInputs.inverterTempC.toFixed(0)}°C`,
+        payload: `${vdcL} ${vdcH} 00 00 00 00 00 00`,
+        decoded: `Vdc=${pt.batteryVoltage.toFixed(0)} V`,
+      },
+      {
+        bus: 'FDCAN1', id: '0x0A6', name: 'Cascadia_Current', rateHz: 100, dlc: 8,
+        payload: `00 00 00 00 00 00 ${idcL} ${idcH}`,
+        decoded: `Idc=${(idcDeciA / 10).toFixed(1)} A`,
+      },
+      {
+        bus: 'FDCAN1', id: '0x0A0', name: 'Cascadia_IGBT_Temperatures', rateHz: 10, dlc: 8,
+        payload: `${igbtL} ${igbtH} 00 00 00 00 00 00`,
+        decoded: `IGBT A=${vcuInputs.inverterTempC.toFixed(1)} °C`,
       },
       {
         bus: 'FDCAN2',

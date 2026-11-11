@@ -31,6 +31,7 @@ import {
 } from '@/lib/ist26-havuz/log-scorer';
 import { buildHavuzExtractedCircuit } from '@/lib/ist26-havuz/havuz-track-extractor';
 import { exportMotecTelemetry, exportTrackGeoJson, exportTrackSvg } from '@/lib/export/telemetry-exporters';
+import { generateApexVcuDbc } from '@/lib/codegen/dbc-generator';
 import type { FusionLogResult } from './havuz-fusion.worker';
 import {
   AutoFitResult,
@@ -1567,7 +1568,14 @@ export default function IST26HavuzWorkspace({
                   }}
                   className="rounded border border-emerald-500/60 bg-emerald-950/70 px-3.5 py-1.5 font-bold uppercase tracking-wider text-emerald-300 hover:bg-emerald-900/70"
                 >
-                  ⬇ MISRA-C / C99 Firmware İndir (.h & .c)
+                  ⬇ SIL C99 Firmware İndir (.h & .c)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => downloadTextFile('apex_vcu_bus.dbc', generateApexVcuDbc(), 'text/plain')}
+                  className="rounded border border-cyan-500/50 bg-cyan-950/60 px-3 py-1.5 text-cyan-200 hover:border-cyan-300"
+                >
+                  CAN DBC İndir
                 </button>
               </div>
             </div>
