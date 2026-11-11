@@ -62,6 +62,7 @@ export interface LapChannels {
   gripUsage: number[]; // combined friction-ellipse utilisation 0..1
   throttle: number[]; // 0..1
   brake: number[]; // 0..1
+  hydraulicBrake: number[]; // normalized friction brake demand, with regen removed
   motorTorque: number[]; // Nm per motor
   motorRpm: number[];
   pWheelKW: number[];
@@ -337,6 +338,7 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
     gripUsage: new Array(N).fill(0),
     throttle: new Array(N).fill(0),
     brake: new Array(N).fill(0),
+    hydraulicBrake: new Array(N).fill(0),
     motorTorque: new Array(N).fill(0),
     motorRpm: new Array(N).fill(0),
     pWheelKW: new Array(N).fill(0),
@@ -418,6 +420,7 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
       E.regenWheel += Fregen * ds;
       const Fmax = totalBrakeCapacity(veh, vm, -decel, ay);
       brake = Math.min(1, Fb / Math.max(1, Fmax));
+      ch.hydraulicBrake[i] = Math.min(1, (Fb - Fregen) / Math.max(1, Fmax));
       mode = brake > 0.05 ? 'brake' : 'coast';
       if (mode === 'brake') brakeTime += dt;
     } else {
@@ -482,6 +485,7 @@ export function simulateLap(track: Track, ctx: SimulationContext, opts: SolverOp
       'gripUsage',
       'throttle',
       'brake',
+      'hydraulicBrake',
       'motorTorque',
       'motorRpm',
       'pWheelKW',

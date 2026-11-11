@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { solveRacingLine, type LapResult, type RacingLineSolution } from '@/lib/solver';
 import type { Track } from '@/lib/tracks';
+import { sampleLapDistance } from '@/lib/telemetry/distance';
 import { MODE_COLORS, MODE_LABELS, rgb, turbo } from '@/lib/ui/colors';
 import { fmt, kph } from '@/lib/ui/format';
 import GForceCrosshair from './hud/GForceCrosshair';
@@ -255,15 +256,61 @@ export default function TrackCanvas({
     ctx.lineTo(tf.sx(rl.centerX[0] - sfHalf * nx), tf.sy(rl.centerY[0] - sfHalf * ny));
     ctx.stroke();
 
-    // Sector markers
-    ctx.font = '10px Consolas, monospace';
-    ctx.fillStyle = '#a78bfa';
-    track.sectors.slice(1, -1).forEach((s, k) => {
-      const i = Math.min(n - 1, Math.round(s / track.ds));
+    // Mark the first segment of each brake and full-throttle event.
+    for (let i = 0; i < segs; i++) {
+      const prev = i === 0 && track.closed ? segs - 1 : i - 1;
+      const pressure = ch.hydraulicBrake[i];
+      const previousPressure = ch.hydraulicBrake[prev] ?? 0;
+      const brakesOn = ch.gLong[i] < -0.5 && pressure > 0.001 && pressure > previousPressure
+        && ((ch.gLong[prev] ?? 0) >= -0.5 || previousPressure <= 0.001);
+      const fullThrottle = ch.throttle[i] >= 0.9995 && (ch.throttle[prev] ?? 0) < 0.9995;
+      if (!brakesOn && !fullThrottle) continue;
+      ctx.save();
+      ctx.translate(tf.sx(track.x[i]), tf.sy(track.y[i]));
+      ctx.rotate(-track.heading[i]);
       ctx.beginPath();
-      ctx.arc(tf.sx(track.x[i]), tf.sy(track.y[i]), 4, 0, Math.PI * 2);
+      ctx.moveTo(0, -6);
+      ctx.lineTo(0, 6);
+      if (brakesOn) {
+        ctx.moveTo(-4, -4);
+        ctx.lineTo(4, 4);
+      }
+      ctx.strokeStyle = '#080a10';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      ctx.strokeStyle = brakesOn ? '#fb7185' : '#4ade80';
+      ctx.lineWidth = 1.7;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    ctx.font = '10px Consolas, monospace';
+    const lapTimeAtGate = (result: LapResult, progress: number) => sampleLapDistance(result, result.channels.t, result.distance * progress, result.lapTime);
+    track.sectors.slice(1).forEach((s, k) => {
+      const isFinish = s >= lap.distance - 1e-6;
+      const i = isFinish && track.closed ? 0 : Math.min(n - 1, Math.round(s / track.ds));
+      const x = tf.sx(track.x[i]);
+      const y = tf.sy(track.y[i]);
+      const progress = s / lap.distance;
+      const prior = track.sectors[k] / lap.distance;
+      const delta = ghostLap ? lapTimeAtGate(lap, progress) - lapTimeAtGate(lap, prior)
+        - (lapTimeAtGate(ghostLap, progress) - lapTimeAtGate(ghostLap, prior)) : null;
+      const label = `S${k + 1}${delta == null ? '' : ` ${delta >= 0 ? '+' : ''}${(delta * 1000).toFixed(0)} ms`}`;
+      const cardWidth = ctx.measureText(label).width + 12;
+      const cardX = Math.max(4, Math.min(w - cardWidth - 4, x + 7));
+      const cardY = Math.max(32, Math.min(h - 24, y - 18));
+      ctx.beginPath();
+      ctx.roundRect(cardX, cardY, cardWidth, 17, 4);
+      ctx.fillStyle = '#080a10';
       ctx.fill();
-      ctx.fillText(`S${k + 2}`, tf.sx(track.x[i]) + 6, tf.sy(track.y[i]) - 6);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.38)';
+      ctx.stroke();
+      ctx.fillStyle = delta == null ? '#c4b5fd' : delta <= 0 ? '#86efac' : '#fda4af';
+      ctx.fillText(label, cardX + 6, cardY + 12);
+      ctx.beginPath();
+      ctx.arc(x, y, 2.6, 0, Math.PI * 2);
+      ctx.fill();
     });
 
     // Direction arrows
@@ -338,7 +385,7 @@ export default function TrackCanvas({
         ctx.fillText(`T${c.index}`, tf.sx(px) - 6, tf.sy(py) + 3);
       }
     }
-  }, [track, lap, rl, tf, w, h, colorAt, mapImg, mapAlign, mapSrcOverride]);
+  }, [track, lap, ch, ghostLap, rl, tf, w, h, colorAt, mapImg, mapAlign, mapSrcOverride]);
 
   // overlay: active directional car + ghost car (dual-vehicle replay)
   useEffect(() => {
