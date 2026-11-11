@@ -1,5 +1,7 @@
 import {
   buildEfficiencyMap,
+  clamp,
+  REFERENCE_TIRE_PRESSURE,
   speedFromMotorRpm,
   type LateralModel,
   type PowertrainParams,
@@ -93,6 +95,68 @@ function evalSetup(
     energyWh: lap.energy.netKWh * 1000,
     coolingKJ: lap.energy.coolingHeatKJ,
   };
+}
+
+export interface SetupJacobianEntry {
+  key: 'aeroBalance' | 'gearRatio' | 'frontRollStiffness' | 'mass' | 'tirePressure';
+  label: string;
+  unit: string;
+  baseValue: number;
+  lowValue: number;
+  highValue: number;
+  lowDeltaMs: number;
+  highDeltaMs: number;
+  lowDeltaWh: number;
+  highDeltaWh: number;
+  msPerUnit: number;
+  whPerUnit: number;
+}
+
+export function computeSetupJacobian(
+  track: Track,
+  veh: VehicleParams,
+  pt: PowertrainParams,
+  model: LateralModel = 'point-mass',
+  integrator: Integrator = 'rk4',
+): SetupJacobianEntry[] {
+  const map = buildEfficiencyMap(pt);
+  const baseline = evalSetup(track, veh, pt, model, integrator, map);
+  const evaluate = (v: VehicleParams, p = pt) => evalSetup(track, v, p, model, integrator, map);
+  const pressure = veh.tire.pressureBar ?? veh.tire.pressureGrip?.referenceBar ?? REFERENCE_TIRE_PRESSURE.referenceBar;
+  const balance = veh.aeroBalanceFront * 100;
+  const roll = veh.rollStiffnessFront * 100;
+  const specs: {
+    key: SetupJacobianEntry['key']; label: string; unit: string; base: number;
+    low: number; high: number; run: (value: number) => typeof baseline;
+  }[] = [
+    {
+      key: 'aeroBalance', label: 'Front aero balance', unit: 'pp', base: balance,
+      low: clamp(balance - 2, 0, 100), high: clamp(balance + 2, 0, 100),
+      run: (value) => {
+        const aero = veh.rideHeightAero;
+        const delta = (value - balance) / 100;
+        const rideHeightAero = aero ? { ...aero, map: { ...aero.map, frontFraction: aero.map.frontFraction.map((row) => row.map((cell) => clamp(cell + delta, 0, 1))) } } : undefined;
+        return evaluate({ ...veh, aeroBalanceFront: value / 100, rideHeightAero });
+      },
+    },
+    { key: 'gearRatio', label: 'Final drive', unit: 'ratio', base: pt.gearRatio, low: pt.gearRatio * 0.95, high: pt.gearRatio * 1.05, run: (gearRatio) => evaluate(veh, { ...pt, gearRatio }) },
+    { key: 'frontRollStiffness', label: 'Front roll stiffness share', unit: 'pp', base: roll, low: clamp(roll * 0.95, 0, 100), high: clamp(roll * 1.05, 0, 100), run: (value) => evaluate({ ...veh, rollStiffnessFront: value / 100 }) },
+    { key: 'mass', label: 'Vehicle mass', unit: 'kg', base: veh.mass, low: Math.max(1, veh.mass - 10), high: veh.mass + 10, run: (mass) => evaluate({ ...veh, mass }) },
+    { key: 'tirePressure', label: 'Tire pressure', unit: 'bar', base: pressure, low: Math.max(0.1, pressure - 0.2), high: pressure + 0.2, run: (pressureBar) => evaluate({ ...veh, tire: { ...veh.tire, pressureBar } }) },
+  ];
+
+  return specs.map((spec) => {
+    const low = spec.run(spec.low);
+    const high = spec.run(spec.high);
+    const span = spec.high - spec.low;
+    return {
+      key: spec.key, label: spec.label, unit: spec.unit, baseValue: spec.base, lowValue: spec.low, highValue: spec.high,
+      lowDeltaMs: 1000 * (low.lapTimeS - baseline.lapTimeS), highDeltaMs: 1000 * (high.lapTimeS - baseline.lapTimeS),
+      lowDeltaWh: low.energyWh - baseline.energyWh, highDeltaWh: high.energyWh - baseline.energyWh,
+      msPerUnit: span > 0 ? 1000 * (high.lapTimeS - low.lapTimeS) / span : 0,
+      whPerUnit: span > 0 ? (high.energyWh - low.energyWh) / span : 0,
+    };
+  });
 }
 
 /**

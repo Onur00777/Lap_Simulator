@@ -54,6 +54,8 @@ export interface TireParams {
   nominalLoad: number; // N, reference load for reporting
   camberThrustPerRad?: number; // lateral friction increment per radian of camber
   pneumaticTrailM?: number; // low-slip trail at nominal load [m]
+  pressureBar?: number;
+  pressureGrip?: { optimumBar: number; referenceBar: number; lossPerBarSquared: number };
 }
 
 /** 16x7.5-10 FS racing slick, coefficients fitted to typical TTC round 8 trends. */
@@ -149,18 +151,27 @@ export interface MFCoefficients {
   E: number;
 }
 
+export const REFERENCE_TIRE_PRESSURE = { optimumBar: 0.8, referenceBar: 0.83, lossPerBarSquared: 0.85 };
+
+function tirePressureGrip(tire: TireParams): number {
+  if (tire.pressureBar == null) return 1;
+  const { optimumBar, referenceBar, lossPerBarSquared } = tire.pressureGrip ?? REFERENCE_TIRE_PRESSURE;
+  const deviation = (tire.pressureBar - optimumBar) ** 2 - (referenceBar - optimumBar) ** 2;
+  return Math.exp(-lossPerBarSquared * deviation);
+}
+
 /** Load-dependent lateral friction coefficient mu_y(Fz). */
 export function muLateral(tire: TireParams, Fz: number): number {
   const fz = Math.max(Fz, 0) / 1000;
   const p = tire.lateral;
-  return Math.max(tire.muFloor, (p.a1 * fz + p.a2) * tire.lambdaMu);
+  return Math.max(tire.muFloor, (p.a1 * fz + p.a2) * tire.lambdaMu * tirePressureGrip(tire));
 }
 
 /** Load-dependent longitudinal friction coefficient mu_x(Fz). */
 export function muLongitudinal(tire: TireParams, Fz: number): number {
   const fz = Math.max(Fz, 0) / 1000;
   const p = tire.longitudinal;
-  return Math.max(tire.muFloor, (p.b1 * fz + p.b2) * tire.lambdaMu);
+  return Math.max(tire.muFloor, (p.b1 * fz + p.b2) * tire.lambdaMu * tirePressureGrip(tire));
 }
 
 export function lateralCoefficients(tire: TireParams, Fz: number): MFCoefficients {
