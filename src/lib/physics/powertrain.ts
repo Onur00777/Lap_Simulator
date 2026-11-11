@@ -154,19 +154,41 @@ export function maxDrivePoint(veh: VehicleParams, pt: PowertrainParams, map: Eff
  * Maximum braking force that the rear motors can absorb by regeneration at speed v, limited by
  * motor torque and the accumulator charge power ceiling.
  */
-export function maxRegenForce(veh: VehicleParams, pt: PowertrainParams, map: EfficiencyMap, v: number): number {
+export interface RegenBatteryState {
+  openCircuitVoltage: number;
+  maxChargeVoltage: number;
+  maxChargeCurrent: number;
+  resistanceOhm: number;
+}
+
+export function regenChargePowerLimit(pt: PowertrainParams, battery: RegenBatteryState): number {
+  if (battery.openCircuitVoltage >= battery.maxChargeVoltage) return 0;
+  const currentByVoltage = battery.resistanceOhm > 0
+    ? (battery.maxChargeVoltage - battery.openCircuitVoltage) / battery.resistanceOhm
+    : Infinity;
+  const chargeCurrent = Math.max(0, Math.min(currentByVoltage, battery.maxChargeCurrent));
+  // Charging raises terminal voltage by IR, the same resistance that causes sag during discharge.
+  const terminalVoltage = battery.openCircuitVoltage + chargeCurrent * battery.resistanceOhm;
+  return Math.min(pt.regenPowerLimit, chargeCurrent * terminalVoltage);
+}
+
+export function maxRegenForce(
+  veh: VehicleParams, pt: PowertrainParams, map: EfficiencyMap, v: number, battery?: RegenBatteryState,
+): number {
   if (!pt.regenEnabled || v <= 0.5) return 0;
+  const powerLimit = battery ? regenChargePowerLimit(pt, battery) : pt.regenPowerLimit;
+  if (powerLimit <= 0) return 0;
   const rpm = motorRpmFromSpeed(veh, v, pt.gearRatio);
   const w = rpmToRad(rpm);
   const Tlim = motorTorqueLimit(pt, rpm);
   const pOf = (T: number) => pt.motorCount * T * w * lookupEfficiency(map, rpm, T);
   let T = Tlim;
-  if (pOf(Tlim) > pt.regenPowerLimit) {
+  if (pOf(Tlim) > powerLimit) {
     let lo = 0;
     let hi = Tlim;
     for (let k = 0; k < 50; k++) {
       const mid = 0.5 * (lo + hi);
-      if (pOf(mid) > pt.regenPowerLimit) hi = mid;
+      if (pOf(mid) > powerLimit) hi = mid;
       else lo = mid;
     }
     T = lo;
