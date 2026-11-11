@@ -110,6 +110,7 @@ export default function ClientApp() {
       {/* Keep Main Workbench mounted so solver state & setup edits are preserved */}
       <div className={workspaceMode === 'main-simulator' ? 'block flex-1' : 'hidden'}>
         <Workbench
+          shortcutsEnabled={workspaceMode === 'main-simulator' && !showGuideModal}
           externalPresetId={activePresetId}
           onPresetIdChange={setActivePresetId}
           onOpenHavuzLab={() => setWorkspaceMode('ist26-havuz-lab')}

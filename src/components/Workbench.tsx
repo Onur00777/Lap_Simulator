@@ -51,6 +51,7 @@ import TelemetryCharts from './telemetry/TelemetryCharts';
 import MathChannelsDrawer from './telemetry/MathChannelsDrawer';
 import SetupMatrixDrawer from './setup/SetupMatrixDrawer';
 import SensitivityTornadoChart from './setup/SensitivityTornadoChart';
+import KeyboardShortcutsHandler, { PLAYBACK_RATES } from './navigation/KeyboardShortcutsHandler';
 import GGDiagram from './GGDiagram';
 import { PowertrainForm, VehicleForm, type PowertrainKey, type VehicleKey } from './ParamPanel';
 import { DeltaBadge, DisclosureGroup, Kpi, Panel, Segmented } from './ui';
@@ -162,6 +163,7 @@ function lapTelemetryToCsv(lap: LapResult): string {
 }
 
 export interface WorkbenchProps {
+  shortcutsEnabled?: boolean;
   externalPresetId?: VehiclePresetId;
   onPresetIdChange?: (id: VehiclePresetId) => void;
   onOpenHavuzLab?: () => void;
@@ -169,6 +171,7 @@ export interface WorkbenchProps {
 }
 
 export default function Workbench({
+  shortcutsEnabled = true,
   externalPresetId,
   onPresetIdChange,
   onOpenHavuzLab,
@@ -200,6 +203,7 @@ export default function Workbench({
   const [ghostCursor, setGhostCursor] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const [playRate, setPlayRate] = useState(1);
+  const seekTime = useRef<number | null>(null);
   const [venue, setVenue] = useState<Venue>('fs');
   const [baselineCfg, setBaselineCfg] = useState<BaselineConfig | null>(null);
   const [presetMenuOpen, setPresetMenuOpen] = useState(false);
@@ -393,6 +397,7 @@ export default function Workbench({
       return prev === 'korfez' ? 'corners' : prev;
     });
     setCursor(null);
+    seekTime.current = null;
     setPlaying(false);
     if (!isKorfez) setMapUpload(null);
   }, []);
@@ -560,12 +565,13 @@ export default function Workbench({
   }, [ch, dVeh.tire, mathChannelsOpen]);
   const closeMathChannels = useCallback(() => setMathChannelsOpen(false), []);
   const n = ch.s.length;
-  const safeCursor = cursor != null && cursor < n ? cursor : null;
+  const safeCursor = cursor != null && Number.isInteger(cursor) && cursor >= 0 && cursor < n ? cursor : null;
   const effectiveGhostCursor = playing ? ghostCursor : safeCursor;
 
   // real-time dual-dot lap playback
   useEffect(() => {
     if (!playing) {
+      seekTime.current = null;
       setGhostCursor(null);
       return;
     }
@@ -575,7 +581,10 @@ export default function Workbench({
     let lastPush = 0;
     const tEnd = Math.max(lap.lapTime, ghostLap?.lapTime ?? 0);
     const loop = (now: number) => {
-      simT += ((now - last) / 1000) * playRate;
+      if (seekTime.current != null) {
+        simT = seekTime.current;
+        seekTime.current = null;
+      } else simT += ((now - last) / 1000) * playRate;
       last = now;
       if (simT >= tEnd) simT = lap.closed ? simT - tEnd : tEnd;
       if (now - lastPush > 16) {
@@ -597,6 +606,19 @@ export default function Workbench({
     return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, playRate, lap, ghostLap]);
+
+  const scrubDistance = (deltaM: number) => {
+    const previous = seekTime.current != null ? findTimeCursor(ch.t, seekTime.current) : safeCursor ?? 0;
+    const targetS = ch.s[previous] + deltaM;
+    const boundedS = lap.closed ? ((targetS % lap.distance) + lap.distance) % lap.distance : targetS;
+    const index = Math.max(0, Math.min(n - 1, Math.round(boundedS / dTrack.ds)));
+    if (playing) seekTime.current = ch.t[index];
+    setCursor(index);
+  };
+  const cyclePlaybackRate = (direction: number) => setPlayRate((rate) => {
+    const index = PLAYBACK_RATES.findIndex((value) => value === rate);
+    return PLAYBACK_RATES[(index + direction + PLAYBACK_RATES.length) % PLAYBACK_RATES.length];
+  });
 
   const hoverFrame = useRef<number | null>(null);
   const pendingHover = useRef<number | null>(null);
@@ -747,6 +769,11 @@ export default function Workbench({
 
   return (
     <div className="flex min-h-screen flex-col bg-[#090a0f] text-slate-200">
+      <KeyboardShortcutsHandler enabled={shortcutsEnabled} shortcuts={{
+        togglePlayback: () => setPlaying((active) => !active), cycleRate: cyclePlaybackRate, scrub: scrubDistance,
+        toggleGg: () => setGgDiagramOpen((open) => !open), toggleMath: () => setMathChannelsOpen((open) => !open),
+        toggleMatrix: () => setSetupMatrixOpen((open) => !open),
+      }} />
       {/* ===================================================================== */}
       {/* PHASE 1: PERSISTENT MACOS UNIFIED TOP TOOLBAR (48px Glass Ribbon)      */}
       {/* ===================================================================== */}
@@ -1778,7 +1805,7 @@ export default function Workbench({
                     value={playRate}
                     onChange={(e) => setPlayRate(Number(e.target.value))}
                   >
-                    {[0.5, 1, 2, 4].map((r) => (
+                    {PLAYBACK_RATES.map((r) => (
                       <option key={r} value={r}>
                         {r}x
                       </option>
