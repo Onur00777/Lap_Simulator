@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import {
   generateFsaeDesignReport,
+  generateVcuDynamics,
   printFsaeDesignReport,
   type VcuBundle,
 } from '@/lib/codegen';
@@ -31,7 +32,15 @@ export default function CodegenPanel({ bundle, track, veh, pt, lap, model, integ
   const [copied, setCopied] = useState(false);
   const [showDossierPreview, setShowDossierPreview] = useState(false);
 
-  const file = bundle.files[active] ?? bundle.files[0];
+  const firmware = useMemo(() => {
+    try {
+      return { files: veh && pt ? generateVcuDynamics(veh, pt) : [], error: null };
+    } catch (err) {
+      return { files: [], error: err instanceof Error ? err.message : 'Dynamics export is unavailable.' };
+    }
+  }, [veh, pt]);
+  const files = [...bundle.files, ...firmware.files];
+  const file = files[active] ?? files[0];
   const tm = bundle.torqueMap;
   const ag = bundle.autogenTables;
 
@@ -58,10 +67,10 @@ export default function CodegenPanel({ bundle, track, veh, pt, lap, model, integ
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hud-line pb-2.5">
         <div>
           <div className="font-mono text-[11px] font-bold uppercase tracking-wider text-hud-cyan">
-            STM32H7 / MISRA-C:2012 Production VCU Codegen & FSAE Design Judge Dossier
+            STM32H7 VCU Codegen & FSAE Design Dossier
           </div>
           <div className="font-mono text-[10px] text-hud-dim">
-            vcu_dynamics_autogen.h/.c · 2D APPS Torque LUT · 2D TV Yaw Matrix · LC/TC Slip Target · Thermal & Cell Voltage Derating
+            Dynamics FSM · APPS & yaw torque control · calibration tables
           </div>
         </div>
         {dossierMd && (
@@ -322,7 +331,7 @@ export default function CodegenPanel({ bundle, track, veh, pt, lap, model, integ
           ) : (
             <>
               <div className="mb-2 flex flex-wrap items-center gap-1">
-                {bundle.files.map((f, i) => (
+                {files.map((f, i) => (
                   <button
                     key={f.name}
                     type="button"
@@ -350,12 +359,13 @@ export default function CodegenPanel({ bundle, track, veh, pt, lap, model, integ
                 <button
                   type="button"
                   className="btn"
-                  onClick={() => bundle.files.forEach((f) => downloadText(f.name, f.content, 'text/x-c'))}
+                  onClick={() => files.forEach((f) => downloadText(f.name, f.content, 'text/x-c'))}
                 >
-                  Download all (5 C files)
+                  Download all ({files.length} C files)
                 </button>
               </div>
               <pre className="max-h-[440px] overflow-auto rounded border border-hud-line bg-hud-bg p-3 font-mono text-[11px] leading-[1.45] text-hud-text">
+                {firmware.error && <p role="alert" className="p-2 font-mono text-xs text-amber-300">{firmware.error}</p>}
                 <CodeView code={file.content} />
               </pre>
             </>
