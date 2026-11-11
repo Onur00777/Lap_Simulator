@@ -30,6 +30,7 @@ import {
   processRawIst26Csv,
 } from '@/lib/ist26-havuz/log-scorer';
 import { buildHavuzExtractedCircuit } from '@/lib/ist26-havuz/havuz-track-extractor';
+import { exportMotecTelemetry, exportTrackGeoJson, exportTrackSvg } from '@/lib/export/telemetry-exporters';
 import {
   AutoFitResult,
   autoFitIst26ToTelemetry,
@@ -760,16 +761,18 @@ export default function IST26HavuzWorkspace({
                     AŞAMA 2
                   </span>
                   <h2 className="font-mono text-sm font-bold uppercase tracking-wider text-slate-100">
-                    &ldquo;En Çok Gidilen Yol Pistimizdir&rdquo; — İTÜ Havuz Otoparkı Pist Çıkarımı (2D KDE & Zero-Phase Loop)
+                    İTÜ Havuz Otoparkı · DBSCAN ve Periyodik Spline
                   </h2>
                 </div>
                 <p className="mt-1 font-mono text-xs text-slate-400">
-                  IST26 Kinematik Parametreleri (L = 1.600 m, l_R = 0.7664 m, r_w = 0.205 m) · 43 Tam Tur Yörünge Bulutu · Mavi (+{coneHalfWidthM.toFixed(1)}m Sol) & Sarı (-{coneHalfWidthM.toFixed(1)}m Sağ) Koni Sınırları
+                  {circuit.validTracesCount} yörünge · {circuit.rejectedPointCount} seyrek nokta elendi · {circuit.corners.length} viraj · {circuit.sectors.length} sektör
                 </p>
               </div>
 
               {/* Layer Controls */}
               <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+                <button type="button" className="rounded border border-slate-700 px-2.5 py-1 text-cyan-200" title="Yaklaşık WGS84 yerleştirmesi" onClick={() => downloadTextFile('havuz-track.geojson', exportTrackGeoJson(circuit, { latitude: 41.1016, longitude: 29.0258, rotationDeg: 0 }), 'application/geo+json')}>GeoJSON</button>
+                <button type="button" className="rounded border border-slate-700 px-2.5 py-1 text-cyan-200" onClick={() => downloadTextFile('havuz-track.svg', exportTrackSvg(circuit), 'image/svg+xml')}>SVG</button>
                 <button
                   type="button"
                   onClick={() => setShowHeatmap((v) => !v)}
@@ -944,13 +947,23 @@ export default function IST26HavuzWorkspace({
                     </>
                   )}
 
-                  {/* 5. Zero-Phase Loop-Closed Median Corridor Centerline */}
+                  {/* Periodic spline centerline and sector gates */}
                   <polygon
                     fill="none"
                     stroke="#00f0ff"
                     strokeWidth={0.38}
                     points={circuit.nodes.map((n) => `${n.x},${n.y}`).join(' ')}
                   />
+                  {circuit.sectors.map(({ s, x, y }, i) => (
+                    <g key={s}>
+                      <circle cx={x} cy={y} r={0.65} fill="#fbbf24" />
+                      <text x={x + 0.9} y={y - 0.6} fill="#fde68a" fontSize={1.55}>S{i + 1}</text>
+                    </g>
+                  ))}
+                  {circuit.corners.map((corner) => {
+                    const apex = circuit.nodes[corner.apexIndex];
+                    return <text key={corner.index} x={apex.x + 0.8} y={apex.y + 1.5} fill="#e2e8f0" fontSize={1.35}>T{corner.index}</text>;
+                  })}
 
                   {/* Start/Finish Line */}
                   {circuit.nodes[0] && (
@@ -1098,6 +1111,8 @@ export default function IST26HavuzWorkspace({
                     </option>
                   ))}
                 </select>
+
+                <button type="button" className="rounded border border-slate-700 px-2.5 py-1.5 text-cyan-200" disabled={simResult.points.length === 0} onClick={() => downloadTextFile('havuz-telemetry-motec.csv', exportMotecTelemetry(simResult), 'text/csv')}>MoTeC CSV</button>
 
                 <button
                   type="button"
