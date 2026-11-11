@@ -45,7 +45,7 @@ import { analyzeKorfezLayout, compareKorfezLayouts } from '@/lib/solver/korfez-a
 import { generateFsaeDesignReport, generateVcuBundle, printFsaeDesignReport } from '@/lib/codegen';
 import { downloadText, fmt, fmtTime, kph } from '@/lib/ui/format';
 import TrackCanvas, { type ColorMode, type MapAlign } from './TrackCanvas';
-import TelemetryCharts from './TelemetryCharts';
+import TelemetryCharts from './telemetry/TelemetryCharts';
 import MathChannelsDrawer from './telemetry/MathChannelsDrawer';
 import GGDiagram from './GGDiagram';
 import { PowertrainForm, VehicleForm, type PowertrainKey, type VehicleKey } from './ParamPanel';

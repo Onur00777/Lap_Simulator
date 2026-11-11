@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo, useId, useMemo } from 'react';
 import {
   CartesianGrid,
   Line,
@@ -14,9 +14,10 @@ import {
   ComposedChart,
 } from 'recharts';
 import type { LapResult } from '@/lib/solver';
+import { deltaTimeAtDistance, sampleDeltaTime, sampleLapDistance } from '@/lib/telemetry/distance';
 import { CHART } from '@/lib/ui/colors';
 import { strideFor } from '@/lib/ui/format';
-import { tickFmt, tooltipStyle } from './ui';
+import { tickFmt, tooltipStyle } from '../ui';
 
 interface Props {
   lap: LapResult;
@@ -30,8 +31,6 @@ interface Row {
   v: number;
   vBase?: number;
   vLim: number;
-  deltaTS?: number;
-  deltaTMs?: number;
   gLong: number;
   gLat: number;
   energy: number;
@@ -53,27 +52,17 @@ function useRows(lap: LapResult, baselineLap?: LapResult | null): Row[] {
     const ch = lap.channels;
     const bch = baselineLap?.channels;
     const n = ch.s.length;
-    const bn = bch?.s.length ?? 0;
     const st = strideFor(n, 700);
     const rows: Row[] = [];
     for (let i = 0; i < n; i += st) {
-      let vBase: number | undefined;
-      let deltaTS: number | undefined;
-      let deltaTMs: number | undefined;
-      if (bch && bn > 1) {
-        const bi = Math.min(bn - 1, Math.round((i / Math.max(1, n - 1)) * (bn - 1)));
-        vBase = +(bch.v[bi] * 3.6).toFixed(2);
-        const dt = ch.t[i] - bch.t[bi];
-        deltaTS = +dt.toFixed(4);
-        deltaTMs = +(dt * 1000).toFixed(1);
-      }
+      const vBase = baselineLap && bch && ch.s[i] <= baselineLap.distance
+        ? sampleLapDistance(baselineLap, bch.v, ch.s[i], bch.v[0]) * 3.6
+        : undefined;
       rows.push({
         s: +ch.s[i].toFixed(2),
         v: +(ch.v[i] * 3.6).toFixed(2),
         vBase,
         vLim: +(Math.min(ch.vLimit[i], 45) * 3.6).toFixed(2),
-        deltaTS,
-        deltaTMs,
         gLong: +ch.gLong[i].toFixed(3),
         gLat: +ch.gLat[i].toFixed(3),
         energy: +(ch.energyKWh[i] * 1000).toFixed(2),
@@ -113,6 +102,18 @@ function ChartFrame({ title, right, children }: { title: string; right?: React.R
 
 function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
   const rows = useRows(lap, baselineLap);
+  const deltaId = useId();
+  const delta = useMemo(() => {
+    if (!baselineLap) return null;
+    const rows = sampleDeltaTime(lap, baselineLap);
+    const domain: [number, number] = [Math.min(-0.001, ...rows.map((r) => r.deltaTS)), Math.max(0.001, ...rows.map((r) => r.deltaTS))];
+    const distance = Math.min(lap.distance, baselineLap.distance);
+    const gates = Array.from({ length: Math.floor(distance / 50) }, (_, i) => {
+      const s = (i + 1) * 50;
+      return { s, delta: deltaTimeAtDistance(lap, baselineLap, s) ?? 0 };
+    });
+    return { rows, domain, gates, zero: domain[1] / (domain[1] - domain[0]) };
+  }, [lap, baselineLap]);
   const L = lap.distance;
   const common = {
     data: rows,
@@ -143,7 +144,8 @@ function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
 
   return (
     <div className="flex flex-col gap-1">
-      {baselineLap && (
+      {delta && (
+        <>
         <ChartFrame
           title="Delta-T trace Δt(s) = Setup B − Setup A [s] (negative = Setup B faster)"
           right={
@@ -157,17 +159,25 @@ function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
           }
         >
           <ResponsiveContainer>
-            <ComposedChart {...common}>
+            <ComposedChart {...common} data={delta.rows}>
+              <defs>
+                <linearGradient id={deltaId} x1="0" x2="0" y1="0" y2="1" gradientUnits="objectBoundingBox">
+                  <stop offset="0%" stopColor={CHART.red} />
+                  <stop offset={delta.zero} stopColor={CHART.red} />
+                  <stop offset={delta.zero} stopColor={CHART.lime} />
+                  <stop offset="100%" stopColor={CHART.lime} />
+                </linearGradient>
+              </defs>
               {grid}
               {xAxis(false)}
-              <YAxis {...axisProps} width={44} />
+              <YAxis {...axisProps} width={44} domain={delta.domain} allowDataOverflow />
               {tt}
               <ReferenceLine y={0} stroke={CHART.slate} strokeDasharray="3 3" />
               <Area
                 dataKey="deltaTS"
                 name="Δt [s]"
-                stroke={endDeltaS != null && endDeltaS <= 0 ? CHART.lime : CHART.red}
-                fill={endDeltaS != null && endDeltaS <= 0 ? CHART.lime : CHART.red}
+                stroke={`url(#${deltaId})`}
+                fill={`url(#${deltaId})`}
                 fillOpacity={0.14}
                 dot={false}
                 strokeWidth={1.6}
@@ -177,6 +187,16 @@ function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
             </ComposedChart>
           </ResponsiveContainer>
         </ChartFrame>
+        {delta.gates.length > 0 && (
+          <ol aria-label="Cumulative time difference every 50 metres" className="mx-3 ml-11 flex gap-1 overflow-x-auto pb-1 font-mono text-[10px] tabular-nums">
+            {delta.gates.map(({ s, delta }) => (
+              <li key={s} className="shrink-0 rounded border border-white/10 px-2 py-1 text-slate-400">
+                {s} m <span className={delta <= 0 ? 'text-hud-lime' : 'text-hud-red'}>{delta >= 0 ? '+' : ''}{(delta * 1000).toFixed(0)} ms</span>
+              </li>
+            ))}
+          </ol>
+        )}
+        </>
       )}
       <ChartFrame title="Speed [km/h] · cornering limit">
         <ResponsiveContainer>
