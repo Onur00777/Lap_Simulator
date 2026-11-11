@@ -1,4 +1,5 @@
 import { DEFAULT_TIRE, lateralCoefficients, type TireParams } from './tire';
+import { aerodynamicLoads, sampleRideHeightAero, type AeroRideHeightSetup } from './aero';
 
 export const GRAVITY = 9.81;
 
@@ -27,6 +28,7 @@ export interface VehicleParams {
   camberFront: number; // deg, static front camber (negative = top leaned inward, default -1.8 deg)
   camberRear: number; // deg, static rear camber (negative = top leaned inward, default -1.2 deg)
   rideHeightSensitivity: number; // fraction of aero balance shift per G of longitudinal accel
+  rideHeightAero?: AeroRideHeightSetup;
   tire: TireParams;
 }
 
@@ -60,12 +62,26 @@ export function cgLocation(p: VehicleParams): { a: number; b: number } {
   return { a: p.wheelbase - b, b };
 }
 
+export function vehicleAero(p: VehicleParams, v: number, ax = 0) {
+  const aeroShift = (p.rideHeightSensitivity ?? 0) * (-ax / GRAVITY) * 0.05;
+  const balance = Math.max(0.05, Math.min(0.95, p.aeroBalanceFront + aeroShift));
+  const nominal = aerodynamicLoads({ clA: p.ClA, cdA: p.CdA, frontFraction: balance }, p.airDensity, v, p.wheelbase);
+  const setup = p.rideHeightAero;
+  if (!setup) return nominal;
+
+  const transferN = p.mass * ax * p.cgHeight / p.wheelbase;
+  const frontCompression = (nominal.downforceN * balance - transferN) / (2 * setup.frontWheelRateNPerM);
+  const rearCompression = (nominal.downforceN * (1 - balance) + transferN) / (2 * setup.rearWheelRateNPerM);
+  const aero = sampleRideHeightAero(setup.map, setup.staticFrontM - frontCompression, setup.staticRearM - rearCompression);
+  return aerodynamicLoads(aero, p.airDensity, v, p.wheelbase);
+}
+
 export function downforce(p: VehicleParams, v: number): number {
-  return 0.5 * p.airDensity * p.ClA * v * v;
+  return p.rideHeightAero ? vehicleAero(p, v).downforceN : 0.5 * p.airDensity * p.ClA * v * v;
 }
 
 export function dragForce(p: VehicleParams, v: number): number {
-  return 0.5 * p.airDensity * p.CdA * v * v;
+  return p.rideHeightAero ? vehicleAero(p, v).dragN : 0.5 * p.airDensity * p.CdA * v * v;
 }
 
 export function rollingResistanceForce(p: VehicleParams, v: number): number {
@@ -110,16 +126,12 @@ export function effectiveFrontLateralShare(p: VehicleParams): number {
  */
 export function wheelLoads(p: VehicleParams, v: number, ax: number, ay: number): WheelLoads {
   const W = p.mass * GRAVITY;
-  const DF = downforce(p, v);
+  const aero = vehicleAero(p, v, ax);
+  const DF = aero.downforceN;
   const FzTotal = W + DF;
   const longTransfer = (p.mass * ax * p.cgHeight) / p.wheelbase;
 
-  // Aero pitch sensitivity: dive under braking shifts aero forward; squat under accel shifts rearward
-  const pitchSens = p.rideHeightSensitivity ?? 0;
-  const aeroShift = pitchSens * (-ax / GRAVITY) * 0.05;
-  const aeroFront = Math.max(0.05, Math.min(0.95, p.aeroBalanceFront + aeroShift));
-
-  const frontRaw = W * p.frontWeightFraction + DF * aeroFront - longTransfer;
+  const frontRaw = W * p.frontWeightFraction + DF * aero.frontFraction - longTransfer;
   const front = Math.max(0, Math.min(FzTotal, frontRaw));
   const rear = FzTotal - front;
 
