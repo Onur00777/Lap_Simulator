@@ -1,5 +1,5 @@
 /**
- * Pacejka Magic Formula tire model ('89/'94 coefficient structure, camber-free).
+ * Pacejka pure-slip curves with a slip-vector coupling for combined forces.
  *
  *   Y(x) = D sin( C atan( B x - E (B x - atan(B x)) ) ) + Sv,   x = slip + Sh
  *
@@ -50,6 +50,8 @@ export interface TireParams {
   lambdaMu: number; // road friction scaling
   muFloor: number; // minimum friction coefficient (guards extreme loads)
   nominalLoad: number; // N, reference load for reporting
+  camberThrustPerRad?: number; // lateral friction increment per radian of camber
+  pneumaticTrailM?: number; // low-slip trail at nominal load [m]
 }
 
 /** 16x7.5-10 FS racing slick, coefficients fitted to typical TTC round 8 trends. */
@@ -80,6 +82,8 @@ export const DEFAULT_TIRE: TireParams = {
   lambdaMu: 1.0,
   muFloor: 0.4,
   nominalLoad: 750,
+  camberThrustPerRad: 0.7,
+  pneumaticTrailM: 0.028,
 };
 
 /** The Magic Formula kernel. */
@@ -143,6 +147,40 @@ export function longitudinalForce(tire: TireParams, kappa: number, Fz: number): 
   if (Fz <= 0) return 0;
   const { B, C, D, E } = longitudinalCoefficients(tire, Fz);
   return magicFormula(kappa, B, C, D, E);
+}
+
+export interface TireContactForces {
+  fx: number; // longitudinal force [N]
+  fy: number; // lateral force [N]
+  mz: number; // aligning moment about the contact patch [Nm]
+}
+
+/** Combined-slip Magic Formula using the brief's cosine/sine slip-vector weights. */
+export function combinedTireForces(
+  tire: TireParams,
+  slipRatio: number,
+  slipAngleRad: number,
+  verticalLoadN: number,
+  camberRad = 0,
+): TireContactForces {
+  if (verticalLoadN <= 0) return { fx: 0, fy: 0, mz: 0 };
+
+  const x = longitudinalCoefficients(tire, verticalLoadN);
+  const y = lateralCoefficients(tire, verticalLoadN);
+  // Scale each slip by its curve's slope so small combined slips recover the pure-slip stiffnesses.
+  const sx = x.B * slipRatio;
+  const sy = y.B * (slipAngleRad + tire.lateral.sh);
+  const slip = Math.hypot(sx, sy);
+  const wx = slip > 0 ? sx / slip : 0;
+  const wy = slip > 0 ? sy / slip : 0;
+  const fx = wx * magicFormula(slip, 1, x.C, x.D, x.E);
+  const lateralSlipForce = wy * magicFormula(slip, 1, y.C, y.D, y.E);
+  const camberThrust = (tire.camberThrustPerRad ?? 0) * camberRad * verticalLoadN;
+  const remainingLateral = y.D * combinedLateralScale(fx, x.D);
+  const fy = Math.max(-remainingLateral, Math.min(remainingLateral, lateralSlipForce + camberThrust + tire.lateral.sv));
+  const trail = (tire.pneumaticTrailM ?? 0) * Math.sqrt(tire.nominalLoad / Math.max(tire.nominalLoad, verticalLoadN));
+  const aligningTrail = trail / (1 + slip * slip);
+  return { fx, fy, mz: -aligningTrail * fy };
 }
 
 /** Peak (saturated) lateral force, i.e. the D coefficient. */
