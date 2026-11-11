@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { solveRacingLine, type LapResult, type RacingLineSolution } from '@/lib/solver';
 import type { Track } from '@/lib/tracks';
 import { sampleLapDistance } from '@/lib/telemetry/distance';
+import type { CursorSignal } from '@/lib/telemetry/cursor';
 import { MODE_COLORS, MODE_LABELS, rgb, turbo } from '@/lib/ui/colors';
 import { fmt, kph } from '@/lib/ui/format';
 import GForceCrosshair from './hud/GForceCrosshair';
@@ -23,11 +24,10 @@ interface Props {
   track: Track & { racingLine?: RacingLineSolution };
   lap: LapResult;
   colorMode: ColorMode;
-  cursor: number | null;
+  cursorSignal: CursorSignal;
   /** Optional ghost lap for dual-dot replay (Centerline / Baseline Setup A vs Optimal / Active Setup B). */
   ghostLap?: LapResult | null;
   ghostTrack?: Track | null;
-  ghostCursor?: number | null;
   ghostLabel?: string;
   onHover: (i: number | null) => void;
   mapAlign?: MapAlign;
@@ -59,10 +59,14 @@ function useSize(ref: React.RefObject<HTMLDivElement>) {
 
 function setupCanvas(c: HTMLCanvasElement, w: number, h: number) {
   const dpr = window.devicePixelRatio || 1;
-  c.width = Math.round(w * dpr);
-  c.height = Math.round(h * dpr);
-  c.style.width = `${w}px`;
-  c.style.height = `${h}px`;
+  const pixelWidth = Math.round(w * dpr);
+  const pixelHeight = Math.round(h * dpr);
+  if (c.width !== pixelWidth || c.height !== pixelHeight || !c.style.width) {
+    c.width = pixelWidth;
+    c.height = pixelHeight;
+    c.style.width = `${w}px`;
+    c.style.height = `${h}px`;
+  }
   const ctx = c.getContext('2d')!;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   return ctx;
@@ -72,16 +76,16 @@ export default function TrackCanvas({
   track,
   lap,
   colorMode,
-  cursor,
+  cursorSignal,
   ghostLap,
   ghostTrack,
-  ghostCursor,
   ghostLabel = 'Centerline Ghost',
   onHover,
   mapAlign,
   mapSrcOverride,
   isPlaying = false,
 }: Props) {
+  const { active: cursor, ghost: ghostCursor } = useSyncExternalStore(cursorSignal.subscribe, cursorSignal.getSnapshot, cursorSignal.getServerSnapshot);
   const wrapRef = useRef<HTMLDivElement>(null);
   const baseRef = useRef<HTMLCanvasElement>(null);
   const overRef = useRef<HTMLCanvasElement>(null);
@@ -388,7 +392,7 @@ export default function TrackCanvas({
   }, [track, lap, ch, ghostLap, rl, tf, w, h, colorAt, mapImg, mapAlign, mapSrcOverride]);
 
   // overlay: active directional car + ghost car (dual-vehicle replay)
-  useEffect(() => {
+  useLayoutEffect(() => {
     const c = overRef.current;
     if (!c) return;
     const ctx = setupCanvas(c, w, h);

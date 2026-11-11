@@ -2,8 +2,6 @@
 
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  DEFAULT_POWERTRAIN,
-  DEFAULT_VEHICLE,
   longitudinalCoefficients,
   magicFormula,
   peakSlip,
@@ -46,6 +44,7 @@ import { compareVehicleSetups } from '@/lib/solver/setup-matrix';
 import { computeSetupJacobian } from '@/lib/solver/sensitivity';
 import { generateFsaeDesignReport, generateVcuBundle, printFsaeDesignReport } from '@/lib/codegen';
 import { downloadText, fmt, fmtTime, kph } from '@/lib/ui/format';
+import { createCursorSignal } from '@/lib/telemetry/cursor';
 import TrackCanvas, { type ColorMode, type MapAlign } from './TrackCanvas';
 import TelemetryCharts from './telemetry/TelemetryCharts';
 import MathChannelsDrawer from './telemetry/MathChannelsDrawer';
@@ -199,8 +198,12 @@ export default function Workbench({
   const [integrator, setIntegrator] = useState<Integrator>('rk4');
   const [colorMode, setColorMode] = useState<ColorMode>('mode');
   const [tab, setTab] = useState<Tab>('corners');
-  const [cursor, setCursor] = useState<number | null>(null);
-  const [ghostCursor, setGhostCursor] = useState<number | null>(null);
+  const [cursor, setCursorReadout] = useState<number | null>(null);
+  const [cursorSignal] = useState(createCursorSignal);
+  const setCursor = useCallback((index: number | null) => {
+    cursorSignal.set(index);
+    setCursorReadout(index);
+  }, [cursorSignal]);
   const [playing, setPlaying] = useState(false);
   const [playRate, setPlayRate] = useState(1);
   const seekTime = useRef<number | null>(null);
@@ -338,7 +341,7 @@ export default function Workbench({
     const cur = q.get('cursor');
     if (cur) setCursor(Number(cur));
     setHydrated(true);
-  }, []);
+  }, [setCursor]);
 
   // Auto-save active session on every parameter change so edits never disappear on refresh
   useEffect(() => {
@@ -400,7 +403,7 @@ export default function Workbench({
     seekTime.current = null;
     setPlaying(false);
     if (!isKorfez) setMapUpload(null);
-  }, []);
+  }, [setCursor]);
 
   const saveCurrentToTwoTrack = useCallback(() => {
     const profile: SavedVehicleProfile = {
@@ -568,18 +571,18 @@ export default function Workbench({
   const toggleSetupMatrix = () => { setMathChannelsOpen(false); setSetupMatrixOpen((open) => !open); };
   const n = ch.s.length;
   const safeCursor = cursor != null && Number.isInteger(cursor) && cursor >= 0 && cursor < n ? cursor : null;
-  const effectiveGhostCursor = playing ? ghostCursor : safeCursor;
 
   // real-time dual-dot lap playback
   useEffect(() => {
     if (!playing) {
       seekTime.current = null;
-      setGhostCursor(null);
+      setCursor(cursorSignal.getSnapshot().active);
       return;
     }
     let raf = 0;
     let last = performance.now();
-    let simT = safeCursor != null ? ch.t[safeCursor] : 0;
+    const initialCursor = cursorSignal.getSnapshot().active;
+    let simT = initialCursor != null ? (ch.t[initialCursor] ?? 0) : 0;
     let lastPush = 0;
     const tEnd = Math.max(lap.lapTime, ghostLap?.lapTime ?? 0);
     const loop = (now: number) => {
@@ -589,29 +592,28 @@ export default function Workbench({
       } else simT += ((now - last) / 1000) * playRate;
       last = now;
       if (simT >= tEnd) simT = lap.closed ? simT - tEnd : tEnd;
-      if (now - lastPush > 16) {
+      const activeT = lap.closed ? simT % lap.lapTime : Math.min(simT, lap.lapTime);
+      const activeIndex = findTimeCursor(ch.t, activeT);
+      const ghostT = ghostLap ? (ghostLap.closed ? simT % ghostLap.lapTime : Math.min(simT, ghostLap.lapTime)) : 0;
+      cursorSignal.set(activeIndex, ghostLap ? findTimeCursor(ghostLap.channels.t, ghostT) : null);
+      if (now - lastPush >= 100) {
         lastPush = now;
-        const activeT = lap.closed ? simT % lap.lapTime : Math.min(simT, lap.lapTime);
-        setCursor(findTimeCursor(ch.t, activeT));
-        if (ghostLap) {
-          const gT = ghostLap.closed ? simT % ghostLap.lapTime : Math.min(simT, ghostLap.lapTime);
-          setGhostCursor(findTimeCursor(ghostLap.channels.t, gT));
-        }
-        if (!lap.closed && simT >= tEnd) {
-          setPlaying(false);
-          return;
-        }
+        setCursorReadout(activeIndex);
+      }
+      if (!lap.closed && simT >= tEnd) {
+        setPlaying(false);
+        return;
       }
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, playRate, lap, ghostLap]);
+  }, [playing, playRate, lap, ghostLap, cursorSignal, setCursor]);
 
   const scrubDistance = (deltaM: number) => {
-    const previous = seekTime.current != null ? findTimeCursor(ch.t, seekTime.current) : safeCursor ?? 0;
-    const targetS = ch.s[previous] + deltaM;
+    const previous = seekTime.current != null ? findTimeCursor(ch.t, seekTime.current) : cursorSignal.getSnapshot().active ?? 0;
+    const targetS = (ch.s[previous] ?? 0) + deltaM;
     const boundedS = lap.closed ? ((targetS % lap.distance) + lap.distance) % lap.distance : targetS;
     const index = Math.max(0, Math.min(n - 1, Math.round(boundedS / dTrack.ds)));
     if (playing) seekTime.current = ch.t[index];
@@ -636,7 +638,7 @@ export default function Workbench({
       hoverFrame.current = null;
       setCursor(pendingHover.current);
     });
-  }, [playing]);
+  }, [playing, setCursor]);
   const onHoverS = useCallback(
     (s: number | null) => {
       onHoverCanvas(s == null ? null : Math.max(0, Math.min(n - 1, Math.round(s / dTrack.ds))));
@@ -1673,13 +1675,13 @@ export default function Workbench({
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-4">
-          <GGDiagram
+          {ggDiagramOpen && <GGDiagram
             lap={lap}
             ctx={ctx}
-            cursor={safeCursor}
+            cursorSignal={cursorSignal}
             baselineLap={baselineSolved?.lap}
             baselineCtx={baselineSolved?.ctx}
-          />
+          />}
         </div>
       </aside>
 
@@ -1764,10 +1766,9 @@ export default function Workbench({
                 track={dTrack}
                 lap={lap}
                 colorMode={colorMode}
-                cursor={safeCursor}
+                cursorSignal={cursorSignal}
                 ghostLap={ghostLap}
                 ghostTrack={ghostTrack}
-                ghostCursor={effectiveGhostCursor}
                 ghostLabel={ghostLabel}
                 onHover={onHoverCanvas}
                 isPlaying={playing}
@@ -1863,7 +1864,7 @@ export default function Workbench({
             <TelemetryCharts
               lap={lap}
               baselineLap={baselineSolved?.lap ?? ghostLap}
-              cursorS={safeCursor != null ? ch.s[safeCursor] : null}
+              cursorSignal={cursorSignal}
               onHoverS={onHoverS}
             />
           </Panel>

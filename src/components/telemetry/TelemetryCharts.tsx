@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useId, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useId, useMemo, useRef, useState } from 'react';
 import {
   CartesianGrid,
   Line,
@@ -16,6 +16,7 @@ import {
 } from 'recharts';
 import type { LapResult } from '@/lib/solver';
 import { deltaTimeAtDistance, sampleDeltaTime, sampleLapDistance } from '@/lib/telemetry/distance';
+import type { CursorSignal } from '@/lib/telemetry/cursor';
 import { CHART } from '@/lib/ui/colors';
 import { strideFor } from '@/lib/ui/format';
 import { tickFmt, tooltipStyle } from '../ui';
@@ -23,7 +24,7 @@ import { tickFmt, tooltipStyle } from '../ui';
 interface Props {
   lap: LapResult;
   baselineLap?: LapResult | null;
-  cursorS: number | null;
+  cursorSignal: CursorSignal;
   onHoverS: (s: number | null) => void;
 }
 
@@ -45,8 +46,6 @@ interface Row {
   fzRR: number;
   kus: number;
 }
-
-const SYNC = 'lap-telemetry';
 
 function useRows(lap: LapResult, baselineLap?: LapResult | null): Row[] {
   return useMemo(() => {
@@ -89,7 +88,7 @@ const axisProps = {
   tickFormatter: tickFmt,
 };
 
-function ChartFrame({ title, right, children }: { title: string; right?: React.ReactNode; children: React.ReactNode }) {
+function ChartFrame({ title, right, children, axis = false }: { title: string; right?: React.ReactNode; children: React.ReactNode; axis?: boolean }) {
   return (
     <div className="relative h-[142px] w-full">
       <div className="pointer-events-none absolute left-12 right-3 top-0 z-10 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-hud-dim">
@@ -97,11 +96,14 @@ function ChartFrame({ title, right, children }: { title: string; right?: React.R
         {right}
       </div>
       {children}
+      <div className="pointer-events-none absolute left-[44px] right-3 top-[14px] z-10 overflow-hidden" style={{ bottom: axis ? 18 : 4 }} aria-hidden="true">
+        <div className="absolute inset-y-0 w-px bg-cyan-300 [visibility:var(--telemetry-cursor-visibility,hidden)]" style={{ left: 'var(--telemetry-cursor-left, -10%)' }} />
+      </div>
     </div>
   );
 }
 
-function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
+function TelemetryChartsImpl({ lap, baselineLap, cursorSignal, onHoverS }: Props) {
   const rows = useRows(lap, baselineLap);
   const deltaId = useId();
   const delta = useMemo(() => {
@@ -119,7 +121,22 @@ function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
   const [view, setView] = useState<{ lap: LapResult; bounds: [number, number] } | null>(null);
   const [selection, setSelection] = useState<[number, number] | null>(null);
   const dragStart = useRef<number | null>(null);
+  const stripsRef = useRef<HTMLDivElement>(null);
   const bounds: [number, number] = view?.lap === lap ? view.bounds : [0, L];
+  const [viewStart, viewEnd] = bounds;
+  useEffect(() => {
+    const element = stripsRef.current;
+    if (!element) return;
+    const draw = () => {
+      const i = cursorSignal.getSnapshot().active;
+      const s = i == null ? undefined : lap.channels.s[i];
+      const visible = s != null && s >= viewStart && s <= viewEnd && viewEnd > viewStart;
+      element.style.setProperty('--telemetry-cursor-visibility', visible ? 'visible' : 'hidden');
+      if (visible) element.style.setProperty('--telemetry-cursor-left', `${(s - viewStart) * 100 / (viewEnd - viewStart)}%`);
+    };
+    draw();
+    return cursorSignal.subscribe(draw);
+  }, [cursorSignal, lap, viewStart, viewEnd]);
   const setBounds = (start: number, end: number) => setView({ lap, bounds: [start, end] });
   const moveWindow = (direction: number) => {
     const width = bounds[1] - bounds[0];
@@ -135,8 +152,6 @@ function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
   const atDistance = (st: HoverState) => st?.activeLabel != null ? Number(st.activeLabel) : null;
   const common = {
     data: rows,
-    syncId: SYNC,
-    syncMethod: 'value' as const,
     margin: { top: 14, right: 12, bottom: 0, left: 0 },
     onMouseMove: (st: HoverState) => {
       const s = atDistance(st);
@@ -170,17 +185,14 @@ function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
       allowDataOverflow
     />
   );
-  const cursor = [
-    cursorS != null && <ReferenceLine key="cursor" x={cursorS} stroke={CHART.cyan} strokeWidth={1.2} ifOverflow="hidden" />,
-    selection && <ReferenceArea key="selection" x1={Math.min(...selection)} x2={Math.max(...selection)} fill={CHART.cyan} fillOpacity={0.18} ifOverflow="hidden" />,
-  ];
+  const cursor = selection && <ReferenceArea x1={Math.min(...selection)} x2={Math.max(...selection)} fill={CHART.cyan} fillOpacity={0.18} ifOverflow="hidden" />;
   const grid = <CartesianGrid stroke={CHART.grid} strokeDasharray="2 4" />;
   const tt = <Tooltip {...tooltipStyle} labelFormatter={(s) => `s = ${Number(s).toFixed(1)} m`} isAnimationActive={false} />;
 
   const endDeltaS = baselineLap ? lap.lapTime - baselineLap.lapTime : null;
 
   return (
-    <div className="flex select-none flex-col gap-1">
+    <div ref={stripsRef} className="flex select-none flex-col gap-1">
       {delta && (
         <>
         <ChartFrame
@@ -302,7 +314,7 @@ function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
           </ComposedChart>
         </ResponsiveContainer>
       </ChartFrame>
-      <ChartFrame title="Motor power [kW] · accumulator (+drive / −regen) & wheel">
+      <ChartFrame axis title="Motor power [kW] · accumulator (+drive / −regen) & wheel">
         <ResponsiveContainer>
           <ComposedChart {...common}>
             {grid}

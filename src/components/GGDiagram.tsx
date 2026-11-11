@@ -1,17 +1,18 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 import { CartesianGrid, ReferenceLine, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from 'recharts';
 import { GRAVITY } from '@/lib/physics';
 import { ctxAyMax, longitudinalEnvelope, type LapResult, type SimulationContext } from '@/lib/solver';
 import { CHART } from '@/lib/ui/colors';
 import { strideFor } from '@/lib/ui/format';
+import type { CursorSignal } from '@/lib/telemetry/cursor';
 import { tooltipStyle } from './ui';
 
 interface Props {
   lap: LapResult;
   ctx: SimulationContext;
-  cursor: number | null;
+  cursorSignal: CursorSignal;
   baselineLap?: LapResult | null;
   baselineCtx?: SimulationContext | null;
 }
@@ -31,7 +32,7 @@ function envelopeAt(ctx: SimulationContext, v: number) {
   return [...upper, ...lower.reverse(), upper[0]];
 }
 
-function GGDiagramImpl({ lap, ctx, cursor, baselineLap, baselineCtx }: Props) {
+function GGDiagramImpl({ lap, ctx, cursorSignal, baselineLap, baselineCtx }: Props) {
   const ch = lap.channels;
   const points = useMemo(() => {
     const st = strideFor(ch.s.length, 900);
@@ -55,12 +56,34 @@ function GGDiagramImpl({ lap, ctx, cursor, baselineLap, baselineCtx }: Props) {
   const envHigh = useMemo(() => envelopeAt(ctx, vHigh), [ctx, vHigh]);
   const envHighBase = useMemo(() => (baselineCtx ? envelopeAt(baselineCtx, vHigh) : null), [baselineCtx, vHigh]);
 
-  const cur = cursor != null && cursor < ch.s.length ? [{ x: ch.gLat[cursor], y: ch.gLong[cursor] }] : [];
   const maxEnvCoord = Math.max(
     ...envHigh.map((p) => Math.max(Math.abs(p.x), Math.abs(p.y))),
     ...(envHighBase ? envHighBase.map((p) => Math.max(Math.abs(p.x), Math.abs(p.y))) : [0]),
   );
   const lim = Math.ceil(maxEnvCoord * 2) / 2;
+  const marker = useRef<HTMLDivElement>(null);
+  const readout = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const dot = marker.current;
+    const text = readout.current;
+    if (!dot || !text) return;
+    const draw = () => {
+      const cursor = cursorSignal.getSnapshot().active;
+      const x = cursor == null ? undefined : ch.gLat[cursor];
+      const y = cursor == null ? undefined : ch.gLong[cursor];
+      const maxY = Math.min(lim, 2);
+      const available = x != null && y != null;
+      dot.hidden = !available || x < -lim || x > lim || y < -lim || y > maxY;
+      text.hidden = !available;
+      if (available) {
+        dot.style.left = `${(x + lim) * 100 / (2 * lim)}%`;
+        dot.style.top = `${(maxY - y) * 100 / (maxY + lim)}%`;
+        text.textContent = `now: ${x.toFixed(2)} / ${y.toFixed(2)} G`;
+      }
+    };
+    draw();
+    return cursorSignal.subscribe(draw);
+  }, [ch, cursorSignal, lim]);
 
   return (
     <div className="relative h-full min-h-[320px] w-full">
@@ -116,27 +139,18 @@ function GGDiagramImpl({ lap, ctx, cursor, baselineLap, baselineCtx }: Props) {
             <Scatter name="Setup A (Baseline)" data={basePoints} fill={CHART.violet} fillOpacity={0.22} isAnimationActive={false} />
           )}
           <Scatter name="Setup B (Active)" data={points} fill={CHART.cyan} fillOpacity={0.35} isAnimationActive={false} />
-          <Scatter
-            name="Now"
-            data={cur}
-            isAnimationActive={false}
-            shape={(p: { cx?: number; cy?: number }) => (
-              <circle cx={p.cx} cy={p.cy} r={6} fill="#f8fafc" stroke={CHART.cyan} strokeWidth={2.5} style={{ filter: 'drop-shadow(0 0 6px #22d3ee)' }} />
-            )}
-          />
         </ScatterChart>
       </ResponsiveContainer>
+      <div className="pointer-events-none absolute bottom-[44px] left-9 right-3.5 top-2.5" aria-hidden="true">
+        <div hidden ref={marker} className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cyan-400 bg-white shadow-[0_0_8px_#22d3ee]" />
+      </div>
       <div className="pointer-events-none absolute right-4 top-3 space-y-0.5 text-right font-mono text-[10px]">
         <div style={{ color: CHART.red }}>— Setup B limit @ {(vHigh * 3.6).toFixed(0)} km/h</div>
         <div style={{ color: CHART.amber }}>-- Setup B limit @ {(vLow * 3.6).toFixed(0)} km/h</div>
         {envHighBase && <div style={{ color: CHART.violet }}>-- Setup A baseline limit</div>}
         <div className="text-hud-cyan">● Setup B operating points</div>
         {basePoints.length > 0 && <div className="text-hud-violet">● Setup A baseline points</div>}
-        {cur.length > 0 && (
-          <div className="text-hud-text">
-            now: {cur[0].x.toFixed(2)} / {cur[0].y.toFixed(2)} G
-          </div>
-        )}
+        <div hidden ref={readout} className="tabular-nums text-hud-text" />
       </div>
     </div>
   );
