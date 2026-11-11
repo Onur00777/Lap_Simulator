@@ -9,6 +9,7 @@ export interface FusionSample {
   timeS: number;
   /** Specific force in body axes (forward, left, up), including gravity at rest. */
   accelerationMps2: readonly [number | null, number | null, number | null];
+  accelerationMode?: 'specific-force' | 'gravity-compensated';
   gyroRadPerS: readonly [number | null, number | null, number | null];
   wheelOmegaRadPerS: Corners<number | null>; // FL, FR, RL, RR
   roadWheelSteerRad: number | null;
@@ -97,10 +98,14 @@ export function createVehicleFusion(params: FusionParams = IST26_FUSION_PARAMS) 
     const firstSample = prevTime == null;
     const elapsed = prevTime == null ? 0 : timeS - prevTime;
     const dt = Math.min(0.1, elapsed);
+    const gravityBody: Vector3 = [-GRAVITY * Math.sin(x[7]), GRAVITY * Math.sin(x[6]) * Math.cos(x[7]), GRAVITY * Math.cos(x[6]) * Math.cos(x[7])];
+    const linearAcceleration = sample.accelerationMode === 'gravity-compensated';
+    const axis = (i: number) => {
+      const value = accelerationMps2[i];
+      return available(value) ? value + (linearAcceleration ? gravityBody[i] : 0) : gravityBody[i];
+    };
     const accel: Vector3 = [
-      available(accelerationMps2[0]) ? accelerationMps2[0] : -GRAVITY * Math.sin(x[7]),
-      available(accelerationMps2[1]) ? accelerationMps2[1] : GRAVITY * Math.sin(x[6]) * Math.cos(x[7]),
-      available(accelerationMps2[2]) ? accelerationMps2[2] : GRAVITY * Math.cos(x[6]) * Math.cos(x[7]),
+      axis(0), axis(1), axis(2),
     ];
     const gyro: Vector3 = gyroRadPerS.map((value) => available(value) ? value : 0) as unknown as Vector3;
     const imuDropout = !accelerationMps2.every(available) || !gyroRadPerS.every(available);
@@ -150,7 +155,7 @@ export function createVehicleFusion(params: FusionParams = IST26_FUSION_PARAMS) 
     if (stationary) {
       observe(0, [0, 0, 0, 1, 0, 0, 0, 0, 0], 0.001);
       observe(0, [0, 0, 0, 0, 1, 0, 0, 0, 0], 0.001);
-      if (!imuDropout && Math.abs(Math.hypot(...accel) - GRAVITY) < 0.4) {
+      if (!linearAcceleration && !imuDropout && Math.abs(Math.hypot(...accel) - GRAVITY) < 0.4) {
         observe(Math.atan2(accel[1], accel[2]), [0, 0, 0, 0, 0, 0, 1, 0, 0], 0.003);
         observe(Math.atan2(-accel[0], Math.hypot(accel[1], accel[2])), [0, 0, 0, 0, 0, 0, 0, 1, 0], 0.003);
       }

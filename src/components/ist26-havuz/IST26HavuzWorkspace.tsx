@@ -31,6 +31,7 @@ import {
 } from '@/lib/ist26-havuz/log-scorer';
 import { buildHavuzExtractedCircuit } from '@/lib/ist26-havuz/havuz-track-extractor';
 import { exportMotecTelemetry, exportTrackGeoJson, exportTrackSvg } from '@/lib/export/telemetry-exporters';
+import type { FusionLogResult } from './havuz-fusion.worker';
 import {
   AutoFitResult,
   autoFitIst26ToTelemetry,
@@ -84,6 +85,12 @@ export default function IST26HavuzWorkspace({
   const [showColMapper, setShowColMapper] = useState(false);
   const [selectedLogId, setSelectedLogId] = useState<string>('23_08/23_08_2026-11.31.49.csv');
   const uploadInputRef = useRef<HTMLInputElement>(null);
+  const fusionWorkers = useRef(new Map<string, Worker>());
+  const [fusionByLog, setFusionByLog] = useState<Record<string, { result?: FusionLogResult; error?: string }>>({});
+  useEffect(() => {
+    const workers = fusionWorkers.current;
+    return () => { workers.forEach((worker) => worker.terminate()); workers.clear(); };
+  }, []);
 
   const filteredLogs = useMemo(() => {
     return logs.filter((l) => {
@@ -113,6 +120,19 @@ export default function IST26HavuzWorkspace({
       if (samples.length > 0) {
         setCustomTelemetryMap((prev) => ({ ...prev, [entry.id]: samples }));
         setSelectedLogId(entry.id);
+        fusionWorkers.current.get(entry.id)?.terminate();
+        const worker = new Worker(new URL('./havuz-fusion.worker.ts', import.meta.url));
+        fusionWorkers.current.set(entry.id, worker);
+        setFusionByLog((previous) => ({ ...previous, [entry.id]: {} }));
+        const finish = (outcome: { result?: FusionLogResult; error?: string }) => {
+          if (fusionWorkers.current.get(entry.id) !== worker) return;
+          setFusionByLog((previous) => ({ ...previous, [entry.id]: outcome }));
+          worker.terminate();
+          fusionWorkers.current.delete(entry.id);
+        };
+        worker.onmessage = (message: MessageEvent<{ result?: FusionLogResult; error?: string }>) => finish(message.data);
+        worker.onerror = () => finish({ error: 'EKF arka plan işlemi tamamlanamadı.' });
+        worker.postMessage({ csv: text });
       }
     };
     reader.readAsText(file);
@@ -208,6 +228,32 @@ export default function IST26HavuzWorkspace({
     setIst26Cal(DEFAULT_IST26_CALIBRATION);
     setAutoFitResult(null);
   };
+  const fusion = fusionByLog[selectedLogId];
+  const fusionPanel = useMemo(() => fusion && (
+    <details className="mt-3 rounded border border-slate-800 p-3 text-xs text-slate-300">
+      <summary className="cursor-pointer font-mono font-bold text-cyan-200">6-DOF EKF · β ve arka tekerlek kayması</summary>
+      {fusion.error && <p className="mt-2 text-amber-300">{fusion.error}</p>}
+      {!fusion.error && !fusion.result && <p role="status" className="mt-2">Sensör kayıtları işleniyor…</p>}
+      {fusion.result && (
+        <>
+          <p className="mt-2 font-mono tabular-nums">{fusion.result.sampleCount} örnek · {fusion.result.imuDropouts} IMU eksik · {fusion.result.wheelDropouts} tekerlek hızı eksik · CAN sayaç zaman aşımı {fusion.result.canTimeouts ?? '—'}</p>
+          <ResponsiveContainer width="100%" height={190}>
+            <LineChart data={fusion.result.rows}>
+              <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
+              <XAxis dataKey="time" type="number" unit=" s" tick={{ fontSize: 10 }} tickFormatter={(value: number) => value.toFixed(0)} />
+              <YAxis yAxisId="beta" unit="°" tick={{ fontSize: 10 }} width={43} />
+              <YAxis yAxisId="slip" unit="%" orientation="right" tick={{ fontSize: 10 }} width={44} />
+              <Tooltip isAnimationActive={false} labelFormatter={(value) => `${Number(value).toFixed(2)} s`} />
+              <Legend />
+              <Line yAxisId="beta" dataKey="beta" name="β [°]" stroke="#22d3ee" dot={false} isAnimationActive={false} />
+              <Line yAxisId="slip" dataKey="slipRL" name="RL [%]" stroke="#a78bfa" dot={false} isAnimationActive={false} />
+              <Line yAxisId="slip" dataKey="slipRR" name="RR [%]" stroke="#fb923c" dot={false} isAnimationActive={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </>
+      )}
+    </details>
+  ), [fusion]);
 
   // ==========================================================================
   // STAGE 4 STATE: FSAE VCU FAULT INJECTION & CASCADIA PLAUSIBILITY FSM
@@ -1131,6 +1177,7 @@ export default function IST26HavuzWorkspace({
               </div>
             </div>
 
+            {fusionPanel}
             {/* Calibration Sliders + RMSE Metrics Row */}
             <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-12">
               {/* 4 Calibration Parameters (Isolated IST26 Only) */}
