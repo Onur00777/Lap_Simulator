@@ -484,15 +484,17 @@ export default function TrackCanvas({
     }
   }, [cursor, ghostLap, ghostTrack, ghostCursor, rl, tf, track, w, h, ch.v]);
 
+  const projectedTrack = useMemo(() => track.x.map((x, i) => ({ x: tf.sx(x), y: tf.sy(track.y[i]) })), [track, tf]);
   const onMove = (e: React.MouseEvent) => {
+    if (isPlaying) return;
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
     let best = -1;
     let bestD = 22 * 22;
-    for (let i = 0; i < track.x.length; i++) {
-      const dx = tf.sx(track.x[i]) - mx;
-      const dy = tf.sy(track.y[i]) - my;
+    for (let i = 0; i < projectedTrack.length; i++) {
+      const dx = projectedTrack[i].x - mx;
+      const dy = projectedTrack[i].y - my;
       const d = dx * dx + dy * dy;
       if (d < bestD) {
         bestD = d;

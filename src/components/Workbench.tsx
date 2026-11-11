@@ -578,15 +578,26 @@ export default function Workbench({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, playRate, lap, ghostLap]);
 
+  const hoverFrame = useRef<number | null>(null);
+  const pendingHover = useRef<number | null>(null);
+  useEffect(() => () => {
+    if (hoverFrame.current != null) cancelAnimationFrame(hoverFrame.current);
+    hoverFrame.current = null;
+  }, [playing, dTrack]);
   const onHoverCanvas = useCallback((i: number | null) => {
-    if (!playing) setCursor(i);
+    if (playing) return;
+    pendingHover.current = i;
+    if (hoverFrame.current != null) return;
+    hoverFrame.current = requestAnimationFrame(() => {
+      hoverFrame.current = null;
+      setCursor(pendingHover.current);
+    });
   }, [playing]);
   const onHoverS = useCallback(
     (s: number | null) => {
-      if (playing) return;
-      setCursor(s == null ? null : Math.max(0, Math.min(n - 1, Math.round(s / dTrack.ds))));
+      onHoverCanvas(s == null ? null : Math.max(0, Math.min(n - 1, Math.round(s / dTrack.ds))));
     },
-    [playing, n, dTrack],
+    [onHoverCanvas, n, dTrack.ds],
   );
 
   const importCsv = (text: string, name: string) => {

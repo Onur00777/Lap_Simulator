@@ -1,11 +1,12 @@
 'use client';
 
-import { memo, useId, useMemo } from 'react';
+import { memo, useId, useMemo, useRef, useState } from 'react';
 import {
   CartesianGrid,
   Line,
   LineChart,
   ReferenceLine,
+  ReferenceArea,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -115,20 +116,53 @@ function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
     return { rows, domain, gates, zero: domain[1] / (domain[1] - domain[0]) };
   }, [lap, baselineLap]);
   const L = lap.distance;
+  const [view, setView] = useState<{ lap: LapResult; bounds: [number, number] } | null>(null);
+  const [selection, setSelection] = useState<[number, number] | null>(null);
+  const dragStart = useRef<number | null>(null);
+  const bounds: [number, number] = view?.lap === lap ? view.bounds : [0, L];
+  const setBounds = (start: number, end: number) => setView({ lap, bounds: [start, end] });
+  const moveWindow = (direction: number) => {
+    const width = bounds[1] - bounds[0];
+    const start = Math.max(0, Math.min(L - width, bounds[0] + direction * width * 0.4));
+    setBounds(start, start + width);
+  };
+  const overview = useMemo(() => {
+    const top = Math.max(1, lap.maxSpeed * 3.6);
+    return rows.filter((_, i) => i % 4 === 0 || i === rows.length - 1)
+      .map((row) => `${row.s / Math.max(L, 1) * 1000},${33 - 30 * row.v / top}`).join(' ');
+  }, [rows, L, lap.maxSpeed]);
+  type HoverState = { activeLabel?: string | number } | undefined;
+  const atDistance = (st: HoverState) => st?.activeLabel != null ? Number(st.activeLabel) : null;
   const common = {
     data: rows,
     syncId: SYNC,
+    syncMethod: 'value' as const,
     margin: { top: 14, right: 12, bottom: 0, left: 0 },
-    onMouseMove: (st: { activeLabel?: string | number } | undefined) => {
-      if (st && st.activeLabel != null) onHoverS(Number(st.activeLabel));
+    onMouseMove: (st: HoverState) => {
+      const s = atDistance(st);
+      if (s == null) return;
+      onHoverS(s);
+      if (dragStart.current != null) setSelection([dragStart.current, s]);
     },
-    onMouseLeave: () => onHoverS(null),
+    onMouseDown: (st: HoverState) => { dragStart.current = atDistance(st); },
+    onMouseUp: (st: HoverState) => {
+      const start = dragStart.current;
+      const end = atDistance(st);
+      if (start != null && end != null && Math.abs(end - start) >= 2) setBounds(Math.min(start, end), Math.max(start, end));
+      dragStart.current = null;
+      setSelection(null);
+    },
+    onMouseLeave: () => {
+      dragStart.current = null;
+      setSelection(null);
+      onHoverS(null);
+    },
   };
   const xAxis = (show: boolean) => (
     <XAxis
       dataKey="s"
       type="number"
-      domain={[0, L]}
+      domain={bounds}
       {...axisProps}
       tick={show ? axisProps.tick : false}
       height={show ? 18 : 4}
@@ -136,14 +170,17 @@ function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
       allowDataOverflow
     />
   );
-  const cursor = cursorS != null ? <ReferenceLine x={cursorS} stroke={CHART.cyan} strokeWidth={1.2} ifOverflow="hidden" /> : null;
+  const cursor = [
+    cursorS != null && <ReferenceLine key="cursor" x={cursorS} stroke={CHART.cyan} strokeWidth={1.2} ifOverflow="hidden" />,
+    selection && <ReferenceArea key="selection" x1={Math.min(...selection)} x2={Math.max(...selection)} fill={CHART.cyan} fillOpacity={0.18} ifOverflow="hidden" />,
+  ];
   const grid = <CartesianGrid stroke={CHART.grid} strokeDasharray="2 4" />;
   const tt = <Tooltip {...tooltipStyle} labelFormatter={(s) => `s = ${Number(s).toFixed(1)} m`} isAnimationActive={false} />;
 
   const endDeltaS = baselineLap ? lap.lapTime - baselineLap.lapTime : null;
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex select-none flex-col gap-1">
       {delta && (
         <>
         <ChartFrame
@@ -280,6 +317,24 @@ function TelemetryChartsImpl({ lap, baselineLap, cursorS, onHoverS }: Props) {
           </ComposedChart>
         </ResponsiveContainer>
       </ChartFrame>
+      <div className="ml-11 mr-3 grid gap-1 rounded border border-white/10 bg-[#080a10] p-2 font-mono text-[10px] text-slate-300">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="tabular-nums">{bounds[0].toFixed(1)}–{bounds[1].toFixed(1)} m</span>
+          <div className="flex gap-2">
+            <button type="button" onClick={() => moveWindow(-1)} aria-label="Pan telemetry left" disabled={bounds[0] <= 0} className="disabled:opacity-30">←</button>
+            <button type="button" onClick={() => moveWindow(1)} aria-label="Pan telemetry right" disabled={bounds[1] >= L} className="disabled:opacity-30">→</button>
+            <button type="button" onClick={() => setView(null)} className="text-cyan-300">Reset zoom</button>
+          </div>
+        </div>
+        <svg viewBox="0 0 1000 35" preserveAspectRatio="none" className="h-8 w-full" aria-hidden="true">
+          <rect x={bounds[0] / Math.max(L, 1) * 1000} y="0" width={(bounds[1] - bounds[0]) / Math.max(L, 1) * 1000} height="35" fill="#22d3ee" fillOpacity="0.18" />
+          <polyline points={overview} fill="none" stroke={CHART.cyan} strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        </svg>
+        <div className="grid grid-cols-2 gap-2">
+          <label>Start <input className="w-full accent-cyan-400" type="range" min={0} max={Math.max(0, bounds[1] - Math.min(2, L))} step={0.1} value={bounds[0]} onChange={(event) => setBounds(event.target.valueAsNumber, bounds[1])} /></label>
+          <label>End <input className="w-full accent-cyan-400" type="range" min={Math.min(L, bounds[0] + 2)} max={L} step={0.1} value={bounds[1]} onChange={(event) => setBounds(bounds[0], event.target.valueAsNumber)} /></label>
+        </div>
+      </div>
     </div>
   );
 }
