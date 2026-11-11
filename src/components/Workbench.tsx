@@ -789,7 +789,7 @@ export default function Workbench({
       {/* ===================================================================== */}
       {/* PHASE 1: PERSISTENT MACOS UNIFIED TOP TOOLBAR (48px Glass Ribbon)      */}
       {/* ===================================================================== */}
-      <header className="sticky top-0 z-30 flex h-12 min-h-[48px] max-h-[48px] items-center justify-between gap-2 border-b border-white/[0.08] bg-[#080a10]/90 px-3.5 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 flex min-h-12 flex-wrap items-center justify-between gap-x-2 gap-y-1 border-b border-white/[0.08] bg-[#080a10]/90 px-2 py-1 backdrop-blur-xl sm:px-3.5">
         {/* 1. LEFT GROUP: SIDEBAR TOGGLE, BRANDING & WORKSPACE SWITCHER */}
         <div className="flex shrink-0 items-center gap-2">
           {/* Minimalist Sidebar Toggle Icon [ ◨ ] */}
@@ -827,8 +827,8 @@ export default function Workbench({
                 title="Şu an buradasınız: Ana Pist Simülatörü (Körfez · FS · Havuz)"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
-                <span className="hidden sm:inline">🏁 Pist Simülatörü</span>
-                <span className="sm:hidden">🏁 Pist</span>
+                <span className="hidden 2xl:inline">🏁 Pist Simülatörü</span>
+                <span className="2xl:hidden">🏁 Pist</span>
               </span>
               <button
                 type="button"
@@ -847,7 +847,7 @@ export default function Workbench({
                   className="inline-flex h-6 items-center gap-1 rounded-md border border-white/[0.08] bg-white/[0.04] px-1.5 font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
                 >
                   <span>🧭</span>
-                  <span className="hidden md:inline">Rehber</span>
+                  <span className="hidden 2xl:inline">Rehber</span>
                 </button>
               )}
             </div>
@@ -855,9 +855,9 @@ export default function Workbench({
         </div>
 
         {/* 2. CENTER CONTEXT SELECTORS (Subtle macOS Popover Buttons) */}
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex max-w-full shrink-0 flex-wrap items-center gap-1.5">
           {/* Vehicle Preset Popover Button */}
-          <div className="relative shrink-0" ref={presetMenuRef}>
+          <div className="shrink-0 sm:relative" ref={presetMenuRef}>
             <button
               type="button"
               aria-label="Vehicle Preset"
@@ -871,8 +871,8 @@ export default function Workbench({
               title={`Vehicle Preset: ${presetDisplayLabel}`}
               className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-white/[0.08] bg-[#11141d]/90 px-2 font-mono text-xs text-slate-200 outline-none transition hover:border-white/[0.18]"
             >
-              <span className="text-[10px] text-slate-500 hidden xl:inline">Vehicle:</span>
-              <span className="max-w-[120px] truncate sm:max-w-none font-medium text-white">{presetDisplayLabel}</span>
+              <span className="hidden text-[10px] text-slate-500 2xl:inline">Vehicle</span>
+              <span className="max-w-[108px] truncate font-medium text-white xl:max-w-[140px] 2xl:max-w-[170px]">{presetDisplayLabel}</span>
               <svg
                 className={`h-3 w-3 shrink-0 text-slate-400 transition-transform ${presetMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
                 viewBox="0 0 20 20"
@@ -887,7 +887,7 @@ export default function Workbench({
             </button>
 
             {presetMenuOpen && (
-              <div className="absolute left-0 top-full z-50 mt-1.5 w-72 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl">
+              <div className="absolute inset-x-2 top-full z-50 mt-1.5 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:left-0 sm:w-72">
                 <div className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-slate-400">
                   Vehicle Preset
                 </div>
@@ -924,7 +924,7 @@ export default function Workbench({
           </div>
 
           {/* Circuit Selector Popover Button */}
-          <div className="relative shrink-0" ref={trackMenuRef}>
+          <div className="shrink-0 sm:relative" ref={trackMenuRef}>
             <button
               type="button"
               aria-label="Circuit Selector"
@@ -938,8 +938,8 @@ export default function Workbench({
               title={`Active Circuit: ${dTrack.name} (${fmt(dTrack.length, 0)} m)`}
               className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-white/[0.08] bg-[#11141d]/90 px-2 font-mono text-xs text-slate-200 outline-none transition hover:border-white/[0.18]"
             >
-              <span className="text-[10px] text-slate-500 hidden xl:inline">Circuit:</span>
-              <span className="max-w-[110px] truncate sm:max-w-none font-medium text-white">{trackDisplayLabel}</span>
+              <span className="hidden text-[10px] text-slate-500 2xl:inline">Circuit</span>
+              <span className="max-w-[110px] truncate font-medium text-white xl:max-w-[155px] 2xl:max-w-[185px]">{trackDisplayLabel}</span>
               <svg
                 className={`h-3 w-3 shrink-0 text-slate-400 transition-transform ${trackMenuOpen ? 'rotate-180 text-cyan-400' : ''}`}
                 viewBox="0 0 20 20"
@@ -954,7 +954,7 @@ export default function Workbench({
             </button>
 
             {trackMenuOpen && (
-              <div className="absolute left-0 top-full z-50 mt-1.5 w-80 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl">
+              <div className="absolute inset-x-2 top-full z-50 mt-1.5 max-h-[68vh] overflow-y-auto rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:left-0 sm:w-80">
                 <div className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-cyan-400/90">
                   Formula Student & İTÜ Havuz
                 </div>
@@ -1042,7 +1042,7 @@ export default function Workbench({
 
           {/* Minimalist Segmented Line Toggle: [ Center | Apex ] */}
           <div
-            className="hidden sm:inline-flex items-center rounded-md border border-white/[0.08] bg-[#11141d]/90 p-0.5"
+            className="inline-flex items-center rounded-md border border-white/[0.08] bg-[#11141d]/90 p-0.5"
             role="group"
             aria-label="Racing Line Mode"
           >
@@ -1065,7 +1065,7 @@ export default function Workbench({
           </div>
 
           {/* Secondary Settings Popover Button [ ⚙ Engine ▾ ] */}
-          <div className="relative shrink-0" ref={engineMenuRef}>
+          <div className="shrink-0 sm:relative" ref={engineMenuRef}>
             <button
               type="button"
               aria-label="Engine Settings"
@@ -1084,7 +1084,7 @@ export default function Workbench({
               }`}
             >
               <span>⚙ Engine</span>
-              <span className="hidden md:inline text-[10px] text-slate-400">
+              <span className="hidden text-[10px] text-slate-400 2xl:inline">
                 ({model === 'point-mass' ? 'Point' : model === 'two-track-open' ? 'Open' : 'TV'} · {integrator.toUpperCase()})
               </span>
               <svg
@@ -1101,7 +1101,7 @@ export default function Workbench({
             </button>
 
             {engineMenuOpen && (
-              <div className="absolute left-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-2 shadow-2xl backdrop-blur-xl">
+              <div className="absolute inset-x-2 top-full z-50 mt-1.5 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-2 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:right-0 sm:w-64">
                 <div className="grid gap-1 border-b border-white/[0.08] px-2 pb-2 text-[10px] text-slate-300">
                   <label className="cursor-pointer text-cyan-300 focus-within:underline">
                     Load ride-height aero map (.json)
@@ -1218,11 +1218,12 @@ export default function Workbench({
         </div>
 
         {/* 3. RIGHT CONTROLS: G-G DIAGRAM, CAN COCKPIT, SNAPSHOT A & EXPORT */}
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex max-w-full shrink-0 flex-wrap items-center gap-1.5">
           {/* G-G Diagram Drawer Toggle */}
           <button
             type="button"
             onClick={() => setGgDiagramOpen((o) => !o)}
+            aria-label="G-G Diagram"
             title={ggDiagramOpen ? 'Hide G-G Polar Studio' : 'Open G-G Polar Studio (Friction Ellipse)'}
             className={`inline-flex h-7 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition ${
               ggDiagramOpen
@@ -1235,7 +1236,7 @@ export default function Workbench({
               <line x1="12" y1="3" x2="12" y2="21" />
               <line x1="3" y1="12" x2="21" y2="12" />
             </svg>
-            <span className="hidden sm:inline">G-G Diagram</span>
+            <span className="hidden xl:inline">G-G</span>
           </button>
 
           {/* CAN Cockpit Drawer Toggle Button */}
@@ -1250,7 +1251,7 @@ export default function Workbench({
             }`}
           >
             <span className={`h-1.5 w-1.5 rounded-full ${canCockpitOpen ? 'bg-emerald-400 shadow-[0_0_6px_#34d399]' : 'bg-slate-500'}`} />
-            <span>⚡ CAN Cockpit</span>
+            <span>⚡ CAN<span className="hidden 2xl:inline"> Cockpit</span></span>
           </button>
 
           {/* Monospace Execution Telemetry Badge */}
@@ -1270,7 +1271,7 @@ export default function Workbench({
               className="inline-flex h-7 items-center gap-1 rounded-md border border-white/[0.08] bg-[#11141d]/90 px-2 font-mono text-xs text-slate-300 transition hover:border-white/[0.18] hover:text-white"
             >
               <span className="text-cyan-400">⌖</span>
-              <span className="hidden xl:inline">Snapshot Setup A</span>
+              <span className="hidden xl:inline">Snapshot</span>
             </button>
           ) : (
             <div className="inline-flex h-7 items-center rounded-md border border-cyan-500/40 bg-cyan-950/40">
@@ -1295,7 +1296,7 @@ export default function Workbench({
           )}
 
           {/* Export Data Dropdown Button */}
-          <div className="relative" ref={exportMenuRef}>
+          <div className="sm:relative" ref={exportMenuRef}>
             <div className="inline-flex h-7 items-center rounded-md border border-white/[0.09] bg-[#11141d]/90 font-mono text-xs text-slate-200 transition hover:border-white/[0.18]">
               <button
                 type="button"
@@ -1324,7 +1325,7 @@ export default function Workbench({
             </div>
 
             {exportOpen && (
-              <div className="absolute right-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl">
+              <div className="absolute inset-x-2 top-full z-50 mt-1.5 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-1.5 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:right-0 sm:w-64">
                 <button
                   type="button"
                   onClick={handleExportDossierMd}
