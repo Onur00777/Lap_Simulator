@@ -4,7 +4,7 @@ import { getTrackWithRacingLine } from '@/lib/solver';
 
 describe('Track Map Hero Centerpiece Projection & UI Clearance Verification', () => {
   it('guarantees circuit prominence (~82% vertical height on square tracks) and zero collision with top legend, bottom pill, or right HUD', () => {
-    const circuits = ['endurance', 'autocross', 'skidpad', 'korfez'] as const;
+    const circuits = ['endurance', 'autocross', 'skidpad', 'korfez-fst-1380'] as const;
     const w = 1280;
     const h = 620;
     const padTop = 42;
