@@ -143,6 +143,9 @@ export function simulateIst26OnHavuz(
   const cAlphaScale = (cal.corneringStiffnessNPerDeg / 489.0) * vehicleGripRatio;
 
   const n = Math.min(centerline.length, realSamples.length);
+  const firstNode = centerline[0];
+  const lastNode = centerline[n - 1];
+  const closingDistanceM = firstNode && lastNode ? Math.hypot(lastNode.x - firstNode.x, lastNode.y - firstNode.y) : 0;
   const vMaxCorner = new Array<number>(n).fill(22);
 
   // Pass 1: Lateral cornering speed envelope
@@ -178,7 +181,7 @@ export function simulateIst26OnHavuz(
       const ds =
         next > i
           ? Math.max(0.4, centerline[next].s - centerline[i].s)
-          : Math.max(0.4, 135.4 - centerline[i].s + centerline[0].s);
+          : Math.max(0.4, closingDistanceM);
       const v = vFwd[i];
       const rpm = ((v / rW) * G * 60) / (2 * Math.PI);
       const trqMaxMotor = getMaxTotalMotorTorqueNm(rpm);
@@ -215,7 +218,7 @@ export function simulateIst26OnHavuz(
       const ds =
         i > prev
           ? Math.max(0.4, centerline[i].s - centerline[prev].s)
-          : Math.max(0.4, 135.4 - centerline[prev].s + centerline[0].s);
+          : Math.max(0.4, closingDistanceM);
       const v = vSim[i];
       const cdA = isIst26 ? cal.cdA : vParam.CdA;
       const fAeroDrag = 0.5 * rho * cdA * v * v;
@@ -251,7 +254,7 @@ export function simulateIst26OnHavuz(
     const ds =
       next > i
         ? Math.max(0.4, centerline[next].s - centerline[i].s)
-        : Math.max(0.4, 135.4 - centerline[i].s + centerline[0].s);
+        : Math.max(0.4, closingDistanceM);
 
     const r = realSamples[i];
     const vxS = vSim[i];
