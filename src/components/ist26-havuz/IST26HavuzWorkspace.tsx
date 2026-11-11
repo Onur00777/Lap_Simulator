@@ -13,7 +13,6 @@ import {
 } from 'recharts';
 import {
   DEFAULT_IST26_CALIBRATION,
-  IST26_RWD_PDF_SPEC,
   Ist26CalibrationParams,
 } from '@/lib/ist26-havuz/ist26-vehicle-spec';
 import {

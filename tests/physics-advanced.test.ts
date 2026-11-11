@@ -7,6 +7,9 @@ import {
   peakLateralForce, peakLongitudinalForce, stepTireThermal, tireThermalGrip,
 } from '@/lib/physics/tire';
 import { DEFAULT_VEHICLE, GRAVITY, vehicleAero, wheelLoads } from '@/lib/physics/vehicle';
+import { createContext, simulateLap } from '@/lib/solver';
+import { replayLapThermals } from '@/lib/solver/lap-thermals';
+import { buildAutocross } from '@/lib/tracks';
 
 const aeroMap: RideHeightAeroMap = {
   frontHeightsM: [0.02, 0.06], rearHeightsM: [0.02, 0.06],
@@ -104,5 +107,18 @@ describe('Advanced tire, aero and brake models', () => {
     expect(hot.regenN).toBe(0);
     expect(hot.hydraulicFrontBias).toBeLessThan(cool.hydraulicFrontBias);
     expect(Object.values(hot.hydraulicN).reduce((a, b) => a + b) + hot.regenN + hot.unmetForceN).toBeCloseTo(input.requestedForceN);
+  });
+
+  it('replays a complete lap and exposes the additional braking shortfall from overheated rotors', () => {
+    const ctx = createContext(DEFAULT_VEHICLE, DEFAULT_POWERTRAIN);
+    const lap = simulateLap(buildAutocross(), ctx);
+    const nominal = replayLapThermals(lap, ctx);
+    const overheated = replayLapThermals(lap, ctx, { initialRotorC: 850 });
+    expect(nominal.rows).toHaveLength(lap.channels.s.length);
+    expect(nominal.rows.at(-1)?.t).toBeCloseTo(lap.lapTime, 9);
+    expect(nominal.rows.some((row) => row.regenKW > 0)).toBe(true);
+    expect(nominal.rows.every((row) => Object.values(row).every(Number.isFinite))).toBe(true);
+    const brakingShortfall = (rows: typeof nominal.rows) => rows.reduce((sum, row) => sum + row.unmetBrakeN, 0);
+    expect(brakingShortfall(overheated.rows)).toBeGreaterThan(brakingShortfall(nominal.rows));
   });
 });
