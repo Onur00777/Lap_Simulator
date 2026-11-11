@@ -59,6 +59,7 @@ import CornersPanel from './panels/CornersPanel';
 import TorqueVectoringPanel from './panels/TorqueVectoringPanel';
 import LaunchPanel from './panels/LaunchPanel';
 import PowertrainPanel from './panels/PowertrainPanel';
+import ThermalReplayPanel from './panels/ThermalReplayPanel';
 import CodegenPanel from './panels/CodegenPanel';
 import KorfezPanel, { KorfezFacilityBar } from './panels/KorfezPanel';
 import SensitivityPanel from './panels/SensitivityPanel';
@@ -1928,7 +1929,12 @@ export default function Workbench({
               />
             )}
             {tab === 'launch' && <LaunchPanel launch={launch} qssTime={dTrack.kind === 'acceleration' ? lap.lapTime : undefined} />}
-            {tab === 'powertrain' && <PowertrainPanel veh={dVeh} pt={dPt} map={ctx.map} />}
+            {tab === 'powertrain' && (
+              <>
+                <ThermalReplayPanel lap={lap} ctx={ctx} />
+                <PowertrainPanel veh={dVeh} pt={dPt} map={ctx.map} />
+              </>
+            )}
             {tab === 'codegen' &&
               (bundle ? (
                 <CodegenPanel
