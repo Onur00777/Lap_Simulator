@@ -23,6 +23,30 @@ export interface AeroRideHeightSetup {
   rearWheelRateNPerM: number;
 }
 
+export function parseAeroRideHeightSetup(text: string): AeroRideHeightSetup {
+  const data: unknown = JSON.parse(text);
+  if (data == null || typeof data !== 'object') throw new Error('The aero setup must be a JSON object.');
+  const setup = data as AeroRideHeightSetup;
+  const within = (value: unknown, low: number, high: number): value is number =>
+    typeof value === 'number' && Number.isFinite(value) && value >= low && value <= high;
+  const axis = (values: unknown): values is number[] => Array.isArray(values) && values.length >= 2 && values.length <= 128 &&
+    values.every((value, i) => within(value, 0, 2) && (i === 0 || value > values[i - 1]));
+  const map = setup.map;
+  if (!map || !axis(map.frontHeightsM) || !axis(map.rearHeightsM)) {
+    throw new Error('Use ascending front and rear ride-height grids with 2–128 points per axis, in metres.');
+  }
+  const table = (value: unknown, max: number) => Array.isArray(value) && value.length === map.frontHeightsM.length &&
+    value.every((row) => Array.isArray(row) && row.length === map.rearHeightsM.length && row.every((item) => within(item, 0, max)));
+  if (!table(map.clA, 100) || !table(map.cdA, 100) || !table(map.frontFraction, 1)) {
+    throw new Error('ClA, CdA and frontFraction tables must match both ride-height axes. Front fractions must be 0–1.');
+  }
+  if (!within(setup.staticFrontM, 0, 2) || !within(setup.staticRearM, 0, 2)
+    || !within(setup.frontWheelRateNPerM, 1, 1e7) || !within(setup.rearWheelRateNPerM, 1, 1e7)) {
+    throw new Error('Enter static ride heights in metres and positive wheel rates in N/m.');
+  }
+  return setup;
+}
+
 export function sampleRideHeightAero(
   map: RideHeightAeroMap,
   frontHeightM: number,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sampleRideHeightAero, type RideHeightAeroMap } from '@/lib/physics/aero';
+import { parseAeroRideHeightSetup, sampleRideHeightAero, type RideHeightAeroMap } from '@/lib/physics/aero';
 import { blendBraking, DEFAULT_ROTOR, rotorFrictionScale, stepBrakeRotors } from '@/lib/physics/brakes';
 import { buildEfficiencyMap, DEFAULT_POWERTRAIN } from '@/lib/physics/powertrain';
 import {
@@ -64,6 +64,13 @@ describe('Advanced tire, aero and brake models', () => {
         expect(aero.centerOfPressureFromFrontM).toBeCloseTo(vehicle.wheelbase * (1 - aero.frontFraction));
       }
     }
+  });
+
+  it('accepts a calibrated aero map file and rejects transposed or nonmonotonic input', () => {
+    const setup = { map: aeroMap, staticFrontM: 0.033, staticRearM: 0.045, frontWheelRateNPerM: 18000, rearWheelRateNPerM: 18500 };
+    expect(parseAeroRideHeightSetup(JSON.stringify(setup))).toEqual(setup);
+    expect(() => parseAeroRideHeightSetup(JSON.stringify({ ...setup, map: { ...aeroMap, frontHeightsM: [0.06, 0.02] } }))).toThrow(/ascending/);
+    expect(() => parseAeroRideHeightSetup(JSON.stringify({ ...setup, map: { ...aeroMap, cdA: [[1, 2, 3], [1, 2, 3]] } }))).toThrow(/match/);
   });
 
   it('heats only loaded rotors, dissipates heat without overshooting, and fades after 550 °C', () => {

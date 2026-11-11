@@ -11,6 +11,7 @@ import {
   type VehicleParams,
 } from '@/lib/physics';
 import { analyzeTorqueVectoring, buildTwoTrackEnvelope } from '@/lib/dynamics';
+import { parseAeroRideHeightSetup, type AeroRideHeightSetup } from '@/lib/physics/aero';
 import {
   createContext,
   ctxAyMax,
@@ -213,6 +214,9 @@ export default function Workbench({
   const [trackMenuOpen, setTrackMenuOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [engineMenuOpen, setEngineMenuOpen] = useState(false);
+  const [aeroCalibration, setAeroCalibration] = useState<{ name: string; setup: AeroRideHeightSetup } | null>(null);
+  const [aeroCalibrationError, setAeroCalibrationError] = useState('');
+  const aeroLoadId = useRef(0);
   const [leftInspectorOpen, setLeftInspectorOpen] = useState(false);
   const [ggDiagramOpen, setGgDiagramOpen] = useState(false);
   const [mathChannelsOpen, setMathChannelsOpen] = useState(false);
@@ -358,6 +362,9 @@ export default function Workbench({
 
   const applyPreset = useCallback(
     (id: VehiclePresetId) => {
+      aeroLoadId.current++;
+      setAeroCalibration(null);
+      setAeroCalibrationError('');
       setPresetId(id);
       onPresetIdChange?.(id);
       if (id === 'ist26-rwd') {
@@ -436,8 +443,8 @@ export default function Workbench({
 
   const veh: VehicleParams = useMemo(() => {
     const base = basePreset.vehicle;
-    return { ...base, ...vehPatch, tire: { ...base.tire, lambdaMu } };
-  }, [basePreset, vehPatch, lambdaMu]);
+    return { ...base, ...vehPatch, tire: { ...base.tire, lambdaMu }, rideHeightAero: aeroCalibration?.setup ?? base.rideHeightAero };
+  }, [basePreset, vehPatch, lambdaMu, aeroCalibration]);
 
   const pt: PowertrainParams = useMemo(() => {
     const base = basePreset.powertrain;
@@ -1094,6 +1101,28 @@ export default function Workbench({
 
             {engineMenuOpen && (
               <div className="absolute left-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-white/[0.09] bg-[#11141d]/95 p-2 shadow-2xl backdrop-blur-xl">
+                <div className="grid gap-1 border-b border-white/[0.08] px-2 pb-2 text-[10px] text-slate-300">
+                  <label className="cursor-pointer text-cyan-300 focus-within:underline">
+                    Load ride-height aero map (.json)
+                    <input type="file" accept="application/json,.json" className="sr-only" onChange={async (event) => {
+                      const file = event.target.files?.[0];
+                      event.target.value = '';
+                      if (!file) return;
+                      const loadId = ++aeroLoadId.current;
+                      try {
+                        if (file.size > 2 * 1024 * 1024) throw new Error('Aero calibration files are limited to 2 MB.');
+                        const setup = parseAeroRideHeightSetup(await file.text());
+                        if (loadId !== aeroLoadId.current) return;
+                        setAeroCalibration({ name: file.name, setup });
+                        setAeroCalibrationError('');
+                      } catch (err) {
+                        if (loadId === aeroLoadId.current) setAeroCalibrationError(err instanceof Error ? err.message : 'Could not read aero calibration.');
+                      }
+                    }} />
+                  </label>
+                  {aeroCalibration && <span className="flex items-center justify-between gap-1"><span className="truncate">{aeroCalibration.name}</span><button type="button" className="text-slate-400 hover:text-rose-300" onClick={() => { aeroLoadId.current++; setAeroCalibration(null); setAeroCalibrationError(''); }}>Remove</button></span>}
+                  {aeroCalibrationError && <span role="alert" className="text-amber-300">{aeroCalibrationError}</span>}
+                </div>
                 <div className="px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-slate-400">
                   Vehicle Dynamics Model
                 </div>
