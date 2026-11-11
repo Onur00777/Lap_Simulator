@@ -42,11 +42,13 @@ import {
   type VehiclePresetId,
 } from '@/lib/tracks';
 import { analyzeKorfezLayout, compareKorfezLayouts } from '@/lib/solver/korfez-analysis';
+import { compareVehicleSetups } from '@/lib/solver/setup-matrix';
 import { generateFsaeDesignReport, generateVcuBundle, printFsaeDesignReport } from '@/lib/codegen';
 import { downloadText, fmt, fmtTime, kph } from '@/lib/ui/format';
 import TrackCanvas, { type ColorMode, type MapAlign } from './TrackCanvas';
 import TelemetryCharts from './telemetry/TelemetryCharts';
 import MathChannelsDrawer from './telemetry/MathChannelsDrawer';
+import SetupMatrixDrawer from './setup/SetupMatrixDrawer';
 import GGDiagram from './GGDiagram';
 import { PowertrainForm, VehicleForm, type PowertrainKey, type VehicleKey } from './ParamPanel';
 import { DeltaBadge, DisclosureGroup, Kpi, Panel, Segmented } from './ui';
@@ -205,6 +207,8 @@ export default function Workbench({
   const [leftInspectorOpen, setLeftInspectorOpen] = useState(false);
   const [ggDiagramOpen, setGgDiagramOpen] = useState(false);
   const [mathChannelsOpen, setMathChannelsOpen] = useState(false);
+  const [setupMatrixOpen, setSetupMatrixOpen] = useState(false);
+  const [referencePresetId, setReferencePresetId] = useState<VehiclePresetId>('tpsc');
   const [canCockpitOpen, setCanCockpitOpen] = useState(false);
   const [benchmarksOpen, setBenchmarksOpen] = useState(false);
   const [mapAlign, setMapAlign] = useState<MapAlign>({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true });
@@ -223,6 +227,7 @@ export default function Workbench({
       if (e.key === 'Escape') {
         setLeftInspectorOpen(false);
         setGgDiagramOpen(false);
+        setSetupMatrixOpen(false);
         setCanCockpitOpen(false);
         setEngineMenuOpen(false);
         setPresetMenuOpen(false);
@@ -493,6 +498,17 @@ export default function Workbench({
     return { ctx, lap, ghostLap, ghostTrack, ghostLabel, setupMs: t1 - t0, solveMs: t2 - t1 };
   }, [dVeh, dPt, dTrack, centerTrack, racingLineMode, model, integrator, baselineSolved]);
   const { ctx, lap, ghostLap, ghostTrack, ghostLabel } = sim;
+  const matrix = useMemo(() => {
+    if (!setupMatrixOpen) return null;
+    const reference = KORFEZ_PRESETS.find((preset) => preset.id === referencePresetId) ?? TPSC_PRESET;
+    const ghost = baselineSolved?.cfg ?? (ghostLap ? { veh: dVeh, pt: dPt, model, integrator, racingLineMode }
+      : { veh: IST27_PRESET.vehicle, pt: IST27_PRESET.powertrain, model, integrator, racingLineMode });
+    return compareVehicleSetups(dRawTrack, [
+      { name: dVeh.name, veh: dVeh, pt: dPt, model, integrator, racingLineMode },
+      { ...ghost, name: ghostLap ? ghostLabel : IST27_PRESET.label },
+      { name: reference.label, veh: reference.vehicle, pt: reference.powertrain, model, integrator, racingLineMode },
+    ], { A: lap, B: ghostLap ?? undefined });
+  }, [setupMatrixOpen, referencePresetId, baselineSolved, ghostLap, ghostLabel, dRawTrack, dVeh, dPt, model, integrator, racingLineMode, lap]);
 
   const launch = useMemo(() => simulateLaunch(dVeh, dPt, ctx.map), [dVeh, dPt, ctx]);
   const skid = useMemo(() => skidpadSteadyState(dVeh, (v) => ctxAyMax(ctx, v)), [dVeh, ctx]);
@@ -799,6 +815,9 @@ export default function Workbench({
         <div className="flex shrink-0 items-center gap-1.5">
           <button type="button" aria-pressed={mathChannelsOpen} onClick={() => setMathChannelsOpen((open) => !open)} className="h-7 rounded-md border border-white/10 bg-white/5 px-2 font-mono text-xs text-slate-200 hover:border-cyan-500/50">
             Math Channels
+          </button>
+          <button type="button" aria-pressed={setupMatrixOpen} onClick={() => setSetupMatrixOpen((open) => !open)} className="h-7 rounded-md border border-white/10 bg-white/5 px-2 font-mono text-xs text-slate-200 hover:border-cyan-500/50">
+            Setup Matrix
           </button>
           {/* Vehicle Preset Popover Button */}
           <div className="relative shrink-0" ref={presetMenuRef}>
@@ -1819,6 +1838,7 @@ export default function Workbench({
             {mathChannelsOpen && (
               <MathChannelsDrawer inputs={mathInputs} distance={ch.s} cursorS={safeCursor != null ? ch.s[safeCursor] : null} onClose={closeMathChannels} />
             )}
+            {matrix && <SetupMatrixDrawer entries={matrix} referenceId={referencePresetId} onReference={setReferencePresetId} onSnapshot={snapshotBaseline} onClose={() => setSetupMatrixOpen(false)} />}
           </Panel>
 
           <Panel title={<Segmented options={tabs} value={tab} onChange={setTab} />}>
