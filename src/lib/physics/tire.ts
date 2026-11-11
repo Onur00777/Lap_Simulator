@@ -1,3 +1,5 @@
+import type { TireTemperatures, TireThermalInput, TireThermalParams } from './types';
+
 /**
  * Pacejka pure-slip curves with a slip-vector coupling for combined forces.
  *
@@ -86,6 +88,54 @@ export const DEFAULT_TIRE: TireParams = {
   pneumaticTrailM: 0.028,
 };
 
+/** Reference thermal capacities and conductances for one Formula Student slick. */
+export const DEFAULT_TIRE_THERMAL: TireThermalParams = {
+  coreCapacityJPerK: 4800,
+  surfaceCapacityJPerK: 220,
+  coreSurfaceConductanceWPerK: 22,
+  coreCoolingWPerK: 2,
+  surfaceCoolingWPerK: 8,
+  speedCoolingWPerKPerMps: 0.65,
+  slipHeatFraction: 0.82,
+};
+
+/** Inelastic contact work per second, using tire-frame slip velocities [m/s]. */
+export function tireSlipPowerW(fx: number, fy: number, slipVx: number, slipVy: number): number {
+  return Math.abs(fx * slipVx) + Math.abs(fy * slipVy);
+}
+
+/** Backward Euler on the two coupled thermal balances, conserving the heat exchanged between nodes. */
+export function stepTireThermal(
+  state: TireTemperatures,
+  input: TireThermalInput,
+  dt: number,
+  params: TireThermalParams = DEFAULT_TIRE_THERMAL,
+): TireTemperatures {
+  if (!(dt > 0)) return state;
+  const { ambientC, speedMps, slipPowerW } = input;
+  const coupling = params.coreSurfaceConductanceWPerK;
+  const surfaceCooling = params.surfaceCoolingWPerK + params.speedCoolingWPerKPerMps * Math.abs(speedMps);
+  const coreInertia = params.coreCapacityJPerK / dt;
+  const surfaceInertia = params.surfaceCapacityJPerK / dt;
+  const a = coreInertia + coupling + params.coreCoolingWPerK;
+  const d = surfaceInertia + coupling + surfaceCooling;
+  const core = coreInertia * (state.coreC - ambientC);
+  const surface = surfaceInertia * (state.surfaceC - ambientC) + Math.max(0, slipPowerW) * params.slipHeatFraction;
+  const determinant = a * d - coupling * coupling;
+
+  return {
+    coreC: ambientC + (d * core + coupling * surface) / determinant,
+    surfaceC: ambientC + (a * surface + coupling * core) / determinant,
+  };
+}
+
+/** Temperature scale with a 75–95 °C working window and steeper hot-side falloff. */
+export function tireThermalGrip(temperature: TireTemperatures): number {
+  const effectiveC = 0.85 * temperature.surfaceC + 0.15 * temperature.coreC;
+  const deviation = effectiveC < 75 ? (75 - effectiveC) / 53 : Math.max(0, effectiveC - 95) / 18;
+  return 0.34 + 0.66 * Math.exp(-deviation * deviation);
+}
+
 /** The Magic Formula kernel. */
 export function magicFormula(x: number, B: number, C: number, D: number, E: number): number {
   const Bx = B * x;
@@ -162,11 +212,15 @@ export function combinedTireForces(
   slipAngleRad: number,
   verticalLoadN: number,
   camberRad = 0,
+  temperatures?: TireTemperatures,
 ): TireContactForces {
   if (verticalLoadN <= 0) return { fx: 0, fy: 0, mz: 0 };
 
   const x = longitudinalCoefficients(tire, verticalLoadN);
   const y = lateralCoefficients(tire, verticalLoadN);
+  const thermalGrip = temperatures ? tireThermalGrip(temperatures) : 1;
+  x.D *= thermalGrip;
+  y.D *= thermalGrip;
   // Scale each slip by its curve's slope so small combined slips recover the pure-slip stiffnesses.
   const sx = x.B * slipRatio;
   const sy = y.B * (slipAngleRad + tire.lateral.sh);
