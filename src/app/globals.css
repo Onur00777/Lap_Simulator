@@ -4,6 +4,7 @@
 
 :root {
   color-scheme: dark;
+  scrollbar-color: rgb(100 116 139 / 36%) transparent;
 }
 
 html,
@@ -24,16 +25,29 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+.engineering-workbench {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.studio-drawer {
+  scrollbar-gutter: stable;
+  transition-property: transform, border-color;
+}
+
+.studio-drawer:is(:hover, :focus-within) {
+  border-color: rgb(100 116 139 / 52%);
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
+  background: rgb(100 116 139 / 36%);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.35);
+  background: rgb(100 116 139 / 65%);
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -41,7 +55,7 @@ body {
 
 @layer components {
   .panel {
-    @apply rounded-xl border border-white/[0.07] bg-[#11141d]/90 backdrop-blur-md;
+    @apply rounded-xl border border-white/[0.08] bg-[#080a10]/90 backdrop-blur-xl;
   }
   .panel-title {
     @apply flex items-center gap-2 border-b border-white/[0.06] px-3.5 py-2.5 text-[10px] font-medium uppercase tracking-wider text-slate-400;

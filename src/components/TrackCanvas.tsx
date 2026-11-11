@@ -627,9 +627,9 @@ export default function TrackCanvas({
       {/* Pinned dynamic cursor distance & speed readout */}
       {activeIdx != null && (
         <div className="pointer-events-none absolute bottom-8 left-3 z-10 flex items-center gap-1.5 font-mono text-xs tabular-nums text-cyan-400 font-medium">
-          <span>s = {fmt(ch.s[activeIdx], 1)} m</span>
+          <span className="inline-block min-w-[12ch]">s = {fmt(ch.s[activeIdx], 1)} m</span>
           <span className="text-slate-500">·</span>
-          <span>{fmt(kph(ch.v[activeIdx]), 1)} km/h</span>
+          <span className="inline-block min-w-[11ch] text-right">{fmt(kph(ch.v[activeIdx]), 1)} km/h</span>
         </div>
       )}
 
@@ -657,7 +657,7 @@ export default function TrackCanvas({
         {/* Docked Live Car Telemetry HUD */}
         <aside
           aria-label="Live Car Telemetry HUD"
-          className="rounded-xl border border-white/10 bg-[#0b0e17]/85 p-2.5 font-mono text-xs shadow-2xl backdrop-blur-md"
+          className="rounded-xl border border-white/[0.08] bg-[#080a10]/90 p-2.5 font-mono text-xs tabular-nums shadow-2xl backdrop-blur-xl"
         >
         <div className="mb-2 flex items-center justify-between border-b border-white/[0.08] pb-1.5">
           <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-slate-300">
@@ -758,12 +758,10 @@ export default function TrackCanvas({
           </div>
         </div>
 
-        {ch.wheelLift[activeIdx] && (
-          <div className="mt-1.5 flex items-center justify-center gap-1 rounded bg-rose-500/20 py-0.5 text-[10px] font-bold text-rose-300 border border-rose-500/30">
+          <div aria-hidden={!ch.wheelLift[activeIdx]} className={`mt-1.5 flex items-center justify-center gap-1 rounded border border-rose-500/30 bg-rose-500/20 py-0.5 text-[10px] font-bold text-rose-300 ${ch.wheelLift[activeIdx] ? '' : 'invisible'}`}>
             <span>⚠</span>
             <span>Inner Wheel Lift!</span>
           </div>
-        )}
       </aside>
       </div>
     </div>

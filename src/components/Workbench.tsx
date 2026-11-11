@@ -564,6 +564,8 @@ export default function Workbench({
     };
   }, [ch, dVeh.tire, mathChannelsOpen]);
   const closeMathChannels = useCallback(() => setMathChannelsOpen(false), []);
+  const toggleMathChannels = () => { setSetupMatrixOpen(false); setMathChannelsOpen((open) => !open); };
+  const toggleSetupMatrix = () => { setMathChannelsOpen(false); setSetupMatrixOpen((open) => !open); };
   const n = ch.s.length;
   const safeCursor = cursor != null && Number.isInteger(cursor) && cursor >= 0 && cursor < n ? cursor : null;
   const effectiveGhostCursor = playing ? ghostCursor : safeCursor;
@@ -768,16 +770,16 @@ export default function Workbench({
                       : `${dTrack.name} (${Math.round(dTrack.length)}m)`;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#090a0f] text-slate-200">
+    <div className="engineering-workbench flex min-h-screen flex-col bg-[#090a0f] text-slate-200">
       <KeyboardShortcutsHandler enabled={shortcutsEnabled} shortcuts={{
         togglePlayback: () => setPlaying((active) => !active), cycleRate: cyclePlaybackRate, scrub: scrubDistance,
-        toggleGg: () => setGgDiagramOpen((open) => !open), toggleMath: () => setMathChannelsOpen((open) => !open),
-        toggleMatrix: () => setSetupMatrixOpen((open) => !open),
+        toggleGg: () => setGgDiagramOpen((open) => !open), toggleMath: toggleMathChannels,
+        toggleMatrix: toggleSetupMatrix,
       }} />
       {/* ===================================================================== */}
       {/* PHASE 1: PERSISTENT MACOS UNIFIED TOP TOOLBAR (48px Glass Ribbon)      */}
       {/* ===================================================================== */}
-      <header className="sticky top-0 z-30 flex h-12 min-h-[48px] max-h-[48px] items-center justify-between gap-2 border-b border-white/[0.08] bg-[#0c0d14]/70 px-3.5 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 flex h-12 min-h-[48px] max-h-[48px] items-center justify-between gap-2 border-b border-white/[0.08] bg-[#080a10]/90 px-3.5 backdrop-blur-xl">
         {/* 1. LEFT GROUP: SIDEBAR TOGGLE, BRANDING & WORKSPACE SWITCHER */}
         <div className="flex shrink-0 items-center gap-2">
           {/* Minimalist Sidebar Toggle Icon [ ◨ ] */}
@@ -844,12 +846,6 @@ export default function Workbench({
 
         {/* 2. CENTER CONTEXT SELECTORS (Subtle macOS Popover Buttons) */}
         <div className="flex shrink-0 items-center gap-1.5">
-          <button type="button" aria-pressed={mathChannelsOpen} onClick={() => setMathChannelsOpen((open) => !open)} className="h-7 rounded-md border border-white/10 bg-white/5 px-2 font-mono text-xs text-slate-200 hover:border-cyan-500/50">
-            Math Channels
-          </button>
-          <button type="button" aria-pressed={setupMatrixOpen} onClick={() => setSetupMatrixOpen((open) => !open)} className="h-7 rounded-md border border-white/10 bg-white/5 px-2 font-mono text-xs text-slate-200 hover:border-cyan-500/50">
-            Setup Matrix
-          </button>
           {/* Vehicle Preset Popover Button */}
           <div className="relative shrink-0" ref={presetMenuRef}>
             <button
@@ -1341,10 +1337,10 @@ export default function Workbench({
       {/* ===================================================================== */}
       {/* PHASE 3: AMBIENT KPI HERO BAR (Low-Opacity Captions & SF Numerals)     */}
       {/* ===================================================================== */}
-      <div className="border-b border-white/[0.06] bg-[#090b12]/90 px-4 py-3 backdrop-blur-xl">
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:divide-x lg:divide-white/[0.06]">
+      <div className="border-b border-white/[0.08] bg-[#080a10]/90 px-4 py-3 backdrop-blur-xl">
+        <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
           {/* 1. LAP TIME */}
-          <div className="flex flex-col justify-between pr-0 lg:pr-4">
+          <div className="flex min-w-0 flex-col justify-between rounded-lg border border-white/[0.08] bg-white/[0.025] p-2.5">
             <div className="flex items-center justify-between gap-2">
               <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400/80">
                 LAP TIME ({dTrack.name})
@@ -1364,7 +1360,7 @@ export default function Workbench({
           </div>
 
           {/* 2. SPEED */}
-          <div className="flex flex-col justify-between pl-0 lg:pl-4 pr-0 lg:pr-4">
+          <div className="flex min-w-0 flex-col justify-between rounded-lg border border-white/[0.08] bg-white/[0.025] p-2.5">
             <div className="flex items-center justify-between gap-2">
               <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400/80">SPEED</span>
               {baselineSolved && (
@@ -1376,7 +1372,7 @@ export default function Workbench({
                 />
               )}
             </div>
-            <div className="mt-1 flex items-baseline gap-2 font-mono tabular-nums">
+            <div className="mt-1 flex flex-wrap items-baseline gap-x-2 font-mono tabular-nums">
               <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                 {fmt(kph(lap.avgSpeed), 1)}
               </span>
@@ -1390,7 +1386,7 @@ export default function Workbench({
           </div>
 
           {/* 3. NET ENERGY */}
-          <div className="flex flex-col justify-between pl-0 lg:pl-4 pr-0 lg:pr-4">
+          <div className="flex min-w-0 flex-col justify-between rounded-lg border border-white/[0.08] bg-white/[0.025] p-2.5">
             <div className="flex items-center justify-between gap-2">
               <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400/80">NET ENERGY</span>
               {baselineSolved && (
@@ -1413,7 +1409,7 @@ export default function Workbench({
           </div>
 
           {/* 4. COOLING HEAT */}
-          <div className="flex flex-col justify-between pl-0 lg:pl-4">
+          <div className="flex min-w-0 flex-col justify-between rounded-lg border border-white/[0.08] bg-white/[0.025] p-2.5">
             <div className="flex items-center justify-between gap-2">
               <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400/80">COOLING HEAT</span>
               <button
@@ -1482,7 +1478,7 @@ export default function Workbench({
 
       {/* 1. LEFT DRAWER: VEHICLE & SETUP INSPECTOR (Slide-Out Panel - Non-modal) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[350px] max-w-[90vw] flex-col justify-between border-r border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out pointer-events-auto ${
+        className={`studio-drawer fixed inset-y-0 left-0 z-50 flex w-[350px] max-w-[90vw] flex-col justify-between border-r border-white/[0.08] bg-[#080a10]/90 shadow-2xl backdrop-blur-xl duration-300 ease-out pointer-events-auto ${
           leftInspectorOpen ? 'translate-x-0' : '-translate-x-full !pointer-events-none'
         }`}
         role="dialog"
@@ -1655,7 +1651,7 @@ export default function Workbench({
 
       {/* 2. RIGHT DRAWER: G-G POLAR STUDIO (Slide-Out Panel - Non-modal) */}
       <aside
-        className={`fixed inset-y-0 right-0 z-50 flex w-[480px] max-w-[95vw] flex-col border-l border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out pointer-events-auto ${
+        className={`studio-drawer fixed inset-y-0 right-0 z-50 flex w-[480px] max-w-[95vw] flex-col border-l border-white/[0.08] bg-[#080a10]/90 shadow-2xl backdrop-blur-xl duration-300 ease-out pointer-events-auto ${
           ggDiagramOpen ? 'translate-x-0' : 'translate-x-full !pointer-events-none'
         }`}
         role="dialog"
@@ -1850,26 +1846,26 @@ export default function Workbench({
           <Panel
             title="Synchronized Telemetry Strip"
             right={
-              safeCursor != null ? (
-                <span className="font-mono text-[10px] normal-case tracking-normal tabular-nums text-cyan-300">
-                  s {fmt(ch.s[safeCursor], 1)} m · {fmt(kph(ch.v[safeCursor]), 1)} km/h · {fmt(ch.gLat[safeCursor], 2)} G lat ·{' '}
-                  Fz [{fmt(ch.fzFL[safeCursor], 0)}, {fmt(ch.fzFR[safeCursor], 0)}, {fmt(ch.fzRL[safeCursor], 0)}, {fmt(ch.fzRR[safeCursor], 0)}] N ·{' '}
-                  K_us {fmt(ch.understeerDegPerG[safeCursor], 2)}°/G
-                </span>
-              ) : undefined
+              <div className="flex shrink-0 items-center gap-1.5 font-mono text-[10px] normal-case tracking-normal">
+                <button type="button" aria-keyshortcuts="M" aria-pressed={mathChannelsOpen} onClick={toggleMathChannels} className="btn">Math Channels</button>
+                <button type="button" aria-keyshortcuts="S" aria-pressed={setupMatrixOpen} onClick={toggleSetupMatrix} className="btn">Setup Matrix</button>
+              </div>
             }
             bodyClassName="p-2.5"
           >
+            <div aria-hidden={safeCursor == null} className={`mb-2 flex min-h-4 gap-2 overflow-x-auto whitespace-nowrap font-mono text-[10px] tabular-nums text-cyan-300 ${safeCursor == null ? 'invisible' : ''}`}>
+              <span className="w-[13ch] shrink-0">s {fmt(ch.s[safeCursor ?? 0], 1)} m</span>
+              <span className="w-[13ch] shrink-0">{fmt(kph(ch.v[safeCursor ?? 0]), 1)} km/h</span>
+              <span className="w-[12ch] shrink-0">{fmt(ch.gLat[safeCursor ?? 0], 2)} G lat</span>
+              <span className="w-[31ch] shrink-0">Fz [{fmt(ch.fzFL[safeCursor ?? 0], 0)}, {fmt(ch.fzFR[safeCursor ?? 0], 0)}, {fmt(ch.fzRL[safeCursor ?? 0], 0)}, {fmt(ch.fzRR[safeCursor ?? 0], 0)}] N</span>
+              <span className="w-[15ch] shrink-0">K_us {fmt(ch.understeerDegPerG[safeCursor ?? 0], 2)}°/G</span>
+            </div>
             <TelemetryCharts
               lap={lap}
               baselineLap={baselineSolved?.lap ?? ghostLap}
               cursorS={safeCursor != null ? ch.s[safeCursor] : null}
               onHoverS={onHoverS}
             />
-            {mathChannelsOpen && (
-              <MathChannelsDrawer inputs={mathInputs} distance={ch.s} cursorS={safeCursor != null ? ch.s[safeCursor] : null} onClose={closeMathChannels} />
-            )}
-            {matrix && <SetupMatrixDrawer entries={matrix} referenceId={referencePresetId} onReference={setReferencePresetId} onSnapshot={snapshotBaseline} onClose={() => setSetupMatrixOpen(false)} />}
           </Panel>
 
           <Panel title={<Segmented options={tabs} value={tab} onChange={setTab} />}>
@@ -1931,6 +1927,9 @@ export default function Workbench({
           bundle={bundle}
         />
       </div>
+
+      {mathChannelsOpen && <MathChannelsDrawer inputs={mathInputs} distance={ch.s} cursorS={safeCursor != null ? ch.s[safeCursor] : null} onClose={closeMathChannels} />}
+      {matrix && <SetupMatrixDrawer entries={matrix} referenceId={referencePresetId} onReference={setReferencePresetId} onSnapshot={snapshotBaseline} onClose={() => setSetupMatrixOpen(false)} />}
 
       <footer className="border-t border-white/[0.06] px-4 py-2 font-mono text-[10px] text-slate-500">
         ApexLapSim · Pacejka MF tires · 3-pass QSS solver (Euler / RK4 in v²) · 2-track yaw dynamics (RK4) · FDCAN1/FDCAN2 & MISRA-C VCU export
