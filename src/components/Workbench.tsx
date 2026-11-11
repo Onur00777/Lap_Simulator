@@ -43,12 +43,14 @@ import {
 } from '@/lib/tracks';
 import { analyzeKorfezLayout, compareKorfezLayouts } from '@/lib/solver/korfez-analysis';
 import { compareVehicleSetups } from '@/lib/solver/setup-matrix';
+import { computeSetupJacobian } from '@/lib/solver/sensitivity';
 import { generateFsaeDesignReport, generateVcuBundle, printFsaeDesignReport } from '@/lib/codegen';
 import { downloadText, fmt, fmtTime, kph } from '@/lib/ui/format';
 import TrackCanvas, { type ColorMode, type MapAlign } from './TrackCanvas';
 import TelemetryCharts from './telemetry/TelemetryCharts';
 import MathChannelsDrawer from './telemetry/MathChannelsDrawer';
 import SetupMatrixDrawer from './setup/SetupMatrixDrawer';
+import SensitivityTornadoChart from './setup/SensitivityTornadoChart';
 import GGDiagram from './GGDiagram';
 import { PowertrainForm, VehicleForm, type PowertrainKey, type VehicleKey } from './ParamPanel';
 import { DeltaBadge, DisclosureGroup, Kpi, Panel, Segmented } from './ui';
@@ -498,6 +500,8 @@ export default function Workbench({
     return { ctx, lap, ghostLap, ghostTrack, ghostLabel, setupMs: t1 - t0, solveMs: t2 - t1 };
   }, [dVeh, dPt, dTrack, centerTrack, racingLineMode, model, integrator, baselineSolved]);
   const { ctx, lap, ghostLap, ghostTrack, ghostLabel } = sim;
+  const jacobian = useMemo(() => tab === 'sensitivity' ? computeSetupJacobian(dTrack, dVeh, dPt, model, integrator) : null,
+    [tab, dTrack, dVeh, dPt, model, integrator]);
   const matrix = useMemo(() => {
     if (!setupMatrixOpen) return null;
     const reference = KORFEZ_PRESETS.find((preset) => preset.id === referencePresetId) ?? TPSC_PRESET;
@@ -1854,7 +1858,12 @@ export default function Workbench({
             )}
             {tab === 'corners' && <CornersPanel lap={lap} skid={skid} onSelect={(i) => setCursor(i)} />}
             {tab === 'tv' && (tv ? <TorqueVectoringPanel tv={tv} cursorS={safeCursor != null ? ch.s[safeCursor] : null} /> : <Busy />)}
-            {tab === 'sensitivity' && <SensitivityPanel track={dTrack} veh={dVeh} pt={dPt} model={model} integrator={integrator} />}
+            {tab === 'sensitivity' && (
+              <>
+                {jacobian && <SensitivityTornadoChart entries={jacobian} />}
+                <SensitivityPanel track={dTrack} veh={dVeh} pt={dPt} model={model} integrator={integrator} />
+              </>
+            )}
             {tab === 'endurance' && (
               <EndurancePanel
                 track={dTrack}
