@@ -4,6 +4,9 @@ import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } f
 import {
   DEFAULT_POWERTRAIN,
   DEFAULT_VEHICLE,
+  longitudinalCoefficients,
+  magicFormula,
+  peakSlip,
   speedFromMotorRpm,
   type LateralModel,
   type PowertrainParams,
@@ -43,6 +46,7 @@ import { generateFsaeDesignReport, generateVcuBundle, printFsaeDesignReport } fr
 import { downloadText, fmt, fmtTime, kph } from '@/lib/ui/format';
 import TrackCanvas, { type ColorMode, type MapAlign } from './TrackCanvas';
 import TelemetryCharts from './TelemetryCharts';
+import MathChannelsDrawer from './telemetry/MathChannelsDrawer';
 import GGDiagram from './GGDiagram';
 import { PowertrainForm, VehicleForm, type PowertrainKey, type VehicleKey } from './ParamPanel';
 import { DeltaBadge, DisclosureGroup, Kpi, Panel, Segmented } from './ui';
@@ -200,6 +204,7 @@ export default function Workbench({
   const [engineMenuOpen, setEngineMenuOpen] = useState(false);
   const [leftInspectorOpen, setLeftInspectorOpen] = useState(false);
   const [ggDiagramOpen, setGgDiagramOpen] = useState(false);
+  const [mathChannelsOpen, setMathChannelsOpen] = useState(false);
   const [canCockpitOpen, setCanCockpitOpen] = useState(false);
   const [benchmarksOpen, setBenchmarksOpen] = useState(false);
   const [mapAlign, setMapAlign] = useState<MapAlign>({ opacity: 0.32, scale: 1, x: 0, y: 0, rotation: 0, visible: true });
@@ -510,6 +515,30 @@ export default function Workbench({
   const tabs = venue === 'korfez' ? [{ value: 'korfez' as Tab, label: 'Körfez Analiz' }, ...TABS] : TABS;
 
   const ch = lap.channels;
+  const mathInputs = useMemo(() => {
+    if (!mathChannelsOpen) return {};
+    return {
+      ...ch,
+      understeerAngle: ch.understeerDegPerG.map((kus, i) => kus * Math.abs(ch.gLat[i])),
+      slipRatio: ch.v.map((v, i) => {
+        if (v < 0.5 || ch.pWheelKW[i] === 0) return 0;
+        const left = longitudinalCoefficients(dVeh.tire, ch.fzRL[i]);
+        const right = longitudinalCoefficients(dVeh.tire, ch.fzRR[i]);
+        const forceN = ch.pWheelKW[i] * 1000 / v;
+        const targetN = Math.abs(forceN);
+        let lower = 0;
+        let upper = Math.min(peakSlip(left), peakSlip(right), 1);
+        for (let iteration = 0; iteration < 20; iteration++) {
+          const slip = (lower + upper) / 2;
+          const modeledN = magicFormula(slip, left.B, left.C, left.D, left.E) + magicFormula(slip, right.B, right.C, right.D, right.E);
+          if (modeledN < targetN) lower = slip;
+          else upper = slip;
+        }
+        return Math.sign(forceN) * (lower + upper) / 2;
+      }),
+    };
+  }, [ch, dVeh.tire, mathChannelsOpen]);
+  const closeMathChannels = useCallback(() => setMathChannelsOpen(false), []);
   const n = ch.s.length;
   const safeCursor = cursor != null && cursor < n ? cursor : null;
   const effectiveGhostCursor = playing ? ghostCursor : safeCursor;
@@ -757,6 +786,9 @@ export default function Workbench({
 
         {/* 2. CENTER CONTEXT SELECTORS (Subtle macOS Popover Buttons) */}
         <div className="flex shrink-0 items-center gap-1.5">
+          <button type="button" aria-pressed={mathChannelsOpen} onClick={() => setMathChannelsOpen((open) => !open)} className="h-7 rounded-md border border-white/10 bg-white/5 px-2 font-mono text-xs text-slate-200 hover:border-cyan-500/50">
+            Math Channels
+          </button>
           {/* Vehicle Preset Popover Button */}
           <div className="relative shrink-0" ref={presetMenuRef}>
             <button
@@ -1773,6 +1805,9 @@ export default function Workbench({
               cursorS={safeCursor != null ? ch.s[safeCursor] : null}
               onHoverS={onHoverS}
             />
+            {mathChannelsOpen && (
+              <MathChannelsDrawer inputs={mathInputs} distance={ch.s} cursorS={safeCursor != null ? ch.s[safeCursor] : null} onClose={closeMathChannels} />
+            )}
           </Panel>
 
           <Panel title={<Segmented options={tabs} value={tab} onChange={setTab} />}>
