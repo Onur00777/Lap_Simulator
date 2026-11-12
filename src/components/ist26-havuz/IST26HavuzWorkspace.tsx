@@ -104,6 +104,7 @@ export default function IST26HavuzWorkspace({
   const [colMap, setColMap] = useState<ColumnMappingConfig>(DEFAULT_IST26_COLUMN_MAP);
   const [logQuery, setLogQuery] = useState('');
   const [logLimit, setLogLimit] = useState(10);
+  const [uploadMessage, setUploadMessage] = useState('');
   const [selectedLogId, setSelectedLogId] = useState<string>('23_08/23_08_2026-11.31.49.csv');
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const fusionWorkers = useRef(new Map<string, Worker>());
@@ -124,11 +125,17 @@ export default function IST26HavuzWorkspace({
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
+    setUploadMessage('CSV okunuyor…');
     const reader = new FileReader();
+    reader.onerror = () => setUploadMessage('CSV dosyası okunamadı.');
     reader.onload = () => {
       const text = String(reader.result ?? '');
       const { entry, samples } = processRawIst26Csv(file.name, text, colMap);
       setLogs((prev) => getSortedHavuzLogs([entry, ...prev.filter((x) => x.id !== entry.id)]));
+      setLogFilter('all');
+      setLogQuery(file.name);
+      setLogLimit(10);
+      setUploadMessage(samples.length > 0 ? 'Kayıt hazır.' : 'Kayıt eklendi. Simülasyon için kullanılabilir sürüş örneği bulunamadı.');
       if (samples.length > 0) {
         setCustomTelemetryMap((prev) => ({ ...prev, [entry.id]: samples }));
         setSelectedLogId(entry.id);
@@ -319,6 +326,7 @@ export default function IST26HavuzWorkspace({
               <button type="button" onClick={() => uploadInputRef.current?.click()}
                 className="rounded-md bg-cyan-400 px-3 py-2 text-sm font-medium text-slate-950 hover:bg-cyan-300">CSV yükle</button>
             </header>
+            {uploadMessage && <p role="status" className="text-sm text-slate-300">{uploadMessage}</p>}
 
             <details className="rounded-lg border border-white/10 px-3 py-2.5">
               <summary className="cursor-pointer text-sm font-medium text-slate-200">CSV sütun eşleştirme</summary>
