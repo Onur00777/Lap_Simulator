@@ -43,9 +43,9 @@ The example values describe the file format. Loaded calibration applies to the c
 
 ## İTÜ Havuz Lab
 
-- Upload an IST26 sensor CSV and open **Simülasyon & Araç Kıyaslama** to see the EKF estimate. The upload path treats logged acceleration as gravity-compensated and uses inverter power-on counter changes to infer CAN activity.
+- Upload an IST26 sensor CSV and open **Simülasyon** to see the EKF estimate. The upload path treats logged acceleration as gravity-compensated and uses inverter power-on counter changes to infer CAN activity.
 - Export the fitted closed track as SVG or GeoJSON. GeoJSON uses an approximate site anchor and axis orientation. The telemetry CSV follows MoTeC export-style headers and reconstructs the time base from distance and speed.
-- The VCU stage exports `apex_vcu_bus.dbc`. Cascadia messages use the manufacturer default CAN offset. Apex application frames describe the SIL matrix and need to be matched to the installed ECU and BMS configuration.
+- Open **VCU / SDC** for test scenarios and **Firmware ve CAN dosyaları** for `apex_vcu_bus.dbc`. Cascadia messages use the manufacturer default CAN offset. Apex application frames describe the SIL matrix and need to be matched to the installed ECU and BMS configuration.
 
 The main **VCU Codegen** tab exports `vcu_dynamics.h` and `vcu_dynamics.c` with the torque authorization state machine. The generated task expects validated ECU inputs and a hardware watchdog and shutdown path. The supplied tests cover host compilation and simulated fault transitions. Target integration requires hardware validation and a project-specific MISRA compliance review.
 
