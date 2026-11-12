@@ -27,13 +27,6 @@ const IST26HavuzWorkspace = dynamic(() => import('@/components/ist26-havuz/IST26
 
 export type WorkspaceMode = 'main-simulator' | 'ist26-havuz-lab';
 
-const VEHICLE_OPTIONS: { id: VehiclePresetId; title: string }[] = [
-  { id: 'ist26-rwd', title: 'IST26 RWD' },
-  { id: 'ist27-twotrack', title: 'IST27 TwoTrackSim' },
-  { id: 'ist27', title: 'IST27 Baseline' },
-  { id: 'tpsc', title: 'TPSC Reference' },
-];
-
 export default function ClientApp() {
   const [workspaceMode, setWorkspaceMode] = useState<WorkspaceMode>('main-simulator');
   const [activePresetId, setActivePresetId] = useState<VehiclePresetId>('ist27-twotrack');
@@ -51,17 +44,10 @@ export default function ClientApp() {
               </button>
               <h1 className="text-sm font-semibold text-white">İTÜ Havuz Lab</h1>
             </div>
-            <div className="flex items-center gap-2">
-              <select aria-label="Simülasyon aracı" value={activePresetId}
-                onChange={(event) => setActivePresetId(event.target.value as VehiclePresetId)}
-                className="max-w-[65vw] rounded-md border border-white/10 bg-slate-900 px-2 py-1.5 text-sm">
-                {VEHICLE_OPTIONS.map(({ id, title }) => <option key={id} value={id}>{title}</option>)}
-              </select>
-              <button type="button" onClick={() => setShowGuideModal(true)}
-                className="rounded-md px-2 py-1.5 text-sm text-slate-400 hover:bg-white/5 hover:text-white">
-                Rehber
-              </button>
-            </div>
+            <button type="button" onClick={() => setShowGuideModal(true)}
+              className="rounded-md px-2 py-1.5 text-sm text-slate-400 hover:bg-white/5 hover:text-white">
+              Rehber
+            </button>
           </div>
         </header>
       )}

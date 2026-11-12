@@ -46,6 +46,13 @@ const LAB_VIEWS: { id: StageTab; label: string }[] = [
   { id: 'logs', label: 'Kayıtlar' },
   { id: 'vcu', label: 'VCU / SDC' },
 ];
+
+const HAVUZ_VEHICLES: { id: VehiclePresetId; label: string }[] = [
+  { id: 'ist26-rwd', label: 'IST26 RWD' },
+  { id: 'ist27-twotrack', label: 'IST27 TwoTrackSim' },
+  { id: 'ist27', label: 'IST27 Baseline' },
+  { id: 'tpsc', label: 'TPSC Reference' },
+];
 type LogFilter = 'all' | 'Temiz' | 'Kısmi' | 'Bozuk' | 'auto';
 
 const TELEMETRY_SIGNALS = [
@@ -198,27 +205,15 @@ export default function IST26HavuzWorkspace({
   // Multi-vehicle benchmark on İTÜ Havuz Otoparkı (IST26 RWD vs IST27 TwoTrackSim vs IST27 Baseline vs TPSC)
   const multiVehicleComparison = useMemo(() => {
     const customSamples = customTelemetryMap[selectedLogId];
-    const presets: Array<{ id: VehiclePresetId; name: string; spec: string }> = [
-      { id: 'ist26-rwd', name: 'IST26 RWD (Cascadia)', spec: '335.5 kg · 1 Motor · 3.2:1' },
-      { id: 'ist27-twotrack', name: 'IST27 TwoTrackSim', spec: 'Kayıtlı Veri · 2 Motor · 11.8:1' },
-      { id: 'ist27', name: 'IST27 Baseline', spec: '230 kg · 80 kW EV · 12.0:1' },
-      { id: 'tpsc', name: 'TPSC Reference', spec: '1050 kg · 230 kW · 3.6:1' },
-    ];
-    return presets.map((p) => {
+    if (activeStage !== 'simulation') return [];
+    return HAVUZ_VEHICLES.map((p) => {
       const res = simulateIst26OnHavuz(selectedLogId, ist26Cal, circuit.nodes, customSamples, {
         presetId: p.id,
         ...(p.id === 'ist27-twotrack' ? savedTwoTrackOverride : {}),
       });
-      return {
-        ...p,
-        simLapTimeS: res.metrics.simLapTimeS,
-        maxVxKph: Number(((res.metrics.maxVxMs ?? 12.5) * 3.6).toFixed(1)),
-        maxAyG: res.metrics.maxAyG ?? 1.25,
-        peakWheelTorqueNm: res.metrics.peakWheelTorqueNm ?? 942.4,
-        rmseVxMs: res.metrics.rmseVxMs,
-      };
+      return { ...p, simLapTimeS: res.metrics.simLapTimeS };
     });
-  }, [selectedLogId, ist26Cal, circuit.nodes, customTelemetryMap, savedTwoTrackOverride]);
+  }, [activeStage, selectedLogId, ist26Cal, circuit.nodes, customTelemetryMap, savedTwoTrackOverride]);
 
   const handleRunAutoFit = () => {
     const customSamples = customTelemetryMap[selectedLogId];
@@ -289,7 +284,8 @@ export default function IST26HavuzWorkspace({
 
   return (
     <div className="min-h-screen bg-[#05070b] text-slate-200">
-      <nav aria-label="Havuz Lab bölümleri" className="mx-auto flex max-w-[1440px] flex-wrap gap-1 border-b border-white/10 px-3 py-2 sm:px-5">
+      <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-2 border-b border-white/10 px-3 py-2 sm:px-5">
+      <nav aria-label="Havuz Lab bölümleri" className="flex flex-wrap gap-1">
         {LAB_VIEWS.map(({ id, label }) => (
           <button key={id} type="button" aria-current={activeStage === id ? 'page' : undefined}
             onClick={() => setActiveStage(id)}
@@ -298,6 +294,18 @@ export default function IST26HavuzWorkspace({
           </button>
         ))}
       </nav>
+      {(activeStage === 'map' || activeStage === 'simulation') && onSelectPresetId && (
+        <label className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+          Tur aracı
+          <select value={activePresetId} onChange={(event) => {
+            onSelectPresetId(event.target.value as VehiclePresetId);
+            setAutoFitResult(null);
+          }} className="rounded-md border border-white/10 bg-slate-900 px-2 py-1.5 text-sm text-slate-200">
+            {HAVUZ_VEHICLES.map(({ id, label }) => <option key={id} value={id}>{label}</option>)}
+          </select>
+        </label>
+      )}
+      </div>
 
       <div className="mx-auto max-w-[1440px] min-w-0 px-3 py-4 sm:px-5">
         {activeStage === 'logs' && (
@@ -655,7 +663,7 @@ export default function IST26HavuzWorkspace({
                       <li key={vehicle.id}>
                         <button type="button" aria-pressed={activePresetId === vehicle.id} onClick={() => onSelectPresetId?.(vehicle.id)}
                           className="flex w-full items-center justify-between gap-2 py-2 text-left text-sm text-slate-400 hover:text-white aria-pressed:text-cyan-200">
-                          <span>{vehicle.name}</span>
+                          <span>{vehicle.label}</span>
                           <span className="shrink-0 font-mono text-xs">{vehicle.simLapTimeS.toFixed(2)} sn</span>
                         </button>
                       </li>
