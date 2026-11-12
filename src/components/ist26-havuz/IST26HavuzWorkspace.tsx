@@ -48,6 +48,22 @@ const LAB_VIEWS: { id: StageTab; label: string }[] = [
 ];
 type LogFilter = 'all' | 'Temiz' | 'Kısmi' | 'Bozuk' | 'auto';
 
+const TELEMETRY_SIGNALS = [
+  { label: 'Hız', unit: 'm/s', real: 'vxReal', simulated: 'vxSim', rmse: 'rmseVxMs' },
+  { label: 'Boylamsal ivme', unit: 'm/s²', real: 'axReal', simulated: 'axSim', rmse: 'rmseAxMs2' },
+  { label: 'Yanal ivme', unit: 'm/s²', real: 'ayReal', simulated: 'aySim', rmse: 'rmseAyMs2' },
+  { label: 'Yaw hızı', unit: 'rad/s', real: 'yawRateReal', simulated: 'yawRateSim', rmse: 'rmseYawRateRadS' },
+  { label: 'Motor torku', unit: 'Nm', real: 'torqueRealNm', simulated: 'torqueSimNm', rmse: 'rmseTorqueNm' },
+  { label: 'DC akımı', unit: 'A', real: 'dcCurrRealA', simulated: 'dcCurrSimA', rmse: 'rmseDcCurrA' },
+] as const;
+
+const CALIBRATION_FIELDS = [
+  { key: 'lambdaMu', label: 'Tutunma çarpanı', min: 0.5, max: 1.2, step: 0.01 },
+  { key: 'corneringStiffnessNPerDeg', label: 'Viraj sertliği (N/°)', min: 340, max: 620, step: 1 },
+  { key: 'cdA', label: 'CdA (m²)', min: 1.1, max: 2.05, step: 0.01 },
+  { key: 'drivetrainEfficiency', label: 'Aktarma verimi', min: 0.78, max: 0.98, step: 0.005 },
+] as const;
+
 function downloadTextFile(filename: string, content: string, mime = 'text/plain') {
   const blob = new Blob([content], { type: `${mime};charset=utf-8` });
   const url = URL.createObjectURL(blob);
@@ -70,7 +86,7 @@ export default function IST26HavuzWorkspace({
   onSelectPresetId,
 }: IST26HavuzWorkspaceProps = {}) {
   const [activeStage, setActiveStage] = useState<StageTab>('map');
-  const [showPdfSpecModal, setShowPdfSpecModal] = useState(false);
+  const [signalIndex, setSignalIndex] = useState(0);
 
   // ==========================================================================
   // STAGE 1 STATE: LOG SCORER, COLUMN MAPPER & UPLOADED LOGS
@@ -273,6 +289,8 @@ export default function IST26HavuzWorkspace({
     };
   }, [circuit.nodes]);
 
+  const signal = TELEMETRY_SIGNALS[signalIndex];
+  const availableLogs = [...new Set([...Object.keys(HAVUZ_REAL_TELEMETRY_BY_LOG), ...Object.keys(customTelemetryMap)])];
   const activeNode = circuit.nodes[cursorIdx] ?? circuit.nodes[0];
   const activeOverlayPt = simResult.points[cursorIdx] ?? simResult.points[0];
 
@@ -773,108 +791,93 @@ export default function IST26HavuzWorkspace({
         {/* =================================================================== */}
         {/* STAGE 3: IST26 REAL TELEMETRY OVERLAY & AUTO-FIT KALİBRASYON MOTORU */}
         {/* =================================================================== */}
-        {(activeStage === 'simulation') && (
-          <section className="rounded-md border border-slate-800 bg-[#080c14] p-4 shadow-xl">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+        {activeStage === 'simulation' && (
+          <section aria-labelledby="havuz-sim-title" className="min-w-0 space-y-4">
+            <header className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="rounded bg-emerald-500/20 px-2 py-0.5 font-mono text-xs font-bold text-emerald-400">
-                    AŞAMA 3
-                  </span>
-                  <h2 className="font-mono text-sm font-bold uppercase tracking-wider text-slate-100">
-                    IST26 Real Telemetry Overlay & Auto-Fit (soft_l1 Least-Squares) Kalibrasyon Motoru
-                  </h2>
-                </div>
-                <p className="mt-1 font-mono text-xs text-slate-400">
-                  Gerçek Log (Kesikli Çizgi) vs Sanal IST26 Tek Motor + Cascadia İnvertör Modeli (Düz Çizgi) · Sadece İzole IST26 Profilini Günceller
+                <h2 id="havuz-sim-title" className="text-xl font-semibold text-white">Simülasyon</h2>
+                <p className="mt-1 text-sm tabular-nums text-slate-400">
+                  Tur: {simResult.metrics.simLapTimeS.toFixed(2)} sn simülasyon · {simResult.metrics.realLapTimeS.toFixed(2)} sn kayıt
                 </p>
               </div>
-
-              <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-                <select
-                  aria-label="Overlay Log Seçimi"
-                  value={selectedLogId}
-                  onChange={(e) => setSelectedLogId(e.target.value)}
-                  className="rounded border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-xs text-cyan-300 outline-none"
-                >
-                  {Object.keys(HAVUZ_REAL_TELEMETRY_BY_LOG).map((id) => (
-                    <option key={id} value={id} className="bg-[#07090e] text-slate-200">
-                      Log: {id}
-                    </option>
-                  ))}
-                  {Object.keys(customTelemetryMap).map((id) => (
-                    <option key={id} value={id} className="bg-[#07090e] text-emerald-300">
-                      Yüklenen: {id}
-                    </option>
-                  ))}
+              <label className="grid min-w-0 max-w-full gap-1 text-xs text-slate-400">
+                Karşılaştırılan kayıt
+                <select value={selectedLogId} onChange={(event) => { setSelectedLogId(event.target.value); setAutoFitResult(null); }}
+                  className="max-w-full truncate rounded-md border border-white/10 bg-slate-900 px-2 py-1.5 text-sm text-slate-200">
+                  {availableLogs.map((id) => <option key={id} value={id}>{id.split('/').at(-1)}</option>)}
                 </select>
-
-                <button type="button" className="rounded border border-slate-700 px-2.5 py-1.5 text-cyan-200" disabled={simResult.points.length === 0} onClick={() => downloadTextFile('havuz-telemetry-motec.csv', exportMotecTelemetry(simResult), 'text/csv')}>MoTeC CSV</button>
-
-                <button
-                  type="button"
-                  onClick={handleRunAutoFit}
-                  className="rounded border border-amber-500/60 bg-amber-950/70 px-3.5 py-1.5 font-bold uppercase tracking-wider text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.25)] transition hover:bg-amber-900/80"
-                >
-                  ⚡ Otomatik Otopark Asfaltı Kalibrasyonu (soft_l1 Auto-Fit)
-                </button>
-                <button
-                  type="button"
-                  onClick={handleResetIst26Cal}
-                  className="rounded border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-slate-300 hover:border-cyan-500/50"
-                >
-                  PDF Nominal Değerlere Dön
-                </button>
+              </label>
+            </header>
+            <div className="grid min-w-0 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
+              <div className="min-w-0 rounded-xl border border-white/10 bg-[#080a10] p-3 sm:p-4">
+                <div className="flex flex-wrap items-end justify-between gap-2">
+                  <label className="grid gap-1 text-xs text-slate-400">Grafik kanalı
+                    <select value={signalIndex} onChange={(event) => setSignalIndex(Number(event.target.value))}
+                      className="rounded-md border border-white/10 bg-slate-900 px-2 py-1.5 text-sm text-slate-200">
+                      {TELEMETRY_SIGNALS.map(({ label, unit }, index) => <option key={label} value={index}>{label} ({unit})</option>)}
+                    </select>
+                  </label>
+                  <span className="text-xs tabular-nums text-slate-400">RMSE {simResult.metrics[signal.rmse].toFixed(2)} {signal.unit}</span>
+                </div>
+                <div className="mt-3 h-[clamp(240px,42vh,450px)]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={simResult.points}>
+                      <CartesianGrid stroke="#1e293b" strokeDasharray="3 4" />
+                      <XAxis dataKey="s" type="number" stroke="#94a3b8" tick={{ fontSize: 11 }} unit=" m" />
+                      <YAxis stroke="#94a3b8" tick={{ fontSize: 11 }} domain={['auto', 'auto']} />
+                      <Tooltip isAnimationActive={false} labelFormatter={(value) => Number(value).toFixed(1) + ' m'}
+                        contentStyle={{ backgroundColor: '#0c1019', borderColor: '#334155', fontSize: 12 }} />
+                      <Legend wrapperStyle={{ fontSize: 12 }} />
+                      <Line dataKey={signal.real} name="Kayıt" stroke="#94a3b8" strokeDasharray="5 4" strokeWidth={1.5} dot={false} isAnimationActive={false} />
+                      <Line dataKey={signal.simulated} name="Simülasyon" stroke="#22d3ee" strokeWidth={2} dot={false} isAnimationActive={false} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div className="min-w-0 space-y-2">
+                <details className="rounded-lg border border-white/10 px-3 py-2.5">
+                  <summary className="cursor-pointer text-sm font-medium text-slate-200">Araç karşılaştırması</summary>
+                  <ul className="mt-2 divide-y divide-white/10">
+                    {multiVehicleComparison.map((vehicle) => (
+                      <li key={vehicle.id}>
+                        <button type="button" aria-pressed={activePresetId === vehicle.id} onClick={() => onSelectPresetId?.(vehicle.id)}
+                          className="flex w-full items-center justify-between gap-2 py-2 text-left text-sm text-slate-400 hover:text-white aria-pressed:text-cyan-200">
+                          <span>{vehicle.name}</span>
+                          <span className="shrink-0 font-mono text-xs">{vehicle.simLapTimeS.toFixed(2)} sn</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+                <details className="rounded-lg border border-white/10 px-3 py-2.5">
+                  <summary className="cursor-pointer text-sm font-medium text-slate-200">Kalibrasyon</summary>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button type="button" className="btn" onClick={handleRunAutoFit}>Otomatik kalibre et</button>
+                    <button type="button" className="btn" onClick={handleResetIst26Cal}>Varsayılana dön</button>
+                  </div>
+                  {autoFitResult && <p role="status" className="mt-2 text-xs text-cyan-200">Hata azalması: %{autoFitResult.improvementPct}</p>}
+                  <div className="mt-3 grid gap-2">
+                    {CALIBRATION_FIELDS.map(({ key, label, ...limits }) => (
+                      <label key={key} className="text-xs text-slate-400">
+                        <span className="flex justify-between gap-2">{label}<span className="tabular-nums text-slate-200">{ist26Cal[key]}</span></span>
+                        <input type="range" {...limits} value={ist26Cal[key]} className="w-full accent-cyan-400"
+                          onChange={(event) => {
+                            const value = event.target.valueAsNumber;
+                            setIst26Cal((current) => ({ ...current, [key]: value }));
+                            setAutoFitResult(null);
+                          }} />
+                      </label>
+                    ))}
+                  </div>
+                </details>
+                <button type="button" className="btn" disabled={simResult.points.length === 0}
+                  onClick={() => downloadTextFile('havuz-telemetry-motec.csv', exportMotecTelemetry(simResult), 'text/csv')}>MoTeC CSV indir</button>
               </div>
             </div>
-
-        <details className="mt-4 rounded-lg border border-white/10 px-4 py-3">
-          <summary className="cursor-pointer text-sm font-medium text-slate-200">Araç karşılaştırması</summary>
-        <div className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {multiVehicleComparison.map((v) => {
-            const isSel = activePresetId === v.id;
-            return (
-              <button
-                key={v.id}
-                type="button"
-                onClick={() => onSelectPresetId?.(v.id)}
-                className={`flex items-center justify-between rounded border px-3 py-2 text-left font-mono transition ${
-                  isSel
-                    ? 'border-cyan-500/60 bg-cyan-950/40 shadow-[0_0_12px_rgba(0,240,255,0.12)]'
-                    : 'border-slate-800/90 bg-[#060910] hover:border-slate-700 hover:bg-slate-900/50'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className={`text-xs font-bold uppercase ${isSel ? 'text-cyan-300' : 'text-slate-200'}`}>
-                      {v.name}
-                    </span>
-                    {isSel && (
-                      <span className="rounded bg-cyan-500/20 px-1.5 py-0.2 text-[9px] font-bold uppercase text-cyan-300">
-                        AKTİF
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-[10px] text-slate-400">{v.spec}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm font-bold text-amber-300">{v.simLapTimeS.toFixed(2)} s</div>
-                  <div className="text-[10px] text-slate-400">
-                    {v.maxVxKph} km/h · {v.maxAyG}G
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        </details>
-        <button type="button" onClick={() => setShowPdfSpecModal((open) => !open)}
-          aria-expanded={showPdfSpecModal} className="mt-3 text-sm text-slate-400 hover:text-white">
-          IST26 araç parametreleri {showPdfSpecModal ? '−' : '+'}
-        </button>
-        {showPdfSpecModal && (
-          <div className="mt-3 grid grid-cols-1 gap-3 rounded border border-cyan-500/30 bg-[#060911] p-3 font-mono text-xs md:grid-cols-3">
+            {fusionPanel}
+            <details className="rounded-lg border border-white/10 px-3 py-2.5">
+              <summary className="cursor-pointer text-sm font-medium text-slate-200">IST26 araç parametreleri</summary>
+              <div className="mt-3 grid grid-cols-1 gap-3 rounded border border-cyan-500/30 bg-[#060911] p-3 font-mono text-xs md:grid-cols-3">
             <div className="space-y-1 border-r border-slate-800/80 pr-3">
               <div className="font-bold uppercase tracking-wider text-cyan-400">
                 1. Kütle, Geometri & Atalet (PDF S.1–2)
@@ -969,347 +972,7 @@ export default function IST26HavuzWorkspace({
               </div>
             </div>
           </div>
-        )}
-            {fusionPanel}
-            {/* Calibration Sliders + RMSE Metrics Row */}
-            <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-12">
-              {/* 4 Calibration Parameters (Isolated IST26 Only) */}
-              <div className="space-y-2.5 rounded border border-slate-800 bg-slate-950/80 p-3 font-mono text-xs lg:col-span-5">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold uppercase tracking-wider text-amber-300">
-                    İzole IST26 Kalibrasyon Parametreleri
-                  </span>
-                  {autoFitResult && (
-                    <span className="rounded bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 text-[10px] text-emerald-300">
-                      ✓ Auto-Fit: %{autoFitResult.improvementPct} Hata Azalması ({autoFitResult.iterations} iter)
-                    </span>
-                  )}
-                </div>
-
-                <div>
-                  <div className="flex justify-between">
-                    <span>Pacejka Sürtünme Çarpanı (λ_μ):</span>
-                    <span className="font-bold text-cyan-300">{ist26Cal.lambdaMu.toFixed(3)} (PDF: 1.000)</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0.5}
-                    max={1.2}
-                    step={0.01}
-                    value={ist26Cal.lambdaMu}
-                    onChange={(e) => setIst26Cal((p) => ({ ...p, lambdaMu: Number(e.target.value) }))}
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex justify-between">
-                    <span>Viraj Sertliği (C_α) [N/deg]:</span>
-                    <span className="font-bold text-cyan-300">
-                      {ist26Cal.corneringStiffnessNPerDeg.toFixed(1)} N/deg (PDF: 489.0)
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={340}
-                    max={620}
-                    step={2}
-                    value={ist26Cal.corneringStiffnessNPerDeg}
-                    onChange={(e) =>
-                      setIst26Cal((p) => ({ ...p, corneringStiffnessNPerDeg: Number(e.target.value) }))
-                    }
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex justify-between">
-                    <span>Aerodinamik Sürükleme (Cd·A) [m²]:</span>
-                    <span className="font-bold text-cyan-300">{ist26Cal.cdA.toFixed(3)} m² (PDF: 1.580)</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={1.05}
-                    max={2.1}
-                    step={0.01}
-                    value={ist26Cal.cdA}
-                    onChange={(e) => setIst26Cal((p) => ({ ...p, cdA: Number(e.target.value) }))}
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex justify-between">
-                    <span>RWD + Cascadia Aktarma Verimi (η):</span>
-                    <span className="font-bold text-cyan-300">
-                      {ist26Cal.drivetrainEfficiency.toFixed(3)} (PDF: 0.950)
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0.78}
-                    max={0.98}
-                    step={0.005}
-                    value={ist26Cal.drivetrainEfficiency}
-                    onChange={(e) =>
-                      setIst26Cal((p) => ({ ...p, drivetrainEfficiency: Number(e.target.value) }))
-                    }
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-              </div>
-
-              {/* Live RMSE Metrics Grid */}
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:col-span-7 font-mono">
-                <div className="rounded border border-slate-800 bg-slate-950/70 p-2.5">
-                  <div className="text-[10px] uppercase text-slate-400">Hız RMSE (v_x)</div>
-                  <div className="mt-1 text-lg font-bold text-cyan-300">{simResult.metrics.rmseVxMs} m/s</div>
-                  <div className="text-[11px] text-slate-500">
-                    Tur: Sim {simResult.metrics.simLapTimeS}s vs Real {simResult.metrics.realLapTimeS}s
-                  </div>
-                </div>
-                <div className="rounded border border-slate-800 bg-slate-950/70 p-2.5">
-                  <div className="text-[10px] uppercase text-slate-400">Boylamsal İvme RMSE (a_x)</div>
-                  <div className="mt-1 text-lg font-bold text-emerald-300">{simResult.metrics.rmseAxMs2} m/s²</div>
-                  <div className="text-[11px] text-slate-500">İvmelenme & frenleme zarfı</div>
-                </div>
-                <div className="rounded border border-slate-800 bg-slate-950/70 p-2.5">
-                  <div className="text-[10px] uppercase text-slate-400">Yanal İvme RMSE (a_y)</div>
-                  <div className="mt-1 text-lg font-bold text-amber-300">{simResult.metrics.rmseAyMs2} m/s²</div>
-                  <div className="text-[11px] text-slate-500">Otopark asfaltı yanal tutunma</div>
-                </div>
-                <div className="rounded border border-slate-800 bg-slate-950/70 p-2.5">
-                  <div className="text-[10px] uppercase text-slate-400">Yaw Rate RMSE (ψ̇)</div>
-                  <div className="mt-1 text-lg font-bold text-purple-300">{simResult.metrics.rmseYawRateRadS} rad/s</div>
-                  <div className="text-[11px] text-slate-500">Drexler LSD + C_α dengesi</div>
-                </div>
-                <div className="rounded border border-slate-800 bg-slate-950/70 p-2.5">
-                  <div className="text-[10px] uppercase text-slate-400">Cascadia Tork RMSE</div>
-                  <div className="mt-1 text-lg font-bold text-orange-300">{simResult.metrics.rmseTorqueNm} Nm</div>
-                  <div className="text-[11px] text-slate-500">Tek motor mil torku (maks 310 Nm)</div>
-                </div>
-                <div className="rounded border border-slate-800 bg-slate-950/70 p-2.5">
-                  <div className="text-[10px] uppercase text-slate-400">DC Bara Akımı RMSE & Soft-L1</div>
-                  <div className="mt-1 text-lg font-bold text-rose-300">{simResult.metrics.rmseDcCurrA} A</div>
-                  <div className="text-[11px] text-slate-500">
-                    Soft-L1 Kayıp: {simResult.metrics.compositeSoftL1Cost}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 6 Synchronized Overlay Charts (Real = Dashed vs Simulation = Solid) */}
-            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {/* 1. vx */}
-              <div className="rounded border border-slate-800 bg-[#05080f] p-3">
-                <div className="mb-1 font-mono text-xs font-bold text-slate-200">
-                  1. Hız v_x(s) [m/s] — RMSE: {simResult.metrics.rmseVxMs} m/s
-                </div>
-                <div className="h-44">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={simResult.points}>
-                      <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
-                      <XAxis dataKey="s" stroke="#64748b" tick={{ fontSize: 10 }} unit="m" />
-                      <YAxis stroke="#64748b" tick={{ fontSize: 10 }} />
-                      <Tooltip contentStyle={{ backgroundColor: '#07090e', borderColor: '#334155', fontSize: 11 }} />
-                      <Legend wrapperStyle={{ fontSize: 10 }} />
-                      <Line
-                        type="monotone"
-                        dataKey="vxReal"
-                        name="Gerçek Log v_x (Kesikli)"
-                        stroke="#94a3b8"
-                        strokeDasharray="4 4"
-                        strokeWidth={1.6}
-                        dot={false}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="vxSim"
-                        name="IST26 Sim v_x (Düz)"
-                        stroke="#00f0ff"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* 2. ax */}
-              <div className="rounded border border-slate-800 bg-[#05080f] p-3">
-                <div className="mb-1 font-mono text-xs font-bold text-slate-200">
-                  2. Boylamsal İvme a_x(s) [m/s²] — RMSE: {simResult.metrics.rmseAxMs2} m/s²
-                </div>
-                <div className="h-44">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={simResult.points}>
-                      <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
-                      <XAxis dataKey="s" stroke="#64748b" tick={{ fontSize: 10 }} unit="m" />
-                      <YAxis stroke="#64748b" tick={{ fontSize: 10 }} />
-                      <Tooltip contentStyle={{ backgroundColor: '#07090e', borderColor: '#334155', fontSize: 11 }} />
-                      <Legend wrapperStyle={{ fontSize: 10 }} />
-                      <Line
-                        type="monotone"
-                        dataKey="axReal"
-                        name="Gerçek IMU a_x (Kesikli)"
-                        stroke="#94a3b8"
-                        strokeDasharray="4 4"
-                        strokeWidth={1.6}
-                        dot={false}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="axSim"
-                        name="IST26 Sim a_x (Düz)"
-                        stroke="#10b981"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* 3. ay */}
-              <div className="rounded border border-slate-800 bg-[#05080f] p-3">
-                <div className="mb-1 font-mono text-xs font-bold text-slate-200">
-                  3. Yanal İvme a_y(s) [m/s²] — RMSE: {simResult.metrics.rmseAyMs2} m/s²
-                </div>
-                <div className="h-44">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={simResult.points}>
-                      <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
-                      <XAxis dataKey="s" stroke="#64748b" tick={{ fontSize: 10 }} unit="m" />
-                      <YAxis stroke="#64748b" tick={{ fontSize: 10 }} />
-                      <Tooltip contentStyle={{ backgroundColor: '#07090e', borderColor: '#334155', fontSize: 11 }} />
-                      <Legend wrapperStyle={{ fontSize: 10 }} />
-                      <Line
-                        type="monotone"
-                        dataKey="ayReal"
-                        name="Gerçek IMU a_y (Kesikli)"
-                        stroke="#94a3b8"
-                        strokeDasharray="4 4"
-                        strokeWidth={1.6}
-                        dot={false}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="aySim"
-                        name="IST26 Sim a_y (Düz)"
-                        stroke="#f59e0b"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* 4. Yaw rate */}
-              <div className="rounded border border-slate-800 bg-[#05080f] p-3">
-                <div className="mb-1 font-mono text-xs font-bold text-slate-200">
-                  4. Yaw Rate ψ̇(s) [rad/s] — RMSE: {simResult.metrics.rmseYawRateRadS} rad/s
-                </div>
-                <div className="h-44">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={simResult.points}>
-                      <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
-                      <XAxis dataKey="s" stroke="#64748b" tick={{ fontSize: 10 }} unit="m" />
-                      <YAxis stroke="#64748b" tick={{ fontSize: 10 }} />
-                      <Tooltip contentStyle={{ backgroundColor: '#07090e', borderColor: '#334155', fontSize: 11 }} />
-                      <Legend wrapperStyle={{ fontSize: 10 }} />
-                      <Line
-                        type="monotone"
-                        dataKey="yawRateReal"
-                        name="Gerçek Gyro ψ̇ (Kesikli)"
-                        stroke="#94a3b8"
-                        strokeDasharray="4 4"
-                        strokeWidth={1.6}
-                        dot={false}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="yawRateSim"
-                        name="IST26 Sim ψ̇ (Düz)"
-                        stroke="#c084fc"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* 5. Cascadia Motor Torque */}
-              <div className="rounded border border-slate-800 bg-[#05080f] p-3">
-                <div className="mb-1 font-mono text-xs font-bold text-slate-200">
-                  5. Cascadia Tek Motor Torku [Nm] — RMSE: {simResult.metrics.rmseTorqueNm} Nm
-                </div>
-                <div className="h-44">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={simResult.points}>
-                      <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
-                      <XAxis dataKey="s" stroke="#64748b" tick={{ fontSize: 10 }} unit="m" />
-                      <YAxis stroke="#64748b" tick={{ fontSize: 10 }} domain={[0, 320]} />
-                      <Tooltip contentStyle={{ backgroundColor: '#07090e', borderColor: '#334155', fontSize: 11 }} />
-                      <Legend wrapperStyle={{ fontSize: 10 }} />
-                      <Line
-                        type="monotone"
-                        dataKey="torqueRealNm"
-                        name="Gerçek INV_TORQUE_EST (Kesikli)"
-                        stroke="#94a3b8"
-                        strokeDasharray="4 4"
-                        strokeWidth={1.6}
-                        dot={false}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="torqueSimNm"
-                        name="IST26 Sim Tork (Düz)"
-                        stroke="#fb923c"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* 6. Cascadia DC Bus Current */}
-              <div className="rounded border border-slate-800 bg-[#05080f] p-3">
-                <div className="mb-1 font-mono text-xs font-bold text-slate-200">
-                  6. Cascadia DC Bara Akımı I_DC [A] — RMSE: {simResult.metrics.rmseDcCurrA} A
-                </div>
-                <div className="h-44">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={simResult.points}>
-                      <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
-                      <XAxis dataKey="s" stroke="#64748b" tick={{ fontSize: 10 }} unit="m" />
-                      <YAxis stroke="#64748b" tick={{ fontSize: 10 }} />
-                      <Tooltip contentStyle={{ backgroundColor: '#07090e', borderColor: '#334155', fontSize: 11 }} />
-                      <Legend wrapperStyle={{ fontSize: 10 }} />
-                      <Line
-                        type="monotone"
-                        dataKey="dcCurrRealA"
-                        name="Gerçek INV_DCBUS_CURRENT (Kesikli)"
-                        stroke="#94a3b8"
-                        strokeDasharray="4 4"
-                        strokeWidth={1.6}
-                        dot={false}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="dcCurrSimA"
-                        name="IST26 Sim I_DC (Düz)"
-                        stroke="#f43f5e"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
+            </details>
           </section>
         )}
 
