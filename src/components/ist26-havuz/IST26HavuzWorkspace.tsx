@@ -148,22 +148,22 @@ export default function IST26HavuzWorkspace({
   // STAGE 2 STATE: İTÜ HAVUZ OTOPARKI TRACK EXTRACTOR & HEATMAP CANVAS
   // ==========================================================================
   const [coneHalfWidthM, setConeHalfWidthM] = useState<number>(1.5);
-  const [showHeatmap, setShowHeatmap] = useState<boolean>(true);
-  const [showCloudTraces, setShowCloudTraces] = useState<boolean>(true);
-  const [showOutliers, setShowOutliers] = useState<boolean>(true);
+  const [showHeatmap, setShowHeatmap] = useState<boolean>(false);
+  const [showCloudTraces, setShowCloudTraces] = useState<boolean>(false);
+  const [showOutliers, setShowOutliers] = useState<boolean>(false);
   const [showCones, setShowCones] = useState<boolean>(true);
-  const [lapPlaying, setLapPlaying] = useState<boolean>(true);
+  const [lapPlaying, setLapPlaying] = useState<boolean>(false);
   const [cursorIdx, setCursorIdx] = useState<number>(0);
 
   const circuit = useMemo(() => buildHavuzExtractedCircuit(coneHalfWidthM), [coneHalfWidthM]);
 
   useEffect(() => {
-    if (!lapPlaying) return;
+    if (!lapPlaying || (activeStage !== 'map' && activeStage !== 'vcu')) return;
     const timer = window.setInterval(() => {
       setCursorIdx((prev) => (prev + 1) % circuit.nodes.length);
     }, 65);
     return () => window.clearInterval(timer);
-  }, [lapPlaying, circuit.nodes.length]);
+  }, [activeStage, lapPlaying, circuit.nodes.length]);
 
   // ==========================================================================
   // STAGE 3 STATE: MULTI-VEHICLE HAVUZ SIMULATION OVERLAY & SOFT-L1 AUTO-FIT
@@ -624,105 +624,27 @@ export default function IST26HavuzWorkspace({
         {/* =================================================================== */}
         {/* STAGE 2: "EN ÇOK GİDİLEN YOL PİSTİMİZDİR" — İTÜ HAVUZ OTOPARKI      */}
         {/* =================================================================== */}
-        {(activeStage === 'map') && (
-          <section className="rounded-md border border-slate-800 bg-[#080c14] p-4 shadow-xl">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+        {activeStage === 'map' && (
+          <section aria-labelledby="havuz-map-title" className="min-w-0">
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="rounded bg-amber-500/20 px-2 py-0.5 font-mono text-xs font-bold text-amber-400">
-                    AŞAMA 2
-                  </span>
-                  <h2 className="font-mono text-sm font-bold uppercase tracking-wider text-slate-100">
-                    İTÜ Havuz Otoparkı · DBSCAN ve Periyodik Spline
-                  </h2>
-                </div>
-                <p className="mt-1 font-mono text-xs text-slate-400">
-                  {circuit.validTracesCount} yörünge · {circuit.rejectedPointCount} seyrek nokta elendi · {circuit.corners.length} viraj · {circuit.sectors.length} sektör
+                <h2 id="havuz-map-title" className="text-xl font-semibold text-white">Havuz pisti</h2>
+                <p className="mt-1 text-sm tabular-nums text-slate-400">
+                  {circuit.totalLengthM.toFixed(1)} m · {circuit.corners.length} viraj · {circuit.sectors.length} sektör
                 </p>
               </div>
-
-              {/* Layer Controls */}
-              <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-                <button type="button" className="rounded border border-slate-700 px-2.5 py-1 text-cyan-200" title="Yaklaşık WGS84 yerleştirmesi" onClick={() => downloadTextFile('havuz-track.geojson', exportTrackGeoJson(circuit, { latitude: 41.1016, longitude: 29.0258, rotationDeg: 0 }), 'application/geo+json')}>GeoJSON</button>
-                <button type="button" className="rounded border border-slate-700 px-2.5 py-1 text-cyan-200" onClick={() => downloadTextFile('havuz-track.svg', exportTrackSvg(circuit), 'image/svg+xml')}>SVG</button>
-                <button
-                  type="button"
-                  onClick={() => setShowHeatmap((v) => !v)}
-                  className={`rounded border px-2.5 py-1 transition ${
-                    showHeatmap
-                      ? 'border-orange-500/60 bg-orange-950/60 text-orange-300'
-                      : 'border-slate-800 bg-slate-900 text-slate-400'
-                  }`}
-                >
-                  🔥 Trajectory Heatmap (KDE): {showHeatmap ? 'AÇIK' : 'KAPALI'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowCloudTraces((v) => !v)}
-                  className={`rounded border px-2.5 py-1 transition ${
-                    showCloudTraces
-                      ? 'border-cyan-500/60 bg-cyan-950/60 text-cyan-300'
-                      : 'border-slate-800 bg-slate-900 text-slate-400'
-                  }`}
-                >
-                  〰 Yörünge Bulutu ({circuit.validTracesCount} Tur): {showCloudTraces ? 'AÇIK' : 'KAPALI'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowOutliers((v) => !v)}
-                  className={`rounded border px-2.5 py-1 transition ${
-                    showOutliers
-                      ? 'border-red-500/60 bg-red-950/60 text-red-300'
-                      : 'border-slate-800 bg-slate-900 text-slate-400'
-                  }`}
-                >
-                  ✕ Elenen Spin/Outlier ({circuit.rejectedOutlierTracesCount}): {showOutliers ? 'GÖSTER' : 'GİZLE'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowCones((v) => !v)}
-                  className={`rounded border px-2.5 py-1 transition ${
-                    showCones
-                      ? 'border-yellow-500/60 bg-yellow-950/50 text-yellow-300'
-                      : 'border-slate-800 bg-slate-900 text-slate-400'
-                  }`}
-                >
-                  ▲ Mavi/Sarı Koniler (±{coneHalfWidthM.toFixed(1)}m): {showCones ? 'AÇIK' : 'KAPALI'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLapPlaying((p) => !p)}
-                  className="rounded border border-emerald-500/50 bg-emerald-950/60 px-3 py-1 font-bold text-emerald-300"
-                >
-                  {lapPlaying ? '⏸ Duraklat' : '▶ Turu Oynat'}
-                </button>
-              </div>
+              <button type="button" onClick={() => setLapPlaying((playing) => !playing)}
+                className="rounded-md bg-cyan-400 px-3 py-2 text-sm font-medium text-slate-950 hover:bg-cyan-300">
+                {lapPlaying ? 'Duraklat' : 'Turu oynat'}
+              </button>
             </div>
 
-            <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-12">
-              {/* 2D Trajectory Cloud & KDE Heatmap Canvas */}
-              <div className="lg:col-span-8 rounded border border-slate-800 bg-[#05080f] p-3">
-                <div className="mb-2 flex flex-wrap items-center justify-between font-mono text-xs text-slate-400">
-                  <span>
-                    Merkez Çizgisi Yay Uzunluğu: <strong className="text-cyan-300">{circuit.totalLengthM.toFixed(1)} m</strong> · Min Viraj Yarıçapı: <strong className="text-amber-300">{circuit.minCornerRadiusM} m</strong>
-                  </span>
-                  <label className="flex items-center gap-2">
-                    <span>Yarı-Genişlik (Koni): {coneHalfWidthM.toFixed(2)} m</span>
-                    <input
-                      type="range"
-                      min={1.1}
-                      max={2.4}
-                      step={0.05}
-                      value={coneHalfWidthM}
-                      onChange={(e) => setConeHalfWidthM(Number(e.target.value))}
-                      className="w-24 accent-cyan-400"
-                    />
-                  </label>
-                </div>
-
+            <div className="grid min-w-0 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+              <div className="min-w-0 rounded-xl border border-white/10 bg-[#080a10] p-2 sm:p-3">
                 <svg
                   viewBox={`${mapBounds.minX} ${mapBounds.minY} ${mapBounds.width} ${mapBounds.height}`}
-                  className="h-[390px] w-full rounded border border-slate-900 bg-[#04060a]"
+                  role="img" aria-label="Havuz pisti haritası"
+                  className="h-[clamp(260px,52vh,530px)] w-full rounded-lg bg-[#05070b]"
                 >
                   {/* Coordinate Grid Lines (every 5 meters) */}
                   {Array.from({ length: 18 }, (_, i) => -40 + i * 5).map((gx) => (
@@ -858,43 +780,47 @@ export default function IST26HavuzWorkspace({
                   )}
                 </svg>
 
-                <div className="mt-2 flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] text-slate-400">
-                  <div className="flex flex-wrap items-center gap-4">
-                    <span className="inline-flex items-center gap-1.5">
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#00f0ff]" />
-                      KDE Medyan Merkez Çizgisi (Zero-Phase Kapalı)
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
-                      Sol Mavi Koniler (+{coneHalfWidthM.toFixed(1)} m)
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
-                      Sağ Sarı Koniler (-{coneHalfWidthM.toFixed(1)} m)
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <span className="h-0.5 w-4 border-b border-dashed border-red-400" />
-                      Elenen Spin/Outlier İzleri
-                    </span>
-                  </div>
-                  <span className="text-amber-300">
-                    Anlık Konum: s = {activeNode?.s.toFixed(1)} m · v_x = {activeOverlayPt?.vxSim.toFixed(1)} m/s · κ = {activeNode?.kappa.toFixed(4)} m⁻¹
-                  </span>
+                <div className="px-2 pb-1 pt-3">
+                  <label className="block text-xs tabular-nums text-slate-400">
+                    Tur konumu · {activeNode?.s.toFixed(1)} m · {((activeOverlayPt?.vxSim ?? 0) * 3.6).toFixed(0)} km/sa
+                    <input type="range" min={0} max={circuit.nodes.length - 1} value={cursorIdx}
+                      onChange={(event) => { setLapPlaying(false); setCursorIdx(event.target.valueAsNumber); }}
+                      className="mt-1 block w-full accent-cyan-400" />
+                  </label>
                 </div>
               </div>
 
-              {/* Curvature Profile kappa(s) & Kinematic Details */}
-              <div className="flex flex-col justify-between space-y-3 lg:col-span-4">
-                <div className="rounded border border-slate-800 bg-[#05080f] p-3">
-                  <div className="mb-2 font-mono text-xs font-bold uppercase tracking-wider text-cyan-400">
-                    Çıkarılan Viraj Eğrilik Profili κ(s) [1/m]
+              <div className="min-w-0 space-y-2">
+                <details className="rounded-lg border border-white/10 px-3 py-2.5">
+                  <summary className="cursor-pointer text-sm font-medium text-slate-200">Harita katmanları</summary>
+                  <div className="mt-3 grid gap-2 text-sm text-slate-300">
+                    {[
+                      { label: 'Koniler', enabled: showCones, change: setShowCones },
+                      { label: 'Sürüş izleri', enabled: showCloudTraces, change: setShowCloudTraces },
+                      { label: 'Yoğunluk haritası', enabled: showHeatmap, change: setShowHeatmap },
+                      { label: 'Elenen izler', enabled: showOutliers, change: setShowOutliers },
+                    ].map(({ label, enabled, change }) => (
+                      <label key={label} className="flex items-center gap-2">
+                        <input type="checkbox" checked={enabled} onChange={(event) => change(event.target.checked)} className="accent-cyan-400" />
+                        {label}
+                      </label>
+                    ))}
+                    <label className="mt-2 text-xs tabular-nums text-slate-400">
+                      Koni yarı genişliği · {coneHalfWidthM.toFixed(2)} m
+                      <input type="range" min={1.1} max={2.4} step={0.05} value={coneHalfWidthM}
+                        onChange={(event) => setConeHalfWidthM(event.target.valueAsNumber)} className="block w-full accent-cyan-400" />
+                    </label>
                   </div>
+                </details>
+                <details className="rounded-lg border border-white/10 px-3 py-2.5">
+                  <summary className="cursor-pointer text-sm font-medium text-slate-200">Pist geometrisi</summary>
+                  <p className="mt-2 text-xs text-slate-400">En dar viraj {circuit.minCornerRadiusM} m · {circuit.validTracesCount} sürüş izi · {circuit.rejectedPointCount} elenen nokta</p>
                   <div className="h-52 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={circuit.nodes}>
                         <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
                         <XAxis dataKey="s" stroke="#64748b" tick={{ fontSize: 10 }} unit="m" />
-                        <YAxis stroke="#64748b" tick={{ fontSize: 10 }} domain={[-0.16, 0.16]} />
+                        <YAxis stroke="#64748b" tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
                         <Tooltip
                           contentStyle={{ backgroundColor: '#07090e', borderColor: '#334155', fontSize: 11 }}
                         />
@@ -909,37 +835,15 @@ export default function IST26HavuzWorkspace({
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
-                </div>
-
-                <div className="rounded border border-slate-800 bg-slate-950/80 p-3 font-mono text-xs space-y-2">
-                  <div className="font-bold uppercase tracking-wider text-amber-300">
-                    Kinematik Çıkarım & Döngü Kapama Özeti
+                </details>
+                <details className="rounded-lg border border-white/10 px-3 py-2.5">
+                  <summary className="cursor-pointer text-sm font-medium text-slate-200">Pisti indir</summary>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button type="button" className="btn" title="Yaklaşık WGS84 konumu"
+                      onClick={() => downloadTextFile('havuz-track.geojson', exportTrackGeoJson(circuit, { latitude: 41.1016, longitude: 29.0258, rotationDeg: 0 }), 'application/geo+json')}>GeoJSON</button>
+                    <button type="button" className="btn" onClick={() => downloadTextFile('havuz-track.svg', exportTrackSvg(circuit), 'image/svg+xml')}>SVG</button>
                   </div>
-                  <div className="flex justify-between text-slate-300">
-                    <span>Kullanılan Dingil Mesafesi (L):</span>
-                    <span>{circuit.kinematicParamsUsed.wheelbaseM.toFixed(3)} m</span>
-                  </div>
-                  <div className="flex justify-between text-slate-300">
-                    <span>Arka Aks – CG Mesafesi (l_r):</span>
-                    <span>{circuit.kinematicParamsUsed.lR_M.toFixed(4)} m</span>
-                  </div>
-                  <div className="flex justify-between text-slate-300">
-                    <span>Yüklü Tekerlek Yarıçapı (r_w):</span>
-                    <span>{circuit.kinematicParamsUsed.wheelRadiusM.toFixed(3)} m</span>
-                  </div>
-                  <div className="flex justify-between text-slate-300">
-                    <span>Tepe Eğrilik |κ|_max / R_min:</span>
-                    <span className="text-cyan-300">
-                      {circuit.maxCurvatureOnePerM} m⁻¹ ({circuit.minCornerRadiusM} m)
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-slate-300">
-                    <span>Kümeleme Outlier Elemesi:</span>
-                    <span className="text-emerald-400">
-                      {circuit.validTracesCount} geçerli koridor / {circuit.rejectedOutlierTracesCount} spin elendi
-                    </span>
-                  </div>
-                </div>
+                </details>
               </div>
             </div>
           </section>
