@@ -1741,7 +1741,13 @@ export default function Workbench({
                   <span className="text-slate-500">·</span>
                   <span className="font-medium text-white">{fmt(kph(ch.v[safeCursor ?? 0]), 1)} km/h</span>
                 </div>
-                <span>{dTrack.name} · {fmt(dTrack.length, 1)} m · {lap.corners.length} corners</span>
+                <span className="hidden md:inline">{dTrack.name} · {fmt(dTrack.length, 1)} m · {lap.corners.length} corners</span>
+                {trackSel === 'itu-havuz' && onOpenHavuzLab && (
+                  <button type="button" onClick={onOpenHavuzLab}
+                    className="whitespace-nowrap rounded border border-white/10 px-2 py-0.5 text-xs text-amber-200 hover:bg-white/5">
+                    Havuz Lab’ı aç
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => setGgDiagramOpen(true)}
