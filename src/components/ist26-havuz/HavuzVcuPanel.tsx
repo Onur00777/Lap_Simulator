@@ -100,7 +100,11 @@ export default function HavuzVcuPanel({ active, sample, playing, onTogglePlaybac
             <h3 className="text-sm font-semibold text-white">Test senaryosu</h3>
             <div className="mt-2 flex flex-wrap gap-2">
               {SCENARIOS.map(({ label, inputs }) => (
-                <button key={label} type="button" onClick={() => { setSync(false); setInputs({ ...NOMINAL, ...inputs }); }}
+                <button key={label} type="button" onClick={() => {
+                  setSync(false);
+                  setInputs({ ...NOMINAL, ...inputs });
+                  setRuntime(INITIAL_VCU_FSM_RUNTIME);
+                }}
                   className="rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm hover:border-cyan-400/40 hover:text-cyan-200">{label}</button>
               ))}
             </div>
