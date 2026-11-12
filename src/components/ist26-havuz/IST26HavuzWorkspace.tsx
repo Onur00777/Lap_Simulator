@@ -47,7 +47,14 @@ import {
   stepIst26VcuSafetyFsm,
 } from '@/lib/ist26-havuz/vcu-fault-machine';
 
-type StageTab = 'all' | 'stage1' | 'stage2' | 'stage3' | 'stage4';
+type StageTab = 'map' | 'simulation' | 'logs' | 'vcu';
+
+const LAB_VIEWS: { id: StageTab; label: string }[] = [
+  { id: 'map', label: 'Pist' },
+  { id: 'simulation', label: 'Simülasyon' },
+  { id: 'logs', label: 'Kayıtlar' },
+  { id: 'vcu', label: 'VCU / SDC' },
+];
 type LogFilter = 'all' | 'Temiz' | 'Kısmi' | 'Bozuk' | 'auto';
 
 function downloadTextFile(filename: string, content: string, mime = 'text/plain') {
@@ -71,8 +78,7 @@ export default function IST26HavuzWorkspace({
   activePresetId = 'ist26-rwd',
   onSelectPresetId,
 }: IST26HavuzWorkspaceProps = {}) {
-  // Default to focused step-by-step view ('stage2' = Havuz Pist & Yörünge Haritası) instead of crowded 'all'
-  const [activeStage, setActiveStage] = useState<StageTab>('stage2');
+  const [activeStage, setActiveStage] = useState<StageTab>('map');
   const [showPdfSpecModal, setShowPdfSpecModal] = useState(false);
 
   // ==========================================================================
@@ -351,201 +357,21 @@ export default function IST26HavuzWorkspace({
 
   return (
     <div className="min-h-screen bg-[#05070b] text-slate-200">
-      {/* ===================================================================== */}
-      {/* STEP-BY-STAGE SUB-HEADER & MULTI-VEHICLE HAVUZ COMPARISON RIBBON      */}
-      {/* ===================================================================== */}
-      <div className="border-b border-slate-800/90 bg-[#080b12] px-4 py-2.5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          {/* Left: Step-by-step module selector */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
-              3. ALT MODÜL SEÇİMİ:
-            </span>
-            <div className="flex flex-wrap items-center gap-1 rounded border border-slate-800 bg-slate-950/90 p-1">
-              {(
-                [
-                  { id: 'stage2', label: '1. Havuz Pist & Yörünge Haritası' },
-                  { id: 'stage3', label: '2. Simülasyon & Araç Kıyaslama' },
-                  { id: 'stage1', label: '3. Log Kalite Tablosu (41 Log)' },
-                  { id: 'stage4', label: '4. VCU Hata Simülatörü & C Kodu' },
-                  { id: 'all', label: 'Tümünü Aç' },
-                ] as const
-              ).map((st) => (
-                <button
-                  key={st.id}
-                  type="button"
-                  onClick={() => setActiveStage(st.id)}
-                  className={`rounded px-2.5 py-1 font-mono text-xs uppercase tracking-wider transition ${
-                    activeStage === st.id
-                      ? 'border border-amber-500/50 bg-amber-950/70 font-semibold text-amber-300'
-                      : 'border border-transparent text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-                  }`}
-                >
-                  {st.label}
-                </button>
-              ))}
-            </div>
-          </div>
+      <nav aria-label="Havuz Lab bölümleri" className="mx-auto flex max-w-[1440px] flex-wrap gap-1 border-b border-white/10 px-3 py-2 sm:px-5">
+        {LAB_VIEWS.map(({ id, label }) => (
+          <button key={id} type="button" aria-current={activeStage === id ? 'page' : undefined}
+            onClick={() => setActiveStage(id)}
+            className={`rounded-md px-3 py-2 text-sm transition ${activeStage === id ? 'bg-white/10 font-medium text-white' : 'text-slate-400 hover:bg-white/5 hover:text-slate-100'}`}>
+            {label}
+          </button>
+        ))}
+      </nav>
 
-          {/* Right: Active Vehicle Badge & PDF Reference Toggle */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded border border-cyan-500/40 bg-cyan-950/50 px-2.5 py-1 font-mono text-xs text-cyan-300">
-              Aktif Simülasyon Aracı: <strong>{simResult.vehicleLabel}</strong> ({simResult.metrics.simLapTimeS.toFixed(2)} sn)
-            </span>
-            <button
-              type="button"
-              onClick={() => setShowPdfSpecModal((o) => !o)}
-              className="rounded border border-slate-700 bg-slate-900/80 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-slate-300 transition hover:border-cyan-500/40 hover:text-cyan-300"
-            >
-              {showPdfSpecModal ? '▲ IST26 PDF Tablosunu Gizle' : '📄 IST26 PDF Referans Verileri'}
-            </button>
-          </div>
-        </div>
-
-        {/* Multi-Vehicle Havuz Benchmark Bar (IST26 RWD vs IST27 TwoTrackSim vs IST27 Baseline vs TPSC) */}
-        <div className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {multiVehicleComparison.map((v) => {
-            const isSel = activePresetId === v.id;
-            return (
-              <button
-                key={v.id}
-                type="button"
-                onClick={() => onSelectPresetId?.(v.id)}
-                className={`flex items-center justify-between rounded border px-3 py-2 text-left font-mono transition ${
-                  isSel
-                    ? 'border-cyan-500/60 bg-cyan-950/40 shadow-[0_0_12px_rgba(0,240,255,0.12)]'
-                    : 'border-slate-800/90 bg-[#060910] hover:border-slate-700 hover:bg-slate-900/50'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className={`text-xs font-bold uppercase ${isSel ? 'text-cyan-300' : 'text-slate-200'}`}>
-                      {v.name}
-                    </span>
-                    {isSel && (
-                      <span className="rounded bg-cyan-500/20 px-1.5 py-0.2 text-[9px] font-bold uppercase text-cyan-300">
-                        AKTİF
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-[10px] text-slate-400">{v.spec}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm font-bold text-amber-300">{v.simLapTimeS.toFixed(2)} s</div>
-                  <div className="text-[10px] text-slate-400">
-                    {v.maxVxKph} km/h · {v.maxAyG}G
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Collapsible PDF Reference Sheet */}
-        {showPdfSpecModal && (
-          <div className="mt-3 grid grid-cols-1 gap-3 rounded border border-cyan-500/30 bg-[#060911] p-3 font-mono text-xs md:grid-cols-3">
-            <div className="space-y-1 border-r border-slate-800/80 pr-3">
-              <div className="font-bold uppercase tracking-wider text-cyan-400">
-                1. Kütle, Geometri & Atalet (PDF S.1–2)
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Toplam / Yaylı Kütle:</span>
-                <span className="text-amber-300">335.50 kg / 295.64 kg</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>QSS Efektif Kütle (mEff):</span>
-                <span>375.966 kg (mRot: 40.466 kg)</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Ağırlık Dağılımı / Wf, Wr:</span>
-                <span>%47.9 Ön (788.3 N) / %52.1 Arka (857.4 N)</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Dingil Mesafesi L (lF / lR):</span>
-                <span>1600 mm (833.6 mm / 766.4 mm)</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>İz Genişliği (Ön / Arka) & hCg:</span>
-                <span>1280 / 1260 mm · hCg = 247.17 mm</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Ataletler (Ixx / Iyy / Izz):</span>
-                <span>33.31 / 115.90 / 129.00 kg·m²</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Front LLTD & Roll Center (F/R):</span>
-                <span>%38.31 · RC 31.42 / 36.50 mm</span>
-              </div>
-            </div>
-
-            <div className="space-y-1 border-r border-slate-800/80 pr-3">
-              <div className="font-bold uppercase tracking-wider text-cyan-400">
-                2. Tek Motor RWD & Cascadia PM100DX (PDF S.1 & S.3)
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Mimari & Redüksiyon (G):</span>
-                <span className="text-amber-300">1 Motor (Arka) · 3.2:1 · η=0.95</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Tepe Tork & Maks. Güç:</span>
-                <span>310.0 Nm (0–900 RPM) · 80.0 kW</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Devir Kesici (rpmCut / Ham):</span>
-                <span>6000 RPM (Ham tablo: 10000 RPM)</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Tepe Arka Aks Torku:</span>
-                <span>942.4 Nm efektif (992.0 Nm ham)</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Drexler Salisbury LSD:</span>
-                <span>50°/40° rampa · %42 Drive / %60 Coast · 27.5 Nm</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Regen Durumu:</span>
-                <span>Kapalı (False / 0 kW)</span>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <div className="font-bold uppercase tracking-wider text-cyan-400">
-                3. Aero, Hoosier MF6.1 Lastik & Fren (PDF S.1 & S.3)
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Downforce Cl*A & Drag Cd*A:</span>
-                <span>4.14 m² / 1.58 m² (%48.2 Ön Aero)</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Yüklü Lastik Yarıçapı (Re):</span>
-                <span className="text-amber-300">205.0 mm (Nominal: 205.74 mm)</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Hoosier 43075 MF6.1 (12/10 psi):</span>
-                <span>Kamber -1.7° Ön / -1.4° Arka</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Viraj Sertliği Ca (Ön / Arka):</span>
-                <span>481.2 N/deg / 496.7 N/deg</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Fren Torku (Ön / Arka):</span>
-                <span>400 / 320 Nm teker başı (%55 Ön Bias)</span>
-              </div>
-              <div className="flex justify-between text-slate-300">
-                <span>Direksiyon Oranı & Simit Açısı:</span>
-                <span>4.54:1 · ±126 deg</span>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="mx-auto max-w-[1920px] space-y-6 p-4">
+      <div className="mx-auto max-w-[1440px] min-w-0 px-3 py-4 sm:px-5">
         {/* =================================================================== */}
         {/* STAGE 1: OTOMATİK LOG TARAYICI, KALİTE PUANLAMA & ÖN-TEMİZLEME       */}
         {/* =================================================================== */}
-        {(activeStage === 'all' || activeStage === 'stage1') && (
+        {(activeStage === 'logs') && (
           <section className="rounded-md border border-slate-800 bg-[#080c14] p-4 shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
               <div>
@@ -798,7 +624,7 @@ export default function IST26HavuzWorkspace({
         {/* =================================================================== */}
         {/* STAGE 2: "EN ÇOK GİDİLEN YOL PİSTİMİZDİR" — İTÜ HAVUZ OTOPARKI      */}
         {/* =================================================================== */}
-        {(activeStage === 'all' || activeStage === 'stage2') && (
+        {(activeStage === 'map') && (
           <section className="rounded-md border border-slate-800 bg-[#080c14] p-4 shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
               <div>
@@ -1122,7 +948,7 @@ export default function IST26HavuzWorkspace({
         {/* =================================================================== */}
         {/* STAGE 3: IST26 REAL TELEMETRY OVERLAY & AUTO-FIT KALİBRASYON MOTORU */}
         {/* =================================================================== */}
-        {(activeStage === 'all' || activeStage === 'stage3') && (
+        {(activeStage === 'simulation') && (
           <section className="rounded-md border border-slate-800 bg-[#080c14] p-4 shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
               <div>
@@ -1177,6 +1003,148 @@ export default function IST26HavuzWorkspace({
               </div>
             </div>
 
+        <details className="mt-4 rounded-lg border border-white/10 px-4 py-3">
+          <summary className="cursor-pointer text-sm font-medium text-slate-200">Araç karşılaştırması</summary>
+        <div className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {multiVehicleComparison.map((v) => {
+            const isSel = activePresetId === v.id;
+            return (
+              <button
+                key={v.id}
+                type="button"
+                onClick={() => onSelectPresetId?.(v.id)}
+                className={`flex items-center justify-between rounded border px-3 py-2 text-left font-mono transition ${
+                  isSel
+                    ? 'border-cyan-500/60 bg-cyan-950/40 shadow-[0_0_12px_rgba(0,240,255,0.12)]'
+                    : 'border-slate-800/90 bg-[#060910] hover:border-slate-700 hover:bg-slate-900/50'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className={`text-xs font-bold uppercase ${isSel ? 'text-cyan-300' : 'text-slate-200'}`}>
+                      {v.name}
+                    </span>
+                    {isSel && (
+                      <span className="rounded bg-cyan-500/20 px-1.5 py-0.2 text-[9px] font-bold uppercase text-cyan-300">
+                        AKTİF
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[10px] text-slate-400">{v.spec}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-bold text-amber-300">{v.simLapTimeS.toFixed(2)} s</div>
+                  <div className="text-[10px] text-slate-400">
+                    {v.maxVxKph} km/h · {v.maxAyG}G
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        </details>
+        <button type="button" onClick={() => setShowPdfSpecModal((open) => !open)}
+          aria-expanded={showPdfSpecModal} className="mt-3 text-sm text-slate-400 hover:text-white">
+          IST26 araç parametreleri {showPdfSpecModal ? '−' : '+'}
+        </button>
+        {showPdfSpecModal && (
+          <div className="mt-3 grid grid-cols-1 gap-3 rounded border border-cyan-500/30 bg-[#060911] p-3 font-mono text-xs md:grid-cols-3">
+            <div className="space-y-1 border-r border-slate-800/80 pr-3">
+              <div className="font-bold uppercase tracking-wider text-cyan-400">
+                1. Kütle, Geometri & Atalet (PDF S.1–2)
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Toplam / Yaylı Kütle:</span>
+                <span className="text-amber-300">335.50 kg / 295.64 kg</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>QSS Efektif Kütle (mEff):</span>
+                <span>375.966 kg (mRot: 40.466 kg)</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Ağırlık Dağılımı / Wf, Wr:</span>
+                <span>%47.9 Ön (788.3 N) / %52.1 Arka (857.4 N)</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Dingil Mesafesi L (lF / lR):</span>
+                <span>1600 mm (833.6 mm / 766.4 mm)</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>İz Genişliği (Ön / Arka) & hCg:</span>
+                <span>1280 / 1260 mm · hCg = 247.17 mm</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Ataletler (Ixx / Iyy / Izz):</span>
+                <span>33.31 / 115.90 / 129.00 kg·m²</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Front LLTD & Roll Center (F/R):</span>
+                <span>%38.31 · RC 31.42 / 36.50 mm</span>
+              </div>
+            </div>
+
+            <div className="space-y-1 border-r border-slate-800/80 pr-3">
+              <div className="font-bold uppercase tracking-wider text-cyan-400">
+                2. Tek Motor RWD & Cascadia PM100DX (PDF S.1 & S.3)
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Mimari & Redüksiyon (G):</span>
+                <span className="text-amber-300">1 Motor (Arka) · 3.2:1 · η=0.95</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Tepe Tork & Maks. Güç:</span>
+                <span>310.0 Nm (0–900 RPM) · 80.0 kW</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Devir Kesici (rpmCut / Ham):</span>
+                <span>6000 RPM (Ham tablo: 10000 RPM)</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Tepe Arka Aks Torku:</span>
+                <span>942.4 Nm efektif (992.0 Nm ham)</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Drexler Salisbury LSD:</span>
+                <span>50°/40° rampa · %42 Drive / %60 Coast · 27.5 Nm</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Regen Durumu:</span>
+                <span>Kapalı (False / 0 kW)</span>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="font-bold uppercase tracking-wider text-cyan-400">
+                3. Aero, Hoosier MF6.1 Lastik & Fren (PDF S.1 & S.3)
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Downforce Cl*A & Drag Cd*A:</span>
+                <span>4.14 m² / 1.58 m² (%48.2 Ön Aero)</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Yüklü Lastik Yarıçapı (Re):</span>
+                <span className="text-amber-300">205.0 mm (Nominal: 205.74 mm)</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Hoosier 43075 MF6.1 (12/10 psi):</span>
+                <span>Kamber -1.7° Ön / -1.4° Arka</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Viraj Sertliği Ca (Ön / Arka):</span>
+                <span>481.2 N/deg / 496.7 N/deg</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Fren Torku (Ön / Arka):</span>
+                <span>400 / 320 Nm teker başı (%55 Ön Bias)</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Direksiyon Oranı & Simit Açısı:</span>
+                <span>4.54:1 · ±126 deg</span>
+              </div>
+            </div>
+          </div>
+        )}
             {fusionPanel}
             {/* Calibration Sliders + RMSE Metrics Row */}
             <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-12">
@@ -1523,7 +1491,7 @@ export default function IST26HavuzWorkspace({
         {/* =================================================================== */}
         {/* STAGE 4: FSAE VCU FAULT INJECTION & CASCADIA PLAUSIBILITY FSM       */}
         {/* =================================================================== */}
-        {(activeStage === 'all' || activeStage === 'stage4') && (
+        {(activeStage === 'vcu') && (
           <section className="rounded-md border border-slate-800 bg-[#080c14] p-4 shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
               <div>
