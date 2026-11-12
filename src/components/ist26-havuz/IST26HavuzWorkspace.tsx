@@ -95,7 +95,8 @@ export default function IST26HavuzWorkspace({
   const [customTelemetryMap, setCustomTelemetryMap] = useState<Record<string, HavuzRealTelemetrySample[]>>({});
   const [logFilter, setLogFilter] = useState<LogFilter>('all');
   const [colMap, setColMap] = useState<ColumnMappingConfig>(DEFAULT_IST26_COLUMN_MAP);
-  const [showColMapper, setShowColMapper] = useState(false);
+  const [logQuery, setLogQuery] = useState('');
+  const [logLimit, setLogLimit] = useState(10);
   const [selectedLogId, setSelectedLogId] = useState<string>('23_08/23_08_2026-11.31.49.csv');
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const fusionWorkers = useRef(new Map<string, Worker>());
@@ -106,24 +107,15 @@ export default function IST26HavuzWorkspace({
   }, []);
 
   const filteredLogs = useMemo(() => {
-    return logs.filter((l) => {
-      if (logFilter === 'all') return true;
-      if (logFilter === 'auto') return l.autoSelected;
-      return l.status === logFilter;
-    });
-  }, [logs, logFilter]);
-
-  const logStats = useMemo(() => {
-    const clean = logs.filter((l) => l.status === 'Temiz').length;
-    const partial = logs.filter((l) => l.status === 'Kısmi').length;
-    const broken = logs.filter((l) => l.status === 'Bozuk').length;
-    const autoCount = logs.filter((l) => l.autoSelected).length;
-    const totalDistKm = logs.reduce((a, l) => a + l.distanceM, 0) / 1000;
-    return { total: logs.length, clean, partial, broken, autoCount, totalDistKm };
-  }, [logs]);
+    const query = logQuery.trim().toLocaleLowerCase('tr');
+    return logs.filter((log) => log.relativePath.toLocaleLowerCase('tr').includes(query) && (
+      logFilter === 'all' || (logFilter === 'auto' ? log.autoSelected : log.status === logFilter)
+    ));
+  }, [logs, logFilter, logQuery]);
 
   const handleUploadLogCsv = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = '';
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
@@ -133,6 +125,7 @@ export default function IST26HavuzWorkspace({
       if (samples.length > 0) {
         setCustomTelemetryMap((prev) => ({ ...prev, [entry.id]: samples }));
         setSelectedLogId(entry.id);
+        setAutoFitResult(null);
         fusionWorkers.current.get(entry.id)?.terminate();
         const worker = new Worker(new URL('./havuz-fusion.worker.ts', import.meta.url));
         fusionWorkers.current.set(entry.id, worker);
@@ -307,262 +300,82 @@ export default function IST26HavuzWorkspace({
       </nav>
 
       <div className="mx-auto max-w-[1440px] min-w-0 px-3 py-4 sm:px-5">
-        {/* =================================================================== */}
-        {/* STAGE 1: OTOMATİK LOG TARAYICI, KALİTE PUANLAMA & ÖN-TEMİZLEME       */}
-        {/* =================================================================== */}
-        {(activeStage === 'logs') && (
-          <section className="rounded-md border border-slate-800 bg-[#080c14] p-4 shadow-xl">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+        {activeStage === 'logs' && (
+          <section aria-labelledby="havuz-logs-title" className="min-w-0 space-y-4">
+            <header className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="rounded bg-cyan-500/20 px-2 py-0.5 font-mono text-xs font-bold text-cyan-400">
-                    AŞAMA 1
-                  </span>
-                  <h2 className="font-mono text-sm font-bold uppercase tracking-wider text-slate-100">
-                    Otomatik Log Tarayıcı, Kalite Puanlama (Log Scorer) & Ön-Temizleme (./logs)
-                  </h2>
-                </div>
-                <p className="mt-1 font-mono text-xs text-slate-400">
-                  Zero-Velocity Clamping (v_x &lt; 0.5 m/s dondurma) · Kısa Kayıt (&lt;15 sn veya &lt;50 m) Elemesi · 5-Nokta Medyan + Savitzky-Golay Spin/Spike Filtresi
-                </p>
+                <h2 id="havuz-logs-title" className="text-xl font-semibold text-white">Sürüş kayıtları</h2>
+                <p className="mt-1 text-sm tabular-nums text-slate-400">{logs.length} kayıt</p>
               </div>
+              <input ref={uploadInputRef} type="file" accept=".csv,text/csv" onChange={handleUploadLogCsv} className="hidden" />
+              <button type="button" onClick={() => uploadInputRef.current?.click()}
+                className="rounded-md bg-cyan-400 px-3 py-2 text-sm font-medium text-slate-950 hover:bg-cyan-300">CSV yükle</button>
+            </header>
 
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowColMapper((o) => !o)}
-                  className="rounded border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-slate-200 transition hover:border-cyan-500/50 hover:text-cyan-300"
-                >
-                  ⚙ Esnek Sütun Eşleştirici (Column Mapper)
-                </button>
-                <input
-                  ref={uploadInputRef}
-                  type="file"
-                  accept=".csv"
-                  onChange={handleUploadLogCsv}
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={() => uploadInputRef.current?.click()}
-                  className="rounded border border-emerald-500/50 bg-emerald-950/60 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-emerald-300 transition hover:bg-emerald-900/60"
-                >
-                  + Yeni IST26 CSV Log Yükle
-                </button>
-              </div>
-            </div>
-
-            {/* Summary KPI Cards */}
-            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
-              <div className="rounded border border-slate-800 bg-slate-950/70 p-2.5 font-mono">
-                <div className="text-[10px] uppercase tracking-wider text-slate-400">Taranan ./logs Dosyası</div>
-                <div className="mt-1 text-lg font-bold text-slate-100">{logStats.total} Dosya</div>
-                <div className="text-[11px] text-slate-500">18_08, 19_08, 20_09, 21_09, 23_08, xlsx</div>
-              </div>
-              <div className="rounded border border-emerald-500/30 bg-emerald-950/20 p-2.5 font-mono">
-                <div className="text-[10px] uppercase tracking-wider text-emerald-400">Temiz Loglar (Skor ≥ 75)</div>
-                <div className="mt-1 text-lg font-bold text-emerald-300">{logStats.clean} Temiz</div>
-                <div className="text-[11px] text-emerald-500/80">{logStats.autoCount} tanesi otomatik seçildi</div>
-              </div>
-              <div className="rounded border border-amber-500/30 bg-amber-950/20 p-2.5 font-mono">
-                <div className="text-[10px] uppercase tracking-wider text-amber-400">Kısmi Loglar (IMU Kapalı)</div>
-                <div className="mt-1 text-lg font-bold text-amber-300">{logStats.partial} Kısmi</div>
-                <div className="text-[11px] text-amber-500/80">Teker hızı & Cascadia mevcut</div>
-              </div>
-              <div className="rounded border border-red-500/30 bg-red-950/20 p-2.5 font-mono">
-                <div className="text-[10px] uppercase tracking-wider text-red-400">Bozuk / Kısa (&lt;15s / &lt;50m)</div>
-                <div className="mt-1 text-lg font-bold text-red-300">{logStats.broken} Elenen</div>
-                <div className="text-[11px] text-red-500/80">Otomatik olarak pistten dışlandı</div>
-              </div>
-              <div className="rounded border border-cyan-500/30 bg-cyan-950/20 p-2.5 font-mono">
-                <div className="text-[10px] uppercase tracking-wider text-cyan-400">Toplam Aktif Mesafe</div>
-                <div className="mt-1 text-lg font-bold text-cyan-300">{logStats.totalDistKm.toFixed(2)} km</div>
-                <div className="text-[11px] text-cyan-500/80">43 Tam Havuz Otoparkı Turu</div>
-              </div>
-            </div>
-
-            {/* Flexible Column Mapper Drawer */}
-            {showColMapper && (
-              <div className="mt-3 rounded border border-cyan-500/40 bg-[#060a12] p-3 font-mono text-xs">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="font-bold uppercase tracking-wider text-cyan-400">
-                    Esnek Sütun Eşleştirici (Otomatik Tanınan & Manuel Düzenlenebilir IST26 Kanalları)
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setColMap(DEFAULT_IST26_COLUMN_MAP)}
-                    className="rounded border border-slate-700 px-2 py-0.5 text-[11px] text-slate-300 hover:border-cyan-500"
-                  >
-                    Varsayılana Sıfırla
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
-                  {(Object.keys(colMap) as Array<keyof ColumnMappingConfig>).map((key) => (
-                    <label key={key} className="flex flex-col gap-1">
-                      <span className="text-[10px] uppercase text-slate-400">{key}</span>
-                      <input
-                        type="text"
-                        value={colMap[key]}
-                        onChange={(e) => setColMap((prev) => ({ ...prev, [key]: e.target.value }))}
-                        className="rounded border border-slate-800 bg-slate-950 px-2 py-1 text-[11px] text-cyan-300 outline-none focus:border-cyan-500"
-                      />
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Filter Bar */}
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 font-mono text-xs">
-                {(
-                  [
-                    { id: 'all', label: `Tümü (${logs.length})` },
-                    { id: 'auto', label: `★ Otomatik Seçilen (${logStats.autoCount})` },
-                    { id: 'Temiz', label: `Temiz (${logStats.clean})` },
-                    { id: 'Kısmi', label: `Kısmi (${logStats.partial})` },
-                    { id: 'Bozuk', label: `Bozuk (${logStats.broken})` },
-                  ] as const
-                ).map((f) => (
-                  <button
-                    key={f.id}
-                    type="button"
-                    onClick={() => setLogFilter(f.id)}
-                    className={`rounded px-2.5 py-1 transition ${
-                      logFilter === f.id
-                        ? 'border border-cyan-500/50 bg-cyan-950/70 text-cyan-300'
-                        : 'border border-slate-800 bg-slate-900/60 text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    {f.label}
-                  </button>
+            <details className="rounded-lg border border-white/10 px-3 py-2.5">
+              <summary className="cursor-pointer text-sm font-medium text-slate-200">CSV sütun eşleştirme</summary>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-5">
+                {(Object.keys(colMap) as Array<keyof ColumnMappingConfig>).map((key) => (
+                  <label key={key} className="grid min-w-0 gap-1 text-xs text-slate-400">
+                    {key}
+                    <input type="text" value={colMap[key]} onChange={(event) => {
+                      const value = event.target.value;
+                      setColMap((current) => ({ ...current, [key]: value }));
+                    }} className="min-w-0 rounded border border-white/10 bg-slate-950 px-2 py-1 text-sm text-slate-200" />
+                  </label>
                 ))}
               </div>
-              <span className="font-mono text-xs text-slate-400">
-                Aktif Overlay Logu: <strong className="text-amber-300">{selectedLogId}</strong>
-              </span>
+              <button type="button" className="btn mt-3" onClick={() => setColMap(DEFAULT_IST26_COLUMN_MAP)}>Varsayılana dön</button>
+            </details>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <input aria-label="Kayıt ara" type="search" placeholder="Kayıt ara" value={logQuery}
+                onChange={(event) => { setLogQuery(event.target.value); setLogLimit(10); }}
+                className="w-full max-w-72 rounded-md border border-white/10 bg-slate-900 px-3 py-2 text-sm" />
+              <select aria-label="Kayıt durumu" value={logFilter}
+                onChange={(event) => { setLogFilter(event.target.value as LogFilter); setLogLimit(10); }}
+                className="rounded-md border border-white/10 bg-slate-900 px-2 py-2 text-sm">
+                <option value="all">Tüm kayıtlar</option><option value="auto">Önerilen</option>
+                <option value="Temiz">Temiz</option><option value="Kısmi">Kısmi</option><option value="Bozuk">Bozuk</option>
+              </select>
             </div>
 
-            {/* Log Scorer Table */}
-            <div className="mt-2 max-h-80 overflow-y-auto rounded border border-slate-800">
-              <table className="w-full border-collapse text-left font-mono text-xs">
-                <thead className="sticky top-0 bg-[#0b101b] text-[10px] uppercase tracking-wider text-slate-400">
-                  <tr>
-                    <th className="p-2">Dosya (./logs)</th>
-                    <th className="p-2">Kalite Skoru</th>
-                    <th className="p-2">Durum</th>
-                    <th className="p-2 text-right">Aktif Sürüş</th>
-                    <th className="p-2 text-right">Mesafe</th>
-                    <th className="p-2 text-right">Tahmini Tur</th>
-                    <th className="p-2 text-right">Maks Hız / RPM</th>
-                    <th className="p-2 text-right">Kırpılan / Spike</th>
-                    <th className="p-2">Sensör & Tanı</th>
-                    <th className="p-2 text-right">İşlem</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/70">
-                  {filteredLogs.map((l) => {
-                    const isSelected = l.id === selectedLogId;
-                    const canOverlay = Boolean(HAVUZ_REAL_TELEMETRY_BY_LOG[l.id] || customTelemetryMap[l.id]);
-                    return (
-                      <tr
-                        key={l.id}
-                        className={`transition ${
-                          isSelected ? 'bg-cyan-950/40' : 'hover:bg-slate-900/60'
-                        }`}
-                      >
-                        <td className="p-2 font-medium text-slate-200">
-                          <div className="flex items-center gap-1.5">
-                            {l.autoSelected && (
-                              <span title="Otomatik Seçilen Yüksek Kaliteli Log" className="text-amber-400">
-                                ★
-                              </span>
-                            )}
-                            <span>{l.relativePath}</span>
-                          </div>
-                        </td>
-                        <td className="p-2">
-                          <div className="flex items-center gap-2">
-                            <div className="h-2 w-16 overflow-hidden rounded bg-slate-800">
-                              <div
-                                className={`h-full ${
-                                  l.qualityScore >= 75
-                                    ? 'bg-emerald-400'
-                                    : l.qualityScore >= 40
-                                      ? 'bg-amber-400'
-                                      : 'bg-red-500'
-                                }`}
-                                style={{ width: `${l.qualityScore}%` }}
-                              />
-                            </div>
-                            <span className="font-bold tabular-nums">{l.qualityScore}/100</span>
-                          </div>
-                        </td>
-                        <td className="p-2">
-                          <span
-                            className={`inline-block rounded px-2 py-0.5 text-[10px] font-bold uppercase ${
-                              l.status === 'Temiz'
-                                ? 'border border-emerald-500/40 bg-emerald-950/60 text-emerald-300'
-                                : l.status === 'Kısmi'
-                                  ? 'border border-amber-500/40 bg-amber-950/60 text-amber-300'
-                                  : 'border border-red-500/40 bg-red-950/60 text-red-300'
-                            }`}
-                          >
-                            {l.status}
-                          </span>
-                        </td>
-                        <td className="p-2 text-right tabular-nums">
-                          {l.activeDrivingTimeS.toFixed(1)} sn
-                          <span className="block text-[10px] text-slate-500">
-                            toplam {l.totalDurationS.toFixed(0)}s
-                          </span>
-                        </td>
-                        <td className="p-2 text-right tabular-nums">{l.distanceM.toFixed(0)} m</td>
-                        <td className="p-2 text-right tabular-nums font-semibold text-cyan-300">
-                          {l.estimatedLaps.toFixed(2)} tur
-                        </td>
-                        <td className="p-2 text-right tabular-nums">
-                          {l.maxSpeedKmh.toFixed(1)} km/h
-                          <span className="block text-[10px] text-slate-500">
-                            {l.maxMotorRpm} RPM · {l.maxTorqueNm} Nm
-                          </span>
-                        </td>
-                        <td className="p-2 text-right tabular-nums text-[11px] text-slate-400">
-                          {l.zeroVelClampedRows} satır
-                          <span className="block text-[10px] text-slate-500">
-                            {l.spikesFiltered} spike filtrelendi
-                          </span>
-                        </td>
-                        <td className="p-2 text-[11px] text-slate-400">{l.statusReason}</td>
-                        <td className="p-2 text-right">
-                          {canOverlay ? (
-                            <button
-                              type="button"
-                              onClick={() => setSelectedLogId(l.id)}
-                              className={`rounded px-2.5 py-1 text-[11px] font-semibold uppercase transition ${
-                                isSelected
-                                  ? 'border border-amber-400 bg-amber-500/20 text-amber-300'
-                                  : 'border border-cyan-500/40 bg-cyan-950/50 text-cyan-300 hover:bg-cyan-900/60'
-                              }`}
-                            >
-                              {isSelected ? '✓ Seçili' : 'Overlay Seç'}
-                            </button>
-                          ) : (
-                            <span className="text-[10px] text-slate-600">Elenen</span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            <ul className="divide-y divide-white/10 rounded-xl border border-white/10 bg-[#080a10]">
+              {filteredLogs.slice(0, logLimit).map((log) => {
+                const selected = selectedLogId === log.id;
+                const canCompare = Boolean(HAVUZ_REAL_TELEMETRY_BY_LOG[log.id] || customTelemetryMap[log.id]);
+                return (
+                  <li key={log.id} className="p-3">
+                    <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                      <div className="min-w-0">
+                        <div className="break-all text-sm font-medium text-slate-200">{log.relativePath}</div>
+                        <div className="mt-1 text-xs tabular-nums text-slate-400">
+                          {log.status} · {log.qualityScore}/100 · {log.distanceM.toFixed(0)} m{selected ? ' · Seçili' : ''}
+                        </div>
+                      </div>
+                      {canCompare && <button type="button" className="btn" onClick={() => {
+                        setSelectedLogId(log.id);
+                        setAutoFitResult(null);
+                        setActiveStage('simulation');
+                      }}>Simülasyonda aç</button>}
+                    </div>
+                    <details className="mt-2 text-xs text-slate-400">
+                      <summary className="cursor-pointer hover:text-slate-200">Ayrıntılar</summary>
+                      <p className="mt-2 tabular-nums">{log.activeDrivingTimeS.toFixed(1)} sn sürüş · {log.estimatedLaps.toFixed(1)} tur · {log.maxSpeedKmh.toFixed(1)} km/sa · {log.maxMotorRpm.toFixed(0)} rpm</p>
+                      <p className="mt-1">{log.statusReason}</p>
+                      <p className="mt-1 tabular-nums">{log.zeroVelClampedRows} duruş örneği · {log.spikesFiltered} aykırı örnek · {log.hasImu ? 'IMU var' : 'IMU yok'} · {log.hasCascadia ? 'Cascadia var' : 'Cascadia yok'}</p>
+                    </details>
+                  </li>
+                );
+              })}
+              {filteredLogs.length === 0 && <li className="p-4 text-sm text-slate-400">Bu filtreye uygun kayıt yok.</li>}
+            </ul>
+            {filteredLogs.length > logLimit && (
+              <button type="button" className="btn" onClick={() => setLogLimit((limit) => limit + 10)}>Daha fazla kayıt göster</button>
+            )}
           </section>
         )}
 
-        {/* =================================================================== */}
-        {/* STAGE 2: "EN ÇOK GİDİLEN YOL PİSTİMİZDİR" — İTÜ HAVUZ OTOPARKI      */}
-        {/* =================================================================== */}
         {activeStage === 'map' && (
           <section aria-labelledby="havuz-map-title" className="min-w-0">
             <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
