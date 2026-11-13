@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { PowertrainParams, VehicleParams } from '@/lib/physics';
 import type { LapResult } from '@/lib/solver';
-import { generateVcuBundle, type VcuBundle } from '@/lib/codegen';
-import { generateApexVcuDbc } from '@/lib/codegen/dbc-generator';
+import type { VcuBundle } from '@/lib/codegen';
 import {
   INITIAL_VCU_FSM_RUNTIME,
   generateIst26VcuSafetyFirmware,
@@ -13,7 +12,7 @@ import {
   type VcuFaultInjectionInputs,
   type VcuSafetyFsmRuntimeState,
 } from '@/lib/ist26-havuz/vcu-fault-machine';
-import VcuStatus from '../ist26-havuz/VcuStatus';
+import { DisclosureGroup } from '../ui';
 import { downloadText, fmt, kph } from '@/lib/ui/format';
 
 interface CanCockpitDrawerProps {
@@ -66,8 +65,6 @@ export default function CanCockpitDrawer({
 
   const [vcuRuntime, setVcuRuntime] = useState<VcuSafetyFsmRuntimeState>(INITIAL_VCU_FSM_RUNTIME);
   const safetyFw = useMemo(() => generateIst26VcuSafetyFirmware(), []);
-  const latestInputs = useRef(vcuInputs);
-  useEffect(() => { latestInputs.current = vcuInputs; }, [vcuInputs]);
 
   const idx = cursor != null && cursor >= 0 && cursor < lap.channels.s.length ? cursor : 0;
   const ch = lap.channels;
@@ -93,11 +90,10 @@ export default function CanCockpitDrawer({
     if (!open) return;
     const dtMs = 25;
     const id = window.setInterval(() => {
-      const inputs = latestInputs.current;
-      setVcuRuntime((prev) => stepIst26VcuSafetyFsm(prev, inputs, dtMs));
+      setVcuRuntime((prev) => stepIst26VcuSafetyFsm(prev, vcuInputs, dtMs));
     }, dtMs);
     return () => window.clearInterval(id);
-  }, [open]);
+  }, [open, vcuInputs]);
 
   const canFrames = useMemo(() => {
     const vKph = kph(ch.v[idx] ?? 0);
@@ -188,114 +184,270 @@ export default function CanCockpitDrawer({
 
   if (!open) return null;
 
-  const update = (patch: Partial<VcuFaultInjectionInputs>) => {
-    setSyncWithLap(false);
-    setVcuInputs((current) => ({ ...current, ...patch }));
-  };
-
   return (
-    <aside role="dialog" aria-label="CAN / VCU"
-      className="studio-drawer fixed inset-y-0 right-0 z-50 flex w-[460px] max-w-[100vw] flex-col border-l border-white/10 bg-[#080a10]/95 shadow-2xl backdrop-blur-xl">
-      <header className="flex shrink-0 items-center justify-between gap-2 border-b border-white/10 p-4">
-        <div>
-          <h2 className="font-semibold text-white">CAN / VCU</h2>
-          <p className="mt-0.5 text-xs text-slate-400">IST26 güvenlik simülasyonu</p>
+    <aside
+      className="fixed inset-y-0 right-0 z-50 flex w-[440px] max-w-[95vw] flex-col border-l border-white/[0.09] bg-[#0c0e17]/95 shadow-2xl backdrop-blur-2xl transition-transform duration-300 ease-out pointer-events-auto"
+      role="dialog"
+      aria-label="CAN Cockpit & Embedded SIL"
+    >
+        {/* Drawer Header */}
+        <div className="flex h-12 items-center justify-between border-b border-white/[0.08] px-4 font-mono text-xs">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+            <span className="font-semibold uppercase tracking-wider text-slate-100">
+              CAN Cockpit & Embedded SIL
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            title="Close CAN Cockpit (Esc)"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/[0.08] text-slate-400 transition hover:bg-white/[0.06] hover:text-white"
+          >
+            ✕
+          </button>
         </div>
-        <button type="button" onClick={onClose} aria-label="CAN / VCU panelini kapat" className="btn">Kapat</button>
-      </header>
 
-      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
-        <VcuStatus runtime={vcuRuntime} />
+      <div className="flex-1 divide-y divide-white/[0.06] overflow-y-auto">
+        {/* 1. LIVE FDCAN1 / FDCAN2 BUS MONITOR */}
+        <DisclosureGroup title="FDCAN1 / FDCAN2 Live Bus Monitor" badge="1.5 Mbps Dual-CAN" defaultOpen={true}>
+          <div className="mb-2 flex items-center justify-between gap-1">
+            <div className="inline-flex rounded-lg border border-white/[0.07] bg-[#090a0f]/90 p-0.5 font-mono text-[10px]">
+              {(
+                [
+                  { id: 'all', label: 'ALL' },
+                  { id: 'fdcan1', label: 'FDCAN1 (500k)' },
+                  { id: 'fdcan2', label: 'FDCAN2 (1M)' },
+                ] as const
+              ).map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setBusTab(t.id)}
+                  className={`rounded-md px-2 py-0.5 uppercase transition ${
+                    busTab === t.id ? 'bg-slate-800 text-cyan-300' : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
 
-        <section aria-label="Pedal kontrolleri" className="space-y-3 rounded-xl border border-white/10 p-3">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <label className="flex items-center gap-2 text-sm text-slate-300">
-              <input type="checkbox" className="accent-cyan-400" checked={syncWithLap}
-                onChange={(event) => setSyncWithLap(event.target.checked)} />
-              Tur verisini kullan
-            </label>
-            <button type="button" className="text-sm text-cyan-300 hover:text-white" onClick={() => {
-              update({ appsPct: 3, appsDeviationPct: 1, brakePressureBar: 0, inverterTempC: 42, motorTempC: 58, imuFaultMode: 'NOMINAL' });
-              setVcuRuntime(INITIAL_VCU_FSM_RUNTIME);
-            }}>Sıfırla</button>
+            <button
+              type="button"
+              onClick={() => setSyncWithLap((s) => !s)}
+              className={`rounded-md border px-2 py-0.5 font-mono text-[10px] transition ${
+                syncWithLap
+                  ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
+                  : 'border-white/[0.08] bg-slate-900 text-slate-400'
+              }`}
+            >
+              {syncWithLap ? '● Sync Cursor' : '○ Manual SIL'}
+            </button>
           </div>
 
-          <div className="grid gap-3">
-            {([
-              { key: 'appsPct', label: 'Gaz pedalı', unit: '%', max: 100 },
-              { key: 'brakePressureBar', label: 'Fren basıncı', unit: 'bar', max: 50 },
-            ] as const).map(({ key, label, unit, max }) => {
-              return (
-                <label key={key} className="block text-sm text-slate-300">
-                  <span className="flex justify-between gap-2">{label}<span aria-hidden="true" className="tabular-nums text-slate-400">{vcuInputs[key]} {unit}</span></span>
-                  <input type="range" min={0} max={max} value={vcuInputs[key]} className="mt-1 w-full accent-cyan-400"
-                    onChange={(event) => update({ [key]: event.target.valueAsNumber })} />
-                </label>
-              );
-            })}
-          </div>
-        </section>
-
-        <details className="rounded-lg border border-white/10 px-3 py-2.5">
-          <summary className="cursor-pointer text-sm font-medium">Hata ve sensör ayarları</summary>
-          <div className="mt-3 grid gap-3">
-            <label className="grid gap-1 text-sm text-slate-300">
-              <span className="flex justify-between gap-2">Gaz sensörü farkı <span className="tabular-nums text-slate-400">{vcuInputs.appsDeviationPct}%</span></span>
-              <input type="range" min={0} max={25} step={0.5} value={vcuInputs.appsDeviationPct} className="accent-cyan-400"
-                onChange={(event) => update({ appsDeviationPct: event.target.valueAsNumber })} />
-            </label>
-            <label className="grid gap-1 text-sm text-slate-300">
-              <span className="flex justify-between gap-2">İnvertör sıcaklığı <span className="tabular-nums text-slate-400">{vcuInputs.inverterTempC} °C</span></span>
-              <input type="range" min={25} max={90} value={vcuInputs.inverterTempC} className="accent-cyan-400"
-                onChange={(event) => update({ inverterTempC: event.target.valueAsNumber })} />
-            </label>
-            <label className="flex items-center justify-between gap-2 text-sm text-slate-300">
-              IMU
-              <select value={vcuInputs.imuFaultMode} onChange={(event) => update({ imuFaultMode: event.target.value as ImuFaultMode })}
-                className="rounded border border-white/10 bg-slate-900 px-2 py-1">
-                <option value="NOMINAL">Normal</option>
-                <option value="HIGH_NOISE">Yüksek gürültü</option>
-                <option value="CAN_TIMEOUT_DROPOUT">CAN zaman aşımı</option>
-              </select>
-            </label>
-            <p className="text-xs tabular-nums text-slate-400">APPS {vcuRuntime.appsFaultTimerMs}/100 ms · BSPD {vcuRuntime.bspdFaultTimerMs}/500 ms</p>
-          </div>
-        </details>
-
-        <details className="rounded-lg border border-white/10 px-3 py-2.5">
-          <summary className="cursor-pointer text-sm font-medium">CAN mesajları</summary>
-          <label className="mt-3 flex items-center justify-between text-sm text-slate-300">
-            Veri yolu
-            <select value={busTab} onChange={(event) => setBusTab(event.target.value as CanBusTab)}
-              className="rounded border border-white/10 bg-slate-900 px-2 py-1">
-              <option value="all">Tümü</option><option value="fdcan1">FDCAN1</option><option value="fdcan2">FDCAN2</option>
-            </select>
-          </label>
-          <div className="mt-2 divide-y divide-white/10">
-            {canFrames.map((frame) => (
-              <details key={frame.id} className="py-2 text-xs">
-                <summary className="cursor-pointer break-words text-slate-300">
-                  <span className="font-mono text-cyan-300">{frame.id}</span> {frame.name}
-                </summary>
-                <p className="mt-2 font-mono tabular-nums text-slate-300">{frame.payload}</p>
-                <p className="mt-1 text-slate-400">{frame.bus} · {frame.rateHz} Hz · {frame.decoded}</p>
-              </details>
+          <div className="space-y-1.5">
+            {canFrames.map((f) => (
+              <div
+                key={f.id}
+                className="rounded-lg border border-white/[0.05] bg-[#090a0f]/80 px-2.5 py-1.5 font-mono text-[10px] tabular-nums"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`rounded px-1 py-0.2 text-[9px] font-semibold ${
+                        f.bus === 'FDCAN1'
+                          ? 'bg-amber-500/15 text-amber-300'
+                          : 'bg-cyan-500/15 text-cyan-300'
+                      }`}
+                    >
+                      {f.bus}
+                    </span>
+                    <span className="font-semibold text-slate-200">{f.id}</span>
+                    <span className="text-slate-400">{f.name}</span>
+                  </div>
+                  <span className="text-[9px] text-slate-500">{f.rateHz} Hz</span>
+                </div>
+                <div className="mt-0.5 tracking-wider text-cyan-300/90">{f.payload}</div>
+                <div className="mt-0.5 text-[9px] text-slate-400">{f.decoded}</div>
+              </div>
             ))}
           </div>
-        </details>
+        </DisclosureGroup>
 
-        <details className="rounded-lg border border-white/10 px-3 py-2.5">
-          <summary className="cursor-pointer text-sm font-medium">Firmware ve CAN dosyaları</summary>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <button type="button" className="btn"
-              onClick={() => (bundle ?? generateVcuBundle(veh, pt)).files.forEach((file) => downloadText(file.name, file.content, 'text/x-c'))}>VCU kalibrasyonu</button>
-            <button type="button" className="btn" onClick={() => {
-              downloadText(safetyFw.headerName, safetyFw.headerContent, 'text/x-c');
-              downloadText(safetyFw.sourceName, safetyFw.sourceContent, 'text/x-c');
-            }}>Güvenlik FSM</button>
-            <button type="button" className="btn" onClick={() => downloadText('apex_vcu_bus.dbc', generateApexVcuDbc())}>CAN DBC</button>
+        {/* 2. FSAE VCU FAULT INJECTION & PLAUSIBILITY FSM */}
+        <DisclosureGroup
+          title="Fault Injection & FSAE Plausibility"
+          badge={vcuRuntime.state.replace('VCU_STATE_', '')}
+          defaultOpen={true}
+        >
+          {/* Active FSM State Banner */}
+          <div className="mb-2.5 flex items-center justify-between rounded-lg border border-white/[0.07] bg-[#090a0f]/90 px-2.5 py-2 font-mono text-[10px] tabular-nums">
+            <div>
+              <div className="text-[9px] uppercase tracking-wider text-slate-400">Active VCU State</div>
+              <div
+                className={`text-xs font-bold ${
+                  vcuRuntime.state.includes('FAULT')
+                    ? 'text-rose-400'
+                    : vcuRuntime.state.includes('DERATE')
+                      ? 'text-amber-300'
+                      : 'text-emerald-400'
+                }`}
+              >
+                {vcuRuntime.state}
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-[9px] text-slate-400">Cascadia Out</div>
+              <div className="text-xs font-bold text-cyan-300">{vcuRuntime.cascadiaTorqueCmdNm.toFixed(1)} Nm</div>
+            </div>
           </div>
-        </details>
+
+          <div className="space-y-2 font-mono text-[10px] tabular-nums">
+            <label className="block">
+              <div className="flex justify-between text-slate-300">
+                <span>APPS Pedal (%)</span>
+                <span className="text-cyan-300">{vcuInputs.appsPct.toFixed(0)}%</span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={vcuInputs.appsPct}
+                onChange={(e) => {
+                  setSyncWithLap(false);
+                  setVcuInputs((p) => ({ ...p, appsPct: Number(e.target.value) }));
+                }}
+                className="w-full accent-cyan-400"
+              />
+            </label>
+
+            <label className="block">
+              <div className="flex justify-between text-slate-300">
+                <span>T 11.8.9 APPS Deviation (&gt;10% / 100ms)</span>
+                <span className={vcuInputs.appsDeviationPct > 10 ? 'font-bold text-rose-400' : 'text-slate-400'}>
+                  {vcuInputs.appsDeviationPct.toFixed(1)}% ({vcuRuntime.appsFaultTimerMs} ms)
+                </span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={25}
+                step={0.5}
+                value={vcuInputs.appsDeviationPct}
+                onChange={(e) => {
+                  setSyncWithLap(false);
+                  setVcuInputs((p) => ({ ...p, appsDeviationPct: Number(e.target.value) }));
+                }}
+                className="w-full accent-rose-400"
+              />
+            </label>
+
+            <label className="block">
+              <div className="flex justify-between text-slate-300">
+                <span>EV 2.3 / EV 2.5 Brake Pressure (bar)</span>
+                <span className={vcuInputs.brakePressureBar >= 15 ? 'font-bold text-amber-300' : 'text-slate-400'}>
+                  {vcuInputs.brakePressureBar.toFixed(1)} bar (BSPD {vcuRuntime.bspdFaultTimerMs} ms)
+                </span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={50}
+                step={1}
+                value={vcuInputs.brakePressureBar}
+                onChange={(e) => {
+                  setSyncWithLap(false);
+                  setVcuInputs((p) => ({ ...p, brakePressureBar: Number(e.target.value) }));
+                }}
+                className="w-full accent-amber-400"
+              />
+            </label>
+
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <label className="block">
+                <div className="flex justify-between text-slate-400">
+                  <span>Inverter °C</span>
+                  <span className="text-slate-200">{vcuInputs.inverterTempC.toFixed(0)}°C</span>
+                </div>
+                <input
+                  type="range"
+                  min={25}
+                  max={90}
+                  value={vcuInputs.inverterTempC}
+                  onChange={(e) => setVcuInputs((p) => ({ ...p, inverterTempC: Number(e.target.value) }))}
+                  className="w-full accent-cyan-400"
+                />
+              </label>
+
+              <label className="block">
+                <div className="flex justify-between text-slate-400">
+                  <span>IMU Mode</span>
+                </div>
+                <select
+                  value={vcuInputs.imuFaultMode}
+                  onChange={(e) => setVcuInputs((p) => ({ ...p, imuFaultMode: e.target.value as ImuFaultMode }))}
+                  className="field mt-0.5 !py-0.5 text-[10px]"
+                >
+                  <option value="NOMINAL">NOMINAL</option>
+                  <option value="HIGH_NOISE">HIGH_NOISE</option>
+                  <option value="CAN_TIMEOUT_DROPOUT">CAN_TIMEOUT_DROPOUT</option>
+                </select>
+              </label>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setVcuInputs((p) => ({
+                  ...p,
+                  appsPct: 3,
+                  appsDeviationPct: 1.0,
+                  brakePressureBar: 0,
+                  inverterTempC: 42,
+                  motorTempC: 58,
+                  imuFaultMode: 'NOMINAL',
+                }));
+                setVcuRuntime(INITIAL_VCU_FSM_RUNTIME);
+              }}
+              className="mt-1 w-full rounded-lg border border-white/[0.08] bg-slate-900 py-1.5 text-center font-mono text-[10px] uppercase tracking-wider text-slate-300 transition hover:border-cyan-500/40 hover:text-cyan-300"
+            >
+              ↺ Clear Latches & Reset VCU FSM
+            </button>
+          </div>
+        </DisclosureGroup>
+
+        {/* 3. EMBEDDED VCU C CODEGEN EXPORT */}
+        <DisclosureGroup title="Embedded VCU C Firmware Export" badge="MISRA-C:2012" defaultOpen={false}>
+          <div className="space-y-1.5 font-mono text-[10px]">
+            <p className="text-slate-400">
+              Zero-heap static C99 firmware generated from active vehicle ({veh.name}) and FSAE plausibility rules:
+            </p>
+            <div className="grid grid-cols-1 gap-1.5 pt-1">
+              {bundle && (
+                <button
+                  type="button"
+                  onClick={() => bundle.files.forEach((f) => downloadText(f.name, f.content, 'text/x-c'))}
+                  className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-slate-900/90 px-2.5 py-1.5 text-left text-cyan-300 transition hover:border-cyan-500/40"
+                >
+                  <span>⬇ vcu_dynamics_autogen (.h/.c)</span>
+                  <span className="text-[9px] text-slate-500">5 files</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  downloadText(safetyFw.headerName, safetyFw.headerContent, 'text/x-c');
+                  downloadText(safetyFw.sourceName, safetyFw.sourceContent, 'text/x-c');
+                }}
+                className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-slate-900/90 px-2.5 py-1.5 text-left text-emerald-300 transition hover:border-emerald-500/40"
+              >
+                <span>⬇ ist26_vcu_safety_fsm (.h/.c)</span>
+                <span className="text-[9px] text-slate-500">1 kHz Task</span>
+              </button>
+            </div>
+          </div>
+        </DisclosureGroup>
       </div>
     </aside>
   );
