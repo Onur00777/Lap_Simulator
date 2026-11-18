@@ -1,6 +1,6 @@
 # ApexLapSim
 
-Formula Student lap simulation and vehicle dynamics workbench by Onur Yüksek.
+ITU Racing lap simulation and vehicle dynamics workbench by Onur Yüksek.
 
 ```sh
 npm ci
